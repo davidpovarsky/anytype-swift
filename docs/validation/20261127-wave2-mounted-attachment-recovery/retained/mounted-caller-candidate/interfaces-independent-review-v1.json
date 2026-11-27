@@ -1,0 +1,26 @@
+{
+  "schema": "mounted-attachment-independent-source-review/v1",
+  "status": "PREDECESSOR_SOURCE_REQUIRES_FAILURE_RETENTION_DELTA",
+  "candidate": {
+    "path": "torah-acceptance-prep/uploader-recovery-review/mounted-caller-candidate/review-v2-retention/AnyNativeAttachmentMountedRecoveryTests.swift",
+    "sha256": "673377afcacfd1fefa92fde98176cf7b7d52360f10956ab4b3c2e4d8444aa672",
+    "bytes": 55450
+  },
+  "findings": [
+    {
+      "id": "MOUNTED-ATTACHMENT-RETENTION-01",
+      "severity": "narrow evidence-retention blocker",
+      "candidateSHA256": "673377afcacfd1fefa92fde98176cf7b7d52360f10956ab4b3c2e4d8444aa672",
+      "location": "test method cleanup: if firstFailure == nil",
+      "evidence": "firstFailure is assigned for thrown or explicit cleanup errors. XCTAssertEqual/True/False record nonthrowing XCTest issues; removeOwnedFilesAfterDrain could therefore execute for an assertion-only failed case.",
+      "effect": "XCTest does not become PASS, but the failed physical journal fixture could be removed despite the documented retain-on-failure policy.",
+      "requestedCorrection": "Retain prior source and include actual XCTest failure state in the removal condition; no new manager, product seam or test required."
+    }
+  ],
+  "reviewScope": "Read-only source; no compiler, tests, HTTP, runtime, Native or host operations.",
+  "inspectionTimingStop": {
+    "path": "interfaces-review-inspection-stop1.json",
+    "sha256": "d4628575fd2415494bac64b2dfa1cb4b5265cb9e17387e1afed230fbaac19d77",
+    "productOrRuntimeFailure": false
+  }
+}

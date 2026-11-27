@@ -1,0 +1,44 @@
+--- review-v1/656b.swift
++++ candidate/6733.swift
+@@ -36,7 +36,7 @@
+                 .first { $0.activationState == .foregroundActive })
+             previousKey = scene.windows.first(where: \.isKeyWindow)
+             let visible = UIWindow(windowScene: scene)
+-            visible.frame = CGRect(x: 0, y: 0, width: 800, height: 800)
++            visible.frame = scene.coordinateSpace.bounds
+             window = visible
+             let first = try await mountOwner(client: client, workspace: workspace, journal: journal,
+                 recovery: recovery, fixture: fixture, window: visible)
+@@ -236,6 +236,10 @@
+     private func capture(_ document: AnyDocumentPresentation, model: AnyNativeAttachmentsPresentation,
+                          window: UIWindow, phase: String) throws {
+         window.layoutIfNeeded()
++        var didRender = false
++        let rendered = UIGraphicsImageRenderer(bounds: window.bounds).image { _ in
++            didRender = window.drawHierarchy(in: window.bounds, afterScreenUpdates: true)
++        }
+         let value: [String: Any] = [
+             "schema": "mounted-attachment-caller-recovery/v1", "phase": phase,
+             "scope": "controlled-HTTP-hosted-UIKit-not-real-Native-engine",
+@@ -246,16 +250,17 @@
+             "pendingIntent": model.pendingAttachment != nil, "showsCheck": model.showsAttachmentCheck,
+             "fileIDs": model.files.map(\.id), "notice": model.uploadNotice ?? "",
+             "error": model.error ?? "", "actualNativeEngineAcceptance": false,
+-            "systemPickerAcceptance": false, "visualReview": "PENDING"]
++            "systemPickerAcceptance": false, "drawHierarchySucceeded": didRender,
++            "windowVisible": !window.isHidden, "visualReview": "PENDING"]
+         let json = XCTAttachment(data: try JSONSerialization.data(withJSONObject: value, options: [.sortedKeys]),
+                                  uniformTypeIdentifier: "public.json")
+         json.name = "mounted-attachment-" + phase; json.lifetime = .keepAlways; add(json)
+-        let rendered = UIGraphicsImageRenderer(bounds: window.bounds).image { _ in
+-            window.drawHierarchy(in: window.bounds, afterScreenUpdates: true)
+-        }
+         let screenshot = XCTAttachment(image: rendered)
+         screenshot.name = "mounted-attachment-" + phase + "-visual"
+         screenshot.lifetime = .keepAlways; add(screenshot)
++        guard didRender, !window.isHidden, window.windowScene?.activationState == .foregroundActive else {
++            throw MountedAttachmentFixtureFailure.invalid("actual mounted-window screenshot failed")
++        }
+     }
+ }
+ 
