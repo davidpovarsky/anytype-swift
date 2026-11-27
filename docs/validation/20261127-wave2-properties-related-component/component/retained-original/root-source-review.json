@@ -1,0 +1,87 @@
+{
+  "schema": "wave2-properties-component-root-source-review/v1",
+  "status": "PASS_SOURCE_PLAN_REVIEW_ONLY",
+  "observedAt": "2026-11-27T12:33:19.248910+00:00",
+  "runnerSHA256": "f0c459b34a20fdce78f4cbdf07988ac9c4976ba2cbce4daeb316a0dd7d88d42c",
+  "originalRunnerSHA256": "2e9d2fdd8fd83741719cfd6cb659fbd06786f392cbca854d6db78185da8dbe50",
+  "exactNonMainFunctions": {
+    "sha": "2f1541faf4c4ebe2f74c17d4b666982327a0f1e144708a531c92f08669705d57",
+    "write": "aaffcdffb5cbcfc75dfce68f87a98de1f15983c6762c4cb0d403f134ed953a0c",
+    "cleanup_custody": "d3afc2ddda08704635ca08634837ff5d11ce8beb5897714e608243e45aef8f7c",
+    "resource_sample": "23a22d665960ca3e7141e52df34b4e45758e32c5634fdb3f267f2e3b4cb5291b",
+    "source_inventory": "4b1b39862c8d88f99d4d1d787b2b6a21c2756ad32cb692b7cdb5f6731adb64a0"
+  },
+  "inputs": [
+    {
+      "path": "Package.swift",
+      "sha256": "b6aae03e2f5dab5d8e80b582f2def376c527ef115f51ed5fa2981fa794560548",
+      "bytes": 677
+    },
+    {
+      "path": "Sources/TorahInspectorCore/Models.swift",
+      "sha256": "59a0c8639c8c778c67ff9c60db4b979e3ba7a39dff4c3fb669a54ae23dc113a0",
+      "bytes": 24592
+    },
+    {
+      "path": "Sources/PinkhaAnyUI/AnyNativeSourceDocumentsPresentation.swift",
+      "sha256": "1cf8d0790e949b7592d4298dff0e788982ad3b0959c838350fe587d2c80e48c1",
+      "bytes": 5157
+    },
+    {
+      "path": "Tests/PinkhaAnyUITests/AnyNativeSourceDocumentsPublicationTests.swift",
+      "sha256": "b056ddc8e2114a8666708db45d71fc8caa0e6f7e9c804655b1023d96003131b4",
+      "bytes": 13887
+    },
+    {
+      "path": "owned_process.py",
+      "sha256": "58624c3f6eae79e5417576ba88d24fe15919681ca6ac112e14e664b9ab12b924",
+      "bytes": 5529
+    },
+    {
+      "path": "owned-process-provenance.json",
+      "sha256": "4c2f95a4129fdb89125458c4a3a5874c97dbbf0ed9aaa3d1b15d638ccef734b1",
+      "bytes": 1010
+    }
+  ],
+  "testProjection": {
+    "prefixBytes": 88,
+    "suffixBytes": 13799,
+    "suffixSHA256": "ebd009a1cd8af9f768192d699f9af2c9dd977c939a4154773ebf5a4397402136",
+    "fullOriginalFileCompiled": false,
+    "oldMethodsSelected": 0,
+    "newDeclaredMethods": 5,
+    "newDeclaredCases": 11
+  },
+  "sourceAssessment": [
+    "Finite original-runner delta changes only source/target/method/receipt identities; existing ownership cleanup, timeout and resource mechanics remain.",
+    "Exact5157B production model and complete24592B original Core Models are compiled inputs; no stub or Native replacement is supplied.",
+    "Tests are explicitly import-prefixed exact appended suite bytes, not the complete original App test source.",
+    "Actual stdout and SwiftDriver/FileList evidence must still be independently qualified after any run, including all11 argument cases."
+  ],
+  "bounds": {
+    "root": "/var/lib/pinkha-wave2-properties-related-lifetime-20261127",
+    "deadlineSeconds": 300,
+    "swiftPMJobs": 1,
+    "innerCompilerJobs": "Observe actual log; do not infer from outer jobs",
+    "rootFloorBytes": 2147483648,
+    "incrementalAllowanceEstimateBytes": 268435456,
+    "minimumAvailableMemoryBytes": 1610612736,
+    "liveMemoryFloorBytes": 536870912
+  },
+  "remainingGates": [
+    "Explicit coordinated Oracle slot and fresh floors",
+    "Exclusive fresh input staging with exact file identities",
+    "One actual compiler/test invocation and terminal original owned-group absence",
+    "Actual raw receipt/log/compiler-file-list readback; no historical PGID reprobe"
+  ],
+  "retainedFirstInspectionFailure": "root-source-review-attempt1.json",
+  "runtimeAdmission": false,
+  "operations": {
+    "sourceByteInspection": true,
+    "compiler": 0,
+    "tests": 0,
+    "oracle": 0,
+    "mac": 0,
+    "native": 0
+  }
+}

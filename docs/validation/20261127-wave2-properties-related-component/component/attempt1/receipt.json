@@ -1,0 +1,164 @@
+{
+  "AppleCompilation": "NOT_RUN",
+  "UIAcceptance": "NOT_RUN",
+  "argv": [
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/var/lib/pinkha-wave2-properties-related-lifetime-20261127/component",
+    "--scratch-path",
+    "/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build",
+    "--cache-path",
+    "/var/lib/pinkha-wave2-properties-related-lifetime-20261127/cache",
+    "--jobs",
+    "1",
+    "--no-parallel",
+    "--disable-experimental-prebuilts",
+    "-v",
+    "--filter",
+    "AnyNativeSourceDocumentsPublicationTests"
+  ],
+  "artifacts": [
+    {
+      "bytes": 623,
+      "path": "/var/lib/pinkha-wave2-properties-related-lifetime-20261127/attempt1/invocation.json",
+      "sha256": "a9d5a800e542df51eac237dcc6aafdf2ba66df512464aa6f0c8bd7c4a96fa8f1"
+    },
+    {
+      "bytes": 100,
+      "path": "/var/lib/pinkha-wave2-properties-related-lifetime-20261127/attempt1/process.json",
+      "sha256": "414d825b0c30a74eba2aa5803359a4a61b77a8e7175521870545ca3e4b7fcee2"
+    },
+    {
+      "bytes": 4383,
+      "path": "/var/lib/pinkha-wave2-properties-related-lifetime-20261127/attempt1/resource-samples.json",
+      "sha256": "3edff70baa82d9e3e0737a24ee4bc6a20de0080d901c503015e5593198d54bed"
+    },
+    {
+      "bytes": 639,
+      "path": "/var/lib/pinkha-wave2-properties-related-lifetime-20261127/attempt1/source-inputs-after.json",
+      "sha256": "93ba88447b301a90d1f10f60e8f922fc6b4959fc189f249df33787be1336180d"
+    },
+    {
+      "bytes": 639,
+      "path": "/var/lib/pinkha-wave2-properties-related-lifetime-20261127/attempt1/source-inputs-before.json",
+      "sha256": "93ba88447b301a90d1f10f60e8f922fc6b4959fc189f249df33787be1336180d"
+    },
+    {
+      "bytes": 74159,
+      "path": "/var/lib/pinkha-wave2-properties-related-lifetime-20261127/attempt1/stderr.original.log",
+      "sha256": "a96f511f240b7293f40c4eb043a8d947c6a6fcfb7748a1b93dfdb600359123fc"
+    },
+    {
+      "bytes": 0,
+      "path": "/var/lib/pinkha-wave2-properties-related-lifetime-20261127/attempt1/stdout.original.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 76,
+      "path": "/var/lib/pinkha-wave2-properties-related-lifetime-20261127/attempt1/toolchain.original.log",
+      "sha256": "59360730c588801a672c1118d5d1debc93581f6b74e6a82d5d8cbda1b4a729ce"
+    }
+  ],
+  "baselineReplay": "NONE_NEW_MODEL_SUITE",
+  "cleanupSourceProvenance": {
+    "originalRunnerSHA256": "99dcacdacace01b4b7c0646c09dafb45c9b8d167781043542bc6c0ed2a7103e2",
+    "outputSHA256": "58624c3f6eae79e5417576ba88d24fe15919681ca6ac112e14e664b9ab12b924",
+    "sourceFunctions": [
+      {
+        "characters": 436,
+        "exactOriginalASTSourceSlice": true,
+        "name": "group_members",
+        "sha256": "8fec98e73fa15e9a4223603871b17867223072f4b9430d912610d1aaab7f9cba"
+      },
+      {
+        "characters": 783,
+        "exactOriginalASTSourceSlice": true,
+        "name": "observe_owned_group",
+        "sha256": "df09ba2d632f867e4dbd902adb5a89a5c56e11dedf7c3018d875658207eebcc0"
+      },
+      {
+        "characters": 3202,
+        "exactOriginalASTSourceSlice": true,
+        "name": "drain_owned_process",
+        "sha256": "bc502d4e202391f87720b600047a28d2f61bb0a559e274a2b3a8cb2c757dd94b"
+      },
+      {
+        "characters": 740,
+        "exactOriginalASTSourceSlice": true,
+        "name": "finish_owned_process",
+        "sha256": "70bc0e7b38d1d60446d2c665cff360fbf01459e238f4a0243f7234000f797b59"
+      }
+    ]
+  },
+  "coordinationStory": "1220953421774691",
+  "declaredCases": 11,
+  "elapsedSeconds": 17.779,
+  "failure": "Traceback (most recent call last):\n  File \"/var/lib/pinkha-wave2-properties-related-lifetime-20261127/inputs/run_component.py\", line 176, in main\n    assert process.returncode == 0, 'Actual compiler/test command failed'\n           ^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Actual compiler/test command failed\n",
+  "finishedAtUTC": "2026-11-27T13:03:50.381669+00:00",
+  "freeBytesAfter": 2745765888,
+  "fullAppTargetCompilation": "NOT_RUN",
+  "fullKitCompilation": "NOT_RUN",
+  "fullOriginalTestFileCompiled": false,
+  "fullSourceTestSHA256": "f334ce278537413df7ef7b508db8bd250135f002f3b6dfa65a306459e4b807c6",
+  "memberListIsDiagnosticOnly": true,
+  "methods": 5,
+  "minimalPackageIsDerived": true,
+  "nativeAcceptance": "NOT_RUN",
+  "nativeServiceCalls": 0,
+  "newTestSuiteSuffixBytesAreExact": true,
+  "observedTestOutcomeLines": [],
+  "oldIdentityMethodsSelected": 0,
+  "originalKitBase": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+  "ownedCleanup": {
+    "absenceEvidence": {
+      "atUTC": "2026-11-27T13:03:50.377266+00:00",
+      "errno": 3,
+      "error": "[Errno 3] No such process",
+      "processGroup": 702869,
+      "signal": 0,
+      "status": "ABSENT_ESRCH"
+    },
+    "historicalGroupReprobed": false,
+    "processGroup": 702869,
+    "status": "PASS_OWNED_GROUP_ABSENT"
+  },
+  "ownedGroupAtExit": {
+    "atUTC": "2026-11-27T13:03:50.377266+00:00",
+    "errno": 3,
+    "error": "[Errno 3] No such process",
+    "processGroup": 702869,
+    "signal": 0,
+    "status": "ABSENT_ESRCH"
+  },
+  "priorAcceptedTestsRerun": 0,
+  "processExit": 1,
+  "productionModelBytesAreExact": true,
+  "providerIsControlledNonCooperativeFixture": true,
+  "remainingOwnedProcessGroup": [],
+  "resourceAdmission": {
+    "allowanceIsEstimate": true,
+    "atUTC": "2026-11-27T13:03:32.603014+00:00",
+    "freeBytes": 2779820032,
+    "incrementalAllowanceBytes": 268435456,
+    "jobs": 1,
+    "liveDiskFloorBytes": 2147483648,
+    "load": [
+      0.51123046875,
+      0.94140625,
+      1.14892578125
+    ],
+    "memAvailableBytes": 4658855936,
+    "minimumAvailableMemoryBytes": 1610612736,
+    "swapFreeBytes": 36864
+  },
+  "runnerSHA256": "f0c459b34a20fdce78f4cbdf07988ac9c4976ba2cbce4daeb316a0dd7d88d42c",
+  "schema": "pinkha.wave2.properties.actual-source-model-component.v1",
+  "selectedSuite": "AnyNativeSourceDocumentsPublicationTests",
+  "shippingSourceMutationsByRunner": 0,
+  "sourceCommit": "21d63bef8950f8b927f0d8d3b4b052758bc98fcb",
+  "sourceTestSuffixSHA256": "ebd009a1cd8af9f768192d699f9af2c9dd977c939a4154773ebf5a4397402136",
+  "startedAtUTC": "2026-11-27T13:03:32.602535+00:00",
+  "status": "FAIL",
+  "testProjection": "IMPORTS_PLUS_EXACT_NEW_SUITE_SUFFIX"
+}

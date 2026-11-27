@@ -1,0 +1,34 @@
+{
+  "schema": "wave2-language-platform-contract/v1",
+  "checkedAt": "2026-11-27T12:44:17.224796+00:00",
+  "sourceType": "Official Apple documentation, opened primary Markdown pages",
+  "contracts": [
+    {
+      "api": "Locale.autoupdatingCurrent",
+      "url": "https://developer.apple.com/documentation/foundation/locale/autoupdatingcurrent.md",
+      "retrievalRef": "turn259464793view1",
+      "meaning": "Current app locale considers system locale, app-specific Settings choice and language availability. Properties track new preferences; the value does not emit a change notification itself.",
+      "inference": "Its use alone does not prove an OS-only language defect."
+    },
+    {
+      "api": "Locale.current",
+      "url": "https://developer.apple.com/documentation/foundation/locale/current.md",
+      "retrievalRef": "turn259464793view0",
+      "meaning": "Snapshot of the current app locale from the same documented inputs."
+    },
+    {
+      "api": "EnvironmentValues.locale",
+      "url": "https://developer.apple.com/documentation/swiftui/environmentvalues/locale.md",
+      "retrievalRef": "turn259464793view2",
+      "meaning": "The locale views should use. A view environment may be overridden."
+    },
+    {
+      "api": "EnvironmentValues",
+      "url": "https://developer.apple.com/documentation/swiftui/environmentvalues/",
+      "retrievalRef": "turn211876700search3",
+      "meaning": "SwiftUI sets/updates locale from applicable settings; a caller can override environment values."
+    }
+  ],
+  "platformExecution": false,
+  "notClaimed": "No actual selected-runtime or compiled-bundle locale was measured."
+}

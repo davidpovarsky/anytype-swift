@@ -1,0 +1,116 @@
+{
+  "assessment": [
+    "New fixed component root must be absent even as a dangling alias; physical parent is checked and mkdir is exclusive. Partial staging failure retains that root and prevents replay.",
+    "Fixed seven-path packet is hash-bound before writes, with exact per-file byte counts and hashes; no dynamic source path override.",
+    "Under the planned root-owned staging invocation, runtime root is assigned ubuntu/chatgpt-agent; input files are exclusive no-follow root-owned0444 regular single-link files and input directories become0555. Each file is fsynced and read back before the staging-only receipt.",
+    "Stager keeps original2GiB plus256MiB estimate before writes. Review does not convert an earlier capacity observation into fresh execution admission.",
+    "Launcher inverse restores every original G04 launcher byte after fixed root/runner pin, validated coordination-story argument and one trailing blank-line specialization.",
+    "Exact runuser ubuntu/chatgpt-agent, Python3, attempt1 no-replay gate,340s outer deadline, output capture and exit propagation remain.300s compiler/live-floor/owned-cleanup semantics delegate to the reviewed f0c runner.",
+    "No compiler operation exists in the stager. Neither candidate wrapper was executed."
+  ],
+  "blockingFindings": [],
+  "correctionsAreReviewerSourceInspectionOnly": true,
+  "inspectionCorrections": [
+    {
+      "cause": "Reviewer initially compared decompressed packet to the outer gzip-envelope file; corrected inspection compares exact embedded and envelope gzip payloads.",
+      "chunk": "57830a",
+      "exitCode": 1
+    },
+    {
+      "cause": "Reviewer initial launcher inverse omitted its one extra trailing newline; exact bounded inverse includes that nonbehavioral byte.",
+      "chunk": "c5df5c",
+      "exitCode": 1
+    }
+  ],
+  "launcherInverse": {
+    "oneExtraTrailingNewlineRemovedInInverse": true,
+    "restoredSHA256": "5827dfd0c24a46cfcffff9be50e902ebe871ce6a18ede1116c7ba02d84b6f053",
+    "restoresEveryOriginalByte": true
+  },
+  "observedAtUTC": "2026-11-27T12:46:31.284287+00:00",
+  "packet": {
+    "allSevenDecodedFilesMatchReviewedPhysicalInputs": true,
+    "bytes": 85292,
+    "envelopeDecodedPayloadMatchesEmbeddedPayload": true,
+    "fileCount": 7,
+    "files": [
+      {
+        "bytes": 677,
+        "path": "Package.swift",
+        "sha256": "b6aae03e2f5dab5d8e80b582f2def376c527ef115f51ed5fa2981fa794560548"
+      },
+      {
+        "bytes": 5157,
+        "path": "Sources/PinkhaAnyUI/AnyNativeSourceDocumentsPresentation.swift",
+        "sha256": "1cf8d0790e949b7592d4298dff0e788982ad3b0959c838350fe587d2c80e48c1"
+      },
+      {
+        "bytes": 24592,
+        "path": "Sources/TorahInspectorCore/Models.swift",
+        "sha256": "59a0c8639c8c778c67ff9c60db4b979e3ba7a39dff4c3fb669a54ae23dc113a0"
+      },
+      {
+        "bytes": 13887,
+        "path": "Tests/PinkhaAnyUITests/AnyNativeSourceDocumentsPublicationTests.swift",
+        "sha256": "b056ddc8e2114a8666708db45d71fc8caa0e6f7e9c804655b1023d96003131b4"
+      },
+      {
+        "bytes": 1010,
+        "path": "owned-process-provenance.json",
+        "sha256": "4c2f95a4129fdb89125458c4a3a5874c97dbbf0ed9aaa3d1b15d638ccef734b1"
+      },
+      {
+        "bytes": 5529,
+        "path": "owned_process.py",
+        "sha256": "58624c3f6eae79e5417576ba88d24fe15919681ca6ac112e14e664b9ab12b924"
+      },
+      {
+        "bytes": 12289,
+        "path": "run_component.py",
+        "sha256": "f0c459b34a20fdce78f4cbdf07988ac9c4976ba2cbce4daeb316a0dd7d88d42c"
+      }
+    ],
+    "inputBytes": 63141,
+    "schema": "wave2-properties-component-inputs/v1",
+    "sha256": "6aa99ec8818fda0fe3fe4a2bbd535b81e475ce65a9aa49fb7d2deed726ed0b90"
+  },
+  "remainingExecutionPrerequisites": [
+    "Root obtains terminal releases for current C and W3 short source windows.",
+    "Fresh actual source/root ownership and unchanged runner resource admission.",
+    "Actual compiler source inputs, all11 argument cases and terminal ownership readback after any separately authorized run."
+  ],
+  "reviewer": "/root/editor",
+  "schema": "wave2-properties-component-wrapper-source-review/v1",
+  "scope": {
+    "candidateSourceMutations": 0,
+    "compilerInvocations": 0,
+    "historicalProcessProbes": 0,
+    "launcherInvocations": 0,
+    "localSourceInspectionOnly": true,
+    "macCalls": 0,
+    "nativeCalls": 0,
+    "oracleCalls": 0,
+    "portableControlReruns": 0,
+    "runtimeAdmission": false,
+    "stagerInvocations": 0,
+    "swiftTests": 0
+  },
+  "sources": {
+    "launcher": {
+      "bytes": 948,
+      "path": "wave2-properties-related-component/actual-run/launch-template.py",
+      "sha256": "34500021707bd92d78dca2345beeeb87b172f85a26dc48c7e6583299a9aefe25"
+    },
+    "originalG04Launcher": {
+      "bytes": 736,
+      "path": "wave2-reader-audit/component/actual-run/launch-template.py",
+      "sha256": "5827dfd0c24a46cfcffff9be50e902ebe871ce6a18ede1116c7ba02d84b6f053"
+    },
+    "stager": {
+      "bytes": 37701,
+      "path": "wave2-properties-related-component/actual-run/stage-inputs-template.py",
+      "sha256": "64a0b8243e3fb73026549cbb301cecb5e023eae944fc45a487eb07f7149dce81"
+    }
+  },
+  "status": "PASS_SOURCE_REVIEW_ONLY"
+}

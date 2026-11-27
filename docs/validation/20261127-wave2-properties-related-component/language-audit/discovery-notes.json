@@ -1,0 +1,35 @@
+{
+  "schema": "wave2-language-audit-discovery-notes/v1",
+  "status": "DISCOVERY_ONLY_NOT_PRODUCT_OR_TEST_FAILURE",
+  "defaultBranchSearches": {
+    "queries": [
+      "AppleLanguages",
+      "Locale language settings",
+      "appLanguage"
+    ],
+    "results": [],
+    "scope": "Default-branch search returned no matches; not used to infer current-source absence"
+  },
+  "unadmittedFirstPath": {
+    "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeRootView.swift",
+    "result": "The first orchestration cell threw Missing source at this assumed path; its exact inner tool error payload was not persisted. No source conclusion uses it.",
+    "resolvedActualPath": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift"
+  },
+  "retainedExplicitErrors": [
+    {
+      "path": "Anytype/Sources/ApplicationLayer/SceneDelegate.swift",
+      "result": {
+        "error": "GitHub API error 404: {\"message\":\"Not Found\",\"documentation_url\":\"https://docs.github.com/rest/repos/contents#get-repository-content\",\"status\":\"404\"}",
+        "error_code": "NOT_FOUND",
+        "error_data": {
+          "message": "Not Found",
+          "documentation_url": "https://docs.github.com/rest/repos/contents#get-repository-content",
+          "status": "404"
+        }
+      }
+    }
+  ],
+  "correctedSceneDelegatePath": "Anytype/Sources/ApplicationLayer/SceneDelegates/SceneDelegate.swift",
+  "subsequentRgExit2": "The initial grep named the missing guessed SceneDelegate path; corrected source read is independently tree-bound.",
+  "runtimeAcceptance": false
+}

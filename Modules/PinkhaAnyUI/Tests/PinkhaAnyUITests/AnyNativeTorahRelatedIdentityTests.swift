@@ -325,7 +325,7 @@ struct AnyNativeSourceDocumentsPublicationTests {
         let documentOwner = owner.documentOwner
         var reservation = AnyNativePropertyChildReservation()
         _ = reservation.reserve(in: presentation)
-        let request = try #require(owner.model.load(documentOwner: documentOwner,
+        let optionalRequest: Task<Void, Never>? = owner.model.load(documentOwner: documentOwner,
             read: { try await pending.read() },
             isOwnerCurrent: { owner.active && owner.documentOwner == documentOwner },
             canPresent: { true },
@@ -337,7 +337,8 @@ struct AnyNativeSourceDocumentsPublicationTests {
             }, didFinish: {
                 owner.finished.append("inactive")
                 reservation.release(in: presentation, current: owner.model.presentationID)
-            }))
+            })
+        let request = try #require(optionalRequest)
         defer { request.cancel(); pending.cancelOutstanding(); owner.close() }
         try await pending.waitUntilStarted()
         // An inactive scene can fail the mounted foreground guard without
