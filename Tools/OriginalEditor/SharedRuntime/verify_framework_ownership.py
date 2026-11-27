@@ -19,6 +19,7 @@ RUNTIME = 'OriginalEditorSharedFirebase'
 EDITOR = 'AnytypeOriginalEditor'
 FIREBASE_CLASSES = ['FIRApp', 'FIRInstallations', 'FIRMessaging', 'FBLPromise', 'GDTCORTransport']
 HOST_PRODUCTS = [
+    'AI_Hanlin',
     'HanlinHostContracts', 'HanlinAgentCore', 'HanlinChatCore', 'HanlinScriptUI',
     'HanlinChatUI', 'HanlinPresentationKit', 'HanlinRichUI', 'HanlinPlatformContracts',
     'FloatingPanel', 'TorahInspectorCore', 'TorahInspectorUI', 'ZIPFoundation',
@@ -250,6 +251,8 @@ def execute(args, receipt, *, inspect_only=False):
         host_module_definition_counts=definitions['host_module_definition_counts'],
         hanlin_source_revision=hanlin['revision'], hanlin_snapshot_sha256=sha256(hanlin_path),
         hanlin_package_files=hanlin['files'],
+        hanlin_assistant_capabilities=hanlin.get('assistantCapabilities'),
+        hanlin_original_native_inputs=hanlin.get('nativeInputs'),
         resolved_package_states=pins,
         shared_dependency_sources=dependency_source_inventory(
             work / 'producer-derived-preserved/SourcePackages/checkouts', contract,
