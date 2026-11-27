@@ -1,0 +1,121 @@
+{
+  "controller": {
+    "bytes": 13645,
+    "path": "/workspace/scratch/ae335eba85e3/root-pending-source-batch.py",
+    "sha256": "cd7ef720c7dee2b2672a3c705f8d988c4588d43e54d1f76a431315d984e37a68"
+  },
+  "controllerSemantics": {
+    "donorValidation": "Fetch exact immutable SHAs with empty refmap/no tags; require original sole parent, reviewed diffBase ancestry, exact path/status set, preimage and afterimage byte/Git SHA, and every donor file mode100644.",
+    "evidence": "13 exact original payload evidence texts plus new intake/controller/prior originalG05 receipt, exclusive xb creation; exact staged path/status closure checked.",
+    "expectedTree": "Private temporary index seeded with exact START then only225 reviewed blobs. Actual no-commit six-donor merge must equal that complete computed tree and exact225 path set before evidence or commit.",
+    "initialGuards": "Exact root HEAD/tree/ref and remote HEAD; clean tracked/index state; no pre-existing MERGE_HEAD. Existing untracked status is retained and must compare equal after commit.",
+    "pinChecks": "SDK0ae/common d63/Stage1c1e3/TorahKit9058/Collections7b847 compared before and after merge and retention.",
+    "preservation": "No reset, checkout, clean, force push, chmod/chown, lock deletion or source rewriting. Native, SDK, package locks and project outside declared225 remain identical through full-tree equality. Any merge/source/whitespace/gate failure leaves observed state for explicit continuation.",
+    "publication": "Normal no-ff/no-commit octopus merge; require actual commit parents START+6donors, unchanged original untracked status, still-original remote HEAD, then normal nonforce push and read-back.",
+    "resourcePolicy": "Root 2 GiB and development 512 MiB floors, each plus 64 MiB source integration allowance; checked before each fetch and before merge. No floor waiver.",
+    "retention": "Existing original source-retention gate must PASS against actual final staged tree with130 reviewed rows before commit."
+  },
+  "donors": [
+    {
+      "declaredFiles": 38,
+      "diffBase": "1cc7f696cfa01790c90c6d29273147d07da71b65",
+      "parent": "1cc7f696cfa01790c90c6d29273147d07da71b65",
+      "sha": "551108022574a8e2f1d7f307425280e6b5c56f1d"
+    },
+    {
+      "declaredFiles": 35,
+      "diffBase": "2207b131f45d305ba828c93deb0633e275e59cba",
+      "parent": "2207b131f45d305ba828c93deb0633e275e59cba",
+      "sha": "e11667e5da07a3a67a609e0a0b2bfc858b82fb36"
+    },
+    {
+      "declaredFiles": 51,
+      "diffBase": "2cb70379375a751a8e19eaa24efbba830da1b424",
+      "parent": "2cb70379375a751a8e19eaa24efbba830da1b424",
+      "sha": "0ba5e26d1ae57c7d383d251d7396380a173fd892"
+    },
+    {
+      "declaredFiles": 67,
+      "diffBase": "834a6bced7b922a18f291add1bcc6e82d5bba61f",
+      "parent": "f3f56a4bc0bb802be6377b353a31eadde9488493",
+      "sha": "1aaff678cb75c86f356626817244c57529b36f4f"
+    },
+    {
+      "declaredFiles": 4,
+      "diffBase": "9ebba26e903f4a3942afc22c1c9f9bb0b4393b6e",
+      "parent": "9ebba26e903f4a3942afc22c1c9f9bb0b4393b6e",
+      "sha": "92a2904112738619f2f689b137ba663b08378730"
+    },
+    {
+      "declaredFiles": 30,
+      "diffBase": "0925ff79df8f70be288f96ea117dbd7059e24219",
+      "parent": "c80909722ef7c91aa89f3cf0c4399c62e7bcf4ae",
+      "sha": "53a7dcd88421070e301f6a8961bd98882b47bddc"
+    }
+  ],
+  "exactOrdinaryDiffCheck": {
+    "allFindingsOnlyPreservedOriginalDiffOrPatchEvidence": true,
+    "bytes": 6357,
+    "cleanDiffClaimed": false,
+    "diagnostics": 49,
+    "exit": 2,
+    "paths": [
+      "docs/validation/20261127-wave2-property-picker-cache/diffs/Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift.diff",
+      "docs/validation/20261127-wave2-property-picker-cache/diffs/Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift.diff",
+      "docs/validation/20261127-wave2-property-picker-cache/review-v1/source-changes.patch",
+      "docs/validation/20261127-wave2-property-picker-cache/source-changes.patch"
+    ],
+    "sha256": "938ea40205fe2e7c4e1d2da0737ebc3e6a167dff35e6f5c0e6548350b450a631"
+  },
+  "executionBoundary": {
+    "actualCompleteExpectedTree": "PENDING_ROOT_EXECUTION",
+    "actualMergeAnd130Gate": "NOT_RUN",
+    "gitMutationsByReviewer": 0,
+    "publication": "NOT_RUN",
+    "remoteCallsByReviewer": 0,
+    "requiresECompilerTerminalAndFreshOwnerResourceAdmission": true,
+    "rootOnlyDispatch": true,
+    "testsOrCompilersByReviewer": 0
+  },
+  "findings": [],
+  "localByteValidation": {
+    "all13EvidenceHashesVerified": true,
+    "all225AfterBlobsAndModesVerified": true,
+    "all7BeforeBlobsAndModesVerified": true,
+    "allPathsCanonicalRelative": true,
+    "compressedPayloadExact": true,
+    "declaredPathsUnique": true,
+    "shadowScope": "The local diagnostic index contains only the seven before files and 225 after files. It is not the full root integration tree or a merge/retention test.",
+    "sourceBytes": 2781645
+  },
+  "modifiedPaths": [
+    "AnyTypeTests/Pinkha/PropertyCreationSearchTests.swift",
+    "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift",
+    "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+    "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyLibrarySearchPublicationTests.swift",
+    "docs/any-engine-port/SOURCE_REFACTOR_MAP.json"
+  ],
+  "payload": {
+    "bytes": 363224,
+    "path": "/workspace/scratch/ae335eba85e3/pending-source-batch/payload.json",
+    "sha256": "e3f59ec8eb9bdfad7f6991efe697a776bdc76ff10aeff949f45bb4cc0da19188"
+  },
+  "prepared": {
+    "path": "/workspace/scratch/ae335eba85e3/pending-source-batch/prepared.json",
+    "sha256": "9d65e67a328f6ca6bf77686839d400df6f495f31b31ed1e0fcc28d71a4da8c04"
+  },
+  "protectedPinAndProjectPathsNotModified": [
+    "Tools/Hanlin/source.json",
+    "Tools/MiniApps/receipt_admission.py",
+    "PinkhaStage1Acceptance/Tests/PinkhaStage1AcceptanceUITests.swift",
+    "Modules/PinkhaTorahPresentation/Package.swift",
+    "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+    "Anytype.xcodeproj/project.pbxproj"
+  ],
+  "schema": "pinkha-independent-six-donor-batch-review-v1",
+  "start": "cee06ac951f735514059e616fbea48f07d4e7c09",
+  "startTree": "7a1793b6fb4f074653814642fdae56b5e8a21633",
+  "status": "SOURCE_PLAN_REVIEWED_NOT_EXECUTED"
+}

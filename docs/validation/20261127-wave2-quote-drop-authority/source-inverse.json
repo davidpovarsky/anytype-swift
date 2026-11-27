@@ -1,0 +1,172 @@
+{
+  "AppleCalls": 0,
+  "baseCommit": "2207b131f45d305ba828c93deb0633e275e59cba",
+  "files": [
+    {
+      "bytes": 73306,
+      "candidateSHA256": "4a2463e6e1ef7d7ade0686d41893e5ece3557dba0e811670c84c3dc25772305f",
+      "edits": [
+        {
+          "candidate": "\nextension TorahAssociationNativeRepositoryTests {\n    @Test(\"Source drop previews respect native property restrictions without changing internal moves\")\n    @MainActor\n    func sourceDropPreviewHonorsNativePropertyRestrictions() {\n        let details = ObjectDetails(id: objectId, values: [:])\n        let cases: [(restrictions: [ObjectRestriction], blocks: Bool, relations: Bool)] = [\n            ([], true, true),\n            ([.details], true, false),\n            ([.blocks], false, true),\n            ([.details, .blocks], false, false)\n        ]\n\n        for item in cases {\n            let permissions = ObjectPermissions(\n                details: details,\n                isLocked: false,\n                participantCanEdit: true,\n                isVersionMode: false,\n                objectRestrictions: item.restrictions\n            )\n            #expect(permissions.canEditBlocks == item.blocks)\n            #expect(permissions.canEditRelationValues == item.relations)\n            #expect(!details.isReadonly)\n\n            let source = TorahEditorSafetyPolicy.dropOperation(\n                containsTorahSource: true,\n                canEditBlocks: permissions.canEditBlocks,\n                canEditRelationValues: permissions.canEditRelationValues,\n                isReadonly: details.isReadonly,\n                canPlace: true\n            )\n            #expect(source == (item.restrictions.isEmpty ? .copy : .forbidden))\n            #expect(TorahEditorSafetyPolicy.canInsertSource(\n                canEditBlocks: permissions.canEditBlocks,\n                canEditRelationValues: permissions.canEditRelationValues,\n                isReadonly: details.isReadonly\n            ) == item.restrictions.isEmpty)\n            #expect(TorahEditorSafetyPolicy.dropOperation(\n                containsTorahSource: false,\n                canEditBlocks: permissions.canEditBlocks,\n                canEditRelationValues: permissions.canEditRelationValues,\n                isReadonly: details.isReadonly,\n                canPlace: true\n            ) == (item.blocks ? .move : .forbidden))\n        }\n    }\n\n    @Test(\"Source drop previews require explicitly writable document details\")\n    @MainActor\n    func sourceDropPreviewRequiresExplicitWritableDetails() {\n        let writable = ObjectDetails(id: objectId, values: [\n            BundledPropertyKey.isReadonly.rawValue: Google_Protobuf_Value.with { $0.boolValue = false }\n        ])\n        let readonly = ObjectDetails(id: objectId, values: [\n            BundledPropertyKey.isReadonly.rawValue: Google_Protobuf_Value.with { $0.boolValue = true }\n        ])\n        let permissions = ObjectPermissions(\n            details: writable,\n            isLocked: false,\n            participantCanEdit: true,\n            isVersionMode: false,\n            objectRestrictions: []\n        )\n        #expect(permissions.canEditBlocks && permissions.canEditRelationValues)\n        #expect(!writable.isReadonly && readonly.isReadonly)\n        let cases: [(details: ObjectDetails?, canInsert: Bool)] = [\n            (writable, true), (readonly, false), (nil, false)\n        ]\n\n        for item in cases {\n            #expect(TorahEditorSafetyPolicy.dropOperation(\n                containsTorahSource: true,\n                canEditBlocks: permissions.canEditBlocks,\n                canEditRelationValues: permissions.canEditRelationValues,\n                isReadonly: item.details?.isReadonly,\n                canPlace: true\n            ) == (item.canInsert ? .copy : .forbidden))\n            #expect(TorahEditorSafetyPolicy.canInsertSource(\n                canEditBlocks: permissions.canEditBlocks,\n                canEditRelationValues: permissions.canEditRelationValues,\n                isReadonly: item.details?.isReadonly\n            ) == item.canInsert)\n            #expect(TorahEditorSafetyPolicy.dropOperation(\n                containsTorahSource: false,\n                canEditBlocks: permissions.canEditBlocks,\n                canEditRelationValues: permissions.canEditRelationValues,\n                isReadonly: item.details?.isReadonly,\n                canPlace: true\n            ) == .move)\n            for containsSource in [false, true] {\n                #expect(TorahEditorSafetyPolicy.dropOperation(\n                    containsTorahSource: containsSource,\n                    canEditBlocks: permissions.canEditBlocks,\n                    canEditRelationValues: permissions.canEditRelationValues,\n                    isReadonly: item.details?.isReadonly,\n                    canPlace: false\n                ) == .forbidden)\n            }\n        }\n    }\n}\n",
+          "candidateOffset": 68525,
+          "original": "",
+          "originalOffset": 68525
+        }
+      ],
+      "inverseRestoresExactOriginal": true,
+      "originalSHA256": "6132f4821a3e49bffe59f165f8a80d2bf3f91e2cd48e804866002f38565c88ab",
+      "path": "AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift"
+    },
+    {
+      "bytes": 1472,
+      "candidateSHA256": "427d1eff6b84291dba01b4190867f34b16862ba0d99800e777bd18e8f1aeaab7",
+      "edits": [
+        {
+          "candidate": "\n    /// A source quote needs authority for both text and canonical metadata.\n    /// The preview and both dispatch guards must require the same authority.\n    static func canInsertSource(\n        canEditBlocks: Bool,\n        canEditRelationValues: Bool,\n        isReadonly: Bool?\n    ) -> Bool {\n        canEditBlocks && canEditRelationValues && isReadonly == false\n    }\n\n    static func dropOperation(\n        containsTorahSource: Bool,\n        canEditBlocks: Bool,\n        canEditRelationValues: Bool,\n        isReadonly: Bool?,\n        canPlace: Bool\n    ) -> TorahEditorDropOperation {\n        let canMutate = containsTorahSource\n            ? canInsertSource(\n                canEditBlocks: canEditBlocks,\n                canEditRelationValues: canEditRelationValues,\n                isReadonly: isReadonly\n            )\n            : canEditBlocks\n        return dropOperation(\n            containsTorahSource: containsTorahSource,\n            canMutate: canMutate,\n            canPlace: canPlace\n        )\n    }\n",
+          "candidateOffset": 142,
+          "original": "",
+          "originalOffset": 142
+        }
+      ],
+      "inverseRestoresExactOriginal": true,
+      "originalSHA256": "d3cc386c8a062ae803f63b278f3f69594ad1c797a549482f225822465cdf581b",
+      "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSafetyPolicy.swift"
+    },
+    {
+      "bytes": 4821,
+      "candidateSHA256": "afb65f1ca51cf1ca5c53b072993c22f9ea41cc3200e2a855401945071443a65f",
+      "edits": [
+        {
+          "candidate": "Edi",
+          "candidateOffset": 1916,
+          "original": "Mu",
+          "originalOffset": 1916
+        },
+        {
+          "candidate": "Blocks",
+          "candidateOffset": 1920,
+          "original": "ate",
+          "originalOffset": 1919
+        },
+        {
+          "candidate": ",\n            canEditRelationValues: viewModel.document.permissions.canEditRelationValues,\n            isReadonly: viewModel.document.details?.isReadonly",
+          "candidateOffset": 1972,
+          "original": "",
+          "originalOffset": 1968
+        }
+      ],
+      "inverseRestoresExactOriginal": true,
+      "originalSHA256": "d29ca5737ee036781b73a2d56e810f3f57489ff0c7d86c96d854124fd466e79b",
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController+DragNDrop.swift"
+    },
+    {
+      "bytes": 28408,
+      "candidateSHA256": "2c7b2b4902bc962105f7338e1906411b0dc0de37fc02725f626e5c92ee39bba7",
+      "edits": [
+        {
+          "candidate": "TorahEditorSafetyPolicy.canInsertSource(\n                canEditBlocks: ",
+          "candidateOffset": 4703,
+          "original": "",
+          "originalOffset": 4703
+        },
+        {
+          "candidate": ",",
+          "candidateOffset": 4809,
+          "original": "",
+          "originalOffset": 4737
+        },
+        {
+          "candidate": "canEditRelationValues:",
+          "candidateOffset": 4827,
+          "original": "&&",
+          "originalOffset": 4754
+        },
+        {
+          "candidate": ",",
+          "candidateOffset": 4892,
+          "original": "",
+          "originalOffset": 4799
+        },
+        {
+          "candidate": "isReadonly:",
+          "candidateOffset": 4910,
+          "original": "&&",
+          "originalOffset": 4816
+        },
+        {
+          "candidate": "\n",
+          "candidateOffset": 4950,
+          "original": "",
+          "originalOffset": 4847
+        },
+        {
+          "candidate": "",
+          "candidateOffset": 4952,
+          "original": "==",
+          "originalOffset": 4848
+        },
+        {
+          "candidate": "          )",
+          "candidateOffset": 4953,
+          "original": "false",
+          "originalOffset": 4851
+        },
+        {
+          "candidate": "TorahEditorSafetyPolicy.canInsertSource(\n            canEditBlocks: ",
+          "candidateOffset": 6432,
+          "original": "",
+          "originalOffset": 6324
+        },
+        {
+          "candidate": "\n            canEditRelationValues:",
+          "candidateOffset": 6535,
+          "original": "",
+          "originalOffset": 6359
+        },
+        {
+          "candidate": "isReadonly:",
+          "candidateOffset": 6627,
+          "original": " ",
+          "originalOffset": 6416
+        },
+        {
+          "candidate": "\n",
+          "candidateOffset": 6667,
+          "original": "",
+          "originalOffset": 6446
+        },
+        {
+          "candidate": "",
+          "candidateOffset": 6669,
+          "original": "==",
+          "originalOffset": 6447
+        },
+        {
+          "candidate": "      )",
+          "candidateOffset": 6670,
+          "original": "false",
+          "originalOffset": 6450
+        }
+      ],
+      "inverseRestoresExactOriginal": true,
+      "originalSHA256": "44b6b5bf222456fe4d8cd08249fb47f1440c534e22390a5c9ec645abc1342d68",
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift"
+    }
+  ],
+  "matrixRows": 7,
+  "nativeCalls": 0,
+  "newCases": 2,
+  "newMethods": 2,
+  "newTests": [
+    "TorahAssociationNativeRepositoryTests/sourceDropPreviewHonorsNativePropertyRestrictions()",
+    "TorahAssociationNativeRepositoryTests/sourceDropPreviewRequiresExplicitWritableDetails()"
+  ],
+  "originalPolicyFunctionSuffixUnchanged": true,
+  "originalTestPrefix": {
+    "bytes": 68698,
+    "sha256": "6132f4821a3e49bffe59f165f8a80d2bf3f91e2cd48e804866002f38565c88ab",
+    "unchanged": true
+  },
+  "schema": "pinkha-quote-drop-authority-source-inverse-v1",
+  "testsExecuted": 0
+}

@@ -1,0 +1,27 @@
+{
+  "byteProof": {
+    "bytes": 2950,
+    "gitBlob": "fff417cb54e34c4fb91021540eea258353ccc0c0",
+    "sha256": "19d732a8b9fbcca8128f7d89b909f6e81a98051d6dd8a17119d1ee1909438471"
+  },
+  "current": "cee06ac951f735514059e616fbea48f07d4e7c09",
+  "donor": "551108022574a8e2f1d7f307425280e6b5c56f1d",
+  "findings": [
+    "The native cache snapshots cache and Space generations under its existing lock. Invalidated asynchronous lookup, bootstrap refresh and reentrant storage reads cannot republish descriptors or diagnostics from an older generation.",
+    "Conditional invalidation cannot retire a newer retry cache. Publication validates the same generation atomically. Invalidation is surfaced as CancellationError, not a completed empty read.",
+    "The read-only production loader receives descriptors and diagnostics in one immutable result, avoiding a later global diagnostic read. Provisioning remains disabled for the picker; original provisioning consumers and public array API are retained.",
+    "All three complete changed Swift files reverse exactly to the accepted 1cc7 bytes integrated into current cee. The entire old19495-byte test file is preserved as a prefix.",
+    "The primary native definition array has THREE entries. The deliberately uncancelled older read and fresh read each finish three searches, so the six-call assertion matches the source. No suspected defect remains on that boundary.",
+    "Three new actual methods/six cases cover invalidation of Space/all success/failure, bootstrap refresh and reentrant storage. Together with the prior read-only successor the new G05 scope is six methods/thirteen cases. No compile or execution has occurred.",
+    "The combined prospective132-row map preserves the independently reviewed G07 additions/updates and changes only five established G05 rows from the current130-row source."
+  ],
+  "remaining": [
+    "Actual original App compiler and exact selected methods in the Wave2-owned aggregate.",
+    "Actual picker UI, Hebrew/English appearance and current engine/account transitions.",
+    "Same-generation completion order and IdentityStore snapshot race are outside this generation-invalidation patch."
+  ],
+  "retentionGateOnCombinedTree": "NOT_RUN",
+  "runtime": "NOT_RUN",
+  "schema": "pinkha-wave3-g05-cache-independent-review/v1",
+  "status": "SOURCE_REVIEWED_RUNTIME_PENDING"
+}

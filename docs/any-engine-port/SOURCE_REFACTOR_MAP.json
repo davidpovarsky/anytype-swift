@@ -993,11 +993,12 @@
       "from": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift",
       "to": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift",
       "baselineBlob": "8baf1dbe2cb71db66589b0f2ac6f74908124cab3",
-      "replacementBlob": "e52ca495557489c0e71efa20d0165290cb43b212",
-      "reason": "Carry the Page154 owner through the existing Combine main delivery and require the same open mounted editor before consuming fenced updates.",
+      "replacementBlob": "64d649921aa27e0704a57bb557be83742409de29",
+      "reason": "Carry the Page154 owner through the existing Combine main delivery and require the same open mounted editor before consuming fenced updates. G07 additionally delegates both existing source-insertion guards to the same downstream predicate used by the COPY preview, preserving their exact boolean authority.",
       "sharedSources": [],
       "validation": [
-        "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json."
+        "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json.",
+        "2026-11-27 Wave2 G07: exact2207 source audit demonstrates that native .details restriction retains block editing but denies relation values. Reuse one downstream source-insertion predicate in the existing COPY preview and both original insertion guards. Two additive App-hosted regression methods cover four real ObjectPermissions restriction states and three actual/absent readonly-detail states. Original methods and internal MOVE behavior retained. Apple compilation/UI/Native execution remain NOT_RUN; see docs/validation/20261127-wave2-quote-drop-authority."
       ]
     },
     {
@@ -1917,11 +1918,12 @@
       "from": "AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift",
       "to": "AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift",
       "baselineBlob": "c324e390f31bf794e5fdc44869481667fde5b788",
-      "replacementBlob": "fb8312a8319871bb154669439708da8002411c66",
-      "reason": "The original test methods/assertions are unchanged. Add only the new repository-protocol remove overload that executes authorize then forwards to the existing fixture method.",
+      "replacementBlob": "aabdb85147a2a032b6ec89dfe82741032b0b488c",
+      "reason": "The original test methods/assertions are unchanged. Add only the new repository-protocol remove overload that executes authorize then forwards to the existing fixture method. G07 additionally appends two source-drop permission regression methods while retaining every original byte and assertion.",
       "sharedSources": [],
       "validation": [
-        "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
+        "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending.",
+        "2026-11-27 Wave2 G07: exact2207 source audit demonstrates that native .details restriction retains block editing but denies relation values. Reuse one downstream source-insertion predicate in the existing COPY preview and both original insertion guards. Two additive App-hosted regression methods cover four real ObjectPermissions restriction states and three actual/absent readonly-detail states. Original methods and internal MOVE behavior retained. Apple compilation/UI/Native execution remain NOT_RUN; see docs/validation/20261127-wave2-quote-drop-authority."
       ]
     },
     {
@@ -2290,6 +2292,30 @@
         "Production-loader regression suite PropertyPickerReadOnlyLookupTests has3 methods/7 cases, with injected original service boundaries and zero-policy/catalog-bootstrap assertions. Apple compilation/execution and real UI/native/physical-device acceptance remain NOT_RUN.",
         "Global IdentityStore invalidation race is outside this isolated picker path and is not claimed fixed. No Native engine/protocol/schema, document-type or persisted storage change.",
         "G05 native descriptor observations now bind cache/Space generations and publish descriptors/diagnostics atomically; the read-only picker consumes per-call failures. A superseded provider read cannot overwrite a retry or authorize empty/error completion. Three appended production-boundary methods/six cases are written and NOT_RUN; legacy catalog/Type/initialization APIs and the original12 search methods/16 cases remain preserved."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSafetyPolicy.swift",
+      "to": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSafetyPolicy.swift",
+      "baselineBlob": "f5f2c4811d643ac1048aa9e1f5bf6a505d130c68",
+      "replacementBlob": "017f15daf714edb43e174ffb9e9082901a3fb03e",
+      "reason": "Downstream policy centralizes existing source-quote authority and adds a permission-aware preview overload while preserving the complete original COPY/MOVE placement function.",
+      "sharedSources": [],
+      "validation": [
+        "2026-11-27 Wave2 G07: exact2207 source audit demonstrates that native .details restriction retains block editing but denies relation values. Reuse one downstream source-insertion predicate in the existing COPY preview and both original insertion guards. Two additive App-hosted regression methods cover four real ObjectPermissions restriction states and three actual/absent readonly-detail states. Original methods and internal MOVE behavior retained. Apple compilation/UI/Native execution remain NOT_RUN; see docs/validation/20261127-wave2-quote-drop-authority."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController+DragNDrop.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController+DragNDrop.swift",
+      "baselineBlob": "705b84d73cd562b5c8166bac43d26dc0d1748e0e",
+      "replacementBlob": "9e4c6f7f4e3823f9751ec0b84e30d2a69984eb5f",
+      "reason": "Existing downstream source-drop hook passes actual block, relation-value and readonly permission inputs into the downstream policy. Original internal MOVE, geometry, dispatch and decoder bodies are unchanged.",
+      "sharedSources": [],
+      "validation": [
+        "2026-11-27 Wave2 G07: exact2207 source audit demonstrates that native .details restriction retains block editing but denies relation values. Reuse one downstream source-insertion predicate in the existing COPY preview and both original insertion guards. Two additive App-hosted regression methods cover four real ObjectPermissions restriction states and three actual/absent readonly-detail states. Original methods and internal MOVE behavior retained. Apple compilation/UI/Native execution remain NOT_RUN; see docs/validation/20261127-wave2-quote-drop-authority."
       ]
     }
   ],

@@ -1534,3 +1534,105 @@ private struct FailedNativeSchemaBootstrapProbe: PinkhaSpaceBootstrapServiceProt
     func manifest(forSpaceId spaceId: String) -> PinkhaSpaceManifest? { manifestValue }
     func isBootstrapped(spaceId: String) -> Bool { true }
 }
+
+extension TorahAssociationNativeRepositoryTests {
+    @Test("Source drop previews respect native property restrictions without changing internal moves")
+    @MainActor
+    func sourceDropPreviewHonorsNativePropertyRestrictions() {
+        let details = ObjectDetails(id: objectId, values: [:])
+        let cases: [(restrictions: [ObjectRestriction], blocks: Bool, relations: Bool)] = [
+            ([], true, true),
+            ([.details], true, false),
+            ([.blocks], false, true),
+            ([.details, .blocks], false, false)
+        ]
+
+        for item in cases {
+            let permissions = ObjectPermissions(
+                details: details,
+                isLocked: false,
+                participantCanEdit: true,
+                isVersionMode: false,
+                objectRestrictions: item.restrictions
+            )
+            #expect(permissions.canEditBlocks == item.blocks)
+            #expect(permissions.canEditRelationValues == item.relations)
+            #expect(!details.isReadonly)
+
+            let source = TorahEditorSafetyPolicy.dropOperation(
+                containsTorahSource: true,
+                canEditBlocks: permissions.canEditBlocks,
+                canEditRelationValues: permissions.canEditRelationValues,
+                isReadonly: details.isReadonly,
+                canPlace: true
+            )
+            #expect(source == (item.restrictions.isEmpty ? .copy : .forbidden))
+            #expect(TorahEditorSafetyPolicy.canInsertSource(
+                canEditBlocks: permissions.canEditBlocks,
+                canEditRelationValues: permissions.canEditRelationValues,
+                isReadonly: details.isReadonly
+            ) == item.restrictions.isEmpty)
+            #expect(TorahEditorSafetyPolicy.dropOperation(
+                containsTorahSource: false,
+                canEditBlocks: permissions.canEditBlocks,
+                canEditRelationValues: permissions.canEditRelationValues,
+                isReadonly: details.isReadonly,
+                canPlace: true
+            ) == (item.blocks ? .move : .forbidden))
+        }
+    }
+
+    @Test("Source drop previews require explicitly writable document details")
+    @MainActor
+    func sourceDropPreviewRequiresExplicitWritableDetails() {
+        let writable = ObjectDetails(id: objectId, values: [
+            BundledPropertyKey.isReadonly.rawValue: Google_Protobuf_Value.with { $0.boolValue = false }
+        ])
+        let readonly = ObjectDetails(id: objectId, values: [
+            BundledPropertyKey.isReadonly.rawValue: Google_Protobuf_Value.with { $0.boolValue = true }
+        ])
+        let permissions = ObjectPermissions(
+            details: writable,
+            isLocked: false,
+            participantCanEdit: true,
+            isVersionMode: false,
+            objectRestrictions: []
+        )
+        #expect(permissions.canEditBlocks && permissions.canEditRelationValues)
+        #expect(!writable.isReadonly && readonly.isReadonly)
+        let cases: [(details: ObjectDetails?, canInsert: Bool)] = [
+            (writable, true), (readonly, false), (nil, false)
+        ]
+
+        for item in cases {
+            #expect(TorahEditorSafetyPolicy.dropOperation(
+                containsTorahSource: true,
+                canEditBlocks: permissions.canEditBlocks,
+                canEditRelationValues: permissions.canEditRelationValues,
+                isReadonly: item.details?.isReadonly,
+                canPlace: true
+            ) == (item.canInsert ? .copy : .forbidden))
+            #expect(TorahEditorSafetyPolicy.canInsertSource(
+                canEditBlocks: permissions.canEditBlocks,
+                canEditRelationValues: permissions.canEditRelationValues,
+                isReadonly: item.details?.isReadonly
+            ) == item.canInsert)
+            #expect(TorahEditorSafetyPolicy.dropOperation(
+                containsTorahSource: false,
+                canEditBlocks: permissions.canEditBlocks,
+                canEditRelationValues: permissions.canEditRelationValues,
+                isReadonly: item.details?.isReadonly,
+                canPlace: true
+            ) == .move)
+            for containsSource in [false, true] {
+                #expect(TorahEditorSafetyPolicy.dropOperation(
+                    containsTorahSource: containsSource,
+                    canEditBlocks: permissions.canEditBlocks,
+                    canEditRelationValues: permissions.canEditRelationValues,
+                    isReadonly: item.details?.isReadonly,
+                    canPlace: false
+                ) == .forbidden)
+            }
+        }
+    }
+}

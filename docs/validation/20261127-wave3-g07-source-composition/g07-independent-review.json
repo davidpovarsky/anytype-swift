@@ -1,0 +1,28 @@
+{
+  "byteProof": {
+    "bytes": 8852,
+    "gitBlob": "1d0248f6a2e14db7f42ed89511b591c4c18b55c5",
+    "sha256": "7e0da78d554bcd55236a90e7f52b1339c3d24e1fc160fb31899f86a9f3c85413"
+  },
+  "compiler": "NOT_RUN",
+  "currentCommit": "cee06ac951f735514059e616fbea48f07d4e7c09",
+  "donorCommit": "1b9d6580fef477fe35adfd8b7c3bd94b2870c0f9",
+  "findings": [
+    "Current original ObjectPermissions makes a .details restriction block-editable but denies relation writes, explaining the concrete preview/insertion mismatch.",
+    "The pure downstream predicate preserves the exact two original insertion guards: canEditBlocks, canEditRelationValues and isReadonly == false. Optional absent details fail closed.",
+    "The source preview now uses the same predicate. Internal MOVE still uses only the original canEditBlocks policy; original placement rejection and COPY/MOVE function are unchanged.",
+    "All four complete candidate Swift files were reversed using literal candidate offsets and independently equaled current cee primary Git bytes. All17 claimed current dependencies were independently rehashed.",
+    "Two appended actual App-hosted methods exercise seven ObjectPermissions/ObjectDetails rows; original68698-byte test prefix is unchanged. These methods have not been compiled or executed.",
+    "The prospective map changes only original rows55/110, preserves all independent G05 changes and its new row, and appends two G07 records for132. The exception register retains the complete current prefix and exact G07 suffix.",
+    "No engine, protocol, SDK, Kit pin, insertion write, association semantics, focus, session lifetime or original internal drag flow is altered."
+  ],
+  "native": "NOT_RUN",
+  "remaining": [
+    "Actual shared-App compilation and execution of both appended methods.",
+    "Original real source-drop preview/insertion/focus/empty-first-block/partial-metadata/cold-return acceptance, preserving unchanged accepted evidence."
+  ],
+  "retentionGate": "NOT_RUN_ON_COMPOSED_TREE_YET",
+  "schema": "pinkha-wave3-g07-independent-source-review/v1",
+  "status": "SOURCE_REVIEWED_EXACT_DONOR_AND_TWO_COMPOSED_RECORDS_RUNTIME_PENDING",
+  "ui": "NOT_RUN"
+}
