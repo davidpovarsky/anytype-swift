@@ -1,0 +1,96 @@
+--- review-v1/note_authority_tests_suffix.swift
++++ note_authority_tests_suffix.swift
+@@ -59,13 +59,19 @@
+             #expect(origin.filter { $0.customMetadata?["anytypeNoteObjectId"] == "note" &&
+                 $0.customMetadata?["torahSelectionId"] == fixture.selection.id }.count == 1)
+             #expect(try await fixture.store.protectedRecords() == protectedBefore)
+-        } catch {
+-            // Retire first, then release the only controlled suspension. The
+-            // observed real service completion bounds the unstructured UI action.
++        } catch let firstFailure {
++            // Retire before sampling actual service entries, so a queued old
++            // action cannot enter later. This drains entered service calls only;
++            // a refresh already entered after service return is not a Task join.
+             fixture.session.deactivateDocument()
++            let entered = fixture.observedNotes.creationsEntered
+             await fixture.store.release()
+-            try? await fixture.waitForCreationCompletion(1)
+-            throw error
++            do {
++                try await fixture.waitForCreationCompletion(entered)
++            } catch let cleanupFailure {
++                Issue.record("Secondary creation-service cleanup failure: entered=\(entered), completed=\(fixture.observedNotes.creationsCompleted), error=\(String(describing: cleanupFailure)); the first failure is rethrown.")
++            }
++            throw firstFailure
+         }
+     }
+ 
+@@ -117,7 +123,7 @@
+ private final class HeartNoteAuthorityFixture {
+     static let currentMessage = "Current reopened presentation"
+     let source = T5SourceIdentity(providerID: "sefaria", canonicalReference: "Genesis 3:3")
+-    let selection = TorahInspectorSelection(providerID: "sefaria", canonicalRef: "Genesis 3:3")
++    let selection: TorahInspectorSelection
+     let store: HeartNoteAuthorityStore
+     let repository: AnytypeTorahAssociationRepository
+     let services: HeartNoteCreationServices
+@@ -128,17 +134,15 @@
+     var openedBlocks: [String?] = []
+ 
+     init(seededNote: Bool, heldObjectID: String, heldRead: Int) throws {
++        let selection = TorahInspectorSelection(providerID: "sefaria", canonicalRef: "Genesis 3:3")
+         let services = HeartNoteCreationServices()
+-        self.services = services
+         let store = try HeartNoteAuthorityStore(
+             seededNote: seededNote, selectionID: selection.id,
+             heldObjectID: heldObjectID, heldRead: heldRead)
+-        self.store = store
+         let repository = AnytypeTorahAssociationRepository(
+             nativeStore: store, manifestProvider: ManifestProbe(spaceId: "space"),
+             coordinator: TorahAssociationMutationCoordinator(),
+             statusCenter: TorahAssociationPersistenceStatusCenter())
+-        self.repository = repository
+         // Exact pinned Factory 2.3.1 resolves @Injected eagerly. Restore the
+         // complete prior registration/cache state before the first await.
+         let service: AnytypeTorahNotesService = {
+@@ -148,10 +152,16 @@
+             Container.shared.blockService.register { services }
+             return AnytypeTorahNotesService(spaceId: "space", objectId: "origin", associations: repository)
+         }()
+-        observedNotes = HeartNoteObservedService(service)
+-        session = TorahEditorSession(spaceId: "space", objectId: "origin",
++        let observedNotes = HeartNoteObservedService(service)
++        let session = TorahEditorSession(spaceId: "space", objectId: "origin",
+             workspace: try AnytypeTorahWorkspace.sefaria(), associations: repository,
+             notesService: observedNotes)
++        self.selection = selection
++        self.services = services
++        self.store = store
++        self.repository = repository
++        self.observedNotes = observedNotes
++        self.session = session
+         session.installOpenObjectHandler { [weak self] object, block in
+             self?.opened.append(object); self?.openedBlocks.append(block)
+         }
+@@ -208,10 +218,12 @@
+ }
+ 
+ // This observer delegates every operation to the production Heart service. Its
+-// counter only permits the test to await the original UI action's service call.
++// counters permit bounded observation of every service call that entered. They
++// do not prove completion of the original UI action's later refresh continuation.
+ @MainActor
+ private final class HeartNoteObservedService: TorahEditorNotesService {
+     let original: AnytypeTorahNotesService
++    var creationsEntered = 0
+     var creationsCompleted = 0
+     var lastCreationRecoveryError: (any Error)?
+     init(_ original: AnytypeTorahNotesService) { self.original = original }
+@@ -223,6 +235,7 @@
+     }
+     func createNote(for selection: TorahInspectorSelection,
+                     authorize: @escaping TorahAssociationWriteAuthorization) async throws -> T5NoteCreationOutcome {
++        creationsEntered += 1
+         defer { creationsCompleted += 1 }
+         let outcome = try await original.createNote(for: selection, authorize: authorize)
+         lastCreationRecoveryError = outcome.recoveryError

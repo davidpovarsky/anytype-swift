@@ -1,0 +1,74 @@
+--- /workspace/scratch/ae335eba85e3/warm-bsd-phase-integration-source/after/phase_observation.py
++++ /workspace/scratch/ae335eba85e3/warm-bsd-phase-integration-source/alternate-repository-namespace-successor/after/phase_observation.py
+@@ -172,6 +172,35 @@
+         require(path.resolve(strict=True) == path and path.is_dir(), 'Protected namespace must already exist')
+         physical_roots.append(path)
+     return sorted(set(map(str, physical_roots)))
++
++
++def reader_namespaces(metadata_owner, readers):
++    """Derive real Git-dir/worktree spellings for each observed object store.
++
++    A Git writer can name its repository without spelling /objects. Admit only
++    the original physical Git layout actually found here; no guessed paths,
++    Git commands, parent-wide namespace, or unrelated process exemption.
++    """
++    paths = list(readers)
++    alternates = sorted({path for row in readers.values()
++                         for path in row['alternateObjectDirectories']})
++    require(len(alternates) <= 16, 'Two original readers have at most sixteen observed alternates')
++    repositories = {}
++    for name in alternates:
++        objects = physical(name, directory=True)
++        require(objects.name == 'objects', 'Unreviewed custom alternate object layout is closed')
++        git_dir = physical(objects.parent, directory=True)
++        metadata = metadata_owner.repository_metadata(git_dir)
++        require('HEAD' in metadata['files'] and 'config' in metadata['files'],
++                'Actual alternate repository controls are required before deriving its namespace')
++        repositories[str(git_dir)] = metadata
++        paths.extend((str(objects), str(git_dir)))
++        if git_dir.name == '.git':
++            worktree = physical(git_dir.parent, directory=True)
++            require(worktree / '.git' == git_dir and git_dir / 'objects' == objects,
++                    'Original literal worktree/.git/objects relationship differs')
++            paths.append(str(worktree))
++    return sorted(set(paths)), repositories
+ 
+ 
+ def latch(outer, first, *, phase, observation=None, blocked=False):
+@@ -219,9 +248,7 @@
+         metadata_owner = provider.load(plan['collector']['path'], COLLECTOR_SHA, 'phase_original_reader_metadata')
+         reader_metadata = {str(physical(path, directory=True)): metadata_owner.repository_metadata(Path(path))
+                            for path in reader_roots}
+-        reader_paths = []
+-        for path, metadata in reader_metadata.items():
+-            reader_paths.extend([path, *metadata['alternateObjectDirectories']])
++        reader_paths, alternate_repository_metadata = reader_namespaces(metadata_owner, reader_metadata)
+         roots = namespace_roots(binding,
+             [binding['adapter']['path'], binding['provider']['path'], plan_ref['path'],
+              plan['originalProvider']['path'], plan['collector']['path'], plan['lifecycle']['path'], *control_paths],
+@@ -230,7 +257,11 @@
+                       originalOwnerSHA256=OWNER_SHA, callableProjectionSHA256=projection_sha,
+                       execution='EXACT_SERIAL_WORKER_WITH_SOURCE_BOUND_CALLABLE_OWNER',
+                       observationPlan=plan_ref, protectedNamespaces=roots,
+-                      originalReaderMetadataBefore=reader_metadata)
++                      originalReaderMetadataBefore=reader_metadata,
++                      alternateRepositoryMetadataBefore=alternate_repository_metadata)
++        # A nonreturning owner call has unknown custody. Only its actual
++        # terminal record can restore positive closure for this bridge.
++        result['allKnownGroupsClosed'] = False
+         original, original_receipt = provider.phase_owner(
+             SimpleNamespace(plan=Path(plan_ref['path']), plan_sha256=plan_ref['sha256']))
+         result.update(originalObservation=original_receipt,
+@@ -301,7 +332,11 @@
+         read_ref(plan_ref)
+         after_metadata = {path: metadata_owner.repository_metadata(Path(path)) for path in reader_metadata}
+         require(after_metadata == reader_metadata, 'Original SDK reader/alternate metadata changed during observation')
++        after_paths, after_alternate_metadata = reader_namespaces(metadata_owner, after_metadata)
++        require(after_paths == reader_paths and after_alternate_metadata == alternate_repository_metadata,
++                'Actual alternate Git/worktree namespaces or original controls changed during observation')
+         result['originalReaderMetadataAfter'] = after_metadata
++        result['alternateRepositoryMetadataAfter'] = after_alternate_metadata
+         st = os.statvfs('/System/Volumes/Data')
+         result.update(freeBytes=st.f_bavail * st.f_frsize,
+                       status='PASS_COMPLETE_OBSERVATION_AND_PHASE_PREDICATES')

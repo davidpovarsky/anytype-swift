@@ -1,0 +1,88 @@
+{
+  "schema": "miniapps-prepared-empty-source-byte-proof/v1",
+  "actualBaseJoin": {
+    "schema": "miniapps-prepared-empty-current-source-join/v1",
+    "base": "2fcfecefaa3d99d63c47e34823d18a45e13f11f9",
+    "tree": "7f009cbe4cd41b41f7e577cd569ebf6c903caf53",
+    "actualReceipt": {
+      "path": "wave3-bookmark-title-offload-miniapps-source-integration-prepared/actual1/receipt.original.json",
+      "bytes": 277092,
+      "sha256": "182c774cca6eb1d76800488ea6741e23f0a0dfb009a35545ae4560c67216adbf"
+    },
+    "sourceFiles": [
+      {
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyMiniAppsResultApplier.swift",
+        "bytes": 16818,
+        "sha256": "161fb2787830e4fd6de384a2c7aa99cb635bebb3945918a7d5aaf99d7e730932",
+        "gitBlob": "d8ecc6c575f15989ce63c21251149f18eceaf639",
+        "classification": "DOWNSTREAM_OWNED",
+        "gitMode": "100644"
+      },
+      {
+        "path": "AnyTypeTests/Pinkha/PinkhaMiniAppsNativePreparationTests.swift",
+        "bytes": 55971,
+        "sha256": "a5e328a1441b3e2f87eb1a8de2245503e9f554eaec41a6264b313d1cb4e8e9b3",
+        "gitBlob": "ec09068b6cf04378699a4b2beb22ac74928758a9",
+        "classification": "DOWNSTREAM_OWNED",
+        "gitMode": "100644"
+      }
+    ],
+    "frozen107Untouched": true,
+    "testsExecuted": 0,
+    "hostActions": 0
+  },
+  "wholeInverseOperations": 3,
+  "wholeProductPrefixBeforeMetadataValidatorExact": 16194,
+  "originalWriteUncertainTailExact": true,
+  "allAttachPrepareCommitContentReadbackLeaseAndACKDeclarationsExact": true,
+  "originalWholeTestPrefixExact": 55971,
+  "appendedTestBytes": 2396,
+  "newXCTestMethods": 1,
+  "oldPublishedMiniAppsNewMethodCount": {
+    "appSelected": 7,
+    "separatePlanner": 3
+  },
+  "afterMiniAppsNewMethodCount": {
+    "appSelected": 8,
+    "separatePlanner": 3
+  },
+  "allElevenMethodsStatus": "NOT_RUN",
+  "ordinaryNoIndexWhitespaceDiagnostics": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyMiniAppsResultApplier.swift",
+      "argv": [
+        "git",
+        "diff",
+        "--no-index",
+        "--check",
+        "--",
+        "/workspace/scratch/ae335eba85e3/miniapps-prepared-empty-source/before/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyMiniAppsResultApplier.swift",
+        "/workspace/scratch/ae335eba85e3/miniapps-prepared-empty-source/after/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyMiniAppsResultApplier.swift"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/PinkhaMiniAppsNativePreparationTests.swift",
+      "argv": [
+        "git",
+        "diff",
+        "--no-index",
+        "--check",
+        "--",
+        "/workspace/scratch/ae335eba85e3/miniapps-prepared-empty-source/before/AnyTypeTests/Pinkha/PinkhaMiniAppsNativePreparationTests.swift",
+        "/workspace/scratch/ae335eba85e3/miniapps-prepared-empty-source/after/AnyTypeTests/Pinkha/PinkhaMiniAppsNativePreparationTests.swift"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "diagnosticInterpretation": "Both no-index comparisons return1 because bytes differ and have empty diagnostics; not represented as a zero-exit repository diff gate.",
+  "newNativeBackendStoreOrGlobalJSONChange": false,
+  "map145PackagePBXSDKNativePinsOrClosedControlChanges": false,
+  "testsExecuted": 0,
+  "compilerInvocations": 0,
+  "hostActions": 0
+}

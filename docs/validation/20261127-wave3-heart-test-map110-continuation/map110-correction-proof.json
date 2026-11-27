@@ -1,0 +1,48 @@
+{
+  "schema": "pinkha-heart-test-map110-correction-source-proof/v1",
+  "status": "SOURCE_ONLY_METADATA_CORRECTION",
+  "failedTree": "6d1151a8affa5e18621756c4a07ccda4c12a13bd",
+  "mapPath": "docs/any-engine-port/SOURCE_REFACTOR_MAP.json",
+  "before": {
+    "bytes": 245322,
+    "sha256": "51cb77bc4137f0a51d1f79cb972200afd8508b8f6463b043304ff4727e9fbd37",
+    "gitBlob": "089c8e5d83a4081986a3cf7bae2302c94ea6902b",
+    "gitMode": "100644"
+  },
+  "after": {
+    "bytes": 246388,
+    "sha256": "2cf6a590bbb61d972663422706c9faf1fe9e98f8477aa10715aa8946f41a1172",
+    "gitBlob": "722a41b870957cf17f9724b8dd732b7d6088bde0",
+    "gitMode": "100644"
+  },
+  "rowCount": 145,
+  "zeroBasedChangedRows": [
+    110
+  ],
+  "changedFields": [
+    "replacementBlob",
+    "reason",
+    "validation"
+  ],
+  "originalReasonPrefixExact": true,
+  "originalValidationEntriesExact": true,
+  "allOtherRowsAndTopLevelMetadataExact": true,
+  "reasonAppend": " The f9f86c7 Heart Note authority extension retains the complete original 73,306-byte test prefix, applies 13 reviewed corrections only within its new fixture suffix, and adds two methods with 10 declared cases; those methods remain NOT_RUN. This row now binds the exact complete 98,718-byte test source rather than the earlier prefix-only blob.",
+  "validationAppend": "2026-11-27 Heart Note source-only continuation after the original 145-row retention gate refused the stale test identity at staged tree6d1151a8. Exact source5c992907c09ab5a1fb249cb4d70d8e132735981709a030f1b3c3bba62e851e53 / Git e187f8a307a79705010058cc4f21238398d72927 preserves the original73,306-byte prefix and all old assertions; the13 fixture corrections and two new methods/10 cases are reviewed source only, not Apple/native/runtime acceptance. Preserve the original failed gate and its113 closed command groups, all earlier G07 provenance, current145 row membership, and the already-staged40/41 production mappings. No product source, validator, selected test membership or runtime activation changes.",
+  "sourceWitness": {
+    "path": "AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift",
+    "bytes": 98718,
+    "sha256": "5c992907c09ab5a1fb249cb4d70d8e132735981709a030f1b3c3bba62e851e53",
+    "gitBlob": "e187f8a307a79705010058cc4f21238398d72927",
+    "gitMode": "100644"
+  },
+  "retainedOriginalPrefixBytes": 73306,
+  "reviewedFixtureCorrectionOperations": 13,
+  "newMethods": 2,
+  "declaredCases": 10,
+  "testsExecuted": 0,
+  "compilerInvocations": 0,
+  "runtimeAcceptance": false,
+  "hostActions": 0,
+  "ordinaryContinuationOnly": true
+}

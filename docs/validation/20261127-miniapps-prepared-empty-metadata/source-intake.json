@@ -1,0 +1,55 @@
+{
+  "schema": "miniapps-prepared-empty-source-intake/v1",
+  "state": "SOURCE_COMPLETE_PEER_AND_ROOT_REVIEW_PENDING_RUNTIME_NOT_RUN",
+  "actualBase": "2fcfecefaa3d99d63c47e34823d18a45e13f11f9",
+  "actualBaseTree": "7f009cbe4cd41b41f7e577cd569ebf6c903caf53",
+  "sourceIdentities": {
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyMiniAppsResultApplier.swift": {
+      "before": {
+        "bytes": 16818,
+        "sha256": "161fb2787830e4fd6de384a2c7aa99cb635bebb3945918a7d5aaf99d7e730932",
+        "gitBlob": "d8ecc6c575f15989ce63c21251149f18eceaf639",
+        "gitMode": "100644"
+      },
+      "after": {
+        "bytes": 17235,
+        "sha256": "c25abfe724ffe0f303bad47bf07b77d7957a682ff2473e2ca825ddf11774d55c",
+        "gitBlob": "c5f55cca1e9e36d2e13740f234cb5dc9f0b36809",
+        "gitMode": "100644"
+      }
+    },
+    "AnyTypeTests/Pinkha/PinkhaMiniAppsNativePreparationTests.swift": {
+      "before": {
+        "bytes": 55971,
+        "sha256": "a5e328a1441b3e2f87eb1a8de2245503e9f554eaec41a6264b313d1cb4e8e9b3",
+        "gitBlob": "ec09068b6cf04378699a4b2beb22ac74928758a9",
+        "gitMode": "100644"
+      },
+      "after": {
+        "bytes": 58367,
+        "sha256": "fbf92e77900cd402e070d53cb280e681967193a56461288d27d23ba9f61bb6eb",
+        "gitBlob": "6daa1935c3d8ad332c157c7a99edbf334e94c381",
+        "gitMode": "100644"
+      }
+    }
+  },
+  "requiredBehavior": "The original PREPARED native path accepts empty name/MIME and omits them in FileInfo. An absent field matches only expected empty; present values must be strings with exact UTF8 bytes. Null, all other types, missing nonempty expectations and nonempty mismatches remain writeUncertain.",
+  "implementation": "One nested pure matcher inside the existing metadata validator. Required fileID/objectID/size, content digest, original request/source key/intent, current lease/authority, journal completion and ACK are byte-identical.",
+  "tests": {
+    "newSelector": "AnytypeTests/AnyMiniAppsResultValidationTests/testPreparedFileReadbackAcceptsOnlyNativeEmptyOmission",
+    "newMethods": 1,
+    "status": "NOT_RUN",
+    "assertionScope": "Original pure readback validator accepts absent or explicit empty values and one-sided omission; rejects both nonempty missing expectations, six wrong JSON types for each optional, unexpected nonempty values and every missing required field.",
+    "originalPrefixBytes": 55971,
+    "actualAppNativeACKAcceptance": false
+  },
+  "integration": {
+    "frozen107Unchanged": true,
+    "disjointFromHeartNoteF9F29Paths": true,
+    "originalTargetMembership": "App61 source filenames unchanged; this same existing NativePreparation source receives a new whole-file hash. No target/PBX/profile/controller or build dispatch.",
+    "futureCompilerRequirement": "Only a product whose actual compiler/FileList includes these final source bytes can qualify the new method. The new whole test hash must be explicitly bound at the future freeze; no automatic old-product reuse.",
+    "mapRows": 145,
+    "nativeIntentReplay": "No new or repeated prepare/commit dispatch is added; this only reconciles supported empty metadata after the original known intent commit."
+  },
+  "sourceReviewLimits": "No Swift parser/typecheck, candidate import, test run, native account/RPC, host action, Git publication or source-retention gate execution."
+}

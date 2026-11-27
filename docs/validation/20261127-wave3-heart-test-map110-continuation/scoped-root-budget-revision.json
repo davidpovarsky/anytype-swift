@@ -1,0 +1,69 @@
+{
+  "assessment": {
+    "bytes": 8103,
+    "gitBlob": "85e6b214347bc4d617413e7fa0b56cec7ee00912",
+    "gitMode": "100644",
+    "path": "/workspace/scratch/ae335eba85e3/oracle-t5-recovery-assessment-2138/map110-source-budget-review.json",
+    "sha256": "9a94e1fb149c99d9b354f9ce46b3449040b381ee757f67e14fa4a98379b6186d"
+  },
+  "authorization": "Root explicitly authorized one resources() root-reserve literal change after the source-only write-path assessment. The pre-execution prepared1 remains immutable and unexecuted.",
+  "closedActivationTuples": 45,
+  "hostActions": 0,
+  "newRootReserveBytes": 1073741824,
+  "oldRootReserveBytes": 2147483648,
+  "originalGateBody": {
+    "bytes": 7239,
+    "gitBlob": "5b579e9bbb5a82981b5aef7d649f2caf88e998b6",
+    "note": "Complete exact gate identity remains in the unchanged original controller/payload; the earlier7291B/c93 observation is cat-file framing, not another gate body.",
+    "sha256": "f69d6a465db0517c5b41143c9b54aa275ecc6cbc63de6e9d20bc074d98feabf0"
+  },
+  "packagePins": 56,
+  "priorController": {
+    "bytes": 55746,
+    "gitBlob": "1ff5f4658f8d58f59739327760f73636ef14038b",
+    "gitMode": "100644",
+    "sha256": "0f518b249e4bc32990ed3cf3005bbe47cb9dec334b63235b8a903a149d4592a7"
+  },
+  "productChanges": 0,
+  "reason": "The finite root write footprint is approximately8MiB for index+index.lock, a51KiB gate result, less than1MiB final receipt and0.3MiB upload. Bulk objects and command logs use development. There is no fetch, clone, compiler, test, native work or external2GiB requirement. Preserve the explicit1GiB reserve plus64MiB bounded growth.",
+  "resourcesAfter": {
+    "bytes": 751,
+    "gitBlob": "c851e090d8ce561c08a3d973cb8f4243f970fc6a",
+    "gitMode": "100644",
+    "sha256": "eb83e666e8e09cad533513c2ddac71a298ee12b3b753f92819e84cea9f73c14d"
+  },
+  "resourcesBefore": {
+    "bytes": 751,
+    "gitBlob": "a3129473a34e966de1fc171171d16d6b8efce18f",
+    "gitMode": "100644",
+    "sha256": "971a943f821612bee38acb761e3c387f876b084b0a7f38f2cb5e84c862ec35b6"
+  },
+  "resourcesWholeInverse": {
+    "currentBytes": 751,
+    "currentSHA256": "eb83e666e8e09cad533513c2ddac71a298ee12b3b753f92819e84cea9f73c14d",
+    "fullOriginalRestored": true,
+    "operations": [
+      {
+        "newBase64": "ICAgIGZvciBuYW1lLCBwYXRoLCBmbG9vciwgZ3Jvd3RoIGluIFsoJ3Jvb3QnLCBQYXRoKCcvJyksIDEgKiAxMDI0KiozLCA2NCAqIDEwMjQqKjIpLAo=",
+        "newEndByte": 119,
+        "newStartByte": 33,
+        "originalBase64": "ICAgIGZvciBuYW1lLCBwYXRoLCBmbG9vciwgZ3Jvd3RoIGluIFsoJ3Jvb3QnLCBQYXRoKCcvJyksIDIgKiAxMDI0KiozLCA2NCAqIDEwMjQqKjIpLAo=",
+        "originalEndByte": 119,
+        "originalStartByte": 33
+      }
+    ],
+    "originalBytes": 751,
+    "originalSHA256": "971a943f821612bee38acb761e3c387f876b084b0a7f38f2cb5e84c862ec35b6",
+    "schema": "pinkha-full-original-controller-byte-inverse-v1"
+  },
+  "retentionRows": 145,
+  "runtimeAcceptance": false,
+  "schema": "pinkha-map110-scoped-root-budget-revision/v1",
+  "scope": "ONLY_METADATA_SOURCE_CONTINUATION_NO_BUILD_FETCH_OR_NATIVE",
+  "testsExecuted": 0,
+  "unchangedDevelopmentGrowthAllowanceBytes": 67108864,
+  "unchangedDevelopmentReserveBytes": 536870912,
+  "unchangedMinimumAvailableMemoryBytes": 268435456,
+  "unchangedOverallSeconds": 300,
+  "unchangedRootGrowthAllowanceBytes": 67108864
+}

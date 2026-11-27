@@ -1,0 +1,11 @@
+--- /workspace/scratch/ae335eba85e3/warm-bsd-phase-integration-source/after/wave3_forward_warm.py
++++ /workspace/scratch/ae335eba85e3/warm-bsd-phase-integration-source/alternate-repository-namespace-successor/after/wave3_forward_warm.py
+@@ -82,7 +82,7 @@
+     path = pathlib.Path(row['path'])
+     wr_require(path.resolve() == path and not path.is_symlink()
+                and path.stat().st_size == row['bytes'] and wr_sha(path) == row['sha256']
+-               == 'fbac9765e43e70817223e96c30c6fc39f97f28100cbb4cec3f3e771f86141e29', 'Exact reviewed phase observation adapter required')
++               == '75dfe996edc8ffd5eece2efbd6a64238e221a0d4b9e885edaf47d9cebe043826', 'Exact reviewed phase observation adapter required')
+     spec = importlib.util.spec_from_file_location('forward_phase_original_observer_' + phase, path)
+     observer = importlib.util.module_from_spec(spec)
+     spec.loader.exec_module(observer)

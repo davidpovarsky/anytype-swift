@@ -1,0 +1,24 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"ok\":false,\"interpreter\":\"python3\",\"sudo\":false,\"cwd\":null,\"cleanup\":true,\"command\":[\"python3\",\"/var/lib/sentinelx/uploads/.sentinelx_uploads/script_job_96c348d7fe264a7cbdf50bfdd37fed74/script.py\"],\"output\":\"{\\\"schema\\\": \\\"wave2-heart-notes-fixed-ref-caller-inspection/v1\\\", \\\"at\\\": \\\"2026-11-27T19:52:54.647802+00:00\\\", \\\"ref\\\": \\\"9f0cbdffbda45520124ee1f0b50961641c5c49b1\\\", \\\"cwd\\\": \\\"/mnt/development/projects/worktrees/anytype-final-integration-20261125\\\", \\\"argv\\\": [\\\"/usr/bin/git\\\", \\\"-c\\\", \\\"core.fsmonitor=false\\\", \\\"grep\\\", \\\"-n\\\", \\\"-F\\\", \\\"-e\\\", \\\"AnytypeTorahNotesService\\\", \\\"-e\\\", \\\"AnytypeTorahSpaceRelatedDocumentsService\\\", \\\"9f0cbdffbda45520124ee1f0b50961641c5c49b1\\\", \\\"--\\\", \\\"Anytype\\\", \\\"AnyTypeTests\\\", \\\"AnytypeTests\\\", \\\"Modules\\\"], \\\"returncode\\\": 128, \\\"stdoutBytes\\\": 0, \\\"stdoutSHA256\\\": \\\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\\\", \\\"stdout\\\": \\\"\\\", \\\"stderr\\\": \\\"fatal: detected dubious ownership in repository at '/mnt/development/projects/worktrees/anytype-final-integration-20261125'\\\\nTo add an exception for this directory, call:\\\\n\\\\n\\\\tgit config --global --add safe.directory /mnt/development/projects/worktrees/anytype-final-integration-20261125\\\\n\\\", \\\"sourceMutation\\\": false, \\\"runtimeOrCompiler\\\": false, \\\"historicalProcessProbes\\\": 0}\\nTraceback (most recent call last):\\n  File \\\"/var/lib/sentinelx/uploads/.sentinelx_uploads/script_job_96c348d7fe264a7cbdf50bfdd37fed74/script.py\\\", line 8, in <module>\\n    assert r.returncode in (0,1)\\n           ^^^^^^^^^^^^^^^^^^^^^\\nAssertionError\",\"duration\":0.15,\"returncode\":1,\"hub_request_id\":\"hreq_49900ce76eec4679\"}"
+    }
+  ],
+  "structuredContent": {
+    "ok": false,
+    "interpreter": "python3",
+    "sudo": false,
+    "cwd": null,
+    "cleanup": true,
+    "command": [
+      "python3",
+      "/var/lib/sentinelx/uploads/.sentinelx_uploads/script_job_96c348d7fe264a7cbdf50bfdd37fed74/script.py"
+    ],
+    "output": "{\"schema\": \"wave2-heart-notes-fixed-ref-caller-inspection/v1\", \"at\": \"2026-11-27T19:52:54.647802+00:00\", \"ref\": \"9f0cbdffbda45520124ee1f0b50961641c5c49b1\", \"cwd\": \"/mnt/development/projects/worktrees/anytype-final-integration-20261125\", \"argv\": [\"/usr/bin/git\", \"-c\", \"core.fsmonitor=false\", \"grep\", \"-n\", \"-F\", \"-e\", \"AnytypeTorahNotesService\", \"-e\", \"AnytypeTorahSpaceRelatedDocumentsService\", \"9f0cbdffbda45520124ee1f0b50961641c5c49b1\", \"--\", \"Anytype\", \"AnyTypeTests\", \"AnytypeTests\", \"Modules\"], \"returncode\": 128, \"stdoutBytes\": 0, \"stdoutSHA256\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\", \"stdout\": \"\", \"stderr\": \"fatal: detected dubious ownership in repository at '/mnt/development/projects/worktrees/anytype-final-integration-20261125'\\nTo add an exception for this directory, call:\\n\\n\\tgit config --global --add safe.directory /mnt/development/projects/worktrees/anytype-final-integration-20261125\\n\", \"sourceMutation\": false, \"runtimeOrCompiler\": false, \"historicalProcessProbes\": 0}\nTraceback (most recent call last):\n  File \"/var/lib/sentinelx/uploads/.sentinelx_uploads/script_job_96c348d7fe264a7cbdf50bfdd37fed74/script.py\", line 8, in <module>\n    assert r.returncode in (0,1)\n           ^^^^^^^^^^^^^^^^^^^^^\nAssertionError",
+    "duration": 0.15,
+    "returncode": 1,
+    "hub_request_id": "hreq_49900ce76eec4679"
+  },
+  "isError": false
+}

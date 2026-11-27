@@ -15,7 +15,7 @@ final class AnytypeTorahNotesService: TorahEditorNotesService {
 
     let spaceId: String
     let objectId: String
-    private let associations: any TorahAssociationRepository
+    private let associations: any AnytypeTorahAssociationSnapshotRepository
     private let relatedDocumentsService: AnytypeTorahSpaceRelatedDocumentsService
     private let noteCreationFlow = T5NoteCreationFlow()
 
@@ -27,7 +27,7 @@ final class AnytypeTorahNotesService: TorahEditorNotesService {
     init(
         spaceId: String,
         objectId: String,
-        associations: any TorahAssociationRepository
+        associations: any AnytypeTorahAssociationSnapshotRepository
     ) {
         self.spaceId = spaceId
         self.objectId = objectId
@@ -76,7 +76,7 @@ final class AnytypeTorahNotesService: TorahEditorNotesService {
             },
             linkSource: { [self] noteObjectID in
                 _ = try await associations.addAssociation(
-                    source.item, target: .object(objectId: noteObjectID), spaceId: spaceId
+                    source.item, target: .object(objectId: noteObjectID), spaceId: spaceId, authorize: authorize
                 )
             },
             addSourceLine: { [self] noteObjectID in
@@ -106,7 +106,7 @@ final class AnytypeTorahNotesService: TorahEditorNotesService {
                     ]
                 )
                 _ = try await associations.addAssociation(
-                    item, target: .object(objectId: objectId), spaceId: spaceId
+                    item, target: .object(objectId: objectId), spaceId: spaceId, authorize: authorize
                 )
             }
         )
@@ -134,7 +134,7 @@ final class AnytypeTorahNotesService: TorahEditorNotesService {
             try Task.checkCancellation()
             try authorize()
             try await associations.removeAssociation(
-                associationId: item.id, target: .object(objectId: noteObjectID), spaceId: spaceId
+                associationId: item.id, target: .object(objectId: noteObjectID), spaceId: spaceId, authorize: authorize
             )
         }
         try Task.checkCancellation()
@@ -142,7 +142,8 @@ final class AnytypeTorahNotesService: TorahEditorNotesService {
         try await associations.removeAssociation(
             associationId: noteId,
             target: .object(objectId: objectId),
-            spaceId: spaceId
+            spaceId: spaceId,
+            authorize: authorize
         )
     }
 

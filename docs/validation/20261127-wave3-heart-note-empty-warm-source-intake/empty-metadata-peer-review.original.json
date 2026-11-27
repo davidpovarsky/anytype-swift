@@ -1,0 +1,41 @@
+{
+  "allExistingSourceOutsideValidatorPreserved": true,
+  "baseCommit": "2fcfecefaa3d99d63c47e34823d18a45e13f11f9",
+  "baseTree": "7f009cbe4cd41b41f7e577cd569ebf6c903caf53",
+  "candidateImports": 0,
+  "compilerInvocations": 0,
+  "findings": [],
+  "hostActions": 0,
+  "nativeContractBoundary": "Exact retained internal/api/files.go declares name/mime json omitempty; SealEnc omits empty Name/Mime. Those source bytes support this optional-value compatibility, without claiming current native binary or Apple execution.",
+  "newMethod": {
+    "methods": 1,
+    "selector": "AnyMiniAppsResultValidationTests/testPreparedFileReadbackAcceptsOnlyNativeEmptyOmission",
+    "status": "NOT_RUN"
+  },
+  "proof": {
+    "bytes": 6892,
+    "gitBlob": "c824dd9e52478a4ed04aa8630ed6eab1a150f582",
+    "path": "/workspace/scratch/ae335eba85e3/miniapps-prepared-empty-peer-review/prepared1/independent-byte-proof.json",
+    "sha256": "67a1082556c7c4fa7bd16f0dedc2da91b8e3501699fc2a03a861753a9e301c2f"
+  },
+  "reviewScope": "Complete two-source patch, original call context/imports, exact three-operation inverse and two retained native omission anchors; no full native requalification.",
+  "schema": "pinkha-miniapps-prepared-empty-independent-review/v1",
+  "semantics": [
+    "A missing optional name/MIME field is accepted only when the corresponding expected Swift string is exactly empty.",
+    "Every present value must pattern-match AnyJSON.string and compare exact UTF8 bytes. Explicit null, Bool, integer, number, arrays and objects cannot be mistaken for an omitted optional.",
+    "A missing nonempty expected value and every mismatched nonempty value remain writeUncertain. FileID/objectID/size checks are byte-identical.",
+    "The new helper is nested in the existing validator and adds no API, await, native call, preparation, retry, journal, lease or ACK action.",
+    "The one appended XCTest method exercises four permitted empty/partial-omission arrangements, nonempty omissions, both optional fields with each wrong type, nonempty mismatches and missing required fields. Existing UTF8/canonical-equivalence assertions remain in the exact original55971-byte prefix.",
+    "Existing DEBUG/simulator conditions, original XCTest/PinkhaAnyEngine/PinkhaAnyHost/testablePinkhaAnyUI imports and original class are reused; no target or compiler-source membership is added."
+  ],
+  "sourceIndex": {
+    "bytes": 3691,
+    "gitBlob": "7c4be1dd5a22285eb56ed825340e681bc8a5fbae",
+    "path": "/workspace/scratch/ae335eba85e3/miniapps-prepared-empty-source/prepared1/source-index.json",
+    "sha256": "2bc1eb940b977203656e2fdac46c2aa71e8fffbe64076668f3534bfb3f83d062"
+  },
+  "sourceMutations": 0,
+  "status": "PASS_SOURCE_ONLY_NO_SCOPED_BLOCKER",
+  "testPrefixBytesPreserved": 55971,
+  "testsExecuted": 0
+}

@@ -1,0 +1,31 @@
+--- /workspace/scratch/ae335eba85e3/warm-bsd-phase-integration-source/prepare_ready_false_inputs.py
++++ /workspace/scratch/ae335eba85e3/warm-bsd-phase-integration-source/alternate-repository-namespace-successor/prepare_ready_false_inputs.py
+@@ -16,7 +16,7 @@
+ from pathlib import Path, PurePosixPath
+ import re
+ 
+-WORK = Path(__file__).resolve().parent.parent
++WORK = Path(__file__).resolve().parents[2]
+ WARM = WORK / "warm-forward-8f2-source"
+ CONSUMER = WORK / "warm-focus-editor-runtime-source"
+ CODE = CONSUMER / "after/Tools/PinkhaDualEngineRuntime/warm_focus_editor"
+@@ -39,8 +39,8 @@
+     "nativeSourceManifestSHA256": "Tools/PinkhaDualEngineRuntime/source-permission-manifest.json",
+ }
+ TEMPLATES = {
+-    "stage": (Path(__file__).resolve().parent / "after/source-staging.unbound.json", "19a994fce10d3493ddb7010884195722fc00a690b9f02f466b25f817aeafd6aa"),
+-    "build": (Path(__file__).resolve().parent / "after/build-admission.unbound.json", "4a05aae06470ba8457ab7b8f8db22c5bf52d689c61a80117229b31c8575ea0bb"),
++    "stage": (Path(__file__).resolve().parent / "after/source-staging.unbound.json", "0f55b8154fff8c67426252cc41bd058c3509955b0587a9c3bc06b5fcec43a287"),
++    "build": (Path(__file__).resolve().parent / "after/build-admission.unbound.json", "1c8db247bd115cafd305ac783a6488e9e05253fd0d259ca68e8f7b50a77f8b51"),
+     "membership": (CODE / "source-membership.json", "5c4711f1b50498d9c2babcb4593795c7b14e5aa7867d6ebbeffdcb6948fc33ee"),
+     "originals": (CODE / "original_sources.json", "fccdd0205c1f9047241754fe739994f7baa92def857fa8495faf3fec83abb10c"),
+     "selection": (CODE / "priority-runtime-selection.closed.json", "9d4ec5c867a9d03f6d0d41d5c52c7faaafc6116e09c0c135cd3790c76940d170"),
+@@ -183,7 +183,7 @@
+ 
+     # Literal data extraction, not an import of the new admission/controller.
+     admission_raw = file_bytes({"path": str(Path(__file__).resolve().parent / "after/Tools/PinkhaDualEngineRuntime/warm_focus_editor/admission.py"),
+-        "sha256": "65144895e1e94dea0916dfb11f08eed6a3183cf1e8c1f03a952185e98c62f318"})
++        "sha256": "356190ae9724a0b7910983d86b41d8e096badb0b7a69023e3968d2299bba2edc"})
+     native_nodes = [node for node in ast.parse(admission_raw.decode()).body if isinstance(node, ast.Assign)
+                     and any(isinstance(t, ast.Name) and t.id == "ORIGINAL_NATIVE_PINS" for t in node.targets)]
+     require(len(native_nodes) == 1, "Exact original8ac literal pin map required")

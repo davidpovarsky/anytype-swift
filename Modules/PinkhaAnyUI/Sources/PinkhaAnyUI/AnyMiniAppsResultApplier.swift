@@ -240,11 +240,18 @@ enum AnyMiniAppsResultApplier {
     /// A mismatched readback remains uncertain before journal persistence and ACK.
     static func validatePreparedFileMetadata(_ info: AnyJSON, fileID: String, objectID: String,
                                             size: Int64, name: String, mime: String) throws {
+        // The prepared native FileInfo omits empty name/MIME strings. An
+        // omitted field represents only that empty value, never a wrong type.
+        func matchesNativeString(_ value: AnyJSON?, expected: String) -> Bool {
+            guard let value else { return expected.isEmpty }
+            guard case let .string(actual) = value else { return false }
+            return actual.utf8.elementsEqual(expected.utf8)
+        }
         guard info["fileId"]?.string?.utf8.elementsEqual(fileID.utf8) == true,
               info["objectId"]?.string?.utf8.elementsEqual(objectID.utf8) == true,
               info["size"]?.integer == size,
-              info["name"]?.string?.utf8.elementsEqual(name.utf8) == true,
-              info["mime"]?.string?.utf8.elementsEqual(mime.utf8) == true else {
+              matchesNativeString(info["name"], expected: name),
+              matchesNativeString(info["mime"], expected: mime) else {
             throw AnyHostError.writeUncertain
         }
     }

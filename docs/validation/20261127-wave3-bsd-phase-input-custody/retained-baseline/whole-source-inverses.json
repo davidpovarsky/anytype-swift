@@ -1,0 +1,148 @@
+{
+  "candidateImports": 0,
+  "hostCalls": 0,
+  "phaseAdapterSHA256": "fbac9765e43e70817223e96c30c6fc39f97f28100cbb4cec3f3e771f86141e29",
+  "schema": "pinkha-bsd-phase-integration-whole-source-inverses-v1",
+  "sources": [
+    {
+      "candidate": {
+        "bytes": 37031,
+        "path": "/workspace/scratch/ae335eba85e3/warm-bsd-phase-integration-source/after/collect_warm_inputs.py",
+        "sha256": "36da16f449b1e2b4d7a12489752c9ba84f4026443460a6ae5aad6db7767de9a9"
+      },
+      "changes": [
+        {
+          "new": "CENSUS = '229222b72fd01aa515aef502aa8f8c889344f9e4cd60981421f49f53ecf3bd2a'\nPHASE_OBSERVER = 'fbac9765e43e70817223e96c30c6fc39f97f28100cbb4cec3f3e771f86141e29'\n",
+          "offset": 709,
+          "old": "CENSUS = '229222b72fd01aa515aef502aa8f8c889344f9e4cd60981421f49f53ecf3bd2a'\n"
+        },
+        {
+          "new": "def mac_census(plan, root, record):\n    binding = plan['processObservation']\n    observer = load(binding['adapter'], 'phase_observer', PHASE_OBSERVER)\n    control_paths = [str(Path(__file__).resolve()), record['plan']['path'], plan['lifecycle']['path']]\n    if 'sdkClosureHelper' in plan:\n        control_paths.append(plan['sdkClosureHelper']['path'])\n    protected = [root]\n    if plan['role'] == 'observe-toolchain':\n        protected.append(APP_SOURCE)\n    observed, ref = observer.observe(binding, plan['role'], root / 'mac-owner-census.json', record,\n        protected_paths=protected, control_paths=control_paths, reader_roots=[OLD_SDK_READER])\n    record['macOwnerCensus'] = ref\n    record['originalReaderMetadataAtObservation'] = observed['originalReaderMetadataAfter'][str(OLD_SDK_READER)]\n    # Observation evidence has its own64MiB allowance. Recheck this original\n    # input role's640MiB/8MiB+2GiB on actual remaining capacity before any Git/tool.\n    record['resourcesAfterProcessObservation'] = resources(root, plan['role'])",
+          "offset": 23065,
+          "old": "def mac_census(plan, root, record):\n    census = load(plan['census'], 'census', CENSUS)\n    observation = census.census()\n    record['macOwnerCensus'] = write(root / 'mac-owner-census.json', observation)\n    require(not observation['heavyCompilerOrCopyProcesses'] and not observation['queuedLaunchers'],\n            'Fresh all-host heavy/copy/queued owner blocks this input window')"
+        },
+        {
+          "new": "    original_metadata = repository_metadata(OLD_SDK_READER)\n    require(original_metadata == record['originalReaderMetadataAtObservation'],\n            'Original385/actual transitive object metadata changed after the complete observation')\n",
+          "offset": 24771,
+          "old": "    original_metadata = repository_metadata(OLD_SDK_READER)\n"
+        },
+        {
+          "new": "        record['commandCustodyBlocked'] = bool(record.get('processObservationCustodyBlocked')\n            or not (set(commands.owner.groups) <= commands.owner.absent_groups))\n",
+          "offset": 35711,
+          "old": "        record['commandCustodyBlocked'] = not (set(commands.owner.groups) <= commands.owner.absent_groups)\n"
+        }
+      ],
+      "fullInverseEqualsEveryOriginalByte": true,
+      "original": {
+        "bytes": 36042,
+        "path": "/workspace/scratch/ae335eba85e3/warm-input-custody-source/custody-first-cause-successor/collect_warm_inputs.py",
+        "sha256": "7c61364134252b6a02b181caab19336ec85b380f45c95db0b30d6983aacd7906"
+      },
+      "path": "collect_warm_inputs.py"
+    },
+    {
+      "candidate": {
+        "bytes": 21758,
+        "path": "/workspace/scratch/ae335eba85e3/warm-bsd-phase-integration-source/after/wave3_forward_warm.py",
+        "sha256": "09637b51157f6d8033f821d74ec4c72b0d8d0e5376c8c1c045491c90938e6c13"
+      },
+      "changes": [
+        {
+          "new": "def wr_phase_observation(phase, output):\n    binding = WAVE3_ADMISSION['forwardWarm']['processObservation']\n    row = binding['adapter']\n    path = pathlib.Path(row['path'])\n    wr_require(path.resolve() == path and not path.is_symlink()\n               and path.stat().st_size == row['bytes'] and wr_sha(path) == row['sha256']\n               == 'fbac9765e43e70817223e96c30c6fc39f97f28100cbb4cec3f3e771f86141e29', 'Exact reviewed phase observation adapter required')\n    spec = importlib.util.spec_from_file_location('forward_phase_original_observer_' + phase, path)\n    observer = importlib.util.module_from_spec(spec)\n    spec.loader.exec_module(observer)\n    state = globals().setdefault('WR_PHASE_OBSERVATION_STATE',\n        {'firstFailure': None, 'secondaryErrors': [], 'commandCustodyBlocked': False,\n         'processObservationCustodyBlocked': False, 'processObservations': []})\n    try:\n        observed, _ = observer.observe(binding, phase, output, state,\n            protected_paths=[ROOT],\n            control_paths=[str(pathlib.Path(__file__).resolve()), WAVE3_CONTROL['admission']['path']])\n    except BaseException as exc:\n        # The exact first cause and custody remain in the exclusive phase\n        # receipt; also carry the original cause through the unchanged producer\n        # fatal path instead of surfacing only a generic wrapper predicate.\n        if state.get('firstFailure') is not None:\n            raise RuntimeError('Original process observation firstFailure: '\n                               + json.dumps(state['firstFailure'], sort_keys=True)) from exc\n        raise\n    wr_require(wr_sha(path) == row['sha256'], 'Phase adapter changed during observation')\n    return observed\n\n\ndef wr_no_shared_writer(source, derived):\n    wr_require(pathlib.Path(source) == SOURCE and pathlib.Path(derived) == APP_DERIVED,\n               'Original physical source/cache paths are required')\n    observed = wr_phase_observation('build-cache-writer', EVIDENCE / 'shared-writer-observation.json')\n    wr_require(observed['originalSharedWarmPathPredicatePass'],\n               'Original80c9 shared compiler/obsolete-launcher/build.db predicates did not pass')",
+          "offset": 4115,
+          "old": "def wr_no_shared_writer(source, derived):\n    source, derived = pathlib.Path(source), pathlib.Path(derived)\n    processes = subprocess.check_output(['/bin/ps', '-axo', 'pid=,ppid=,args='], text=True)\n    for line in processes.splitlines():\n        parts = line.strip().split(None, 2)\n        if len(parts) != 3 or int(parts[0]) == os.getpid():\n            continue\n        cmd = parts[2]\n        compiler = any(item in cmd for item in ('xcodebuild', 'swift-frontend', '/swiftc', '/clang', 'XCBBuildService'))\n        wr_require(not (compiler and (str(source) in cmd or str(derived) in cmd)), 'Shared source/cache compiler is active')\n        wr_require('main16-wave2-20261127/control/launch_app16_when_compiler_admitted.py' not in cmd,\n                   'Obsolete queued launcher is active')\n    database = derived / 'Build/Intermediates.noindex/XCBuildData/build.db'\n    wr_require(database.is_file() and not database.is_symlink(), 'Warm build database is absent')\n    opened = subprocess.run(['/usr/sbin/lsof', '-nP', str(database)], capture_output=True, text=True, timeout=30)\n    wr_require(opened.returncode == 1 and opened.stdout == opened.stderr == '', 'Warm build database has an owner')"
+        },
+        {
+          "new": "    observed = wr_phase_observation('build-resource', EVIDENCE / 'forward-global-census.json')\n    # Original229 heavy/copy/queue facts remain in this receipt. Actual root\n    # resource coordination consumes them; unrelated work is not an idle gate.\n",
+          "offset": 12808,
+          "old": "    census_ref = forward['resourceCensusControl']\n    census_path = pathlib.Path(census_ref['path'])\n    wr_require(census_path.resolve() == census_path and not census_path.is_symlink()\n               and wr_sha(census_path) == census_ref['sha256']\n               == '229222b72fd01aa515aef502aa8f8c889344f9e4cd60981421f49f53ecf3bd2a',\n               'Exact original all-host resource observer required')\n    spec = importlib.util.spec_from_file_location('forward_original_resource_observer', census_path)\n    observer = importlib.util.module_from_spec(spec)\n    spec.loader.exec_module(observer)\n    observed = observer.census()\n    w3_write(EVIDENCE / 'forward-global-census.json', observed)\n    wr_require(not observed['heavyCompilerOrCopyProcesses'] and not observed['queuedLaunchers'],\n               'A fresh all-host heavy writer or queue blocks the finite build window')\n"
+        },
+        {
+          "new": "    replace(before_write, correct_metadata + before_write)\n    # Only an unresolved new observation suppresses the inherited fatal\n    # Git read. The original source_state/run_phase declarations stay exact.\n    replace(' try:write(EVIDENCE/\"source-after.json\",source_state())\\n except BaseException:pass\\n',\n            ' if not globals().get(\"WR_PHASE_OBSERVATION_STATE\", {}).get(\"commandCustodyBlocked\", False):\\n'\n            '  try:write(EVIDENCE/\"source-after.json\",source_state())\\n  except BaseException:pass\\n')\n",
+          "offset": 18401,
+          "old": "    replace(before_write, correct_metadata + before_write)\n"
+        }
+      ],
+      "fullInverseEqualsEveryOriginalByte": true,
+      "original": {
+        "bytes": 20944,
+        "path": "/workspace/scratch/ae335eba85e3/warm-forward-8f2-source/after/wave3_forward_warm.py",
+        "sha256": "80c9d213ba95072125bf863917b1f98e4db24fa174cf170e743c66c124d2f245"
+      },
+      "path": "wave3_forward_warm.py"
+    },
+    {
+      "candidate": {
+        "bytes": 31457,
+        "path": "/workspace/scratch/ae335eba85e3/warm-bsd-phase-integration-source/after/stage_wave3_forward_warm.py",
+        "sha256": "c4336404d1040ad00980e8ad720d05b84ee536c89ea54dcdda27586dbeecc2a2"
+      },
+      "changes": [
+        {
+          "new": "    'warmAdapter': '09637b51157f6d8033f821d74ec4c72b0d8d0e5376c8c1c045491c90938e6c13',\n    'phaseObserver': 'fbac9765e43e70817223e96c30c6fc39f97f28100cbb4cec3f3e771f86141e29',\n",
+          "offset": 2081,
+          "old": "    'warmAdapter': '80c9d213ba95072125bf863917b1f98e4db24fa174cf170e743c66c124d2f245',\n"
+        },
+        {
+          "new": "def census(controls, output, plan, report, commands):\n    commands.barrier()\n    binding = plan['processObservation']\n    row, ref = controls['phaseObserver'].observe(binding, output.stem, output, report,\n        protected_paths=[Path(plan['buildRoot'])],\n        control_paths=[str(Path(__file__).resolve()), *[item['path'] for item in plan['controls'].values()]],\n        reader_roots=[plan['hanlinReadOnlySourceRoot'],\n            '/Users/m1/development/anytype-root-active-20261125/shared-build-inputs-385289-20261127/hanlin-385289-source.git'])\n    commands.barrier()\n    require(row['originalSharedWarmPathPredicatePass'],\n            'Original80c9 shared compiler/obsolete-launcher/build.db predicates did not pass')\n    require(row['freeBytes'] >= FLOOR + STAGE_GROWTH, 'Source staging metadata allowance unavailable')\n    return {'path': ref['path'], 'sha256': ref['sha256']}",
+          "offset": 4678,
+          "old": "def census(controls, output):\n    row = controls['census'].census()\n    ref = write(output, row)\n    require(not row['heavyCompilerOrCopyProcesses'] and not row['queuedLaunchers'],\n            'Fresh all-host heavy writer or queued launcher blocks this staging window')\n    controls['warmAdapter'].wr_no_shared_writer(SOURCE, DERIVED)\n    require(row['freeBytes'] >= FLOOR + STAGE_GROWTH, 'Source staging metadata allowance unavailable')\n    return ref"
+        },
+        {
+          "new": "        census(controls, stage / 'owners-before-fetch.json', plan, report, commands)\n",
+          "offset": 21018,
+          "old": "        write(stage / 'owners-before-fetch.json', controls['census'].census())\n"
+        },
+        {
+          "new": "              'originalPreservationSHA256': ORIGINAL15, 'failedPreservationSHA256': FAILED_RECEIPT,\n              'firstFailure': None, 'secondaryErrors': [], 'processObservationCustodyBlocked': False}\n",
+          "offset": 19672,
+          "old": "              'originalPreservationSHA256': ORIGINAL15, 'failedPreservationSHA256': FAILED_RECEIPT}\n"
+        },
+        {
+          "new": "        if report['firstFailure'] is None:\n            report['firstFailure'] = {'type': type(exc).__name__, 'message': str(exc)}\n        else:\n            report['secondaryErrors'].append({'phase': 'forward-staging', 'type': type(exc).__name__, 'message': str(exc)})\n",
+          "offset": 29704,
+          "old": "        report['firstFailure'] = {'type': type(exc).__name__, 'message': str(exc)}\n"
+        },
+        {
+          "new": "                report['allKnownGroupsClosed'] = (not report['processObservationCustodyBlocked']\n                    and set(commands.owner.groups) <= commands.owner.absent_groups)\n",
+          "offset": 30483,
+          "old": "                report['allKnownGroupsClosed'] = set(commands.owner.groups) <= commands.owner.absent_groups\n"
+        },
+        {
+          "new": "census(controls, stage / 'owners-before.json', plan, report, commands)",
+          "offset": 20109,
+          "old": "census(controls, stage / 'owners-before.json')"
+        },
+        {
+          "new": "census(controls, stage / 'owners-before-mutation.json', plan, report, commands)",
+          "offset": 21237,
+          "old": "census(controls, stage / 'owners-before-mutation.json')"
+        },
+        {
+          "new": "census(controls, stage / 'owners-before-fast-forward.json', plan, report, commands)",
+          "offset": 22481,
+          "old": "census(controls, stage / 'owners-before-fast-forward.json')"
+        },
+        {
+          "new": "census(controls, stage / 'owners-before-exact-resolution.json', plan, report, commands)",
+          "offset": 24236,
+          "old": "census(controls, stage / 'owners-before-exact-resolution.json')"
+        },
+        {
+          "new": "census(controls, stage / 'owners-after.json', plan, report, commands)",
+          "offset": 26701,
+          "old": "census(controls, stage / 'owners-after.json')"
+        }
+      ],
+      "fullInverseEqualsEveryOriginalByte": true,
+      "original": {
+        "bytes": 30450,
+        "path": "/workspace/scratch/ae335eba85e3/warm-forward-8f2-source/after/stage_wave3_forward_warm.py",
+        "sha256": "f7ff8cc492918d7e77686d408f430ee0c39647ee3fb3bdd353f14168fc84bec7"
+      },
+      "path": "stage_wave3_forward_warm.py"
+    }
+  ],
+  "status": "SOURCE_ONLY_NOT_EXECUTED",
+  "testsRun": 0
+}

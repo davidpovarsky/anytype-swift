@@ -1,0 +1,111 @@
+{
+  "schema": "wave2-heart-note-write-authority-source-inverse/v1",
+  "status": "PASS_BYTE_PRESERVATION_ONLY",
+  "parent": "9f0cbdffbda45520124ee1f0b50961641c5c49b1",
+  "files": [
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+      "exactWholeFileInverse": true,
+      "restoredSHA256": "a758b64cc5c3764173d31e61600a3ccd9cca3edd026fa56986085bc95fd0f76a"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
+      "exactWholeFileInverse": true,
+      "restoredSHA256": "384e954428d5800da9fb74c564be53b922db0f8cb8d241283339329e39a2b5ce"
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift",
+      "exactWholeFileInverse": true,
+      "restoredSHA256": "4a2463e6e1ef7d7ade0686d41893e5ece3557dba0e811670c84c3dc25772305f"
+    },
+    {
+      "path": "docs/any-engine-port/SOURCE_REFACTOR_MAP.json",
+      "exactWholeFileInverse": true,
+      "restoredSHA256": "7f6b213a8fbb0c33c4f81122c2997f7bb39468d995aa1b5caa6555f3331c3899"
+    }
+  ],
+  "literalSourceEdits": [
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+      "before": "any TorahAssociationRepository",
+      "after": "any AnytypeTorahAssociationSnapshotRepository",
+      "occurrences": 2
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+      "before": "source.item, target: .object(objectId: noteObjectID), spaceId: spaceId",
+      "after": "source.item, target: .object(objectId: noteObjectID), spaceId: spaceId, authorize: authorize",
+      "occurrences": 1
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+      "before": "item, target: .object(objectId: objectId), spaceId: spaceId",
+      "after": "item, target: .object(objectId: objectId), spaceId: spaceId, authorize: authorize",
+      "occurrences": 1
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+      "before": "associationId: item.id, target: .object(objectId: noteObjectID), spaceId: spaceId",
+      "after": "associationId: item.id, target: .object(objectId: noteObjectID), spaceId: spaceId, authorize: authorize",
+      "occurrences": 1
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+      "before": "target: .object(objectId: objectId),\n            spaceId: spaceId\n",
+      "after": "target: .object(objectId: objectId),\n            spaceId: spaceId,\n            authorize: authorize\n",
+      "occurrences": 1
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
+      "before": "any TorahAssociationRepository",
+      "after": "any AnytypeTorahAssociationSnapshotRepository",
+      "occurrences": 2
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
+      "before": "authorize: @MainActor () throws -> Void",
+      "after": "authorize: @escaping TorahAssociationWriteAuthorization",
+      "occurrences": 1
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
+      "before": "associationId: item.id, target: .object(objectId: document.objectID), spaceId: spaceID",
+      "after": "associationId: item.id, target: .object(objectId: document.objectID), spaceId: spaceID,\n                authorize: authorize",
+      "occurrences": 1
+    }
+  ],
+  "sourceMap": {
+    "rows": 145,
+    "literalPinChanges": [
+      {
+        "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+        "oldBlob": "f720544ee832268919a3fa712ac258f7b5651d72",
+        "newBlob": "698dc52075c73cc8f584abd458c3a46cbe075c4a"
+      },
+      {
+        "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
+        "oldBlob": "6205879561b6e505d8d8b5b402dd6bf575fc57d6",
+        "newBlob": "68d32e623d1703c51ad01918df1572f7d96757c9"
+      }
+    ]
+  },
+  "testPrefixBytes": 73306,
+  "testOriginalSHA256": "4a2463e6e1ef7d7ade0686d41893e5ece3557dba0e811670c84c3dc25772305f",
+  "testSuffix": {
+    "path": "torah-acceptance-prep/heart-note-write-authority/note_authority_tests_suffix.swift",
+    "sha256": "787389e6ae7a46ff5524108b0cceb7f83b84b07d56e8b446969a40127f0116f6",
+    "bytes": 25412
+  },
+  "newMethods": 2,
+  "declaredCases": 10,
+  "compiled": false,
+  "executed": false,
+  "fixtureCorrection": {
+    "path": "fixture-correction.json",
+    "sha256": "e0060fb48c7ebc2faa5ef4edbac05cb02b0cf1c2bf3b13f4de9218d6e9daea4a",
+    "bytes": 6494,
+    "gitBlob": "ebdfdbbcd144e710d3446ebb3357437c7a066f82",
+    "predecessorFullTestSHA256": "7ffb8d584a31ffb3d5a79fa21e9ce6aab9a8363666f4972a6d23270fc8ab0415",
+    "successorFullTestSHA256": "5c992907c09ab5a1fb249cb4d70d8e132735981709a030f1b3c3bba62e851e53"
+  }
+}

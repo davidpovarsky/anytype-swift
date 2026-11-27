@@ -1,6 +1,6 @@
 """Closed current-product admission for the original warm focus/editor lanes.
 
-This is a same-host consumer of an actually completed f7ff/80c9 build. It does
+This is a same-host consumer of an actually completed phase-bound forward warm build. It does
 not stage, resolve, compile, revive App15, or require the separate Native UI
 target. The complete original common validator still admits App61/Stage1UI10.
 """
@@ -26,8 +26,8 @@ SDK_MARKER = "Dependencies/Hanlin/.pinkha-source.json"
 NATIVE_MANIFEST = "Tools/PinkhaDualEngineRuntime/source-permission-manifest.json"
 NATIVE_BINARY = "Dependencies/Middleware/Lib.xcframework/ios-arm64-simulator/Lib.framework/Lib"
 UI_GENERATOR = "Tools/PinkhaNativeDerived/rerun_original_ui.py"
-WARM_ADAPTER_SHA256 = "80c9d213ba95072125bf863917b1f98e4db24fa174cf170e743c66c124d2f245"
-STAGER_SHA256 = "f7ff8cc492918d7e77686d408f430ee0c39647ee3fb3bdd353f14168fc84bec7"
+WARM_ADAPTER_SHA256 = "29b524b32bd8428db62cf9119d1f7f80a5b4d6406ce1d1574dbdefef20fe3adf"
+STAGER_SHA256 = "62a3f182c1b920f74b2b7ca424501723c66929928c3de7beccc191c80149ef75"
 ORIGINAL_ADAPTER_SHA256 = "47c66dde6122d19b12e5206a4a5f0b1841a026fb8088aa4bdb2c69d6a657cfcd"
 ORIGINAL_PRODUCER_SHA256 = "9b1405ea44ba9cce3fca47a88127fc798fedab3d1b05f6e3728da3597d19929c"
 ORIGINAL_SUPERVISOR_SHA256 = "bd0ee535786b2a7c95b4da1b6dfdbd1b1f409438a6214cb4252d0c386cebf42e"

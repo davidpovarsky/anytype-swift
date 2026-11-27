@@ -842,3 +842,53 @@ final class PinkhaMiniAppsHeartDispatchTests: XCTestCase {
     }
 }
 #endif
+
+#if DEBUG && targetEnvironment(simulator)
+extension AnyMiniAppsResultValidationTests {
+    func testPreparedFileReadbackAcceptsOnlyNativeEmptyOmission() throws {
+        let required: [String: AnyJSON] = [
+            "fileId": .string("file-original"), "objectId": .string("object-original"),
+            "size": .integer(4)
+        ]
+        func validate(_ fields: [String: AnyJSON], name: String = "", mime: String = "") throws {
+            try AnyMiniAppsResultApplier.validatePreparedFileMetadata(.object(fields),
+                fileID: "file-original", objectID: "object-original", size: 4, name: name, mime: mime)
+        }
+
+        // Native SealEnc/FileInfo omit empty values, preserving the same intent.
+        XCTAssertNoThrow(try validate(required))
+        var explicitEmpty = required
+        explicitEmpty["name"] = .string("")
+        explicitEmpty["mime"] = .string("")
+        XCTAssertNoThrow(try validate(explicitEmpty))
+        var omittedName = required
+        omittedName["mime"] = .string("text/plain")
+        XCTAssertNoThrow(try validate(omittedName, mime: "text/plain"))
+        var omittedMIME = required
+        omittedMIME["name"] = .string("result.txt")
+        XCTAssertNoThrow(try validate(omittedMIME, name: "result.txt"))
+
+        XCTAssertThrowsError(try validate(required, name: "result.txt"))
+        XCTAssertThrowsError(try validate(required, mime: "text/plain"))
+        for key in ["name", "mime"] {
+            for invalid in [AnyJSON.null, .bool(false), .integer(0), .number(0), .array([]), .object([:])] {
+                var malformed = explicitEmpty
+                malformed[key] = invalid
+                XCTAssertThrowsError(try validate(malformed)) { error in
+                    guard let hostError = error as? AnyHostError, case .writeUncertain = hostError else {
+                        return XCTFail("Malformed metadata must preserve the known intent as uncertain: \(error)")
+                    }
+                }
+            }
+            var changed = explicitEmpty
+            changed[key] = .string("unexpected-nonempty")
+            XCTAssertThrowsError(try validate(changed))
+        }
+        for key in ["fileId", "objectId", "size"] {
+            var absentRequired = explicitEmpty
+            absentRequired.removeValue(forKey: key)
+            XCTAssertThrowsError(try validate(absentRequired))
+        }
+    }
+}
+#endif

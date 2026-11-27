@@ -1,0 +1,87 @@
+{
+  "actual805Boundary": {
+    "allDirectChildrenReaped": true,
+    "completeUniquePIDs": 1634,
+    "directCommands": 19,
+    "doesNotReserveHost": true,
+    "eachPhaseMustObserveAgain": true,
+    "firstFailure": null,
+    "originalOwnerReceiptSHA256": "0386e0aa6141df98c9eabfe5df813a4c717904708770703d6a5c79d75faa5809",
+    "outerGroupPositiveAbsence": true,
+    "readyForBuild": false,
+    "secondaryErrors": [],
+    "status": "PASS_COMPLETE_OBSERVATION_ONLY"
+  },
+  "byteProof": {
+    "bytes": 25130,
+    "path": "/workspace/scratch/ae335eba85e3/warm-bsd-phase-integration-peer-review/prepared1/independent-byte-proof.json",
+    "sha256": "45184ae5f1173d810ed9740711acc45d8ff745f33d229a5975aa2950f0eebf5e"
+  },
+  "candidateExecutions": 0,
+  "candidateImports": 0,
+  "findings": [
+    {
+      "concreteCounterexample": [
+        "git -C <the same physical source worktree> gc",
+        "git --git-dir=<the same physical source>/.git repack"
+      ],
+      "id": "TRANSITIVE_OBJECT_REPOSITORY_ARGV_NAMESPACE",
+      "location": "phase_observation.observe reader_paths / protectedNamespaceArgumentConflicts",
+      "minimalClosure": "Derive and require the physical containing Git directory from each discovered canonical objects directory; verify actual HEAD/config and original metadata. Protect that Git directory plus the physical worktree only for the literal .git layout. Keep unknown object layouts closed; no guessed path, unrelated idle gate or Git command.",
+      "observedSource": "The exact discovered alternate ending source/.git/objects is added as a literal argv namespace, while its actual Git directory and worktree are omitted.",
+      "reason": "Both can mutate borrowed objects without spelling /objects. Original repository_metadata compares config/HEAD/shallow/alternates, not pack contents, so that metadata comparison does not supply the missing argv exclusion.",
+      "status": "CONFIRMED_BY_OWNER_SUCCESSOR_PENDING"
+    },
+    {
+      "concreteBoundary": "If an unexpected exception or a second signal escapes the original owner finally, the bridge has not received the actual closure record but can retain true and leave its later fatal source-state guard open.",
+      "id": "OWNER_CALL_MISSING_RETURN_CLOSURE",
+      "location": "phase_observation.observe immediately around provider.phase_owner",
+      "minimalClosure": "Set the bridge flag false immediately before the owner call and restore only from the actual returned record. Nonreturning ownership stays unknown/blocked. No additional process, probe, signal, or budget.",
+      "observedSource": "The bridge defaults allKnownGroupsClosed=true and replaces it only after the original owner returns.",
+      "status": "OWNER_SELF_REVIEW_CONFIRMED_SUCCESSOR_PENDING"
+    }
+  ],
+  "frozenSourceIndex": {
+    "bytes": 8483,
+    "path": "/workspace/scratch/ae335eba85e3/warm-bsd-phase-integration-source/source-index.json",
+    "sha256": "698eb49fd90e06c4d79f57efffe500fad4aeac7433215f1fdaeea5c156849ff7"
+  },
+  "hostActions": 0,
+  "limitations": [
+    "Source review only. No SDK receiver or phase adapter was imported or executed.",
+    "Original805 actual snapshot is not a current source/resource reservation.",
+    "Prepared source/template pin joins do not qualify actual Mac source, compiler products or runtime."
+  ],
+  "phaseHelperSHA256": "fbac9765e43e70817223e96c30c6fc39f97f28100cbb4cec3f3e771f86141e29",
+  "policyDecision": {
+    "currentBuildGrant": false,
+    "description": "For input, staging and build, complete original229 heavy/copy/queue facts remain available for root resource allocation; an unrelated foreign compiler is not a blanket idle veto. Exact original80c9 shared source/cache compiler, obsolete-launcher and build.db refusal remain, as do all original numeric capacity/memory/deadline checks and root-only finite build grant.",
+    "isAdmissionPolicyDecisionNotOnlyObserverReplacement": true,
+    "rootConfirmedExplicitly": true
+  },
+  "qualifiedPreservation": {
+    "actualStageBuildAdmissionNotPerformed": true,
+    "all1011SourceBytesAndExactMarkerStillRequired": true,
+    "allFutureExecutionFlagsRemainClosed": true,
+    "callableOwnerInverseOperations": 3,
+    "entireOriginal805OwnerRestored": true,
+    "fatalGuardOnlySuppressesSourceStateForUnresolvedNewObserver": true,
+    "fullCurrentReaderMetadataReadAgainBeforeAndAfterSourceImport": true,
+    "indexedFilesRehashed": 23,
+    "materializationOrBuildIsNotPartOfReceiveSDK": true,
+    "original805WorkerAndOriginal73bbProcessLifecycleUnmodified": true,
+    "originalSourceStateAndRunPhaseDeclarationsUnchanged": true,
+    "sourceControlInverseOperations": 18,
+    "stageAndBuildNumericBudgetsUnchanged": true,
+    "wholeOriginal7cF7ff80c9Restored": true
+  },
+  "readScope": [
+    "Complete19446-byte phase helper and all three modified caller diffs.",
+    "Original805 whole owner and d2e3 original_predicates, actual805 owner/worker/root receipts.",
+    "Exact original7c receive_sdk/repository_metadata/Commands/first-cause writer, original staging lifecycle and full affected warm cache paths.",
+    "Warm admission and ready-false binder source differences and all six downstream JSON projections."
+  ],
+  "schema": "pinkha-independent-warm-bsd-phase-source-review/v1",
+  "status": "FROZEN_ORIGINAL_REVIEWED_TWO_NARROW_BRIDGE_CORRECTIONS_PENDING",
+  "testsExecuted": 0
+}

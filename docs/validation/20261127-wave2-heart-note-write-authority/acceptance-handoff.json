@@ -1,0 +1,69 @@
+{
+  "schema": "wave2-heart-note-authority-acceptance-handoff/v1",
+  "sourceParent": "9f0cbdffbda45520124ee1f0b50961641c5c49b1",
+  "sourceOnly": true,
+  "status": "NOT_RUN",
+  "target": "AnytypeTests",
+  "existingSourceInput": "AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift",
+  "suite": "TorahNoteRepositoryAuthorityTests",
+  "suiteSelection": "AnytypeTests/TorahNoteRepositoryAuthorityTests",
+  "methods": [
+    {
+      "name": "noteCreationRejectsRetiredRepositoryDispatch(phase:retirement:)",
+      "cases": 4,
+      "phases": [
+        "source",
+        "origin"
+      ],
+      "retirements": [
+        "inspectorReopen",
+        "documentReopen"
+      ]
+    },
+    {
+      "name": "unlinkRejectsRetiredRepositoryDispatch(phase:retirement:)",
+      "cases": 6,
+      "phases": [
+        "noteSource",
+        "noteOrigin",
+        "related"
+      ],
+      "retirements": [
+        "inspectorReopen",
+        "documentReopen"
+      ]
+    }
+  ],
+  "methodsTotal": 2,
+  "declaredCasesTotal": 10,
+  "actualExecutedCases": 0,
+  "selectionConstraints": [
+    "Select this suite alone: Factory registrations are global and .serialized does not serialize unrelated suites.",
+    "Use actual matching hosted App and compiler evidence for the full existing source file plus complete product dependencies.",
+    "Preserve case-sensitive source path and existing target admission; no PBX/Package/runner/inventory edits in this packet.",
+    "W3 owns exact integration, producer admission, enumeration and actual isolated selection. No source-only controller/gate admission is implied."
+  ],
+  "controlledScope": "Production session, Heart services, T5 flow, mutation coordinator, codec and repository with controlled native-store and object/block services. No actual Native engine, mounted UI, HTTP or physical device acceptance.",
+  "cleanupScope": "Only entered createNote service calls are awaited during exceptional cleanup; no full UI refresh Task join claimed. Expected retirement is synchronous MainActor tail; successful retry separately awaits open callback.",
+  "unchangedAreas": [
+    "original73,306B test prefix",
+    "original T5 historical36+9 evidence",
+    "Native/Host/index/ACL/schema",
+    "Type/property/anchor infrastructure",
+    "Package/PBX/producer/consumer/resource budgets"
+  ],
+  "requirements": [
+    {
+      "name": "T3",
+      "task": "1219604675985547"
+    },
+    {
+      "name": "T4",
+      "task": "1219604770637161"
+    },
+    {
+      "name": "T6",
+      "task": "1219604717617397"
+    }
+  ]
+}

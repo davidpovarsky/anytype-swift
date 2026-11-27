@@ -1,0 +1,110 @@
+{
+  "schema": "miniapps-prepared-native-metadata-independent-source-review/v1",
+  "status": "PASS_SOURCE_JOIN_NONEMPTY_UTF8_NO_NORMALIZATION",
+  "scope": "Separate additive audit; frozen snapshot3/source-inputs5bf59 and prepared1 integration16 rows are unchanged. No native or Swift invocation.",
+  "originalStory": "1220961887980256",
+  "files": 19,
+  "sourceBytes": 145259,
+  "sourceBindingSHA256": "40bd6eccff540fccb90c980c090a53a2b8b7d5ce8cab94895438b18992146110",
+  "nativeSourceManifestSHA256": "773f0a25422b3460a375182fb6f839fd71d7246ad8b489b6c20418bfab3b2471",
+  "sourceProvenanceScope": "Rehashed the19 complete public source files against owner binding;15 decoded from exact4a068 public original,4 copied and rehashed from exact explicitly linked retained public files. Original producer/native runtime receipt is referenced, not rerun or newly qualified.",
+  "caller": {
+    "publishedCurrent": "087748598c502d59e70b966507e64ac80038159a",
+    "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyMiniAppsResultApplier.swift",
+    "currentBeforeSHA256": "057bf2f049572306171c9980876222fd6e8196f5fb82aa7c66bfe2420a9f8cc2",
+    "sealedCandidateSHA256": "161fb2787830e4fd6de384a2c7aa99cb635bebb3945918a7d5aaf99d7e730932",
+    "nameLine": 192,
+    "mimeLine": 193,
+    "preparedInlineIntentLines": [
+      211,
+      212
+    ],
+    "preparedFullIntentLines": [
+      221,
+      222
+    ],
+    "readbackAndMetadataLines": [
+      228,
+      247
+    ]
+  },
+  "conclusion": [
+    "Inline/full handlers require explicit typed name/MIME strings, UTF8/noNUL and1024/255 byte bounds, then copy exact strings into the frozen spec.",
+    "Original BuildMigrationInlinePayload/BuildMigrationFilePayload pass the same Name/Mime to SealEnc; native verification uses byte-wise Go string equality.",
+    "SealEnc and UnsealEnc preserve nonempty native strings; rowToInfo and fileInfoToAPI project them unchanged. Ordinary upload resolveMime/ensureNameExt is a separate route.",
+    "The current strict nonempty UTF8 comparison is correct; no normalization allowance is justified."
+  ],
+  "inheritedEmptyCompatibility": {
+    "reachable": true,
+    "basis": [
+      "MiniAppContent initializer stores optional name unchanged; MiniAppBridgeStore.writeAttachment permits name empty.",
+      "attachFile selects item.name ?? url.lastPathComponent; explicit empty is not replaced.",
+      "Both original AnyPreparedInlineFileIntent and AnyPreparedFileIntent accept name/mime empty; their guards bound length/noNUL but do not require nonempty.",
+      "Native SealEnc omits empty strings; FileInfo name/mime JSON omitempty then omits them.",
+      "Original and sealed candidate readback require a present string, so an accepted native empty name remains uncertain rather than being acknowledged."
+    ],
+    "safety": "Known prepared identity/status and no blind resend remain original; no successful acceptance or runtime failure is inferred.",
+    "separateMinimalFollowOn": "Match omitted optional only to an exactly empty expected value. A present value must be a string with exact UTF8; null/wrong types and mismatched nonempty values remain refused. Preserve all fileID/objectID/size/content digest/lease/ACK boundaries. Do not disallow a native-supported empty value."
+  },
+  "nativeSourceAnchors": [
+    {
+      "path": "internal/server/handlers_pinkha_migration_inline_file.go",
+      "lines": [
+        59,
+        79
+      ]
+    },
+    {
+      "path": "internal/server/handlers_pinkha_migration_file.go",
+      "lines": [
+        83,
+        96
+      ]
+    },
+    {
+      "path": ".runtime-artifacts/sdk-source/internal/object/migration_inline_file.go",
+      "lines": [
+        35,
+        82
+      ]
+    },
+    {
+      "path": ".runtime-artifacts/sdk-source/internal/object/migration_file.go",
+      "lines": [
+        36,
+        84
+      ]
+    },
+    {
+      "path": ".runtime-artifacts/sdk-source/internal/payloads/seal.go",
+      "lines": [
+        106,
+        144
+      ]
+    },
+    {
+      "path": ".runtime-artifacts/sdk-source/internal/spaceimpl/files.go",
+      "lines": [
+        203,
+        212
+      ]
+    },
+    {
+      "path": "internal/server/handlers_files.go",
+      "lines": [
+        609,
+        619
+      ]
+    },
+    {
+      "path": "internal/api/files.go",
+      "lines": [
+        31,
+        32
+      ]
+    }
+  ],
+  "testsExecuted": 0,
+  "nativeOrCompilerStarts": 0,
+  "sourcePacketModified": false
+}

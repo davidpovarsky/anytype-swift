@@ -1,0 +1,57 @@
+{
+  "schema": "miniapps-prepared-empty-literal-inverse/v1",
+  "operations": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyMiniAppsResultApplier.swift",
+      "beforeLineOffset": 242,
+      "afterLineOffset": 242,
+      "before": "",
+      "after": "        // The prepared native FileInfo omits empty name/MIME strings. An\n        // omitted field represents only that empty value, never a wrong type.\n        func matchesNativeString(_ value: AnyJSON?, expected: String) -> Bool {\n            guard let value else { return expected.isEmpty }\n            guard case let .string(actual) = value else { return false }\n            return actual.utf8.elementsEqual(expected.utf8)\n        }\n"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyMiniAppsResultApplier.swift",
+      "beforeLineOffset": 245,
+      "afterLineOffset": 252,
+      "before": "              info[\"name\"]?.string?.utf8.elementsEqual(name.utf8) == true,\n              info[\"mime\"]?.string?.utf8.elementsEqual(mime.utf8) == true else {\n",
+      "after": "              matchesNativeString(info[\"name\"], expected: name),\n              matchesNativeString(info[\"mime\"], expected: mime) else {\n"
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/PinkhaMiniAppsNativePreparationTests.swift",
+      "beforeLineOffset": 844,
+      "afterLineOffset": 844,
+      "before": "",
+      "after": "\n#if DEBUG && targetEnvironment(simulator)\nextension AnyMiniAppsResultValidationTests {\n    func testPreparedFileReadbackAcceptsOnlyNativeEmptyOmission() throws {\n        let required: [String: AnyJSON] = [\n            \"fileId\": .string(\"file-original\"), \"objectId\": .string(\"object-original\"),\n            \"size\": .integer(4)\n        ]\n        func validate(_ fields: [String: AnyJSON], name: String = \"\", mime: String = \"\") throws {\n            try AnyMiniAppsResultApplier.validatePreparedFileMetadata(.object(fields),\n                fileID: \"file-original\", objectID: \"object-original\", size: 4, name: name, mime: mime)\n        }\n\n        // Native SealEnc/FileInfo omit empty values, preserving the same intent.\n        XCTAssertNoThrow(try validate(required))\n        var explicitEmpty = required\n        explicitEmpty[\"name\"] = .string(\"\")\n        explicitEmpty[\"mime\"] = .string(\"\")\n        XCTAssertNoThrow(try validate(explicitEmpty))\n        var omittedName = required\n        omittedName[\"mime\"] = .string(\"text/plain\")\n        XCTAssertNoThrow(try validate(omittedName, mime: \"text/plain\"))\n        var omittedMIME = required\n        omittedMIME[\"name\"] = .string(\"result.txt\")\n        XCTAssertNoThrow(try validate(omittedMIME, name: \"result.txt\"))\n\n        XCTAssertThrowsError(try validate(required, name: \"result.txt\"))\n        XCTAssertThrowsError(try validate(required, mime: \"text/plain\"))\n        for key in [\"name\", \"mime\"] {\n            for invalid in [AnyJSON.null, .bool(false), .integer(0), .number(0), .array([]), .object([:])] {\n                var malformed = explicitEmpty\n                malformed[key] = invalid\n                XCTAssertThrowsError(try validate(malformed)) { error in\n                    guard let hostError = error as? AnyHostError, case .writeUncertain = hostError else {\n                        return XCTFail(\"Malformed metadata must preserve the known intent as uncertain: \\(error)\")\n                    }\n                }\n            }\n            var changed = explicitEmpty\n            changed[key] = .string(\"unexpected-nonempty\")\n            XCTAssertThrowsError(try validate(changed))\n        }\n        for key in [\"fileId\", \"objectId\", \"size\"] {\n            var absentRequired = explicitEmpty\n            absentRequired.removeValue(forKey: key)\n            XCTAssertThrowsError(try validate(absentRequired))\n        }\n    }\n}\n#endif\n"
+    }
+  ],
+  "wholeFilesRestored": 2,
+  "beforeAndAfter": {
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyMiniAppsResultApplier.swift": {
+      "before": {
+        "bytes": 16818,
+        "sha256": "161fb2787830e4fd6de384a2c7aa99cb635bebb3945918a7d5aaf99d7e730932",
+        "gitBlob": "d8ecc6c575f15989ce63c21251149f18eceaf639",
+        "gitMode": "100644"
+      },
+      "after": {
+        "bytes": 17235,
+        "sha256": "c25abfe724ffe0f303bad47bf07b77d7957a682ff2473e2ca825ddf11774d55c",
+        "gitBlob": "c5f55cca1e9e36d2e13740f234cb5dc9f0b36809",
+        "gitMode": "100644"
+      }
+    },
+    "AnyTypeTests/Pinkha/PinkhaMiniAppsNativePreparationTests.swift": {
+      "before": {
+        "bytes": 55971,
+        "sha256": "a5e328a1441b3e2f87eb1a8de2245503e9f554eaec41a6264b313d1cb4e8e9b3",
+        "gitBlob": "ec09068b6cf04378699a4b2beb22ac74928758a9",
+        "gitMode": "100644"
+      },
+      "after": {
+        "bytes": 58367,
+        "sha256": "fbf92e77900cd402e070d53cb280e681967193a56461288d27d23ba9f61bb6eb",
+        "gitBlob": "6daa1935c3d8ad332c157c7a99edbf334e94c381",
+        "gitMode": "100644"
+      }
+    }
+  }
+}
