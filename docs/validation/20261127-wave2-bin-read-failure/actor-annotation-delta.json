@@ -1,0 +1,11 @@
+{
+  "status": "SOURCE_ANNOTATION_CORRECTION_NOT_COMPILER_FAILURE",
+  "priorSHA256": "33bd9532d88bedc658b1f6d2f9e9006524a29af43cf0f5faf11bdc522fb83a2e",
+  "candidateSHA256": "e7acc46b5ca542b3bd4be5b213698cf3e832e0058e5fbabe22b1b3623acd3d58",
+  "inverse": {
+    "exactFind": "refreshBin(read: @MainActor () async throws",
+    "exactReplacement": "refreshBin(read: () async throws",
+    "occurrences": 1
+  },
+  "reason": "Explicit MainActor closure contract; nonescaping read stays on the production model actor. No compiler was run on either source."
+}

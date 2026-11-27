@@ -1,0 +1,13 @@
+{
+  "status": "FAIL_LOCAL_PACKET_PREPARATION_BEFORE_OUTPUT",
+  "observedExecChunkID": "6e43f0",
+  "exitCode": 1,
+  "workingDirectory": "/workspace/scratch/1d35894f12d5/interfaces_work/bin-read-failure",
+  "command": "python3 prepare_publication_packet.py --root-review root-independent-review.json --root-review-sha256 8f1e8690d1544f7ed75d814371e7e712fc904f65bf0a82016be --torah-review torah-independent-review.json --torah-review-sha256 ffd519c5654af4851d9d7340f7ee0aaaae395fac2c63c4d828ff1ac1e745e3c2 --output publication1",
+  "observedCombinedOutput": "Traceback (most recent call last):\n  File \"/workspace/scratch/1d35894f12d5/interfaces_work/bin-read-failure/prepare_publication_packet.py\", line 49, in <module>\n    require(sha(raw) == expected, \"Exact independent review changed\")\n  File \"/workspace/scratch/1d35894f12d5/interfaces_work/bin-read-failure/prepare_publication_packet.py\", line 28, in require\n    if not value: raise RuntimeError(message)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: Exact independent review changed\n",
+  "preparerSHA256": "f4e10e5c97e5cc78a20f1695c4a735c1ea15c159dd41270696a11a29b0aec656",
+  "cause": "Caller supplied a truncated root review SHA; the exact-hash guard refused it.",
+  "outputDirectoryAbsent": true,
+  "hostOrCompilerOrTestsRun": 0,
+  "correction": "Supply the actual full unchanged root-review SHA; no review or hash check is relaxed."
+}

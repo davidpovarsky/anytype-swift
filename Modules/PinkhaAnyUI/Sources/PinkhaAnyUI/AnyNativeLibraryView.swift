@@ -362,6 +362,20 @@ public struct AnyNativeLibraryView: View {
     private var bin: some View {
         List {
             if model.isLoadingBin && model.binItems.isEmpty { ProgressView() }
+            if model.binReadFailed {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(AnyUIErrorText.text("לא ניתן לטעון את סל המחזור.", "Couldn't load the Bin."))
+                        .foregroundStyle(.secondary)
+                    Button(AnyUIErrorText.text("ניסיון נוסף", "Retry")) {
+                        Task { await model.refreshBin() }
+                    }
+                    .buttonStyle(.borderless)
+                    .disabled(!lifetime.isActive || model.isLoadingBin)
+                    .accessibilityIdentifier("any-native-bin-retry")
+                }
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("any-native-bin-read-failure")
+            }
             ForEach(model.binItems) { item in
                 HStack {
                     Label(item.title.isEmpty ? AnyUIErrorText.text("ללא כותרת", "Untitled") : item.title,
@@ -381,7 +395,7 @@ public struct AnyNativeLibraryView: View {
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("any-native-bin-item-" + item.id)
             }
-            if !model.isLoadingBin && model.binItems.isEmpty {
+            if !model.isLoadingBin && !model.binReadFailed && model.binItems.isEmpty {
                 Text(AnyUIErrorText.text("סל המחזור ריק", "The Bin is empty"))
                     .foregroundStyle(.secondary)
                     .accessibilityIdentifier("any-native-bin-empty")
