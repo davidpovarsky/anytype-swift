@@ -1,0 +1,49 @@
+{
+  "schema": "pinkha-miniapps-native-compile-repair-source-v1",
+  "status": "SOURCE_REPAIR_NOT_COMPILED_OR_EXECUTED",
+  "baseCommit": "a4f310f917958ceaa5e165ac588e7b109fd9bd86",
+  "failedBuildSource": "6aab20344fcf1c645d7c96e0b9ec034ef07003a9",
+  "failedBuildExitCode": 65,
+  "failedBuildLogSHA256": "ac9a61ff8e68e42ed3dd1828ebf71ce78128caa45d936757adf38aeefb76cf75",
+  "failedBuildLogBytes": 13850120,
+  "sourcePath": "AnyTypeTests/Pinkha/PinkhaMiniAppsNativePreparationTests.swift",
+  "beforeGitBlob": "9c33c70981d0583ed0d2e19160efce56ac9f2b57",
+  "beforeSHA256": "fe9f9ffadbc64f43a09f4a20b96d175fb962c2602c61ebfa0394586b2e1f735e",
+  "afterSHA256": "5df20d49c98b8be04cfcbf376faab279efa828864fb6d30321f2cf2e75b0b448",
+  "beforeBytes": 38011,
+  "afterBytes": 38151,
+  "exactInverseRestoresOriginal": true,
+  "beforeEqualsFailedBuildSource": true,
+  "methods": [
+    "prepareMiniAppsDocument",
+    "verifyReturnedNativeDocument",
+    "applySelectedTextAndPreserveNewerNativeContent",
+    "verifyNestedTableSelection",
+    "requireUnavailableSelection",
+    "selectionRequest",
+    "verifyEngineAccountIsolationNativeHeartReadback",
+    "fixtureURL"
+  ],
+  "testAnnotationsBefore": 4,
+  "testAnnotationsAfter": 4,
+  "changes": [
+    {
+      "before": "        let heartID = try #require(UUID(uuidString: try #require(report[\"heartRequestID\"] as? String)))\n        let anyID = try #require(UUID(uuidString: try #require(report[\"anyRequestID\"] as? String)))\n",
+      "after": "        let heartRequestID = try #require(report[\"heartRequestID\"] as? String)\n        let anyRequestID = try #require(report[\"anyRequestID\"] as? String)\n        let heartID = try #require(UUID(uuidString: heartRequestID))\n        let anyID = try #require(UUID(uuidString: anyRequestID))\n"
+    },
+    {
+      "before": "        let request = try store.request(id: heartID)\n",
+      "after": "        let storedRequest = try store.request(id: heartID)\n        let request = try #require(storedRequest)\n"
+    }
+  ],
+  "nativeEffectsChanged": false,
+  "compilerInvocations": 0,
+  "testsExecuted": 0,
+  "macMutations": 0,
+  "saveMessageDraftsIncluded": false,
+  "setupContinuations": [
+    "Initial preflight stopped before mutation: missing branch show-ref returned128, not1; readback verified no worktree/branch and unchanged clean29b.",
+    "Large-script transport Internal error was followed by readback confirming no mutation.",
+    "New --no-checkout worktree initially had an empty index; after verifying exact base/branch, zero index entries and no source files, read-tree -mu HEAD initialized only the requested sparse file. Existing worktrees were untouched."
+  ]
+}
