@@ -1,0 +1,253 @@
+{
+  "schema": "pinkha.independent.clang-implicit-module-lock-source-peer.v1",
+  "status": "SOURCE_SUPPORTED_NARROW_CONFIGURATION_CANDIDATE_NOT_INSTALLED_OR_RUNTIME_ACCEPTANCE",
+  "reviewer": "N /root/network_files",
+  "scope": "Pinned official Swift 6.4.3 / LLVM release option, normal Swift-to-Clang driver forwarding, module-lock implementation and exact private-cache applicability. No candidate/controller edit, compiler/native execution, Oracle observation, cache mutation or output-rule relaxation.",
+  "incidentAsReportedByRoot": {
+    "job": "job_8c3f788f4b2c",
+    "startUTC": "2026-11-28T12:37:21.226597Z",
+    "endUTC": "2026-11-28T12:37:27.480998Z",
+    "status": "FAIL",
+    "terminalReceiptQualified": false,
+    "primaryTerminalFailureBytes": 888,
+    "primaryTerminalFailureSHA256Prefix": "420f6c73",
+    "observedPathSuffix": "clang-module-cache/219SUZFN68DOJ/CDispatch-2FVHGXUL9RCM5.pcm.lock",
+    "observedTargetSuffix": "CDispatch-2FVHGXUL9RCM5.pcm.lock-77d1c869",
+    "observationScope": "Root reported a symlink to the absolute same private-cache target, no other anomalies, exit -15 with forced cleanup and positive group absence. N did not repeat the census or independently read this raw incident receipt."
+  },
+  "release": {
+    "swiftRepository": "swiftlang/swift",
+    "swiftCommit": "51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2",
+    "llvmRepository": "swiftlang/llvm-project",
+    "llvmTag": "swift-6.4.3-RELEASE",
+    "llvmResolvedCommit": "fb5f84d903a3b4e7aea15cd5666598a46f56c833",
+    "tagAndResolvedCommitBodiesEqual": [
+      "clang/include/clang/Driver/Options.td",
+      "clang/lib/Frontend/CompilerInstance.cpp"
+    ],
+    "scopeLimit": "The public release implementation is source provenance. These reads do not independently establish that every installed LLVM object was built from this exact commit."
+  },
+  "inputs": [
+    {
+      "repository": "swiftlang/llvm-project",
+      "commit": "fb5f84d903a3b4e7aea15cd5666598a46f56c833",
+      "path": "clang/include/clang/Driver/Options.td",
+      "url": "https://raw.githubusercontent.com/swiftlang/llvm-project/fb5f84d903a3b4e7aea15cd5666598a46f56c833/clang/include/clang/Driver/Options.td",
+      "bytes": 575902,
+      "sha256": "4a35d9bc1f468341281cbc62e381567e94237307c4bf3cca7ef12857faa8c5fa",
+      "gitBlob": "5b75a252149103c8a6171e1725ce1c0759efefe8"
+    },
+    {
+      "repository": "swiftlang/llvm-project",
+      "commit": "fb5f84d903a3b4e7aea15cd5666598a46f56c833",
+      "path": "clang/include/clang/Frontend/FrontendOptions.h",
+      "url": "https://raw.githubusercontent.com/swiftlang/llvm-project/fb5f84d903a3b4e7aea15cd5666598a46f56c833/clang/include/clang/Frontend/FrontendOptions.h",
+      "bytes": 20812,
+      "sha256": "2b4e3e02377329a8542dcc235186690e0cb402655d5092678845ebfc40a46108",
+      "gitBlob": "d9190da702feaae4afbc26c32ab1ba0b4a0e6ec5"
+    },
+    {
+      "repository": "swiftlang/llvm-project",
+      "commit": "fb5f84d903a3b4e7aea15cd5666598a46f56c833",
+      "path": "clang/lib/Frontend/CompilerInstance.cpp",
+      "url": "https://raw.githubusercontent.com/swiftlang/llvm-project/fb5f84d903a3b4e7aea15cd5666598a46f56c833/clang/lib/Frontend/CompilerInstance.cpp",
+      "bytes": 108359,
+      "sha256": "f9761a194eb287d871c3a2fe4431eb1a117fb841746ad53cd07ba89157cd64e9",
+      "gitBlob": "85625c520fb3cd5dce0e4d16503c520014acba4a"
+    },
+    {
+      "repository": "swiftlang/llvm-project",
+      "commit": "fb5f84d903a3b4e7aea15cd5666598a46f56c833",
+      "path": "clang/lib/Frontend/CompilerInvocation.cpp",
+      "url": "https://raw.githubusercontent.com/swiftlang/llvm-project/fb5f84d903a3b4e7aea15cd5666598a46f56c833/clang/lib/Frontend/CompilerInvocation.cpp",
+      "bytes": 234842,
+      "sha256": "11f9108c831ffe1a11596a10382e35244d867b866c1acc7d1f1466a45ed9807e",
+      "gitBlob": "436422a1caf5728f12098612064406c57dc88c6d"
+    },
+    {
+      "repository": "swiftlang/llvm-project",
+      "commit": "fb5f84d903a3b4e7aea15cd5666598a46f56c833",
+      "path": "clang/lib/Driver/ToolChains/Clang.cpp",
+      "url": "https://raw.githubusercontent.com/swiftlang/llvm-project/fb5f84d903a3b4e7aea15cd5666598a46f56c833/clang/lib/Driver/ToolChains/Clang.cpp",
+      "bytes": 392118,
+      "sha256": "ccaf4db683aeb29beab87b048db64515cd3ad00823e3996dc72746b06baf3731",
+      "gitBlob": "060440ef43f3650dbe81c9c826abfd270c38c442"
+    },
+    {
+      "repository": "swiftlang/llvm-project",
+      "commit": "fb5f84d903a3b4e7aea15cd5666598a46f56c833",
+      "path": "clang/lib/Serialization/ModuleCache.cpp",
+      "url": "https://raw.githubusercontent.com/swiftlang/llvm-project/fb5f84d903a3b4e7aea15cd5666598a46f56c833/clang/lib/Serialization/ModuleCache.cpp",
+      "bytes": 5857,
+      "sha256": "63a3402079f2f3d614f6f5f59305a9e2c36bc4d3e45476e934a85e769be936e3",
+      "gitBlob": "d9c76860beeb5fe18aa22d6834357e260c014c9e"
+    },
+    {
+      "repository": "swiftlang/llvm-project",
+      "commit": "fb5f84d903a3b4e7aea15cd5666598a46f56c833",
+      "path": "llvm/lib/Support/LockFileManager.cpp",
+      "url": "https://raw.githubusercontent.com/swiftlang/llvm-project/fb5f84d903a3b4e7aea15cd5666598a46f56c833/llvm/lib/Support/LockFileManager.cpp",
+      "bytes": 9699,
+      "sha256": "d9bdf99863c7beacb7e45c1f19a39a7e5367dd764838265d25d5cb8b4ac96ca5",
+      "gitBlob": "3ff00f6f6e0e1fe69c3934aaa5669531ca5cac3a"
+    },
+    {
+      "repository": "swiftlang/llvm-project",
+      "commit": "fb5f84d903a3b4e7aea15cd5666598a46f56c833",
+      "path": "llvm/lib/Support/Unix/Path.inc",
+      "url": "https://raw.githubusercontent.com/swiftlang/llvm-project/fb5f84d903a3b4e7aea15cd5666598a46f56c833/llvm/lib/Support/Unix/Path.inc",
+      "bytes": 50600,
+      "sha256": "f38e2fa367a60c7a3cf92905a7f77592b34b1b8c99faa6d7eb7623cad8f43d27",
+      "gitBlob": "195658cb28808838de5cfa58edd02230c9d389b3"
+    },
+    {
+      "repository": "swiftlang/swift",
+      "commit": "51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2",
+      "path": "lib/Frontend/CompilerInvocation.cpp",
+      "url": "https://raw.githubusercontent.com/swiftlang/swift/51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2/lib/Frontend/CompilerInvocation.cpp",
+      "bytes": 185747,
+      "sha256": "53a098bd45bc2339275e84e109ff69f6740cfa43842c7ae476dd45db5caae67e",
+      "gitBlob": "933165c9c085d5df59cccbe44b1b1a8034d2de94"
+    },
+    {
+      "repository": "swiftlang/swift",
+      "commit": "51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2",
+      "path": "lib/ClangImporter/ClangImporter.cpp",
+      "url": "https://raw.githubusercontent.com/swiftlang/swift/51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2/lib/ClangImporter/ClangImporter.cpp",
+      "bytes": 358190,
+      "sha256": "4636f2243c5f734990c8195fa2f4d17d7bfac1b3d9a3fcdbb19bc0b22d276136",
+      "gitBlob": "2815b8baf4c3a262efaf8ea09b52efc33c5d0ac9"
+    }
+  ],
+  "sourceJoins": [
+    {
+      "path": "clang/include/clang/Driver/Options.td",
+      "lines": [
+        8328,
+        8441
+      ],
+      "finding": "The option is declared in the cc1 frontend section. BoolOption f/implicit-modules-use-lock marshals FrontendOpts.BuildingImplicitModuleUsesLock with DefaultTrue and a negative SetFalse. The exact negative spelling is -fno-implicit-modules-use-lock."
+    },
+    {
+      "path": "clang/include/clang/Frontend/FrontendOptions.h",
+      "lines": [
+        377,
+        383,
+        637
+      ],
+      "finding": "The boolean controls filesystem locking for implicit module builds and has an explicit true default."
+    },
+    {
+      "path": "lib/Frontend/CompilerInvocation.cpp",
+      "lines": [
+        2218,
+        2229
+      ],
+      "finding": "Swift appends each -Xcc value in order to ClangImporterOptions.ExtraArgs."
+    },
+    {
+      "path": "lib/ClangImporter/ClangImporter.cpp",
+      "lines": [
+        1033,
+        1036,
+        1342,
+        1409
+      ],
+      "finding": "The normal non-DirectClangCC1ModuleBuild path appends ExtraArgs to driver arguments and creates the Clang invocation through clang::createInvocation. The direct-cc1 route is a distinct configuration and is not proposed."
+    },
+    {
+      "path": "clang/lib/Driver/ToolChains/Clang.cpp",
+      "lines": [
+        8011,
+        8023
+      ],
+      "finding": "The driver explicitly forwards the value of each -Xclang argument to cc1. Whole-file lookup found no dedicated implicit_modules_use_lock forwarding. The proposal therefore uses explicit -Xclang, not an assumption that plain -Xcc forwards this cc1 option."
+    },
+    {
+      "path": "clang/lib/Frontend/CompilerInstance.cpp",
+      "lines": [
+        1810,
+        1822
+      ],
+      "finding": "BuildingImplicitModuleUsesLock selects between compileModuleAndReadASTBehindLock and the same compileModuleAndReadASTImpl. False bypasses the lock wrapper; it does not skip compilation, AST validation or module-read errors."
+    },
+    {
+      "path": "clang/lib/Frontend/CompilerInstance.cpp",
+      "lines": [
+        1749,
+        1767,
+        1772,
+        1787
+      ],
+      "finding": "The lock wrapper obtains ModuleCache's lock. The implementation explicitly treats this lock as duplicate-work coordination and already falls back to the same module implementation on lock errors."
+    },
+    {
+      "path": "clang/lib/Serialization/ModuleCache.cpp",
+      "finding": "CrossProcessModuleCache.prepareForGetLock creates the cache directory and getLock returns llvm::LockFileManager for the module filename."
+    },
+    {
+      "path": "llvm/lib/Support/LockFileManager.cpp",
+      "lines": [
+        163,
+        220,
+        248,
+        257
+      ],
+      "finding": "tryLock makes the module name absolute, creates .lock-%%%%%%%%, writes owner host/PID metadata, and create_link publishes .lock to that unique name. An owned lock is removed by its destructor along with the unique file. This is a temporary lock protocol, not an admitted final PCM."
+    },
+    {
+      "path": "llvm/lib/Support/Unix/Path.inc",
+      "lines": [
+        437,
+        441
+      ],
+      "finding": "create_link tries create_symlink first and a hard link only on failure. This explains the artifact class reported by Root without treating that class as permitted output."
+    },
+    {
+      "path": "clang/lib/Frontend/CompilerInstance.cpp",
+      "lines": [
+        1345,
+        1387
+      ],
+      "finding": "Nested module invocation copies the parent invocation and changes named module/output options; it does not reset BuildingImplicitModuleUsesLock."
+    },
+    {
+      "path": "clang/lib/Frontend/CompilerInvocation.cpp",
+      "lines": [
+        5850,
+        5854
+      ],
+      "finding": "resetNonModularOptions resets LangOptions, PreprocessorOptions and CodeGenOptions only, retaining the copied FrontendOptions lock boolean."
+    }
+  ],
+  "candidate": {
+    "appendSwiftFrontendArguments": [
+      "-Xcc",
+      "-Xclang",
+      "-Xcc",
+      "-fno-implicit-modules-use-lock"
+    ],
+    "resultingClangDriverPair": [
+      "-Xclang",
+      "-fno-implicit-modules-use-lock"
+    ],
+    "resultingCC1Argument": "-fno-implicit-modules-use-lock",
+    "requiredApplicability": "The cache is a newly owned private namespace used by the controller's serial phases, with no other admitted cache writer. Existing ownership/current-group/resource/output checks remain authoritative.",
+    "preserved": "Same 131-file graph, exact source/C3/f9 closures, only-serialized Swift mode, compiler/toolchain identities, all process/deadline/disk/memory caps, regular-only namespace checks, exact final output allowlist and full before/final audits.",
+    "notProposed": [
+      "No allowance for symlinks or hard links in any owned namespace.",
+      "No mutation or reuse of failed attempt2 output.",
+      "No generic lock-file whitelist.",
+      "No weaker final artifact or source acceptance.",
+      "No direct-cc1 importer mode.",
+      "No claim that this switch eliminates every possible output made by Clang or its other subsystems."
+    ]
+  },
+  "validationBoundaries": [
+    "No installed option parsing was performed by this peer.",
+    "A source-free Swift -print-target-info result alone need not construct ClangImporter; opaque -Xcc retention is not proof of cc1 option parsing.",
+    "Actual subsequent semantic execution, if separately reviewed and granted, still must complete every selected phase and all unchanged output/source/lifecycle checks.",
+    "The original attempt2 FAIL and unqualified terminal receipt remain failures. Source clearance is not a semantic, module, test, native, ABI, App or cloud acceptance."
+  ],
+  "outcome": "The narrow source-supported remedy is to suppress this implicit-module duplicate-work lock protocol for the existing private serial cache. The current regular-output rule can remain unchanged."
+}

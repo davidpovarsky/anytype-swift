@@ -1,0 +1,915 @@
+{
+  "C20AndNativeResourcePoliciesChanged": false,
+  "C20OrNativeControllerDispatched": false,
+  "accountOpens": 0,
+  "allStartedOwnedGroupsPositivelyAbsent": true,
+  "capabilityAdmission": {
+    "helpSHA256": "2c6c42af8588c519e10482034565861d2a427e195dc75ed9a3405e438a4f67f0",
+    "hiddenSwiftVersionTestingOptionsBoundSeparatelyToRetainedProjectArgv": true,
+    "loaderPolicySourceCommit": "51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2",
+    "loaderPolicySourcePeerSHA256": "affe80371f854afbd4e6169efebd4c4af4ab8f3b8d9c5f554173a3f873befeb6",
+    "newHelpRuns": 0,
+    "newTargetInfoRuns": 0,
+    "observationSHA256": "12645f41c87fc66c9066165be80d9cd50b35a316aceeb2308a6ffa9477c20d19",
+    "optionProbeIsNotImportOrSemanticProof": true,
+    "serializedMode": "only-serialized",
+    "serializedModeObservationSHA256": "83045a206f164cec1e81bb7465605a14d50dcd37864d08f4344527c8cd68e8de",
+    "sourceParsingOrSemanticClaimFromHelp": false
+  },
+  "commandPlan": [
+    {
+      "argv": [
+        "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-frontend",
+        "-typecheck",
+        "-parse-as-library",
+        "-module-name",
+        "TorahInspectorCore",
+        "-target",
+        "aarch64-unknown-linux-gnu",
+        "-swift-version",
+        "6",
+        "-Onone",
+        "-enable-testing",
+        "-D",
+        "SWIFT_PACKAGE",
+        "-D",
+        "DEBUG",
+        "-D",
+        "Xcode",
+        "-D",
+        "SWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-package-name",
+        "captureproducerproof",
+        "-enable-experimental-feature",
+        "DebugDescriptionMacro",
+        "-module-load-mode",
+        "only-serialized",
+        "-module-cache-path",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/clang-module-cache",
+        "-clang-scanner-module-cache-path",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/clang-module-cache",
+        "-I",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/modules",
+        "-I",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/retained-crypto-imports",
+        "-Xcc",
+        "-fmodule-map-file=/run/pinkha-e-swift-semantic131-20261128-attempt2/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap",
+        "-Xcc",
+        "-I/run/pinkha-e-swift-semantic131-20261128-attempt2/retained-crypto-headers/CCryptoBoringSSL/include",
+        "-Xcc",
+        "-fmodule-map-file=/run/pinkha-e-swift-semantic131-20261128-attempt2/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap",
+        "-Xcc",
+        "-I/run/pinkha-e-swift-semantic131-20261128-attempt2/retained-crypto-headers/CCryptoBoringSSLShims/include",
+        "-Xcc",
+        "-DSWIFT_PACKAGE",
+        "-Xcc",
+        "-DDEBUG=1",
+        "-Xcc",
+        "-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_DEBUG",
+        "-no-color-diagnostics",
+        "-num-threads",
+        "1",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/Models.swift",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/ProviderProtocols.swift",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/TorahInspectorCoordinator.swift",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/TorahInspectorRepository.swift",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/TorahReaderScrollStateMachine.swift",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/TorahRelatedDocumentsAccessError.swift",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/TorahSourceTransfer.swift",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/TorahToolSelectorStateMachine.swift"
+      ],
+      "label": "01-TorahInspectorCore-typecheck",
+      "mode": "typecheck",
+      "target": "TorahInspectorCore"
+    }
+  ],
+  "commands": [
+    {
+      "absenceObservedAtSeconds": 0.3063720175996423,
+      "argv": [
+        "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-frontend",
+        "-typecheck",
+        "-parse-as-library",
+        "-module-name",
+        "TorahInspectorCore",
+        "-target",
+        "aarch64-unknown-linux-gnu",
+        "-swift-version",
+        "6",
+        "-Onone",
+        "-enable-testing",
+        "-D",
+        "SWIFT_PACKAGE",
+        "-D",
+        "DEBUG",
+        "-D",
+        "Xcode",
+        "-D",
+        "SWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-package-name",
+        "captureproducerproof",
+        "-enable-experimental-feature",
+        "DebugDescriptionMacro",
+        "-module-load-mode",
+        "only-serialized",
+        "-module-cache-path",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/clang-module-cache",
+        "-clang-scanner-module-cache-path",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/clang-module-cache",
+        "-I",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/modules",
+        "-I",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/retained-crypto-imports",
+        "-Xcc",
+        "-fmodule-map-file=/run/pinkha-e-swift-semantic131-20261128-attempt2/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap",
+        "-Xcc",
+        "-I/run/pinkha-e-swift-semantic131-20261128-attempt2/retained-crypto-headers/CCryptoBoringSSL/include",
+        "-Xcc",
+        "-fmodule-map-file=/run/pinkha-e-swift-semantic131-20261128-attempt2/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap",
+        "-Xcc",
+        "-I/run/pinkha-e-swift-semantic131-20261128-attempt2/retained-crypto-headers/CCryptoBoringSSLShims/include",
+        "-Xcc",
+        "-DSWIFT_PACKAGE",
+        "-Xcc",
+        "-DDEBUG=1",
+        "-Xcc",
+        "-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_DEBUG",
+        "-no-color-diagnostics",
+        "-num-threads",
+        "1",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/Models.swift",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/ProviderProtocols.swift",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/TorahInspectorCoordinator.swift",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/TorahInspectorRepository.swift",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/TorahReaderScrollStateMachine.swift",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/TorahRelatedDocumentsAccessError.swift",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/TorahSourceTransfer.swift",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/TorahToolSelectorStateMachine.swift"
+      ],
+      "cleanupErrors": [],
+      "cwd": "/run/pinkha-e-swift-semantic131-20261128-attempt2/package",
+      "exitCode": -15,
+      "forcedCleanup": true,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "maximumSampledGroupMembers": 1,
+      "maximumSampledGroupRSSBytes": 10772480,
+      "originalError": {
+        "message": "resource observation failed: RuntimeError: owned namespace contains nonregular or linked output",
+        "type": "RuntimeError"
+      },
+      "pgid": 610580,
+      "pid": 610580,
+      "processGroupAbsent": true,
+      "resourceLeaderStartTicks": 739651852,
+      "seconds": 0.30637393798679113,
+      "signals": [
+        15
+      ],
+      "stopReason": "resource observation failed: RuntimeError: owned namespace contains nonregular or linked output",
+      "unreapedLeaderDuringGroupCleanup": true
+    }
+  ],
+  "completeSystemHeaderOrSDKClosureClaimed": false,
+  "completedFullBodyTypechecks": [],
+  "completedModuleOnlyEmissions": [],
+  "completionErrors": [
+    {
+      "message": "resource observation failed: RuntimeError: owned namespace contains nonregular or linked output",
+      "type": "RuntimeError"
+    },
+    {
+      "message": "owned namespace contains nonregular or linked output",
+      "type": "RuntimeError"
+    }
+  ],
+  "configuration": {
+    "compilerImportFlags": [
+      "-I",
+      "/run/pinkha-e-swift-semantic131-20261128-attempt2/retained-crypto-imports",
+      "-Xcc",
+      "-fmodule-map-file=/run/pinkha-e-swift-semantic131-20261128-attempt2/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap",
+      "-Xcc",
+      "-I/run/pinkha-e-swift-semantic131-20261128-attempt2/retained-crypto-headers/CCryptoBoringSSL/include",
+      "-Xcc",
+      "-fmodule-map-file=/run/pinkha-e-swift-semantic131-20261128-attempt2/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap",
+      "-Xcc",
+      "-I/run/pinkha-e-swift-semantic131-20261128-attempt2/retained-crypto-headers/CCryptoBoringSSLShims/include"
+    ],
+    "conditionalDefinitions": [
+      "SWIFT_PACKAGE",
+      "DEBUG",
+      "Xcode",
+      "SWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE"
+    ],
+    "currentApplicationEquivalence": false,
+    "dependencyTopology": [
+      {
+        "imports": [],
+        "target": "TorahInspectorCore"
+      },
+      {
+        "imports": [
+          "TorahInspectorCore"
+        ],
+        "target": "PinkhaKit"
+      },
+      {
+        "imports": [],
+        "target": "PinkhaAnyEngine"
+      },
+      {
+        "imports": [
+          "PinkhaKit",
+          "PinkhaAnyEngine"
+        ],
+        "target": "PinkhaAnyIntegration"
+      },
+      {
+        "imports": [
+          "PinkhaAnyEngine",
+          "PinkhaAnyIntegration"
+        ],
+        "target": "PinkhaAnyHost"
+      },
+      {
+        "imports": [
+          "PinkhaAnyEngine",
+          "PinkhaAnyIntegration",
+          "PinkhaAnyHost"
+        ],
+        "target": "CaptureProducerContractTests"
+      }
+    ],
+    "enableTesting": true,
+    "experimentalFeatures": [
+      "DebugDescriptionMacro"
+    ],
+    "implicitTextualSwiftModuleBuildingRequested": false,
+    "importedDependencyDocumentation": "The unchanged 9ec wrapper copies four existing dependency module/doc files; no new documentation emission is requested.",
+    "importedDependencyModules": [
+      "Crypto",
+      "CryptoBoringWrapper"
+    ],
+    "newProjectModulesOnly": true,
+    "observedC3Differences": [
+      "C3 uses original per-product package names, whereas this isolated semantic scope declares captureproducerproof.",
+      "C3 PinkhaKit was built with resource bundle AVAILABLE; this resource-free isolated graph declares UNAVAILABLE for every target.",
+      "C3 driver commands contain object/debug/index/dependency paths; this direct frontend request omits those output modes."
+    ],
+    "omittedProductionModes": [
+      "object emission",
+      "link",
+      "XCTest execution",
+      "native runtime",
+      "application executable"
+    ],
+    "optimization": "Onone",
+    "packageName": "captureproducerproof",
+    "resourceBundle": "unavailable-in-the-isolated-resource-free-package",
+    "scope": "EXPLICIT_SEMANTIC_CONFIGURATION_NOT_SWIFTPM_GENERATED_ARGV_EQUIVALENCE",
+    "swiftLanguageMode": "6",
+    "swiftModuleLoadingMode": "only-serialized",
+    "systemBinaryInputAtimePolicy": "Compiler reads may change only access time for the finite24; all bytes and non-atime identity remain exact. Shared atime changes are not attributed to this job.",
+    "systemLibraryImports": "Only serialized Swift-module loading; exactly24 observed installed binary Swift inputs pinned before/final; existing bounded fresh Clang PCM cache. No complete system-header or SDK closure is claimed.",
+    "target": "aarch64-unknown-linux-gnu",
+    "wholeModuleTypecheckBeforeEachEmission": true
+  },
+  "controllerSHA256": "750948d684b813693bfcd61c13a9a37348cae18135a65194686a5b0dc96b7bca",
+  "currentApplicationGraphEquivalenceClaimed": false,
+  "durableOffTmpfsCopyClaimed": false,
+  "endedAtUTC": "2026-11-28T12:37:27.424415+00:00",
+  "environment": {
+    "CLANG_MODULE_CACHE_PATH": "/run/pinkha-e-swift-semantic131-20261128-attempt2/clang-module-cache",
+    "HOME": "/run/pinkha-e-swift-semantic131-20261128-attempt2/home",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "PATH": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin:/usr/bin:/bin",
+    "SWIFT_BACKTRACE": "enable=no",
+    "TEMP": "/run/pinkha-e-swift-semantic131-20261128-attempt2/temporary",
+    "TMP": "/run/pinkha-e-swift-semantic131-20261128-attempt2/temporary",
+    "TMPDIR": "/run/pinkha-e-swift-semantic131-20261128-attempt2/temporary",
+    "TZ": "UTC",
+    "XDG_CACHE_HOME": "/run/pinkha-e-swift-semantic131-20261128-attempt2/cache-home",
+    "XDG_CONFIG_HOME": "/run/pinkha-e-swift-semantic131-20261128-attempt2/config-home"
+  },
+  "errors": [
+    {
+      "message": "resource observation failed: RuntimeError: owned namespace contains nonregular or linked output",
+      "type": "RuntimeError"
+    }
+  ],
+  "globalFilesystemWriteAuditClaimed": false,
+  "limits": {
+    "childAddressSpaceBytes": 2147483648,
+    "childCPUSeconds": 120,
+    "childRegularFileBytes": 67108864,
+    "childWallSeconds": 180,
+    "combinedDiagnosticsBytes": 16777216,
+    "coreDumpBytes": 0,
+    "developmentReadOnlyEmergencyReserveBytes": 536870912,
+    "finalSeconds": 120,
+    "initialMemAvailableBytes": 3221225472,
+    "liveMemAvailableBytes": 1073741824,
+    "mainSeconds": 900,
+    "maximumClangCacheBytes": 134217728,
+    "maximumClangCacheFiles": 256,
+    "maximumNamespaceDepth": 12,
+    "maximumNamespaceEntries": 4096,
+    "maximumPreparedControlBytes": 2097152,
+    "maximumReceiptBytes": 8388608,
+    "parentAddressSpaceBytes": 268435456,
+    "requiredOuterSeconds": 1080,
+    "rootReadOnlyEmergencyReserveBytes": 1073741824,
+    "sampledOwnedGroupRSSBytes": 1073741824,
+    "terminalPersistenceReserveBytes": 16777216,
+    "tmpfsFreeReserveBytes": 536870912,
+    "wholeOwnedAllocatedBytes": 268435456
+  },
+  "linkInvocations": 0,
+  "maximumObservedCombinedDiagnosticBytes": 0,
+  "maximumObservedWholeOwnedAllocatedBytes": 10231808,
+  "minimumDevelopmentBytes": 1140961280,
+  "minimumMemAvailableBytes": 4079984640,
+  "minimumRootBytes": 1305923584,
+  "minimumTmpfsBytes": 1219833856,
+  "nativeInvocations": 0,
+  "objectGenerationInvocations": 0,
+  "oldLifecycleControlsReplayed": 0,
+  "oldProjectProductsImported": 0,
+  "originalCryptoAdmissionUnchanged": false,
+  "output": "/run/pinkha-e-swift-semantic131-20261128-attempt2",
+  "ownedOutputsRemoved": false,
+  "ownerAdmission": {
+    "newControlRuns": 0,
+    "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/swift-lifecycle-controls1/result.json",
+    "sha256": "040ffa3fcf93094369e24928732aeba9eb10fdb673db76ab7540a887748aa27d"
+  },
+  "phases": [
+    {
+      "commandIndex": 0,
+      "label": "01-TorahInspectorCore-typecheck",
+      "mode": "typecheck",
+      "normalCompletion": false,
+      "sourceCount": 8,
+      "sourceFiles": [
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/Models.swift",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/ProviderProtocols.swift",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/TorahInspectorCoordinator.swift",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/TorahInspectorRepository.swift",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/TorahReaderScrollStateMachine.swift",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/TorahRelatedDocumentsAccessError.swift",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/TorahSourceTransfer.swift",
+        "/run/pinkha-e-swift-semantic131-20261128-attempt2/package/Sources/TorahInspectorCore/TorahToolSelectorStateMachine.swift"
+      ],
+      "target": "TorahInspectorCore"
+    }
+  ],
+  "plannedFrontendCommands": 11,
+  "preparedNamespace": {
+    "allocatedBytes": 1191936,
+    "directoryIdentity": [
+      28,
+      2945265,
+      16832,
+      2,
+      0,
+      0,
+      80,
+      1795869424304706288,
+      1795869424304706288,
+      1795869424306101536
+    ],
+    "files": {
+      "qualify_semantic131.py": [
+        28,
+        2945266,
+        33152,
+        1,
+        0,
+        0,
+        82535,
+        1795869424304373446,
+        1795869424304373446,
+        1795869441264709943
+      ],
+      "source-packet.json": [
+        28,
+        2945267,
+        33152,
+        1,
+        0,
+        0,
+        1104330,
+        1795869424304706288,
+        1795869424304706288,
+        1795869424304373446
+      ]
+    }
+  },
+  "priorSemanticFailure": {
+    "historicalProcessIDsReprobed": false,
+    "logSHA256": "2562e45a098bf04d703ab0f07afb8937fff4559b6e2c12c22e324dc3e96d7b6b",
+    "originalFailureNamespaceMutated": false,
+    "receiptSHA256": "b02a84d1962061de7e98152e00541480653a46555bd779e267e94e688b2c6c6b",
+    "reusedSemanticPhases": 0,
+    "status": "FAIL"
+  },
+  "privateFixturePayloadsOpened": 0,
+  "qualifiedDependencyAdmission": {
+    "ASN1CompiledProductClaimed": false,
+    "dependencyCompilerInvocations": 0,
+    "linkObjectsUsed": false,
+    "moduleNames": [
+      "Crypto",
+      "CryptoBoringWrapper"
+    ],
+    "receipt": {
+      "bytes": 2241378,
+      "path": "/run/pinkha-e-swift-semantic131-20261128-attempt2/retained-dependency-products.json",
+      "sha256": "3ad356d8207392e63fbe9a4eb5ba497fca0e36fb1abaf6fff313c0a3ea883445"
+    },
+    "sharedHelperSHA256": "206bbf988fe28657ada7eb98079fad951d9cee66146da6a9204e7279fe845ad0",
+    "wrapperSHA256": "9ec68e6db7ad722866236ab4494df3108fee60791a40a8d218c93a82d817805b"
+  },
+  "sampledAllocationIsNotFilesystemQuota": true,
+  "sampledRSSIsNotContinuousPeakProof": true,
+  "schema": "pinkha-separate-swift-semantic131-v1",
+  "scope": "Full-body source semantic checks and five fresh importable modules; no object, link, test or native mode",
+  "seconds": 6.11485068500042,
+  "sourceCounts": {
+    "gitSuppliedRows": 30,
+    "physicalSourceRows": 101,
+    "productionFiles": 127,
+    "sourceBytes": 1652921,
+    "testFiles": 4,
+    "twentyRuntimeMethodsRemainNotRun": true,
+    "wholeFiles": 131
+  },
+  "sourceGraphSHA256": "748a0eb40a29a79198bbc396e7fb03061f7be1988a0259b670a76aeeeddb3597",
+  "sourcePacketSHA256": "c580ba5ef89b640c00ce08733f2c20c69f27e9e6772d625d3dd7011ea480fd35",
+  "sourceUnchanged": false,
+  "standardLibraryImportScope": "Only serialized Swift modules; exactly24 installed binary inputs pinned separately; existing bounded Clang PCM cache; no full system-header or SDK closure claim",
+  "startedAtUTC": "2026-11-28T12:37:21.309598+00:00",
+  "startedFrontendCommands": 1,
+  "status": "FAIL",
+  "systemBinarySwiftModuleInputsUnchanged": false,
+  "systemModuleInputAdmission": {
+    "binaryModules": {
+      "Cxx": {
+        "accessTimeBeforeNs": 1795515308756757165,
+        "bytes": 202304,
+        "identityExcludingAtime": [
+          2064,
+          12513,
+          33188,
+          1,
+          1001,
+          1002,
+          202304,
+          1795104998000000000,
+          1795391655127124177
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/Cxx.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "ac70bd489ec3201135d6a025a33d9591bd64e34dc3db54243ec0d78ac290213d"
+      },
+      "CxxStdlib": {
+        "accessTimeBeforeNs": 1795515307776751373,
+        "bytes": 189616,
+        "identityExcludingAtime": [
+          2064,
+          12519,
+          33188,
+          1,
+          1001,
+          1002,
+          189616,
+          1795105004000000000,
+          1795391655128124183
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/CxxStdlib.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "ab57f4b54db782616397270a0cfcc743fc862136d9a799ec9a0246eba7ce543b"
+      },
+      "Dispatch": {
+        "accessTimeBeforeNs": 1795836586339112754,
+        "bytes": 346884,
+        "identityExcludingAtime": [
+          2064,
+          12522,
+          33188,
+          1,
+          1001,
+          1002,
+          346884,
+          1795105497000000000,
+          1795391655129124189
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/Dispatch.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "6fc11ad42d8dd7fdd2d71a08e6098d6f333c7f23d048596947e11d0d2afe9d9c"
+      },
+      "Distributed": {
+        "accessTimeBeforeNs": 1795515307763751296,
+        "bytes": 87572,
+        "identityExcludingAtime": [
+          2064,
+          12528,
+          33188,
+          1,
+          1001,
+          1002,
+          87572,
+          1795105118000000000,
+          1795391655130124195
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/Distributed.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "c1b4a19b257513e3c491e1b15d6aa51e77f11d023ca44aae1a21a6558e32bf81"
+      },
+      "Foundation": {
+        "accessTimeBeforeNs": 1795836586325112674,
+        "bytes": 4854808,
+        "identityExcludingAtime": [
+          2064,
+          12531,
+          33188,
+          1,
+          1001,
+          1002,
+          4854808,
+          1795107035000000000,
+          1795391655207124645
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/Foundation.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "5954bdf200ba8416b974c7df0247d6a412292f91e2596478fa8162e4eac685f6"
+      },
+      "FoundationEssentials": {
+        "accessTimeBeforeNs": 1795836586603114266,
+        "bytes": 4864544,
+        "identityExcludingAtime": [
+          2064,
+          12534,
+          33188,
+          1,
+          1001,
+          1002,
+          4864544,
+          1795106904000000000,
+          1795391655286125107
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/FoundationEssentials.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "15ef8f5222245abea688adbc646d20dcab6631d886fa4aa2d9adb4c2513846c8"
+      },
+      "FoundationInternationalization": {
+        "accessTimeBeforeNs": 1795836588201123412,
+        "bytes": 1766344,
+        "identityExcludingAtime": [
+          2064,
+          12537,
+          33188,
+          1,
+          1001,
+          1002,
+          1766344,
+          1795106979000000000,
+          1795391655293125148
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/FoundationInternationalization.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "f70912213f29f85fdfa76507751c09c265a70233a807924449c7bcdf27bf455b"
+      },
+      "FoundationNetworking": {
+        "accessTimeBeforeNs": 1795822857599442193,
+        "bytes": 747232,
+        "identityExcludingAtime": [
+          2064,
+          12540,
+          33188,
+          1,
+          1001,
+          1002,
+          747232,
+          1795107077000000000,
+          1795391655297125172
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/FoundationNetworking.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "b705da1860967851d0dec2f7d82b4e48ef543bd90818ac41c6540288e3d5a333"
+      },
+      "FoundationXML": {
+        "accessTimeBeforeNs": 1795515308783757325,
+        "bytes": 312888,
+        "identityExcludingAtime": [
+          2064,
+          12543,
+          33188,
+          1,
+          1001,
+          1002,
+          312888,
+          1795107071000000000,
+          1795391655298125178
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/FoundationXML.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "c6774b09dd4555d1bab03efcc27e468652c90d92c83debdbde5e3d5afec94f2c"
+      },
+      "Glibc": {
+        "accessTimeBeforeNs": 1795836586621114369,
+        "bytes": 95652,
+        "identityExcludingAtime": [
+          2064,
+          12549,
+          33188,
+          1,
+          1001,
+          1002,
+          95652,
+          1795104998000000000,
+          1795391655299125183
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/Glibc.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "1177fba0015b1c9c5d7fcdc16462fe2fc0e9f947d0166edf0258690f6a650aad"
+      },
+      "Observation": {
+        "accessTimeBeforeNs": 1795836587143117356,
+        "bytes": 99364,
+        "identityExcludingAtime": [
+          2064,
+          12592,
+          33188,
+          1,
+          1001,
+          1002,
+          99364,
+          1795105004000000000,
+          1795391656635133000
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/Observation.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "4aa08c12e21e0ad3b27119ea19fff4308f017202a99ffa7c5585196902b9e933"
+      },
+      "RegexBuilder": {
+        "accessTimeBeforeNs": 1795515308700756834,
+        "bytes": 1230988,
+        "identityExcludingAtime": [
+          2064,
+          12598,
+          33188,
+          1,
+          1001,
+          1002,
+          1230988,
+          1795105181000000000,
+          1795391656640133029
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/RegexBuilder.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "820fe5d3d8ed630dad7b03b1ba47808e24a3979485e1e9fd111262a55b4e2b13"
+      },
+      "Runtime": {
+        "accessTimeBeforeNs": 1795515307912752177,
+        "bytes": 746960,
+        "identityExcludingAtime": [
+          2064,
+          12604,
+          33188,
+          1,
+          1001,
+          1002,
+          746960,
+          1795105017000000000,
+          1795391656645133059
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/Runtime.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "74e20f8f94249f4af29475bf20ebd67b5af09cab32b4aab122d3dcfed42c96cb"
+      },
+      "Swift": {
+        "accessTimeBeforeNs": 1795829267490500870,
+        "bytes": 16738600,
+        "identityExcludingAtime": [
+          2064,
+          12610,
+          33188,
+          1,
+          1001,
+          1002,
+          16738600,
+          1795104966000000000,
+          1795391657068135534
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/Swift.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "75b17ac18d4a3cda9adff09da63f2de2af86fb30ee4df9fb1299e7d2bca846fc"
+      },
+      "SwiftOnoneSupport": {
+        "accessTimeBeforeNs": 1795829267638501733,
+        "bytes": 182764,
+        "identityExcludingAtime": [
+          2064,
+          12616,
+          33188,
+          1,
+          1001,
+          1002,
+          182764,
+          1795104998000000000,
+          1795391657069135540
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/SwiftOnoneSupport.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "b4c1eaaeb337627723d3750de19ecccc1229763e0c9c649b89a1eeb73c061103"
+      },
+      "Synchronization": {
+        "accessTimeBeforeNs": 1795836587146117374,
+        "bytes": 585048,
+        "identityExcludingAtime": [
+          2064,
+          12622,
+          33188,
+          1,
+          1001,
+          1002,
+          585048,
+          1795105001000000000,
+          1795391657072135557
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/Synchronization.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "078b618c5ff9aad33ebf339b2e61d488089a1b7ab6365f3118e8baa556013c90"
+      },
+      "XCTest": {
+        "accessTimeBeforeNs": 1795836631652372249,
+        "bytes": 318848,
+        "identityExcludingAtime": [
+          2064,
+          12636,
+          33188,
+          1,
+          1001,
+          1002,
+          318848,
+          1795107468000000000,
+          1795391657075135575
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/XCTest.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "3ba89b89f42facb8ecf94aa417f5f7fa8d6625466bd999dc8d7d4f38ceae86e5"
+      },
+      "_Builtin_float": {
+        "accessTimeBeforeNs": 1795515308775757277,
+        "bytes": 23644,
+        "identityExcludingAtime": [
+          2064,
+          12461,
+          33188,
+          1,
+          1001,
+          1002,
+          23644,
+          1795104997000000000,
+          1795391655045123697
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/_Builtin_float.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "0c52e148f47ef5fd03438b97fed3899a9ad3d1db06fb34787bcce47eea8ef035"
+      },
+      "_Concurrency": {
+        "accessTimeBeforeNs": 1795829267632501698,
+        "bytes": 902472,
+        "identityExcludingAtime": [
+          2064,
+          12467,
+          33188,
+          1,
+          1001,
+          1002,
+          902472,
+          1795105001000000000,
+          1795391655051123732
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/_Concurrency.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "84831a7fc8321320cfbd8abb3304e93a4cd242545798c61a9e8d439b900469e7"
+      },
+      "_Differentiation": {
+        "accessTimeBeforeNs": 1795515308221754003,
+        "bytes": 1210696,
+        "identityExcludingAtime": [
+          2064,
+          12473,
+          33188,
+          1,
+          1001,
+          1002,
+          1210696,
+          1795105001000000000,
+          1795391655055123756
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/_Differentiation.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "baf9c86d7e683fd974227baa6eb39fc52dea5a23b553c30dbbd88848883c9eb0"
+      },
+      "_FoundationCollections": {
+        "accessTimeBeforeNs": 1795836588192123361,
+        "bytes": 2297848,
+        "identityExcludingAtime": [
+          2064,
+          12476,
+          33188,
+          1,
+          1001,
+          1002,
+          2297848,
+          1795106823000000000,
+          1795391655118124124
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/_FoundationCollections.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "04d290c686a50fcea940a3b764f0fff9ec9b9eefbe73eb70e8a5d3257a305677"
+      },
+      "_RegexParser": {
+        "accessTimeBeforeNs": 1795515308725756982,
+        "bytes": 413304,
+        "identityExcludingAtime": [
+          2064,
+          12482,
+          33188,
+          1,
+          1001,
+          1002,
+          413304,
+          1795105118000000000,
+          1795391655121124142
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/_RegexParser.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "aa34570d62848fdda2395600913f9e1989e91818810bedfd5b9fd4cf0045df22"
+      },
+      "_StringProcessing": {
+        "accessTimeBeforeNs": 1795829267618501616,
+        "bytes": 485964,
+        "identityExcludingAtime": [
+          2064,
+          12488,
+          33188,
+          1,
+          1001,
+          1002,
+          485964,
+          1795105157000000000,
+          1795391655124124159
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/_StringProcessing.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "99f1c19b895c1c323bb0a6c03e574be67f1b2a17cd0ece67f47174ce2ce0adc6"
+      },
+      "_Volatile": {
+        "accessTimeBeforeNs": 1795515308615756332,
+        "bytes": 24932,
+        "identityExcludingAtime": [
+          2064,
+          12503,
+          33188,
+          1,
+          1001,
+          1002,
+          24932,
+          1795104997000000000,
+          1795391655125124165
+        ],
+        "mode": 420,
+        "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/_Volatile.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+        "sha256": "0678b17619644885578fdf916eba1fecc386f3bf66fcfc2960f8a7092bfc9eab"
+      }
+    },
+    "bytes": 38729276,
+    "compilerReadAccessTimeChangesPermitted": true,
+    "completeSystemHeaderOrSDKClosureClaimed": false,
+    "count": 24,
+    "fourObservedInterfaceOnlyTestingModulesAdmitted": false,
+    "observationSHA256": "ad3305e05d8ed4626432a6487eb00c85846fdff813ff34979c20b4d99918223b",
+    "otherIdentityAndBytesMustRemainExact": true,
+    "timestampsRestored": false
+  },
+  "systemToolchainResourceFilesIndividuallyPinned": true,
+  "systemToolchainResourceFilesPinnedCount": 24,
+  "terminalReceiptQualified": false,
+  "testInvocations": 0,
+  "testMethodsPassed": 0,
+  "testMethodsStarted": 0,
+  "tmpfsMount": {
+    "device": 28,
+    "filesystem": "tmpfs",
+    "mountID": 32,
+    "mountOptions": "rw,nosuid,nodev,noexec,relatime",
+    "mountPoint": "/run",
+    "parentMountID": 35,
+    "superOptions": "rw,size=1221360k,mode=755,inode64"
+  }
+}

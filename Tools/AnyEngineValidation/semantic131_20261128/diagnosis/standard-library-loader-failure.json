@@ -1,0 +1,111 @@
+{
+  "schema": "pinkha-e-semantic131-standard-library-diagnosis-v1",
+  "status": "SOURCE_DIAGNOSIS_NO_SUCCESSOR_EXECUTED",
+  "failedAttempt": {
+    "receiptGitBlob": "177965483061ffdf6f87392ccc75722287de69a1",
+    "receiptSHA256": "b02a84d1962061de7e98152e00541480653a46555bd779e267e94e688b2c6c6b",
+    "logGitBlob": "e01574911c7ca197ffe048cb18f030126fc530a7",
+    "logSHA256": "2562e45a098bf04d703ab0f07afb8937fff4559b6e2c12c22e324dc3e96d7b6b"
+  },
+  "installedObservations": {
+    "layout": {
+      "blob": "b19a8c135a7c8deebfc887c4dacc8d40f8b244bc",
+      "bytes": 16956,
+      "sha256": "7a950d03d8214bb6ed25b06d901776ae8d60772f8e9ff2d5165665e2865dda24"
+    },
+    "targetInfo": {
+      "blob": "892fd7da1c53096a8b335873875846176ea34362",
+      "bytes": 923,
+      "sha256": "86954240683b500b9d23adaa3e0f0455d9555e18b149ab119bc8adbe242236b6"
+    },
+    "namedSystemInputs": {
+      "blob": "3ab375d7f52811ea5a59303059401b2d434b5205",
+      "bytes": 61375,
+      "sha256": "ad3305e05d8ed4626432a6487eb00c85846fdff813ff34979c20b4d99918223b"
+    }
+  },
+  "release": {
+    "repository": "swiftlang/swift",
+    "tag": "swift-6.4.3-RELEASE",
+    "commit": "51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2",
+    "sourceFiles": [
+      {
+        "path": "lib/Frontend/Frontend.cpp",
+        "bytes": 78758,
+        "sha256": "c2239ffe85dd4c9718554faa0315cdbaaf8b12aff35f189f26f64f0abf76d872"
+      },
+      {
+        "path": "lib/Frontend/ArgsToFrontendOptionsConverter.cpp",
+        "bytes": 41391,
+        "sha256": "85ddc5991826b91923ea336f752ba3594f3e2859b6a229e90e2f4994a486d1bd"
+      },
+      {
+        "path": "include/swift/Frontend/ModuleInterfaceLoader.h",
+        "bytes": 34744,
+        "sha256": "027dbc4d101737ee8d158a4ca81517b604437ab57e04ef81d1e85b88d5c0efb7"
+      },
+      {
+        "path": "lib/Frontend/ModuleInterfaceLoader.cpp",
+        "bytes": 125973,
+        "sha256": "a1e2ffd65eab39efd7df54cbf3f4005291b7b27f62570522ad77dceb5da94954"
+      },
+      {
+        "path": "lib/Frontend/CompilerInvocation.cpp",
+        "bytes": 185747,
+        "sha256": "53a098bd45bc2339275e84e109ff69f6740cfa43842c7ae476dd45db5caae67e"
+      },
+      {
+        "path": "lib/ClangImporter/ClangImporter.cpp",
+        "bytes": 358190,
+        "sha256": "4636f2243c5f734990c8195fa2f4d17d7bfac1b3d9a3fcdbb19bc0b22d276136"
+      }
+    ],
+    "inferenceLimitation": "Official source at the tag reported by the observed installed compiler; installed binary bytes are separately pinned. No claim of a reproducible compiler build from this tag."
+  },
+  "findings": [
+    "Actual frontend target-info names the observed installed runtime resource/import paths; actual physical target Swift.swiftmodule exists. A missing default resource path is not established.",
+    "Release option parsing maps -disable-implicit-swift-modules to DisableImplicitModules. Frontend setup then registers the explicit loader and skips both implicit interface and implicit serialized loaders.",
+    "Exact executed argv has no explicit Swift module map or -swift-module-file entries. The empty explicit module map cannot find Swift, irrespective of ordinary runtime search paths.",
+    "The same guard sets DisableImplicitClangModules. ClangImporter adds -fno-implicit-modules and -fno-implicit-module-maps. A complete guarded successor also needs admitted explicit Clang PCMs; the current 9ec wrapper only qualifies the Crypto modules/docs and94 header/module-map inputs.",
+    "No observed semantic phase succeeded. The original131 graph, full-body checks, original resource policies and failed raw evidence stay unchanged.",
+    "Read-only whole named-input observation hashes24 system binary modules plus20 interfaces. Four Testing-family target binaries are absent; these do not justify textual compilation or fabricated binaries. No complete transitive system-header/PCM closure is claimed."
+  ],
+  "remaining": [
+    "Root must choose and review a concrete successor policy; neither the explicit-map route nor the serialized-only route is currently adopted.",
+    "Declare/hash whole installed system module inputs before/final; actual known directory names are a finite candidate set, not yet payload-qualified.",
+    "Derive admitted explicit Clang PCM closure or a separately reviewed bounded PCM preparation; no cache product reuse or policy override is assumed.",
+    "Add both C3-qualified Crypto modules and previously completed fresh project modules to each applicable explicit map; -I alone is insufficient.",
+    "Source/configuration/lifecycle review and a separate Root execution grant are required for any successor."
+  ],
+  "compilerRunsByDiagnosis": 0,
+  "oracleWritesByDiagnosis": 0,
+  "guardChanged": false,
+  "nextReadOnlyObserver": {
+    "bytes": 5061,
+    "sha256": "9f59110ec27e25db0402a6c0b3e5e4733c8689059bb0f8a50a3aa7a389d2fb93",
+    "blob": "a828fe7977f066029b1a95a39e7f6811fd006f7b"
+  },
+  "normalLoaderCandidate": {
+    "status": "SOURCE_CANDIDATE_ONLY_NOT_ADOPTED_OR_EXECUTED",
+    "replace": [
+      "-disable-implicit-swift-modules"
+    ],
+    "with": [
+      "-module-load-mode",
+      "only-serialized"
+    ],
+    "sourceEffect": "Retain implicit serialized module lookup, skip ModuleInterfaceLoader, leave existing bounded Clang PCM creation available. No textual Swift module compilation is requested.",
+    "sourcePaths": [
+      "lib/Frontend/CompilerInvocation.cpp",
+      "lib/Frontend/Frontend.cpp"
+    ],
+    "installedCapabilityObservationStillNeeded": "The original public -help does not list this hidden flag; an exact installed -help-hidden observation would retain rather than omit capability validation.",
+    "unchangedRequirements": [
+      "exact frozen131 source graph and whole-body semantic phases",
+      "existing qualified Crypto modules/header copies and full206 before/final audit",
+      "no old project Products",
+      "same11 phases/no object/link/test/native",
+      "same output allowlist/resource budgets/lifecycle/failure archive"
+    ]
+  }
+}

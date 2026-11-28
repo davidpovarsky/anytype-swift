@@ -1,0 +1,56 @@
+--- a/qualify_semantic131.py
++++ b/qualify_semantic131.py
+@@ -325,6 +325,7 @@
+     allocated = 0
+     started = time.monotonic()
+     pending = [(Path(root), 0)]
++    discovered = 1
+     while pending:
+         path, depth = pending.pop()
+         require(depth <= LIMITS['maximumNamespaceDepth'], 'bounded owned namespace depth')
+@@ -344,9 +345,13 @@
+         rows[relative] = row
+         require(len(rows) <= LIMITS['maximumNamespaceEntries'], 'bounded owned namespace entries')
+         if stat.S_ISDIR(info.st_mode):
++            children = []
+             with os.scandir(path) as items:
++                for item in items:
++                    require(time.monotonic()-started <= 8, 'bounded directory enumeration time')
++                    discovered += 1
++                    require(discovered <= LIMITS['maximumNamespaceEntries'], 'bounded whole-census discovered entries')
++                    children.append(item)
+-                children = list(items)
+-            require(len(children) <= LIMITS['maximumNamespaceEntries'], 'bounded directory children')
+             pending.extend((Path(item.path),depth+1) for item in reversed(sorted(children,key=lambda item:item.name)))
+         else:
+             require(stat.S_ISREG(info.st_mode) and info.st_nlink == 1,
+@@ -361,6 +366,12 @@
+     if 'pid' not in row or row['processGroupAbsent']:
+         return None
+     leader = row['pid']
++    # f9 may already have reaped a leader when a later absence observation fails.
++    # Its row alone is not an unreaped-child proof. Never inspect a recycled ID.
++    try:
++        os.waitid(os.P_PID,leader,os.WEXITED|os.WNOHANG|os.WNOWAIT)
++    except ChildProcessError as error:
++        raise RuntimeError('current compiler leader is no longer our unreaped child') from error
+     members = [leader] + owned.other_group_members(leader)
+     require(len(members) <= 8, 'finite current compiler group')
+     total = 0
+@@ -766,9 +777,15 @@
+             stat.S_IMODE(info.st_mode) == 0o700 and info.st_dev == TMPFS.stat().st_dev,
+             'physical private prepared tmpfs namespace')
+     fd = os.open(PREPARED,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW|os.O_NOATIME|os.O_CLOEXEC)
++    listing_started = time.monotonic()
++    names = []
+     try:
+         with os.scandir(fd) as scan:
++            for item in scan:
++                require(time.monotonic()-listing_started <= 8, 'bounded prepared directory enumeration time')
++                require(len(names) < 2, 'prepared namespace has an unexpected third entry')
++                names.append(item.name)
++        names.sort()
+-            names = sorted(item.name for item in scan)
+     finally:
+         os.close(fd)
+     require(names == ['qualify_semantic131.py','source-packet.json'], 'exact two prepared controls')

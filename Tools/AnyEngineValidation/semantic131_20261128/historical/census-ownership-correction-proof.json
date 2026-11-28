@@ -1,0 +1,71 @@
+{
+  "schema": "pinkha-semantic131-bounded-ownership-successor-v1",
+  "status": "SOURCE_ONLY_NOT_YET_PYTHON_PARSED_OR_EXECUTED",
+  "before": {
+    "gitBlobSHA": "f6bfb4374dc57a08a867f11442cb6a6094b36c7c",
+    "bytes": 69490,
+    "sha256": "f64c532503befedf71cee8b19484108ee0b4b03525a60ef04e47c382d8be8033"
+  },
+  "after": {
+    "bytes": 70392,
+    "sha256": "67dab64dd60c571ee4960e06a9eb0b01828042425cf9624259a58b162ba57f6e"
+  },
+  "sourcePacketUnchanged": {
+    "gitBlobSHA": "616cedac5eef2916aacef0e5acc72abb9befc6a5",
+    "bytes": 942252,
+    "sha256": "e5dc877350ad03acbf194792039d39d7c4c926ce3882e5dd91b927a380c9f051"
+  },
+  "changedDeclarations": [
+    "namespace",
+    "group_sample",
+    "prepared_controls"
+  ],
+  "unchangedDeclarations": [
+    "require",
+    "identity",
+    "directory_identity",
+    "physical",
+    "sync_dir",
+    "own_path",
+    "write_bytes",
+    "save",
+    "Inputs",
+    "load_module",
+    "mem_available",
+    "tmpfs_mount",
+    "raw_record",
+    "admit_packet",
+    "admit_owner_lifecycle",
+    "copy_sources",
+    "verify_copies",
+    "module_members",
+    "frontend_arguments",
+    "closed_artifacts",
+    "archive_artifacts",
+    "admit_capability",
+    "main"
+  ],
+  "unchangedPrefix": true,
+  "wholePatchForwardAndInverse": true,
+  "fixes": [
+    "Before any current PID/group sampling, waitid(P_PID, leader, WEXITED|WNOHANG|WNOWAIT) now proves the child is still owned and unreaped. ChildProcessError stops sampling immediately. This covers f9's post-reap/failed-absence edge without changing any f9 body.",
+    "Owned namespace enumeration now increments a whole-traversal discovered-entry count and checks both 4096 entries and the existing eight-second deadline while consuming scandir, before sorting a bounded list.",
+    "Prepared two-control directory enumeration checks the existing eight-second bound incrementally and refuses the third entry before collecting it."
+  ],
+  "invariants": [
+    "All phase/argv/source/graph/limit constants unchanged",
+    "All main ownership, admission, source/206 verification, output allowlist, archive and terminal-persistence bodies unchanged",
+    "No f9 helper body change",
+    "Original frozen131 graph and942252-byte source packet unchanged",
+    "No resource cap increased",
+    "No source staging or compiler runtime"
+  ],
+  "historicalSyntaxOnly": {
+    "rawGitBlobSHA": "2e25853d507e44372db27a87f89e6462b085054a",
+    "bytes": 450,
+    "sha256": "6806369d5eb833b2e8139282d2f3b875a823149521eadf57892eefafd2bc5a1c",
+    "controllerSHA256": "f64c532503befedf71cee8b19484108ee0b4b03525a60ef04e47c382d8be8033",
+    "status": "PASS_PYTHON_AST_ONLY",
+    "successorIncluded": false
+  }
+}

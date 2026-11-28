@@ -1,0 +1,244 @@
+{
+  "schema": "pinkha-semantic131-private-clang-lock-successor-proof-v1",
+  "status": "SOURCE_ONLY_NO_PYTHON_PARSE_OR_CONTROLLER_EXECUTION",
+  "before": {
+    "blob": "a86988c323fd7f73ae653ca5214c0792dc07f06f",
+    "bytes": 82535,
+    "sha256": "750948d684b813693bfcd61c13a9a37348cae18135a65194686a5b0dc96b7bca"
+  },
+  "after": {
+    "bytes": 89375,
+    "sha256": "62a741066bff092cf753c79c79c05a6722703de2a5b62f11e82898899ba8c80d"
+  },
+  "sourcePacket": {
+    "bytes": 1209368,
+    "sha256": "bfd8731279d6b02d4f09827ffecbda82141d5966390cd13f1a77bd0e29c5dd33"
+  },
+  "literalEdits": [
+    {
+      "label": "exclusive attempt3 output",
+      "before": "OUTPUT = Path('/run/pinkha-e-swift-semantic131-20261128-attempt2')",
+      "after": "OUTPUT = Path('/run/pinkha-e-swift-semantic131-20261128-attempt3')"
+    },
+    {
+      "label": "exclusive prepared3 controls",
+      "before": "PREPARED = Path('/run/pinkha-e-swift-semantic131-20261128-prepared2')",
+      "after": "PREPARED = Path('/run/pinkha-e-swift-semantic131-20261128-prepared3')"
+    },
+    {
+      "label": "private serial Clang implicit-module lock option",
+      "before": "            '-module-load-mode','only-serialized',\n",
+      "after": "            '-module-load-mode','only-serialized',\n            '-Xcc','-Xclang','-Xcc','-fno-implicit-modules-use-lock',\n"
+    },
+    {
+      "label": "immutable unqualified attempt2 admission helper",
+      "before": "def admit_capability(packet):\n",
+      "after": "def admit_prior_clang_failure(packet):\n    \"\"\"Preserve the forced, unqualified failure without reusing any phase.\"\"\"\n    prior_raw = raw_record(packet['priorClangLockFailure'],\n        '948f9bf78ad75db29cea5f3253c7546533b468d40879dbcae33a7d27921955ac',128*1024)\n    terminal_raw = raw_record(packet['priorClangLockTerminal'],\n        '420f6c732451d7e43855f4854d037ce4a4b691b1bb2b69a2f9fb5b33100ac1e3',8*1024)\n    phase_raw = raw_record(packet['priorClangLockPhase'],\n        '2b637a83c7df44cb0f4f9bba53d39903d818a33c5a36c9a713db7661c4936aff',8*1024)\n    census_raw = raw_record(packet['priorClangLockCensus'],\n        '8e27b814088d4249eccc0c1becd106a697c6f2a0b553642d5f8a97be380c5477',128*1024)\n    prior,terminal,phase,census = map(json.loads,(prior_raw,terminal_raw,phase_raw,census_raw))\n    historical_output = '/run/pinkha-e-swift-semantic131-20261128-attempt2'\n    error_text = 'resource observation failed: RuntimeError: owned namespace contains nonregular or linked output'\n    require(prior['status'] == 'FAIL' and prior['terminalReceiptQualified'] is False and\n            prior['output'] == historical_output and prior['sourceGraphSHA256'] == GRAPH_SHA and\n            prior['controllerSHA256'] == '750948d684b813693bfcd61c13a9a37348cae18135a65194686a5b0dc96b7bca' and\n            prior['sourcePacketSHA256'] == 'c580ba5ef89b640c00ce08733f2c20c69f27e9e6772d625d3dd7011ea480fd35' and\n            prior['completedFullBodyTypechecks'] == prior['completedModuleOnlyEmissions'] == [] and\n            prior['startedFrontendCommands'] == len(prior['commands']) == len(prior['phases']) == 1 and\n            prior['allStartedOwnedGroupsPositivelyAbsent'] is True and\n            prior['sourceUnchanged'] is prior['originalCryptoAdmissionUnchanged'] is\n                prior['systemBinarySwiftModuleInputsUnchanged'] is False and\n            prior['testInvocations'] == prior['nativeInvocations'] == 0 and\n            prior['phases'][0]['normalCompletion'] is False and\n            prior['phases'][0]['label'] == '01-TorahInspectorCore-typecheck',\n            'original unqualified attempt2 has no completed semantic or final source audit')\n    require(prior['commands'][0] == phase and phase['exitCode'] == -15 and\n            phase['processGroupAbsent'] is True and phase['forcedCleanup'] is True and\n            phase['signals'] == [15] and phase['cleanupErrors'] == [] and\n            phase['unreapedLeaderDuringGroupCleanup'] is True and\n            phase['stopReason'] == error_text and\n            phase['logSHA256'] == hashlib.sha256(b'').hexdigest(),\n            'actual forced SIGTERM cleanup and empty diagnostic log, no historical process reprobe')\n    require(terminal['status'] == 'FAIL_TERMINAL_PERSISTENCE' and\n            terminal['anyPrimaryReceiptIsUnqualified'] is True and\n            terminal['controllerSHA256'] == prior['controllerSHA256'] and\n            terminal['allStartedOwnedGroupsPositivelyAbsent'] is True and\n            terminal['ownedOutputsRetained'] is True and\n            terminal['errors'] == prior['errors'] == [{'message':error_text,'type':'RuntimeError'}],\n            'fallback terminal preserves unqualified primary and original error')\n    require(census['schema'] == 'pinkha-semantic131-attempt2-failure-nofollow-observation-v1' and\n            census['status'] == 'PASS_BOUNDED_FAILURE_OBSERVATION_NOT_SEMANTIC_ACCEPTANCE' and\n            census['root'] == historical_output and census['entries'] == 276 and\n            census['regularFiles'] == 247 and census['directories'] == 28 and\n            census['allocatedBytes'] == 10289152 and len(census['anomalies']) == 1 and\n            census['linksFollowed'] is False and census['outputsRemoved'] is False and\n            census['historicalProcessReprobes'] == census['compilerInvocations'] ==\n                census['nativeInvocations'] == 0 and census['errors'] == [],\n            'exact nofollow metadata diagnosis, not semantic acceptance')\n    anomaly = census['anomalies'][0]\n    relative = 'clang-module-cache/219SUZFN68DOJ/CDispatch-2FVHGXUL9RCM5.pcm.lock'\n    require(anomaly['relativePath'] == relative and stat.S_ISLNK(anomaly['identity'][2]) and\n            anomaly['linkText'] == historical_output+'/'+relative+'-77d1c869',\n            'one recorded historical private-cache lock symlink; never admitted as current output')\n    for name,body in (('result.json',prior_raw),\n            ('terminal-persistence-failure.json',terminal_raw),\n            ('commands/01-TorahInspectorCore-typecheck/result.json',phase_raw),\n            ('commands/01-TorahInspectorCore-typecheck/original.log',b'')):\n        row = census['selectedFiles'][name]\n        require(row['bytes'] == len(body) and row['sha256'] == hashlib.sha256(body).hexdigest() and\n                row['raw'].encode() == body,'same whole historical receipt/log in nofollow observation')\n    return {'primarySHA256':hashlib.sha256(prior_raw).hexdigest(),\n            'terminalSHA256':hashlib.sha256(terminal_raw).hexdigest(),\n            'phaseSHA256':hashlib.sha256(phase_raw).hexdigest(),\n            'censusSHA256':hashlib.sha256(census_raw).hexdigest(),\n            'status':'FAIL','terminalReceiptQualified':False,'forcedCleanup':True,'signals':[15],\n            'reusedSemanticPhases':0,'finalSourceAndDependencyAuditCompleted':False,\n            'historicalProcessIDsReprobed':False,'originalFailureNamespaceMutated':False}\n\n\ndef admit_capability(packet):\n"
+    },
+    {
+      "label": "pinned official LLVM and Swift lock-policy source join",
+      "before": "    raw_record(packet['serializedLoadingPolicyPeer'],\n        'affe80371f854afbd4e6169efebd4c4af4ab8f3b8d9c5f554173a3f873befeb6',32*1024)\n",
+      "after": "    raw_record(packet['serializedLoadingPolicyPeer'],\n        'affe80371f854afbd4e6169efebd4c4af4ab8f3b8d9c5f554173a3f873befeb6',32*1024)\n    lock_raw = raw_record(packet['clangModuleLockPolicyPeer'],\n        '89ec51aaae590a2b1dd1f4488c05031a8cdde1114328679631575b96c9cc63f1',32*1024)\n    lock_policy = json.loads(lock_raw)\n    require(lock_policy['schema'] == 'pinkha.independent.clang-implicit-module-lock-source-peer.v1' and\n            lock_policy['status'] ==\n                'SOURCE_SUPPORTED_NARROW_CONFIGURATION_CANDIDATE_NOT_INSTALLED_OR_RUNTIME_ACCEPTANCE' and\n            lock_policy['release']['swiftCommit'] == '51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2' and\n            lock_policy['release']['llvmResolvedCommit'] == 'fb5f84d903a3b4e7aea15cd5666598a46f56c833' and\n            lock_policy['candidate']['appendSwiftFrontendArguments'] ==\n                ['-Xcc','-Xclang','-Xcc','-fno-implicit-modules-use-lock'],\n            'exact official-source lock policy and normal Swift driver-to-cc1 forwarding')\n"
+    },
+    {
+      "label": "truthful source-only lock-option admission report",
+      "before": "            'loaderPolicySourceCommit':'51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2'}",
+      "after": "            'loaderPolicySourceCommit':'51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2',\n            'clangLockPolicyPeerSHA256':hashlib.sha256(lock_raw).hexdigest(),\n            'clangLockSourceCommit':'fb5f84d903a3b4e7aea15cd5666598a46f56c833',\n            'clangImplicitModuleLocking':'disabled-only-for-new-private-serial-cache',\n            'newPrivateNonaliasedCacheRequired':True,'sharedCacheLockSuppressionPermitted':False,\n            'installedClangOptionAcceptanceClaimedFromTargetInfo':False}"
+    },
+    {
+      "label": "retain forced second failure before any new output",
+      "before": "        result['priorSemanticFailure'] = admit_prior_failure(packet)\n",
+      "after": "        result['priorSemanticFailure'] = admit_prior_failure(packet)\n        result['priorClangLockFailure'] = admit_prior_clang_failure(packet)\n"
+    }
+  ],
+  "fullLiteralInverseExact": true,
+  "fullUnifiedForwardInverseExact": true,
+  "unchangedDeclarations": [
+    "require",
+    "identity",
+    "directory_identity",
+    "physical",
+    "sync_dir",
+    "own_path",
+    "write_bytes",
+    "save",
+    "Inputs",
+    "load_module",
+    "mem_available",
+    "tmpfs_mount",
+    "namespace",
+    "group_sample",
+    "raw_record",
+    "admit_packet",
+    "admit_owner_lifecycle",
+    "copy_sources",
+    "verify_copies",
+    "module_members",
+    "closed_artifacts",
+    "archive_artifacts",
+    "prepared_controls",
+    "admit_system_modules",
+    "verify_system_modules",
+    "admit_prior_failure"
+  ],
+  "changedDeclarations": [
+    "admit_capability",
+    "frontend_arguments",
+    "main"
+  ],
+  "addedDeclarations": [
+    "admit_prior_clang_failure"
+  ],
+  "unchangedMainNestedHelpers": [
+    {
+      "name": "interrupted",
+      "bytes": 117,
+      "sha256": "53e08f91baf649f388ce11450a6052509515e6204cc05c298276dde7fd002379",
+      "wholeTextUnchanged": true
+    },
+    {
+      "name": "observe",
+      "bytes": 3367,
+      "sha256": "156bfeb67bebb034e8af21ae85bf48afe1a99c9556331d475f042d3d3ab881a3",
+      "wholeTextUnchanged": true
+    },
+    {
+      "name": "guard",
+      "bytes": 114,
+      "sha256": "a6ec847440ee502108cc0645d3472eb578c5a2d9892e7721843794d1ee9fa66d",
+      "wholeTextUnchanged": true
+    },
+    {
+      "name": "command",
+      "bytes": 1370,
+      "sha256": "00f22160281a978a54250b53b1dad472f631616203cabd3cfd4183b10303870a",
+      "wholeTextUnchanged": true
+    },
+    {
+      "name": "final_check",
+      "bytes": 1673,
+      "sha256": "64a242f40e66e3d9c8fdc4e0ba807d9e6e2de7ff18f357763df890a9865211b6",
+      "wholeTextUnchanged": true
+    }
+  ],
+  "unchangedPacketKeys": [
+    "schema",
+    "graph",
+    "gitSources",
+    "helpers",
+    "capabilityObservation",
+    "projectCommandObservation",
+    "cryptoCommandObservation",
+    "limits",
+    "sourceScope",
+    "preservedRuntimeGates",
+    "systemModuleInputObservation",
+    "priorSemanticFailure",
+    "priorSemanticFailureLog",
+    "serializedLoadingPolicyPeer",
+    "standardLibraryDiagnosis",
+    "serializedModeCapabilityObservation"
+  ],
+  "allElevenArgumentRowsInverseExactly": true,
+  "rawMetadataPreservedVerbatim": true,
+  "pureHeldJSONPredicateChecks": [
+    {
+      "name": "raw tuple priorClangLockFailure",
+      "passed": true
+    },
+    {
+      "name": "raw tuple priorClangLockTerminal",
+      "passed": true
+    },
+    {
+      "name": "raw tuple priorClangLockPhase",
+      "passed": true
+    },
+    {
+      "name": "raw tuple priorClangLockCensus",
+      "passed": true
+    },
+    {
+      "name": "raw tuple clangModuleLockPolicyPeer",
+      "passed": true
+    },
+    {
+      "name": "forced failure has zero reusable semantic phases",
+      "passed": true
+    },
+    {
+      "name": "no final source audit promotion",
+      "passed": true
+    },
+    {
+      "name": "same actual phase and forced positive closure",
+      "passed": true
+    },
+    {
+      "name": "terminal preserves primary disqualification",
+      "passed": true
+    },
+    {
+      "name": "nofollow observation remains metadata only",
+      "passed": true
+    },
+    {
+      "name": "single historical link is not a current allowlist",
+      "passed": true
+    },
+    {
+      "name": "whole observed receipt result.json",
+      "passed": true
+    },
+    {
+      "name": "whole observed receipt terminal-persistence-failure.json",
+      "passed": true
+    },
+    {
+      "name": "whole observed receipt commands/01-TorahInspectorCore-typecheck/result.json",
+      "passed": true
+    },
+    {
+      "name": "whole observed receipt commands/01-TorahInspectorCore-typecheck/original.log",
+      "passed": true
+    },
+    {
+      "name": "exact source-only lock policy schema and argv",
+      "passed": true
+    },
+    {
+      "name": "only expected declarations change",
+      "passed": true
+    },
+    {
+      "name": "regular output and every original input method unchanged",
+      "passed": true
+    },
+    {
+      "name": "whole nested interrupted",
+      "passed": true
+    },
+    {
+      "name": "whole nested observe",
+      "passed": true
+    },
+    {
+      "name": "whole nested guard",
+      "passed": true
+    },
+    {
+      "name": "whole nested command",
+      "passed": true
+    },
+    {
+      "name": "whole nested final_check",
+      "passed": true
+    }
+  ],
+  "pythonImportedOrExecuted": false,
+  "regularSingleLinkOutputAssertionUnchanged": true,
+  "full131GraphAndThirtyBodiesUnchanged": true,
+  "allTwentyMethodsNotRun": true,
+  "originalC3NativeC20Swift23GatesUnchanged": true,
+  "anyCurrentOrHistoricalProcessProbe": false
+}

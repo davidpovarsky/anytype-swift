@@ -1,0 +1,281 @@
+--- a/qualify_semantic131-attempt1.py
++++ b/qualify_semantic131-attempt2.py
+@@ -25,14 +25,19 @@
+ 
+ MIB = 1024 * 1024
+ GIB = 1024 * MIB
++OUTPUT = Path('/run/pinkha-e-swift-semantic131-20261128-attempt2')
+-OUTPUT = Path('/run/pinkha-e-swift-semantic131-20261128-attempt1')
+ TMPFS = Path('/run')
++PREPARED = Path('/run/pinkha-e-swift-semantic131-20261128-prepared2')
+-PREPARED = Path('/run/pinkha-e-swift-semantic131-20261128-prepared1')
+ C25 = Path('/mnt/development/projects/evidence/pinkha-original-type-runtime-provider25-20261127/prepared3')
+ CACHE = Path('/tmp/pinkha-w1-migration-swift-20261127')
+ PHYSICAL_CACHE = Path('/mnt/development/projects/caches/pinkha-w1-migration-swift-20261127')
+ TOOLCHAIN = Path('/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin')
+ FRONTEND = TOOLCHAIN/'swift-frontend'
++SYSTEM_MODULE_ROOT = TOOLCHAIN.parent/'lib/swift/linux'
++SYSTEM_MODULE_NAMES = ('Cxx', 'CxxStdlib', 'Dispatch', 'Distributed', 'Foundation', 'FoundationEssentials', 'FoundationInternationalization', 'FoundationNetworking', 'FoundationXML', 'Glibc', 'Observation', 'RegexBuilder', 'Runtime', 'Swift', 'SwiftOnoneSupport', 'Synchronization', 'XCTest', '_Builtin_float', '_Concurrency', '_Differentiation', '_FoundationCollections', '_RegexParser', '_StringProcessing', '_Volatile',)
++SYSTEM_MODULE_PATHS = frozenset(SYSTEM_MODULE_ROOT/(name+'.swiftmodule')/
++                               'aarch64-unknown-linux-gnu.swiftmodule' for name in SYSTEM_MODULE_NAMES)
++SYSTEM_MODULE_OBSERVATION_SHA = 'ad3305e05d8ed4626432a6487eb00c85846fdff813ff34979c20b4d99918223b'
+ FRONTEND_BYTES = 208647456
+ FRONTEND_SHA = 'd98470fed50d4efc0075bcbd45ba1f908382dc9222c2b8213d1ff074efaa2083'
+ GRAPH_SHA = '748a0eb40a29a79198bbc396e7fb03061f7be1988a0259b670a76aeeeddb3597'
+@@ -230,9 +235,11 @@
+             os.close(fd)
+         row = {'bytes':total, 'sha256':digest.hexdigest()}
+         if not path.is_relative_to(OUTPUT):
++            # Compiler execution/reads may advance access time on only these fixed inputs.
++            # Bytes and every other original identity field remain exact before/final.
++            include_atime = path != FRONTEND and path not in SYSTEM_MODULE_PATHS
++            witness = {'identity':list(identity(before, include_atime=include_atime)),
++                       'includeAtime':include_atime, 'mode':stat.S_IMODE(before.st_mode),
+-            # Executing the exact frontend may advance only its access time.
+-            witness = {'identity':list(identity(before, include_atime=path != FRONTEND)),
+-                       'includeAtime':path != FRONTEND, 'mode':stat.S_IMODE(before.st_mode),
+                        **row}
+             old = self.originals.get(str(path))
+             require(old is None or old == witness, 'original input changed: '+str(path))
+@@ -585,7 +592,7 @@
+             '-D','SWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE',
+             '-package-name','captureproducerproof',
+             '-enable-experimental-feature','DebugDescriptionMacro',
++            '-module-load-mode','only-serialized',
+-            '-disable-implicit-swift-modules',
+             '-module-cache-path',str(OUTPUT/'clang-module-cache'),
+             '-clang-scanner-module-cache-path',str(OUTPUT/'clang-module-cache'),
+             '-I',str(OUTPUT/'modules'),*crypto_flags,
+@@ -803,6 +810,104 @@
+     return {'directoryIdentity':list(identity(info)),'files':witnesses,'allocatedBytes':total}
+ 
+ 
++def admit_system_modules(packet, base, guard):
++    """Exactly24 observed installed binary Swift modules, not a complete SDK."""
++    raw = raw_record(packet['systemModuleInputObservation'],SYSTEM_MODULE_OBSERVATION_SHA,128*1024)
++    observation = json.loads(raw)
++    require(observation['schema'] == 'pinkha-installed-explicit-system-module-input-observation-v1' and
++            observation['status'] == 'PASS_NAMED_PUBLIC_TOOLCHAIN_INPUT_OBSERVATION_ONLY' and
++            observation['moduleCandidateCount'] == 28 and observation['plannedLeafCount'] == 56 and
++            observation['openedBytes'] == 42364486 and len(observation['rows']) == 56 and
++            observation['compilerInvocations'] == observation['children'] == observation['projectWrites'] == 0 and
++            observation['completeDependencyClosureClaimed'] is False,
++            'exact bounded system-input observation remains historical')
++    binaries = [row for row in observation['rows']
++                if row['kind'] == 'swiftmodule' and not row.get('absent',False)]
++    require(len(binaries) == 24 and {row['moduleName'] for row in binaries} == set(SYSTEM_MODULE_NAMES) and
++            sum(row['bytes'] for row in binaries) == 38729276,
++            'exact24 installed binary module membership and bytes')
++    admitted = {}
++    keys = ('st_dev','st_ino','st_mode','st_nlink','st_uid','st_gid','st_size','st_mtime_ns','st_ctime_ns')
++    for row in sorted(binaries,key=lambda value:value['moduleName']):
++        guard()
++        path = SYSTEM_MODULE_ROOT/(row['moduleName']+'.swiftmodule')/'aarch64-unknown-linux-gnu.swiftmodule'
++        require(str(path) == row['path'] and path in SYSTEM_MODULE_PATHS and
++                row['metadataUnchangedIncludingAtime'] is True and 0 < row['bytes'] <= 64*MIB and
++                re.fullmatch(r'[0-9a-f]{64}',row['sha256']) is not None,
++                'fixed whole binary module input')
++        before = physical(path).lstat()
++        historical = row['identity']
++        require(identity(before,include_atime=False) == tuple(historical[key] for key in keys) and
++                stat.S_ISREG(before.st_mode) and stat.S_IMODE(before.st_mode) == 0o644 and before.st_nlink == 1,
++                'observed system module byte-independent identity except access time')
++        expected = {key:row[key] for key in ('bytes','sha256')}
++        require(base.consume(path,64*MIB) == expected,'whole installed binary module hash')
++        require(list(identity(path.lstat(),include_atime=False)) ==
++                list(identity(before,include_atime=False)) == base.originals[str(path)]['identity'],
++                'same observed module inode and metadata through whole hash')
++        admitted[row['moduleName']] = {
++            'path':str(path),**expected,'mode':stat.S_IMODE(before.st_mode),
++            'identityExcludingAtime':list(identity(before,include_atime=False)),
++            'accessTimeBeforeNs':before.st_atime_ns}
++    require(len(admitted) == 24,'complete binary module admission')
++    return {'observationSHA256':SYSTEM_MODULE_OBSERVATION_SHA,'count':24,'bytes':38729276,
++            'binaryModules':admitted,'compilerReadAccessTimeChangesPermitted':True,
++            'otherIdentityAndBytesMustRemainExact':True,'timestampsRestored':False,
++            'completeSystemHeaderOrSDKClosureClaimed':False,
++            'fourObservedInterfaceOnlyTestingModulesAdmitted':False}
++
++
++def verify_system_modules(admission, base, guard):
++    """Called after the shared full byte/identity audit; record atime separately."""
++    require(admission['count'] == 24 and set(admission['binaryModules']) == set(SYSTEM_MODULE_NAMES),
++            'retained exact24 binary module set')
++    observations = {}
++    for name,before in sorted(admission['binaryModules'].items()):
++        guard()
++        path = physical(Path(before['path']))
++        current = path.lstat()
++        require(path in SYSTEM_MODULE_PATHS and
++                list(identity(current,include_atime=False)) == before['identityExcludingAtime'],
++                'system binary identity changed outside permitted read atime')
++        original = base.originals[str(path)]
++        require(original['includeAtime'] is False and
++                original['identity'] == before['identityExcludingAtime'] and
++                all(original[key] == before[key] for key in ('bytes','sha256','mode')),
++                'system binary participates in original full byte audit')
++        observations[name] = {'accessTimeBeforeNs':before['accessTimeBeforeNs'],
++                              'accessTimeAfterInputAuditNs':current.st_atime_ns,
++                              'accessTimeChanged':current.st_atime_ns != before['accessTimeBeforeNs']}
++    return {'count':24,'allBytesAndNonAtimeIdentityUnchanged':True,
++            'accessTimeObservations':observations,'sharedAtimeChangesAttributedToThisJob':False,
++            'completeSystemHeaderOrSDKClosureClaimed':False}
++
++
++def admit_prior_failure(packet):
++    raw = raw_record(packet['priorSemanticFailure'],
++        'b02a84d1962061de7e98152e00541480653a46555bd779e267e94e688b2c6c6b',128*1024)
++    prior = json.loads(raw)
++    log = raw_record(packet['priorSemanticFailureLog'],
++        '2562e45a098bf04d703ab0f07afb8937fff4559b6e2c12c22e324dc3e96d7b6b',1024)
++    require(prior['status'] == 'FAIL' and prior['sourceGraphSHA256'] == GRAPH_SHA and
++            prior['controllerSHA256'] == '67dab64dd60c571ee4960e06a9eb0b01828042425cf9624259a58b162ba57f6e' and
++            prior['sourcePacketSHA256'] == 'e5dc877350ad03acbf194792039d39d7c4c926ce3882e5dd91b927a380c9f051' and
++            prior['completedFullBodyTypechecks'] == prior['completedModuleOnlyEmissions'] == [] and
++            prior['startedFrontendCommands'] == len(prior['commands']) == len(prior['phases']) == 1 and
++            prior['sourceUnchanged'] is True and prior['originalCryptoAdmissionUnchanged'] is True and
++            prior['allStartedOwnedGroupsPositivelyAbsent'] is True and prior['completionErrors'] == [],
++            'preserved first failure has no reusable semantic phase')
++    command = prior['commands'][0]
++    require(command['exitCode'] == 1 and command['processGroupAbsent'] is True and
++            command['forcedCleanup'] is False and command['signals'] == command['cleanupErrors'] == [] and
++            command['logSHA256'] == hashlib.sha256(log).hexdigest() and len(log) == 241 and
++            prior['phases'][0]['label'] == '01-TorahInspectorCore-typecheck' and
++            prior['phases'][0]['normalCompletion'] is False,
++            'exact original standard-library failure and normal child closure')
++    return {'receiptSHA256':hashlib.sha256(raw).hexdigest(),'logSHA256':hashlib.sha256(log).hexdigest(),
++            'status':'FAIL','reusedSemanticPhases':0,'historicalProcessIDsReprobed':False,
++            'originalFailureNamespaceMutated':False}
++
++
+ def admit_capability(packet):
+     actual_raw = raw_record(packet['capabilityObservation'],
+         '12645f41c87fc66c9066165be80d9cd50b35a316aceeb2308a6ffa9477c20d19',64*1024)
+@@ -822,7 +927,7 @@
+             '2c6c42af8588c519e10482034565861d2a427e195dc75ed9a3405e438a4f67f0',
+             'entire installed help bytes')
+     for flag in ('-typecheck','-emit-module','-parse-as-library','-module-name','-target',
++                 '-package-name','-module-cache-path',
+-                 '-package-name','-module-cache-path','-disable-implicit-swift-modules',
+                  '-clang-scanner-module-cache-path',
+                  '-num-threads','-no-color-diagnostics','-enable-experimental-feature'):
+         require(re.search(r'(?m)^  '+re.escape(flag)+r'(?:\s|$)',previous['stdout']) is not None,
+@@ -831,10 +936,53 @@
+     require(tool['path'] == str(FRONTEND) and tool['bytes'] == FRONTEND_BYTES and
+             tool['sha256'] == FRONTEND_SHA and tool['mode'] == 0o755 and
+             tool['notWholeToolchainAdmission'] is True, 'exact observed frontend only')
++    mode_raw = raw_record(packet['serializedModeCapabilityObservation'],
++        '83045a206f164cec1e81bb7465605a14d50dcd37864d08f4344527c8cd68e8de',64*1024)
++    mode_observation = json.loads(mode_raw)
++    require(mode_observation['schema'] == 'pinkha-installed-serialized-mode-target-info-observation-v1' and
++            mode_observation['status'] == 'PASS_FRONTEND_TARGET_INFO_OBSERVATION' and
++            mode_observation['errors'] == [] and mode_observation['frontendUnchanged'] is True and
++            len(mode_observation['commands']) == 1,
++            'actual installed serialized-only option observation')
++    mode_command = mode_observation['commands'][0]
++    require(mode_command['command'] == [str(FRONTEND),'-print-target-info','-target',
++            'aarch64-unknown-linux-gnu','-module-load-mode','only-serialized'] and
++            mode_command['exitCode'] == 0 and mode_command['processGroupAbsent'] is True and
++            mode_command['reaped'] is True and mode_command['forcedCleanup'] is False and
++            mode_command['signals'] == mode_command['cleanupErrors'] == [] and
++            mode_command['diagnosticsComplete'] is True and mode_command['stderr'] == '',
++            'source-free mode probe has one normal positively closed group')
++    target_raw = mode_command['stdout'].encode()
++    require(len(target_raw) == 923 and hashlib.sha256(target_raw).hexdigest() ==
++            '86954240683b500b9d23adaa3e0f0455d9555e18b149ab119bc8adbe242236b6',
++            'entire actual target-info stdout')
++    target = json.loads(target_raw)
++    require(target['compilerVersion'] == 'Swift version 6.4.3 (swift-6.4.3-RELEASE)' and
++            target['swiftCompilerTag'] == 'swift-6.4.3-RELEASE' and
++            target['target']['triple'] == target['target']['moduleTriple'] == 'aarch64-unknown-linux-gnu' and
++            target['paths'] == {'runtimeResourcePath':str(SYSTEM_MODULE_ROOT.parent),
++                'runtimeLibraryPaths':[str(SYSTEM_MODULE_ROOT)],
++                'runtimeLibraryImportPaths':[str(SYSTEM_MODULE_ROOT),str(SYSTEM_MODULE_ROOT/'aarch64')]},
++            'actual installed target and default runtime resource paths')
++    mode_tool = mode_observation['toolchain']
++    require(all(mode_tool[key] == tool[key] for key in
++            ('path','bytes','sha256','mode','notWholeToolchainAdmission')) and
++            mode_observation['limits']['childRegularFileSizeLimit'] == 0 and
++            mode_observation['limits']['sourceParsing'] is False and
++            mode_observation['limits']['typeChecking'] is False and
++            mode_observation['limits']['objectOrModuleEmission'] is False,
++            'same exact frontend and source-free no-emission capability scope')
++    raw_record(packet['serializedLoadingPolicyPeer'],
++        'affe80371f854afbd4e6169efebd4c4af4ab8f3b8d9c5f554173a3f873befeb6',32*1024)
+     return {'observationSHA256':packet['capabilityObservation']['sha256'],
+             'helpSHA256':hashlib.sha256(help_raw).hexdigest(),'newHelpRuns':0,
+             'sourceParsingOrSemanticClaimFromHelp':False,
++            'hiddenSwiftVersionTestingOptionsBoundSeparatelyToRetainedProjectArgv':True,
++            'serializedModeObservationSHA256':hashlib.sha256(mode_raw).hexdigest(),
++            'serializedMode':'only-serialized','newTargetInfoRuns':0,
++            'optionProbeIsNotImportOrSemanticProof':True,
++            'loaderPolicySourcePeerSHA256':packet['serializedLoadingPolicyPeer']['sha256'],
++            'loaderPolicySourceCommit':'51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2'}
+-            'hiddenSwiftVersionTestingOptionsBoundSeparatelyToRetainedProjectArgv':True}
+ 
+ 
+ def main():
+@@ -859,6 +1007,7 @@
+     labels = []
+     last_scan = 0.0
+     source_admitted = False
++    system_module_admission = None
+     final_inputs_ok = False
+     archive = None
+     result = {
+@@ -879,7 +1028,10 @@
+         'sampledRSSIsNotContinuousPeakProof':True,
+         'sampledAllocationIsNotFilesystemQuota':True,
+         'systemToolchainResourceFilesIndividuallyPinned':False,
++        'systemToolchainResourceFilesPinnedCount':0,
++        'systemBinarySwiftModuleInputsUnchanged':False,
++        'completeSystemHeaderOrSDKClosureClaimed':False,
++        'standardLibraryImportScope':'Only serialized Swift modules; exactly24 installed binary inputs pinned separately; existing bounded Clang PCM cache; no full system-header or SDK closure claim',
+-        'standardLibraryImportScope':'Installed frontend default toolchain imports; no independent whole SDK/resource-file closure claim',
+         'ownedOutputsRemoved':False,'durableOffTmpfsCopyClaimed':False,
+         'sourceUnchanged':False,'originalCryptoAdmissionUnchanged':False,
+         'allStartedOwnedGroupsPositivelyAbsent':False,
+@@ -980,6 +1132,11 @@
+         guard()
+         require(prepared_controls() == preparation,'prepared source namespace changed')
+         base.verify_originals()
++        if system_module_admission is not None:
++            result['systemModuleInputVerification'] = verify_system_modules(system_module_admission,base,guard)
++            result['systemBinarySwiftModuleInputsUnchanged'] = True
++        if source_admitted:
++            require(result['systemBinarySwiftModuleInputsUnchanged'],'all24 system binary inputs in final full audit')
+         if copies:
+             verify_copies(copies,base,guard)
+         if reused is not None:
+@@ -1024,6 +1181,7 @@
+         graph,graph_raw = admit_packet(packet)
+         result['configuration'] = packet['configuration']
+         result['capabilityAdmission'] = admit_capability(packet)
++        result['priorSemanticFailure'] = admit_prior_failure(packet)
+         result['ownerAdmission'] = admit_owner_lifecycle(base)
+         result['sourceCounts'] = {'wholeFiles':131,'productionFiles':127,'testFiles':4,
+                                   'physicalSourceRows':101,'gitSuppliedRows':30,'sourceBytes':1652921,
+@@ -1103,10 +1261,15 @@
+             copies[str(path)] = dict(base.row(path),mode=0o600)
+         for name in ('controller.py','source-packet.json','SOURCE_GRAPH.json'):
+             copies[str(OUTPUT/name)] = dict(base.row(OUTPUT/name),mode=0o600)
++        system_module_admission = admit_system_modules(packet,base,guard)
++        result['systemModuleInputAdmission'] = system_module_admission
++        result['systemToolchainResourceFilesIndividuallyPinned'] = True
++        result['systemToolchainResourceFilesPinnedCount'] = 24
+         source_admitted = True
+         save(OUTPUT/'source-inputs.json',{
+             'graphSHA256':GRAPH_SHA,'completeSourceCopies':source_copies,
+             'physicalSourceRows':physical_sources,'originalInputsBefore':base.originals,
++            'systemModuleInputAdmission':system_module_admission,
+             'qualifiedCryptoReceipt':reused['receipt'],
+             'all131FullFiles':True,'privateFixturePayloadsOpened':0})
+         copies[str(OUTPUT/'source-inputs.json')] = dict(base.row(OUTPUT/'source-inputs.json'),mode=0o600)
+@@ -1177,6 +1340,7 @@
+                     decision = {key:result[key] for key in (
+                         'schema','scope','sourceGraphSHA256','sourceCounts','completedFullBodyTypechecks',
+                         'completedModuleOnlyEmissions','sourceUnchanged','originalCryptoAdmissionUnchanged',
++                        'systemModuleInputAdmission','systemModuleInputVerification','systemBinarySwiftModuleInputsUnchanged',
+                         'allStartedOwnedGroupsPositivelyAbsent','testInvocations','nativeInvocations',
+                         'linkInvocations','objectGenerationInvocations')}
+                     decision['status'] = 'SOURCE_SEMANTICS_COMPLETE_PENDING_ARCHIVE_AND_TERMINAL_RECEIPT'
