@@ -1,0 +1,23 @@
+{
+  "status": "SOURCE_ONLY_COMMENT_CLARIFICATION_NO_METHOD_ASSERTION_CHANGE",
+  "before": {
+    "bytes": 41125,
+    "sha256": "54f65818ff65007bb91d03e272b2b92495142646f694edd19e0591a67ebf0a81"
+  },
+  "after": {
+    "bytes": 41410,
+    "sha256": "b2a9c2f9fed99eaa0abea3b687026b186b38b02e10194057c09cbe637c1fbdfe"
+  },
+  "edits": [
+    {
+      "before": "/// New source-correspondence, synthetic observation-order and pre-admission\n/// controls. The retained182 plan/mappings/capture are immutable input. Only\n/// the fourteen supplemental receipt rows are synthetic; no executor, native\n/// account, original migration replay or current native authority is exercised.",
+      "after": "/// New source-correspondence, synthetic observation-order and pre-admission\n/// controls. The retained182 plan/mappings/capture are immutable input.\n/// Supplemental receipt rows, locator network/recovered-manifest fields and\n/// driver observations are synthetic. No executor, native account, original\n/// migration replay or current native authority is exercised."
+    },
+    {
+      "before": "        XCTAssertEqual(try Data(contentsOf: originalSentinel), originalBytes)\n        XCTAssertEqual(try Data(contentsOf: ordinarySentinel), ordinaryBytes)",
+      "after": "        // These byte/name assertions preserve only the new synthetic test\n        // files. Typed refusals and source order establish the intended early\n        // rejection; this is not an OS audit proving that no reads occurred.\n        XCTAssertEqual(try Data(contentsOf: originalSentinel), originalBytes)\n        XCTAssertEqual(try Data(contentsOf: ordinarySentinel), ordinaryBytes)"
+    }
+  ],
+  "forwardAndInverseExact": true,
+  "newParsedOrRunClaim": false
+}
