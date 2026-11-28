@@ -1,0 +1,105 @@
+{
+  "protocol": "pinkha-e-final64-whole-source-composition-check-v1",
+  "status": "PASS_IN_MEMORY_FULL_MAP_BYTES_INVERSE_SDK_PROJECTION_SELECTION_JOINS",
+  "sourceOnly": true,
+  "pythonOrGoExecuted": false,
+  "sourceInstalled": false,
+  "oracleCalls": 0,
+  "sourceBodiesNewRead": 2,
+  "oldBrokerBeforeImageRead": true,
+  "all31SourceBodiesIndependentlyReadByThisCheck": false,
+  "counts": {
+    "production": 1648,
+    "qualification": 1657,
+    "sdkProduction": 755,
+    "sdkQualification": 757,
+    "orderedActions": 31,
+    "uniqueChangedPaths": 30,
+    "parents": 31,
+    "children": 33,
+    "events": 64
+  },
+  "partitions": {
+    "N24": 24,
+    "bootLifecycle": 33,
+    "broker": 7
+  },
+  "brokerActions": [
+    {
+      "action": "replace",
+      "after": {
+        "availablePathInThisCarrier": "Tools/AnyEngineValidation/native_quota_broker_cancellation_20261128/overlay/any/.runtime-artifacts/sdk-source/internal/files/broker/broker.go",
+        "bytes": 12218,
+        "gitBlob": "49c06cd901fc33faca11fa2483c925dfc4898572",
+        "nativeMode": 384,
+        "sha256": "fe698597e58d3cd2aa4ce99bf00f59cbf101ce81c4b00f77d3539d483fc9ea9d",
+        "wholeBodyMatches": true
+      },
+      "before": {
+        "bytes": 12108,
+        "nativeMode": 384,
+        "sha256": "25de187fc12f7e8a9e1aa89c420a47e2bbc9aac021740e0257f79c63245e4f34"
+      },
+      "beforeImage": {
+        "availablePathInThisCarrier": "Tools/AnyEngineValidation/native_quota_broker_cancellation_20261128/originals/any/.runtime-artifacts/sdk-source/internal/files/broker/broker.go",
+        "bytes": 12108,
+        "gitBlob": "5b83d54c9abd93132636e4b864c302a7279ab6e2",
+        "nativeMode": 384,
+        "originCommit": "dae5c971f61eda51e497df21a974b1c7fad29184",
+        "originPath": "Tools/AnyEngineValidation/native_quota_broker_cancellation_20261128/originals/any/.runtime-artifacts/sdk-source/internal/files/broker/broker.go",
+        "sha256": "25de187fc12f7e8a9e1aa89c420a47e2bbc9aac021740e0257f79c63245e4f34",
+        "wholeBodyMatches": true
+      },
+      "carrierCommit": "dae5c971f61eda51e497df21a974b1c7fad29184",
+      "carrierPath": "Tools/AnyEngineValidation/native_quota_broker_cancellation_20261128/overlay/any/.runtime-artifacts/sdk-source/internal/files/broker/broker.go",
+      "kind": "production",
+      "ordinal": 30,
+      "sourceRelativePath": ".runtime-artifacts/sdk-source/internal/files/broker/broker.go",
+      "stage": "quota-broker-cancellation"
+    },
+    {
+      "action": "add",
+      "after": {
+        "availablePathInThisCarrier": "Tools/AnyEngineValidation/native_quota_broker_cancellation_20261128/overlay/any/.runtime-artifacts/sdk-source/internal/files/broker/pinkha_quota_deadline_test.go",
+        "bytes": 3804,
+        "gitBlob": "05a3d9ae46f8b48c3ff1bc474661f485dbe1984e",
+        "nativeMode": 384,
+        "sha256": "3545314693fea848a66e55c3fb22b76981a6d30fe859b52f718a8288e4077100",
+        "wholeBodyMatches": true
+      },
+      "before": null,
+      "beforeImage": null,
+      "carrierCommit": "dae5c971f61eda51e497df21a974b1c7fad29184",
+      "carrierPath": "Tools/AnyEngineValidation/native_quota_broker_cancellation_20261128/overlay/any/.runtime-artifacts/sdk-source/internal/files/broker/pinkha_quota_deadline_test.go",
+      "kind": "test",
+      "ordinal": 31,
+      "sourceRelativePath": ".runtime-artifacts/sdk-source/internal/files/broker/pinkha_quota_deadline_test.go",
+      "stage": "quota-broker-cancellation"
+    }
+  ],
+  "canonicalMapHashes": {
+    "production": {
+      "bytes": 372320,
+      "sha256": "437ded56616ae2c342076aaad30e8bf56c0a6d5e2033a9146de1676985027c66"
+    },
+    "qualification": {
+      "bytes": 374439,
+      "sha256": "0b581b558f1750e62aeb3eb5aa1370fcced7aff03d2613085406ca7a05db4d14"
+    },
+    "sdkProduction": {
+      "bytes": 148000,
+      "sha256": "95f841431592083020a4ec0d3283f475e4cdb0b45dbe8c3b3ad44b24be75f096"
+    },
+    "sdkQualification": {
+      "bytes": 148458,
+      "sha256": "0f9600abbc7bc4ebab349e4e49704471f0f6f5bafc5cf34c2350dee4006fa5de"
+    }
+  },
+  "inverse": {
+    "toBootProduction": true,
+    "toBootQualification": true,
+    "throughOriginalN24": true,
+    "toExactRuntime18Base": "3552d6f65350c1eba2e9763c7f9a9daa64ada0335f64020ad585fff4a0e286e4"
+  },
+  "physicalRuntimeQualified": false
+}

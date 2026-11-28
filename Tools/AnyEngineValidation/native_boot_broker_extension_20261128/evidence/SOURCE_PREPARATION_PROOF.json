@@ -1,0 +1,205 @@
+{
+  "protocol": "pinkha-embedded-boot-lifecycle-broker-source-preparation-proof-v1",
+  "status": "SOURCE_ONLY_FULL_TEXT_MAP_SELECTION_CHECKS_WITH_SEPARATE_MODULE_SYNTAX_OBSERVATION",
+  "module": {
+    "blob": "75776a4daa118407342b328eb6fcfd8b84ebdc2b",
+    "bytes": 59090,
+    "sha256": "fa34191fa1dccfdeea8e6cd3b81370dd994c37d57ff84b79cc4f71aff323a3e7"
+  },
+  "plan": {
+    "bytes": 22812,
+    "sha256": "39fadf98c561b8ed6c1fb2919e5414c11410d17a79f2c2d34bfb280a1a06e616"
+  },
+  "sourceData": {
+    "status": "PASS_IN_MEMORY_FULL_MAP_BYTES_INVERSE_SDK_PROJECTION_SELECTION_JOINS",
+    "sourceOnly": true,
+    "pythonOrGoExecuted": false,
+    "sourceInstalled": false,
+    "oracleCalls": 0,
+    "sourceBodiesNewRead": 2,
+    "oldBrokerBeforeImageRead": true,
+    "all31SourceBodiesIndependentlyReadByThisCheck": false,
+    "counts": {
+      "production": 1648,
+      "qualification": 1657,
+      "sdkProduction": 755,
+      "sdkQualification": 757,
+      "orderedActions": 31,
+      "uniqueChangedPaths": 30,
+      "parents": 31,
+      "children": 33,
+      "events": 64
+    },
+    "partitions": {
+      "N24": 24,
+      "bootLifecycle": 33,
+      "broker": 7
+    },
+    "brokerActions": [
+      {
+        "action": "replace",
+        "after": {
+          "availablePathInThisCarrier": "Tools/AnyEngineValidation/native_quota_broker_cancellation_20261128/overlay/any/.runtime-artifacts/sdk-source/internal/files/broker/broker.go",
+          "bytes": 12218,
+          "gitBlob": "49c06cd901fc33faca11fa2483c925dfc4898572",
+          "nativeMode": 384,
+          "sha256": "fe698597e58d3cd2aa4ce99bf00f59cbf101ce81c4b00f77d3539d483fc9ea9d",
+          "wholeBodyMatches": true
+        },
+        "before": {
+          "bytes": 12108,
+          "nativeMode": 384,
+          "sha256": "25de187fc12f7e8a9e1aa89c420a47e2bbc9aac021740e0257f79c63245e4f34"
+        },
+        "beforeImage": {
+          "availablePathInThisCarrier": "Tools/AnyEngineValidation/native_quota_broker_cancellation_20261128/originals/any/.runtime-artifacts/sdk-source/internal/files/broker/broker.go",
+          "bytes": 12108,
+          "gitBlob": "5b83d54c9abd93132636e4b864c302a7279ab6e2",
+          "nativeMode": 384,
+          "originCommit": "dae5c971f61eda51e497df21a974b1c7fad29184",
+          "originPath": "Tools/AnyEngineValidation/native_quota_broker_cancellation_20261128/originals/any/.runtime-artifacts/sdk-source/internal/files/broker/broker.go",
+          "sha256": "25de187fc12f7e8a9e1aa89c420a47e2bbc9aac021740e0257f79c63245e4f34",
+          "wholeBodyMatches": true
+        },
+        "carrierCommit": "dae5c971f61eda51e497df21a974b1c7fad29184",
+        "carrierPath": "Tools/AnyEngineValidation/native_quota_broker_cancellation_20261128/overlay/any/.runtime-artifacts/sdk-source/internal/files/broker/broker.go",
+        "kind": "production",
+        "ordinal": 30,
+        "sourceRelativePath": ".runtime-artifacts/sdk-source/internal/files/broker/broker.go",
+        "stage": "quota-broker-cancellation"
+      },
+      {
+        "action": "add",
+        "after": {
+          "availablePathInThisCarrier": "Tools/AnyEngineValidation/native_quota_broker_cancellation_20261128/overlay/any/.runtime-artifacts/sdk-source/internal/files/broker/pinkha_quota_deadline_test.go",
+          "bytes": 3804,
+          "gitBlob": "05a3d9ae46f8b48c3ff1bc474661f485dbe1984e",
+          "nativeMode": 384,
+          "sha256": "3545314693fea848a66e55c3fb22b76981a6d30fe859b52f718a8288e4077100",
+          "wholeBodyMatches": true
+        },
+        "before": null,
+        "beforeImage": null,
+        "carrierCommit": "dae5c971f61eda51e497df21a974b1c7fad29184",
+        "carrierPath": "Tools/AnyEngineValidation/native_quota_broker_cancellation_20261128/overlay/any/.runtime-artifacts/sdk-source/internal/files/broker/pinkha_quota_deadline_test.go",
+        "kind": "test",
+        "ordinal": 31,
+        "sourceRelativePath": ".runtime-artifacts/sdk-source/internal/files/broker/pinkha_quota_deadline_test.go",
+        "stage": "quota-broker-cancellation"
+      }
+    ],
+    "canonicalMapHashes": {
+      "production": {
+        "bytes": 372320,
+        "sha256": "437ded56616ae2c342076aaad30e8bf56c0a6d5e2033a9146de1676985027c66"
+      },
+      "qualification": {
+        "bytes": 374439,
+        "sha256": "0b581b558f1750e62aeb3eb5aa1370fcced7aff03d2613085406ca7a05db4d14"
+      },
+      "sdkProduction": {
+        "bytes": 148000,
+        "sha256": "95f841431592083020a4ec0d3283f475e4cdb0b45dbe8c3b3ad44b24be75f096"
+      },
+      "sdkQualification": {
+        "bytes": 148458,
+        "sha256": "0f9600abbc7bc4ebab349e4e49704471f0f6f5bafc5cf34c2350dee4006fa5de"
+      }
+    },
+    "inverse": {
+      "toBootProduction": true,
+      "toBootQualification": true,
+      "throughOriginalN24": true,
+      "toExactRuntime18Base": "3552d6f65350c1eba2e9763c7f9a9daa64ada0335f64020ad585fff4a0e286e4"
+    },
+    "physicalRuntimeQualified": false
+  },
+  "moduleText": {
+    "fullForwardAndInverse": true,
+    "unchangedPureHelperNames": [
+      "require",
+      "canonical",
+      "closed_relative",
+      "projected_sdk",
+      "validate_map",
+      "apply_actions"
+    ],
+    "bootAdmissionBodyUnchangedExceptPrivateName": true,
+    "old13AssetsUnchanged": true,
+    "additionalAssets": 11,
+    "moduleHasNoEntryPoint": true,
+    "controllerProcessOwnerChanged": false,
+    "pythonParsed": false
+  },
+  "moduleConstants": {
+    "all24AssetRowsExact": true,
+    "allBrokerSelectionsExact": true,
+    "allTwoSourceActionsExact": true,
+    "pythonModuleImportedOrExecuted": false
+  },
+  "graft": {
+    "fullDonorForwardInverse": true,
+    "fullPublishedBootReferenceForwardInverse": true,
+    "allNonMainTextUnchanged": true,
+    "unchangedNestedHelpers": [
+      "save_json",
+      "save",
+      "checkpoint",
+      "cache_identity",
+      "guard",
+      "observe",
+      "pin",
+      "mkdir_owned",
+      "command",
+      "validate_inputs",
+      "fixture_directories",
+      "interrupted"
+    ],
+    "newCLIEntrypointReleased": false,
+    "latestN24BodyUsedOrChanged": false,
+    "pythonParsed": false
+  },
+  "fullGraft": {
+    "bytes": 12424,
+    "sha256": "4560c57f3257c4b5cae30cb65a9396cc22b426d8a92864fc5505c669f2836d6c"
+  },
+  "narrowGraft": {
+    "bytes": 11137,
+    "sha256": "f74daef558c4927d002e472de60610dffbbfc7f0d06c5e4941602f025cbb0db4"
+  },
+  "referenceDerivedText": {
+    "bytes": 46137,
+    "sha256": "275f3ee6470ec1ad5b6f5645b296326b9d5e8d74ca63ff3d9d1f4d570d2971ba"
+  },
+  "originalBudgetsAndLiveFloorsUnchanged": true,
+  "actualEReleaseAndCurrentNAdoptionSatisfied": false,
+  "unpublishedAuthoringFailure": [
+    {
+      "phase": "in-memory source derivation",
+      "error": "Exact replacement for boot run final-source guard did not match once",
+      "effects": "No successor bytes saved, no Git object/branch or Oracle operation, no controller or test execution",
+      "diagnosis": "JavaScript replace(string, replacementString) interpreted the literal regex anchor followed by quote ($') inside the Python block as a replacement token, producing duplicate suffix text; exact-match cardinality stopped derivation. Successor splices literal string slices instead."
+    }
+  ],
+  "laterModuleSyntaxObservation": {
+    "repository": "davidpovarsky/anytype-swift",
+    "blob": "f2a7d142809a48f8564078bff7176037e1ed2e16",
+    "bytes": 815,
+    "sha256": "b47cd9d31e69e0d930cc46d7ed0c6782aaef4cc7b6f2bee41a2b415e1d073657",
+    "moduleSha256": "fa34191fa1dccfdeea8e6cd3b81370dd994c37d57ff84b79cc4f71aff323a3e7",
+    "scope": "Syntax-only parse of the exact unchanged import-only module as stdin data; no import/execution, project write, compiler, native or test."
+  },
+  "independentMapPeer": {
+    "repository": "davidpovarsky/anytype-swift",
+    "blob": "20d71b9174b010a1f3ef002e86803943bc5d2cc1",
+    "bytes": 3540,
+    "sha256": "ce68cf34f6e4aba750529fd8b5fb0b9b51d8ed672ee0cf9581faf19311d21123",
+    "scope": "Full map/SDK/selection source peer only; module/graft review is separate."
+  },
+  "wholeModuleAndDraftBlocksPythonExecuted": false,
+  "latestN24ControllerReconstructedOrRewritten": false,
+  "oracleOperationsByEPreparation": 0,
+  "nativeInvocations": 0,
+  "compilerInvocations": 0,
+  "testInvocations": 0
+}

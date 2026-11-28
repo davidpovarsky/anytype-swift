@@ -1,0 +1,123 @@
+{
+  "protocol": "pinkha-final64-source-carrier-publication-v1",
+  "status": "PASS_SOURCE_COMPOSITION_PUBLICATION_SELECTED64_NOT_RUN",
+  "repository": "davidpovarsky/anytype-swift",
+  "branch": "codex/chatgpt-wave15-network-quota-broker-source-20261128",
+  "commit": "412d8e77e54ddd4c8f138643d4d4bab18c684aec",
+  "tree": "4ac294f9df284ba0c72c4ee50f657df89c5a9eea",
+  "soleParent": "dae5c971f61eda51e497df21a974b1c7fad29184",
+  "commitTime": "2026-11-28T08:57:00Z",
+  "branchUpdate": {
+    "expectedOldHead": "dae5c971f61eda51e497df21a974b1c7fad29184",
+    "force": false,
+    "normalFastForward": true,
+    "refReadbackExact": true
+  },
+  "files": 30,
+  "utf8Bytes": 2053253,
+  "allWholeBlobReadbacks": 30,
+  "treeInverse": {
+    "status": "PASS_FULL_ADDITIVE_TREE_INVERSE",
+    "parent": "dae5c971f61eda51e497df21a974b1c7fad29184",
+    "baseTree": "2f66a28669d30df6067e2387adc06230e6a816d9",
+    "tree": "4ac294f9df284ba0c72c4ee50f657df89c5a9eea",
+    "rootUnchangedSiblingEntries": 39,
+    "prefixes": [
+      {
+        "prefix": "Tools/AnyEngineValidation/native_n24_boot_broker_composition_20261128",
+        "tree": "70c193235d610b03e37d58ae669d47a1f52f02b7",
+        "files": 26,
+        "ancestorDirectories": 19,
+        "unchangedParentEntries": 58,
+        "unchangedAncestorSiblings": 19
+      },
+      {
+        "prefix": "docs/validation/20261128-native-n24-boot-broker-source",
+        "tree": "f1042847be7e46df33bda62e8e00319767d504a8",
+        "files": 4,
+        "ancestorDirectories": 0,
+        "unchangedParentEntries": 482,
+        "unchangedAncestorSiblings": 13
+      }
+    ],
+    "addedFiles": 30,
+    "wholeBlobReadbacks": 30,
+    "addedUTF8Bytes": 2053253,
+    "existingPathsChanged": 0,
+    "allNewPathsModesBlobIdentitiesExact": true
+  },
+  "reachableManifestReadbackExact": true,
+  "outputMaps": {
+    "production": {
+      "path": "Tools/AnyEngineValidation/native_n24_boot_broker_composition_20261128/maps/native-production-source.json",
+      "bytes": 372320,
+      "sha256": "437ded56616ae2c342076aaad30e8bf56c0a6d5e2033a9146de1676985027c66",
+      "gitBlob": "4387f42b1e4787bc7683c8cfc6e4892dac87ec30",
+      "files": 1648,
+      "modes": 1648
+    },
+    "qualification": {
+      "path": "Tools/AnyEngineValidation/native_n24_boot_broker_composition_20261128/maps/native-qualification-source.json",
+      "bytes": 374439,
+      "sha256": "0b581b558f1750e62aeb3eb5aa1370fcced7aff03d2613085406ca7a05db4d14",
+      "gitBlob": "19bc28422f3983224048cb6ed88187bb1aeda5a9",
+      "files": 1657,
+      "modes": 1657
+    },
+    "sdkProduction": {
+      "path": "Tools/AnyEngineValidation/native_n24_boot_broker_composition_20261128/maps/sdk-production-source.json",
+      "bytes": 148000,
+      "sha256": "95f841431592083020a4ec0d3283f475e4cdb0b45dbe8c3b3ad44b24be75f096",
+      "gitBlob": "77642a14d39cec2e797bb1fc16dbf0e76aab4bf6",
+      "files": 755,
+      "modes": 755
+    },
+    "sdkQualification": {
+      "path": "Tools/AnyEngineValidation/native_n24_boot_broker_composition_20261128/maps/sdk-qualification-source.json",
+      "bytes": 148458,
+      "sha256": "0f9600abbc7bc4ebab349e4e49704471f0f6f5bafc5cf34c2350dee4006fa5de",
+      "gitBlob": "cd0baedf2d9094024ca06376c09830687100229b",
+      "files": 757,
+      "modes": 757
+    }
+  },
+  "counts": {
+    "production": 1648,
+    "qualification": 1657,
+    "sdkProduction": 755,
+    "sdkQualification": 757,
+    "orderedSourceActions": 31,
+    "finalChangedSourcePaths": 30,
+    "selectedParentEvents": 31,
+    "selectedChildEvents": 33,
+    "selectedEvents": 64
+  },
+  "selectedTestEventsExecuted": 0,
+  "compilerInvocations": 0,
+  "nativeInvocations": 0,
+  "oracleProjectWrites": 0,
+  "physicalNativeSourceMaterializations": 0,
+  "controllersChanged": 0,
+  "generatedABIProduced": false,
+  "preparationDiagnostics": [
+    {
+      "name": "Error",
+      "message": "declared action kind",
+      "sourceSaved": true,
+      "projectWrites": 0,
+      "compiler": 0,
+      "native": 0
+    },
+    {
+      "type": "SyntaxError",
+      "message": "Unexpected token ')'",
+      "stage": "first inline publication tree-verifier parse",
+      "executedToolCalls": 0,
+      "GitTreeOrRefMutation": 0,
+      "oracleProjectWrites": 0,
+      "compiler": 0,
+      "native": 0,
+      "correctedBy": "remove one unmatched closing parenthesis in an ancestor equality assertion; no source packet or candidate tree changes"
+    }
+  ]
+}

@@ -1,0 +1,825 @@
+--- published-boot33/EXTENSION_PLAN.json
++++ proposed-broker64/EXTENSION_PLAN.json
+@@ -1,182 +1,348 @@
+ {
++  "protocol": "pinkha-embedded-boot-lifecycle-broker-extension-plan-v1",
++  "status": "SOURCE_ONLY_REQUIRES_N_OWNER_ADOPTION_AND_REVIEW",
++  "module": {
++    "file": "embedded_boot_lifecycle_broker.py",
++    "bytes": 59090,
++    "sha256": "fa34191fa1dccfdeea8e6cd3b81370dd994c37d57ff84b79cc4f71aff323a3e7",
++    "mode": 384
++  },
++  "controlDirectory": "embedded-boot-lifecycle",
++  "preparationOrRuntimeOutputAssigned": false,
++  "controllerOwner": "N",
++  "sourceExtensionOwner": "E",
++  "parentRuntimeOwner": "Root",
++  "sourceCommits": {
++    "n24": "94fd763d459210b496557894628333d466abae73",
++    "boot": "f372f5e243427822df27bf8bd2ba51bf8206c644",
++    "lifecycle": "584d8eb7423e61823aa67c173312b742d540a27f",
++    "lifecycleEvidence": "dc746f5fb609906656d0d3e54a8aa8b5db9c7932",
++    "bootExtension": "5f86ea97cd4a9aee102163a5d7ff59b796e4c381",
++    "bootExtensionEvidence": "e677e7ced419becaf7d4e03a7387d23ead892a1f",
++    "broker": "dae5c971f61eda51e497df21a974b1c7fad29184",
++    "finalComposition": "412d8e77e54ddd4c8f138643d4d4bab18c684aec"
++  },
++  "preservedDonor": {
++    "status": "PRESERVED_ATTEMPT1_NOT_LATEST_NOT_EXECUTABLE_ADMISSION",
++    "controller": {
++      "repository": "davidpovarsky/anytype-swift",
++      "blob": "62c0c0db7b356817e4dbb3e4503dd78d7f9b0a38",
++      "bytes": 42012,
++      "sha256": "c83aa7aaeeee3c40f488b93573c162f253cae8f18856594187cbd301b0c3acb6"
++    },
++    "admission": {
++      "repository": "davidpovarsky/anytype-swift",
++      "blob": "130eacce4796c4eae55ef916d4a4c377377fca28",
++      "bytes": 29166,
++      "sha256": "6848a0660fecc245e74e22e8bdd40c4ee5bf99cb60cbfa3a4248000b33628f3e"
++    },
++    "plan": {
++      "repository": "davidpovarsky/anytype-swift",
++      "blob": "50ca4a161dd4e644bf8def3d36a06f2ce1046cda",
++      "bytes": 13164,
++      "sha256": "241d6781d993632e82d17bfb343a751545a58addeb15b0156ffd7694e9d1caad"
++    },
++    "actualLatestAttempt2BodyAvailable": false,
++    "referenceDerivedText": {
++      "bytes": 46137,
++      "sha256": "275f3ee6470ec1ad5b6f5645b296326b9d5e8d74ca63ff3d9d1f4d570d2971ba"
++    },
++    "latestAttempt2ControllerPrefix": "06c1e5e1",
++    "latestAttempt2AdmissionPrefix": "10b1fd36",
++    "latestAttempt2PlanPrefix": "22d2218d",
++    "referenceGraftPreservesAllNonMainText": true,
++    "doesNotReplaceLatestN24": true
++  },
++  "scope": {
++    "n24Parents": 9,
++    "n24Children": 15,
++    "n24Events": 24,
++    "extensionParents": 17,
++    "extensionChildren": 16,
++    "extensionEvents": 33,
++    "combinedParents": 31,
++    "combinedChildren": 33,
++    "combinedEvents": 64,
++    "n24ScopedCommands": 6,
++    "extensionCommands": 3,
++    "combinedOwnedCommands": 10,
++    "nativeProductBuilds": 1,
++    "additionalNativeProductBuilds": 0,
++    "lifecyclePrivateControlledParents": 6,
++    "lifecycleRealMixedManagedParents": 1,
++    "bootBindingParents": 6,
++    "affectedExistingEmbeddedParents": 4,
++    "affectedStartAddressStopSelections": 1,
++    "retainedC13Runtime18MethodsSelected": 0,
++    "retainedPrivateAccountInputs": 0,
++    "nativeCLIAccountProof": false,
++    "appleGeneratedABI": false,
++    "generatedGomobileBinding": false,
++    "swiftAffectedMethodSelected": false,
++    "runtimeGateSatisfied": false,
++    "brokerParents": 5,
++    "brokerChildren": 2,
++    "brokerEvents": 7,
++    "newBrokerEvents": 4,
++    "affectedExistingBrokerParents": 3,
++    "brokerCommands": 1,
++    "totalAdditionalCommands": 4,
++    "brokerAccountFixtures": 0,
++    "arbitraryPeerCallbackForcedTerminationClaimed": false
++  },
++  "sourceComposition": {
++    "runtime18BaseFiles": 1638,
++    "originalN24ProductionFiles": 1645,
++    "originalN24QualificationFiles": 1649,
++    "productionFiles": 1648,
++    "qualificationFiles": 1657,
++    "sdkProductionFiles": 755,
++    "sdkQualificationFiles": 757,
++    "originalN24OverlayPaths": 20,
++    "extensionOrderedActions": 11,
++    "extensionUniquePaths": 10,
++    "combinedOverlayPaths": 30,
++    "productionChanges": 21,
++    "productionAdditions": 10,
++    "productionReplacements": 11,
++    "newTestFiles": 9,
++    "wholeN24ForwardAndInverseRequired": true,
++    "modesAreProspectiveUntilPhysicalReadback": true,
++    "sourceManifestKeepsOriginalN24Contract": true,
++    "originalN24PlanRemainsAnExplicitScopedSubplan": true,
++    "bootExtensionOrderedActions": 9,
++    "bootExtensionUniquePaths": 8,
++    "additionalBrokerActions": 2,
++    "additionalBrokerPaths": 2,
++    "fullSDKProjectionsRequired": true,
++    "brokerInverseRecoversBothBootMaps": true,
++    "oldSDKMapsRetainedOnlyForPriorSourceStage": true,
++    "additionalSourceChangesRequireNewExactMaps": true,
++    "original33SelectionRetainedSeparately": true,
++    "broker64CompositionCommit": "412d8e77e54ddd4c8f138643d4d4bab18c684aec"
++  },
+-  "assetBytes": 828470,
+-  "assetCount": 13,
+   "assets": {
++    "selection.json": {
++      "bytes": 6893,
++      "sha256": "dde922871f07cb3f124d53999ee950fd9f1d04ed5784bf28c2fe90c1b6b9c8c0",
++      "mode": 384,
++      "origin": {
++        "repository": "davidpovarsky/anytype-swift",
++        "blob": "bb54ab873578c38ad2b26cae45ec549c244e2c8c"
++      }
++    },
+     "composition.json": {
+       "bytes": 9025,
++      "sha256": "7822a8c641331259b23f2569adaddb34095ec4b86b0f44fd11bd1932ed571e1f",
+       "mode": 384,
+       "origin": {
++        "repository": "davidpovarsky/anytype-swift",
++        "blob": "52da9d86fb60866633331fa63d3906aedacff725"
++      }
+-        "blob": "52da9d86fb60866633331fa63d3906aedacff725",
+-        "repository": "davidpovarsky/anytype-swift"
+-      },
+-      "sha256": "7822a8c641331259b23f2569adaddb34095ec4b86b0f44fd11bd1932ed571e1f"
+     },
+     "native-production-source.json": {
+       "bytes": 372320,
++      "sha256": "5206276e3071eeac65784c08a6981b5300eb9017b084c0052db0b2afe46dc74e",
+       "mode": 384,
+       "origin": {
++        "repository": "davidpovarsky/anytype-swift",
++        "blob": "1ce090d287fca70d23763322dc65777cbf6e879a"
++      }
+-        "blob": "1ce090d287fca70d23763322dc65777cbf6e879a",
+-        "repository": "davidpovarsky/anytype-swift"
+-      },
+-      "sha256": "5206276e3071eeac65784c08a6981b5300eb9017b084c0052db0b2afe46dc74e"
+     },
+     "native-qualification-source.json": {
+       "bytes": 374143,
++      "sha256": "8c263f483b327c76d511b6b5786654f64743df9a300741f0ef8760f25b216c3c",
+       "mode": 384,
+       "origin": {
++        "repository": "davidpovarsky/anytype-swift",
++        "blob": "7fc43dd1fdcbc1cace415ce8b47038e7165e500d"
++      }
+-        "blob": "7fc43dd1fdcbc1cace415ce8b47038e7165e500d",
+-        "repository": "davidpovarsky/anytype-swift"
+-      },
+-      "sha256": "8c263f483b327c76d511b6b5786654f64743df9a300741f0ef8760f25b216c3c"
+     },
+     "payloads/boot-binding/internal/embedded/embedded.go": {
+       "bytes": 15885,
++      "sha256": "3b734dd4b3d05c51c4afec4e914d3c637d41e34c9545fd7749bc1aba8b09ae82",
+       "mode": 384,
+       "origin": {
+         "commit": "f372f5e243427822df27bf8bd2ba51bf8206c644",
++        "path": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay/any/internal/embedded/embedded.go"
++      }
+-        "path": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay/any/internal/embedded/embedded.go",
+-        "repository": "davidpovarsky/anytype-swift"
+-      },
+-      "sha256": "3b734dd4b3d05c51c4afec4e914d3c637d41e34c9545fd7749bc1aba8b09ae82"
+     },
+     "payloads/boot-binding/internal/embedded/network_binding.go": {
+       "bytes": 2162,
++      "sha256": "df3e4bdd15dfedbda827cf53f6b65c1179a6b63a3c74617302b8ae91432992a6",
+       "mode": 384,
+       "origin": {
+         "commit": "f372f5e243427822df27bf8bd2ba51bf8206c644",
++        "path": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay/any/internal/embedded/network_binding.go"
++      }
+-        "path": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay/any/internal/embedded/network_binding.go",
+-        "repository": "davidpovarsky/anytype-swift"
+-      },
+-      "sha256": "df3e4bdd15dfedbda827cf53f6b65c1179a6b63a3c74617302b8ae91432992a6"
+     },
+     "payloads/boot-binding/internal/embedded/network_binding_test.go": {
+       "bytes": 6426,
++      "sha256": "9346d49093706e152fd0da02b571fd037974c9ecbbc41871c2193df50c425740",
+       "mode": 384,
+       "origin": {
+         "commit": "f372f5e243427822df27bf8bd2ba51bf8206c644",
++        "path": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay/any/internal/embedded/network_binding_test.go"
++      }
+-        "path": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay/any/internal/embedded/network_binding_test.go",
+-        "repository": "davidpovarsky/anytype-swift"
+-      },
+-      "sha256": "9346d49093706e152fd0da02b571fd037974c9ecbbc41871c2193df50c425740"
+     },
+     "payloads/boot-binding/mobile/android/network_binding.go": {
+       "bytes": 1137,
++      "sha256": "6850eb04ff0ae46c7a14da7495047d1f58aa399964d8baf97aa74ec4ef7c3e21",
+       "mode": 384,
+       "origin": {
+         "commit": "f372f5e243427822df27bf8bd2ba51bf8206c644",
++        "path": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay/any/mobile/android/network_binding.go"
++      }
+-        "path": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay/any/mobile/android/network_binding.go",
+-        "repository": "davidpovarsky/anytype-swift"
+-      },
+-      "sha256": "6850eb04ff0ae46c7a14da7495047d1f58aa399964d8baf97aa74ec4ef7c3e21"
+     },
+     "payloads/boot-binding/mobile/android/network_binding_test.go": {
+       "bytes": 1106,
++      "sha256": "3eee3e3661d30c483f5952036ab9737e81186da8862d4a7eb896b5ce564117e5",
+       "mode": 384,
+       "origin": {
+         "commit": "f372f5e243427822df27bf8bd2ba51bf8206c644",
++        "path": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay/any/mobile/android/network_binding_test.go"
++      }
+-        "path": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay/any/mobile/android/network_binding_test.go",
+-        "repository": "davidpovarsky/anytype-swift"
+-      },
+-      "sha256": "3eee3e3661d30c483f5952036ab9737e81186da8862d4a7eb896b5ce564117e5"
+     },
+     "payloads/boot-binding/mobile/ios/anylib_binding.go": {
+       "bytes": 1966,
++      "sha256": "9ec543d57dfd550aedff75c561f55e1297d37d4d43f8a177a6e12e53d3442ec5",
+       "mode": 384,
+       "origin": {
+         "commit": "f372f5e243427822df27bf8bd2ba51bf8206c644",
++        "path": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay/any/mobile/ios/anylib_binding.go"
++      }
+-        "path": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay/any/mobile/ios/anylib_binding.go",
+-        "repository": "davidpovarsky/anytype-swift"
+-      },
+-      "sha256": "9ec543d57dfd550aedff75c561f55e1297d37d4d43f8a177a6e12e53d3442ec5"
+     },
+     "payloads/boot-binding/mobile/ios/anylib_binding_test.go": {
+       "bytes": 1007,
++      "sha256": "ce1c00f8bcd2746c6d5f13775004fa9352a6340c7d3e69880d7a00924a301b21",
+       "mode": 384,
+       "origin": {
+         "commit": "f372f5e243427822df27bf8bd2ba51bf8206c644",
++        "path": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay/any/mobile/ios/anylib_binding_test.go"
++      }
+-        "path": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay/any/mobile/ios/anylib_binding_test.go",
+-        "repository": "davidpovarsky/anytype-swift"
+-      },
+-      "sha256": "ce1c00f8bcd2746c6d5f13775004fa9352a6340c7d3e69880d7a00924a301b21"
+     },
+     "payloads/embedded-lifecycle/internal/embedded/embedded.go": {
+       "bytes": 16440,
++      "sha256": "7e04af3c356e2b7596540e69b54b7b1e390d00610e2cf2202e8356b1e17a9154",
+       "mode": 384,
+       "origin": {
+         "commit": "584d8eb7423e61823aa67c173312b742d540a27f",
++        "path": "Tools/AnyEngineValidation/native_embedded_lifecycle_20261128/overlay/any/internal/embedded/embedded.go"
++      }
+-        "path": "Tools/AnyEngineValidation/native_embedded_lifecycle_20261128/overlay/any/internal/embedded/embedded.go",
+-        "repository": "davidpovarsky/anytype-swift"
+-      },
+-      "sha256": "7e04af3c356e2b7596540e69b54b7b1e390d00610e2cf2202e8356b1e17a9154"
+     },
+     "payloads/embedded-lifecycle/internal/embedded/lifecycle_reservation_test.go": {
+       "bytes": 19960,
++      "sha256": "e92092ec1469323c9a0631dfd01cbad1973a6f1a54ab0deabb9c4ed8768ad026",
+       "mode": 384,
+       "origin": {
+         "commit": "584d8eb7423e61823aa67c173312b742d540a27f",
++        "path": "Tools/AnyEngineValidation/native_embedded_lifecycle_20261128/overlay/any/internal/embedded/lifecycle_reservation_test.go"
++      }
++    },
++    "broker64/native-production-source.json": {
++      "bytes": 372320,
++      "sha256": "437ded56616ae2c342076aaad30e8bf56c0a6d5e2033a9146de1676985027c66",
++      "mode": 384,
++      "origin": {
++        "repository": "davidpovarsky/anytype-swift",
++        "blob": "4387f42b1e4787bc7683c8cfc6e4892dac87ec30"
++      }
++    },
++    "broker64/native-qualification-source.json": {
++      "bytes": 374439,
++      "sha256": "0b581b558f1750e62aeb3eb5aa1370fcced7aff03d2613085406ca7a05db4d14",
++      "mode": 384,
++      "origin": {
++        "repository": "davidpovarsky/anytype-swift",
++        "blob": "19bc28422f3983224048cb6ed88187bb1aeda5a9"
++      }
++    },
++    "broker64/sdk-production-source.json": {
++      "bytes": 148000,
++      "sha256": "95f841431592083020a4ec0d3283f475e4cdb0b45dbe8c3b3ad44b24be75f096",
++      "mode": 384,
++      "origin": {
++        "repository": "davidpovarsky/anytype-swift",
++        "blob": "77642a14d39cec2e797bb1fc16dbf0e76aab4bf6"
++      }
++    },
++    "broker64/sdk-qualification-source.json": {
++      "bytes": 148458,
++      "sha256": "0f9600abbc7bc4ebab349e4e49704471f0f6f5bafc5cf34c2350dee4006fa5de",
++      "mode": 384,
++      "origin": {
++        "repository": "davidpovarsky/anytype-swift",
++        "blob": "cd0baedf2d9094024ca06376c09830687100229b"
++      }
++    },
++    "broker64/ordered-overlay-manifest.json": {
++      "bytes": 38292,
++      "sha256": "7a843d4b8a0b8d7f75588e1cbe803825f0136e9a31d34fe81ff7a8ea676b6a84",
++      "mode": 384,
++      "origin": {
++        "repository": "davidpovarsky/anytype-swift",
++        "blob": "d5bfe313061085af2f7d68637a240b21d7f79f0d"
++      }
++    },
++    "broker64/test-selection64.json": {
++      "bytes": 24225,
++      "sha256": "e58943629c5c6524e9b4ebe1a0b418842b1a87a4b8d9ebc81dfecafc7aaa1c07",
++      "mode": 384,
++      "origin": {
++        "repository": "davidpovarsky/anytype-swift",
++        "blob": "b350a9cdc8ceac5c2d834d55fefd0f3f7fe76942"
++      }
++    },
++    "broker64/n24-selection.json": {
++      "bytes": 3820,
++      "sha256": "87d1ca5bf68563f50d7557b350ffd15e0ffcd496db62d67ac3eba07111fb0590",
++      "mode": 384,
++      "origin": {
++        "repository": "davidpovarsky/anytype-swift",
++        "blob": "4e1774e9ce9b8bfc96d0fe92dc62a1198f3b5e63"
++      }
++    },
++    "broker64/broker-selection.json": {
++      "bytes": 1417,
++      "sha256": "e29ebd0347405792b6c6b560e0aec4a24fb8d7e7e597f7e997fc1f8ae71129f8",
++      "mode": 384,
++      "origin": {
++        "repository": "davidpovarsky/anytype-swift",
++        "blob": "e15ff16072e4df5db70205110ff8031651435747"
++      }
++    },
++    "payloads/quota-broker-cancellation/.runtime-artifacts/sdk-source/internal/files/broker/broker.go": {
++      "bytes": 12218,
++      "sha256": "fe698597e58d3cd2aa4ce99bf00f59cbf101ce81c4b00f77d3539d483fc9ea9d",
++      "mode": 384,
++      "origin": {
++        "repository": "davidpovarsky/anytype-swift",
++        "blob": "49c06cd901fc33faca11fa2483c925dfc4898572"
++      }
++    },
++    "payloads/quota-broker-cancellation/.runtime-artifacts/sdk-source/internal/files/broker/pinkha_quota_deadline_test.go": {
++      "bytes": 3804,
++      "sha256": "3545314693fea848a66e55c3fb22b76981a6d30fe859b52f718a8288e4077100",
++      "mode": 384,
++      "origin": {
++        "repository": "davidpovarsky/anytype-swift",
++        "blob": "05a3d9ae46f8b48c3ff1bc474661f485dbe1984e"
++      }
+-        "path": "Tools/AnyEngineValidation/native_embedded_lifecycle_20261128/overlay/any/internal/embedded/lifecycle_reservation_test.go",
+-        "repository": "davidpovarsky/anytype-swift"
+-      },
+-      "sha256": "e92092ec1469323c9a0631dfd01cbad1973a6f1a54ab0deabb9c4ed8768ad026"
+     },
++    "before/quota-broker-cancellation/.runtime-artifacts/sdk-source/internal/files/broker/broker.go": {
++      "bytes": 12108,
++      "sha256": "25de187fc12f7e8a9e1aa89c420a47e2bbc9aac021740e0257f79c63245e4f34",
+-    "selection.json": {
+-      "bytes": 6893,
+       "mode": 384,
+       "origin": {
++        "repository": "davidpovarsky/anytype-swift",
++        "blob": "5b83d54c9abd93132636e4b864c302a7279ab6e2"
++      }
+-        "blob": "bb54ab873578c38ad2b26cae45ec549c244e2c8c",
+-        "repository": "davidpovarsky/anytype-swift"
+-      },
+-      "sha256": "dde922871f07cb3f124d53999ee950fd9f1d04ed5784bf28c2fe90c1b6b9c8c0"
+     }
+   },
++  "assetCount": 24,
++  "assetBytes": 1967571,
+-  "commandOrder": [
+-    "toolchain",
+-    "server-units",
+-    "fresh-sdk",
+-    "fresh-http",
+-    "embedded-boot-lifecycle",
+-    "android-bound-core",
+-    "ios-bound-core",
+-    "native-build",
+-    "native-metadata"
+-  ],
+-  "commandOwner": {
+-    "actualRowFieldsUsed": [
+-      "argv",
+-      "cwd",
+-      "logSHA256",
+-      "exitCode",
+-      "processGroupAbsent",
+-      "forcedCleanup",
+-      "signals",
+-      "cleanupErrors"
+-    ],
+-    "blob": "e2155f395e5839ba0f8ed41e1057b9a228415f2c",
+-    "bytes": 9527,
+-    "implementationUnchanged": true,
+-    "labelIsCallerDirectoryNotRowField": true,
+-    "oldPIDsReprobedOrSignaled": false,
+-    "repository": "davidpovarsky/anytype-swift",
+-    "sha256": "f9de18c0fdc879ff916ba34e9afa0da9d6b91444eebfa1e5a8d6a50d3523ca56"
+-  },
+-  "controlDirectory": "embedded-boot-lifecycle",
+-  "controllerOwner": "N",
+-  "finalization": {
+-    "allNineOwnedGroupsMustCloseNormally": true,
+-    "finalSourceModuleProductCacheIdentityAndResourcesRequired": true,
+-    "fullAssetInputsPinnedBeforeAndFinal": true,
+-    "fullPhysicalSourceBeforeEverySelectedCommand": true,
+-    "noCurrentCacheContentsAcceptedAsEvidence": true,
+-    "original24ExactSetAndExtension33ExactSetDisjoint": true,
+-    "partialFailuresRemainFailed": true,
+-    "rawEventsBoundToActualOwnedRows": true,
+-    "sameNControllerTryExceptFinally": true,
+-    "terminalReadbackRequired": true
+-  },
+   "groups": [
+     {
+-      "commandSeconds": 240,
+-      "expectedEvents": 31,
+       "label": "embedded-boot-lifecycle",
+       "package": "github.com/anyproto/any/internal/embedded",
+       "parents": [
+@@ -197,11 +363,11 @@
+         "TestStartStopRestartNoLeak"
+       ],
+       "tags": [],
++      "testTimeout": "120s",
++      "commandSeconds": 240,
++      "expectedEvents": 31
+-      "testTimeout": "120s"
+     },
+     {
+-      "commandSeconds": 180,
+-      "expectedEvents": 1,
+       "label": "android-bound-core",
+       "package": "github.com/anyproto/any/mobile/android",
+       "parents": [
+@@ -210,154 +376,49 @@
+       "tags": [
+         "gomobile"
+       ],
++      "testTimeout": "60s",
++      "commandSeconds": 180,
++      "expectedEvents": 1
+-      "testTimeout": "60s"
+     },
+     {
+-      "commandSeconds": 180,
+-      "expectedEvents": 1,
+       "label": "ios-bound-core",
+       "package": "github.com/anyproto/any/mobile/ios",
+       "parents": [
+         "TestBoundCArchiveCoreCarriesExactIdentityAndClearsFailure"
+       ],
+       "tags": [],
++      "testTimeout": "60s",
++      "commandSeconds": 180,
++      "expectedEvents": 1
++    },
++    {
++      "label": "broker-cancellation",
++      "package": "github.com/anyproto/any-sync-sdk/internal/files/broker",
++      "cwd": "sdk",
++      "parents": [
++        "TestPinkhaQuotaHedgePreCancelledSkipsFleet",
++        "TestPinkhaQuotaHedgeEndsBeforeBlockedPeerReturns",
++        "TestHedgeQuota",
++        "TestHedgeQuota_Cancelled",
++        "TestQuotaFrom_RemembersUsablePeer"
++      ],
++      "tags": [],
++      "testTimeout": "90s",
++      "commandSeconds": 180,
++      "expectedEvents": 7
+-      "testTimeout": "60s"
+     }
+   ],
+-  "module": {
+-    "bytes": 35333,
+-    "file": "embedded_boot_lifecycle.py",
+-    "mode": 384,
+-    "sha256": "33b529935d3e179e4e33a49b6e185faf15722167491ed856df64d5958e541a51"
+-  },
+-  "parentRuntimeOwner": "Root",
+-  "performed": {
+-    "accountOrFixtureReads": false,
+-    "compiler": false,
+-    "controllerExecution": false,
+-    "gitSourceReads": true,
+-    "goTests": 0,
+-    "inMemoryStringAndMapChecks": true,
+-    "nativeProcesses": 0,
+-    "oracleCalls": false,
+-    "pythonParse": false
+-  },
+-  "preparationOrRuntimeOutputAssigned": false,
+-  "preservedDonor": {
+-    "actualLatestAttempt2BodyAvailable": false,
+-    "admission": {
+-      "blob": "130eacce4796c4eae55ef916d4a4c377377fca28",
+-      "bytes": 29166,
+-      "repository": "davidpovarsky/anytype-swift",
+-      "sha256": "6848a0660fecc245e74e22e8bdd40c4ee5bf99cb60cbfa3a4248000b33628f3e"
+-    },
+-    "controller": {
+-      "blob": "62c0c0db7b356817e4dbb3e4503dd78d7f9b0a38",
+-      "bytes": 42012,
+-      "repository": "davidpovarsky/anytype-swift",
+-      "sha256": "c83aa7aaeeee3c40f488b93573c162f253cae8f18856594187cbd301b0c3acb6"
+-    },
+-    "doesNotReplaceLatestN24": true,
+-    "latestAttempt2AdmissionPrefix": "10b1fd36",
+-    "latestAttempt2ControllerPrefix": "06c1e5e1",
+-    "latestAttempt2PlanPrefix": "22d2218d",
+-    "plan": {
+-      "blob": "50ca4a161dd4e644bf8def3d36a06f2ce1046cda",
+-      "bytes": 13164,
+-      "repository": "davidpovarsky/anytype-swift",
+-      "sha256": "241d6781d993632e82d17bfb343a751545a58addeb15b0156ffd7694e9d1caad"
+-    },
+-    "referenceDerivedText": {
+-      "bytes": 45350,
+-      "sha256": "53841836f06d090faa91d54b2f9bea20ac3f29ec7e97bcedffa6c162b5f18c17"
+-    },
+-    "referenceGraftPreservesAllNonMainText": true,
+-    "status": "PRESERVED_ATTEMPT1_NOT_LATEST_NOT_EXECUTABLE_ADMISSION"
+-  },
+-  "protocol": "pinkha-embedded-boot-lifecycle-extension-plan-v1",
+-  "resources": {
+-    "additionalCommandsShareOriginalMainDeadline": true,
+-    "allocationCensusMinimumIntervalSeconds": 1,
+-    "combinedPeakMeasured": false,
+-    "developmentAdmissionReserveBytes": 1207959552,
+-    "developmentFloorBytes": 536870912,
+-    "estimateBasis": "Inherited Runtime18 observations explain only the preserved N bounds. The 57-event combined workload has not run or been measured. Each command consumes the original remaining 900-second main deadline and stays under the unchanged allocation/live-floor guards.",
+-    "estimateOnlyNotMeasuredNewPeak": true,
+-    "finalSeconds": 90,
+-    "goMemoryLimit": "1GiB",
+-    "goWorkers": 2,
+-    "mainSeconds": 900,
+-    "memoryAdmissionBytes": 3221225472,
+-    "noPredictedCacheHitOrCapacityCredit": true,
+-    "observedSharedCacheGrowthCapBytes": 536870912,
+-    "originalCapsAndDeadlinesUnchanged": true,
+-    "originalLogsCapBytes": 16777216,
+-    "outerSeconds": 1050,
+-    "ownedOutputCapBytes": 671088640,
+-    "phaseTimeoutsAreMaximaNotAddedToMainBudget": true,
+-    "rootAdmissionReserveBytes": 33554432,
+-    "rootFloorBytes": 2147483648
+-  },
+-  "scope": {
+-    "additionalNativeProductBuilds": 0,
+-    "affectedExistingEmbeddedParents": 4,
+-    "affectedStartAddressStopSelections": 1,
+-    "appleGeneratedABI": false,
+-    "bootBindingParents": 6,
+-    "combinedChildren": 31,
+-    "combinedEvents": 57,
+-    "combinedOwnedCommands": 9,
+-    "combinedParents": 26,
+-    "extensionChildren": 16,
+-    "extensionCommands": 3,
+-    "extensionEvents": 33,
+-    "extensionParents": 17,
+-    "generatedGomobileBinding": false,
+-    "lifecyclePrivateControlledParents": 6,
+-    "lifecycleRealMixedManagedParents": 1,
+-    "n24Children": 15,
+-    "n24Events": 24,
+-    "n24Parents": 9,
+-    "n24ScopedCommands": 6,
+-    "nativeCLIAccountProof": false,
+-    "nativeProductBuilds": 1,
+-    "retainedC13Runtime18MethodsSelected": 0,
+-    "retainedPrivateAccountInputs": 0,
+-    "runtimeGateSatisfied": false,
+-    "swiftAffectedMethodSelected": false
+-  },
+-  "sourceCommits": {
+-    "boot": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+-    "lifecycle": "584d8eb7423e61823aa67c173312b742d540a27f",
+-    "lifecycleEvidence": "dc746f5fb609906656d0d3e54a8aa8b5db9c7932",
+-    "n24": "94fd763d459210b496557894628333d466abae73"
+-  },
+-  "sourceComposition": {
+-    "combinedOverlayPaths": 28,
+-    "extensionOrderedActions": 9,
+-    "extensionUniquePaths": 8,
+-    "laterBrokerChangesRequireNewExactMaps": true,
+-    "modesAreProspectiveUntilPhysicalReadback": true,
+-    "newTestFiles": 8,
+-    "originalN24OverlayPaths": 20,
+-    "originalN24PlanRemainsAnExplicitScopedSubplan": true,
+-    "originalN24ProductionFiles": 1645,
+-    "originalN24QualificationFiles": 1649,
+-    "productionAdditions": 10,
+-    "productionChanges": 20,
+-    "productionFiles": 1648,
+-    "productionReplacements": 10,
+-    "qualificationFiles": 1656,
+-    "runtime18BaseFiles": 1638,
+-    "sdkMapsRemainExact": true,
+-    "sdkProductionFiles": 755,
+-    "sdkQualificationFiles": 756,
+-    "sourceManifestKeepsOriginalN24Contract": true,
+-    "wholeN24ForwardAndInverseRequired": true
+-  },
+-  "sourceExtensionOwner": "E",
+-  "status": "SOURCE_ONLY_REQUIRES_N_OWNER_ADOPTION_AND_REVIEW",
+   "subcases": {
++    "TestLifecycleReservationCoversPendingLegacyAndBoundStarts": [
++      "legacy-core",
++      "bound-core"
++    ],
++    "TestLifecycleFailedStartReleasesReservation": [
++      "empty-directory",
++      "invalid-mode",
++      "bound-network",
++      "runner-failure"
++    ],
+     "TestBoundNetworkRejectsUnrepresentableIdentityBeforeFilesystem": [
+       "missing",
+       "malformed",
+@@ -370,24 +431,157 @@
+       "long_ascii",
+       "long_utf8"
+     ],
++    "TestPinkhaQuotaHedgeEndsBeforeBlockedPeerReturns": [
++      "cancel",
++      "deadline"
++    ]
++  },
++  "commandOrder": [
++    "toolchain",
++    "server-units",
++    "fresh-sdk",
++    "fresh-http",
++    "embedded-boot-lifecycle",
++    "android-bound-core",
++    "ios-bound-core",
++    "broker-cancellation",
++    "native-build",
++    "native-metadata"
++  ],
++  "commandOwner": {
++    "repository": "davidpovarsky/anytype-swift",
++    "blob": "e2155f395e5839ba0f8ed41e1057b9a228415f2c",
++    "bytes": 9527,
++    "sha256": "f9de18c0fdc879ff916ba34e9afa0da9d6b91444eebfa1e5a8d6a50d3523ca56",
++    "implementationUnchanged": true,
++    "actualRowFieldsUsed": [
++      "argv",
++      "cwd",
++      "logSHA256",
++      "exitCode",
++      "processGroupAbsent",
++      "forcedCleanup",
++      "signals",
++      "cleanupErrors"
+-    "TestLifecycleFailedStartReleasesReservation": [
+-      "empty-directory",
+-      "invalid-mode",
+-      "bound-network",
+-      "runner-failure"
+     ],
++    "labelIsCallerDirectoryNotRowField": true,
++    "oldPIDsReprobedOrSignaled": false,
++    "brokerPhysicalCwd": "sourceRoot/.runtime-artifacts/sdk-source",
++    "brokerLogCallerDirectory": "outputRoot/broker-cancellation/original.log"
++  },
++  "resources": {
++    "rootFloorBytes": 2147483648,
++    "developmentFloorBytes": 536870912,
++    "rootAdmissionReserveBytes": 33554432,
++    "developmentAdmissionReserveBytes": 1207959552,
++    "ownedOutputCapBytes": 671088640,
++    "observedSharedCacheGrowthCapBytes": 536870912,
++    "mainSeconds": 900,
++    "finalSeconds": 90,
++    "outerSeconds": 1050,
++    "goMemoryLimit": "1GiB",
++    "goWorkers": 2,
++    "memoryAdmissionBytes": 3221225472,
++    "allocationCensusMinimumIntervalSeconds": 1,
++    "originalLogsCapBytes": 16777216,
++    "estimateOnlyNotMeasuredNewPeak": true,
++    "estimateBasis": "Inherited Runtime18 observations explain only the preserved N bounds. The64-event combined workload has not run or been measured. The one broker command uses the same180-second command maximum and90-second test maximum as the existing fresh-SDK phase, clipped to the original remaining900-second main deadline; all allocation/live-floor guards remain unchanged.",
++    "originalCapsAndDeadlinesUnchanged": true,
++    "combinedPeakMeasured": false,
++    "additionalCommandsShareOriginalMainDeadline": true,
++    "noPredictedCacheHitOrCapacityCredit": true,
++    "phaseTimeoutsAreMaximaNotAddedToMainBudget": true
++  },
++  "finalization": {
++    "sameNControllerTryExceptFinally": true,
++    "fullAssetInputsPinnedBeforeAndFinal": true,
++    "fullPhysicalSourceBeforeEverySelectedCommand": true,
++    "rawEventsBoundToActualOwnedRows": true,
++    "partialFailuresRemainFailed": true,
++    "original24ExactSetAndExtension33ExactSetDisjoint": true,
++    "finalSourceModuleProductCacheIdentityAndResourcesRequired": true,
++    "noCurrentCacheContentsAcceptedAsEvidence": true,
++    "terminalReadbackRequired": true,
++    "allTenOwnedGroupsMustCloseNormally": true,
++    "original24Boot33Broker7ExactSetsDisjoint": true,
++    "exactFinal64EventSetEqualsPinnedSourceSelection": true,
++    "brokerSDKCwdAndActualOwnerLogIdentityRequired": true,
++    "commandIndices": {
++      "boot": [
++        4,
++        5,
++        6
++      ],
++      "broker": 7,
++      "nativeBuild": 8,
++      "moduleMetadata": 9
++    },
++    "sourceCounts": {
++      "production": 1648,
++      "qualification": 1657,
++      "sdkProduction": 755,
++      "sdkQualification": 757
++    }
+-    "TestLifecycleReservationCoversPendingLegacyAndBoundStarts": [
+-      "legacy-core",
+-      "bound-core"
+-    ]
+   },
+   "unresolvedBeforeAnyRuntime": [
+     "N must supply and review an additive successor of its actual latest controller and admission; the preserved attempt1 reference is not a current executable tuple.",
+     "The old E cache-release helper still points at an actual failed candidate. Only N may replace it with the independently reviewed actual Native117 then Swift23 receipt/schema tuple after those runs complete.",
+     "Root must separately release exclusive cache/compiler/runtime ownership after actual E closure; receipt status alone does not grant ownership.",
++    "Only the exact import-only module has a later syntax-only AST observation. It has not been imported or executed. The reference-derived controller and actual latest N24 still require their own source/syntax review and a finite installer/bootstrap before host execution.",
+-    "Python source is not parsed or executed by this preparation. Source admission and a finite source installer/bootstrap need separate review before host execution.",
+     "Actual physical source modes, all source/toolchain/module pins, memory/free-space floors, allocation baseline and growth caps must be observed by the final N controller.",
++    "Only the exact broker composition412d and its five-parent/two-child selection are included. Any further source or selection change requires another explicit full-map, SDK and phase review.",
+-    "N's separate broker correction, if adopted, requires a new exact composition and affected selection review; this packet accepts only its pinned full maps.",
+     "This selection does not qualify Apple C ABI, generated mobile bindings, an app, or the affected Swift method."
++  ],
++  "performed": {
++    "gitSourceReads": true,
++    "inMemoryStringAndMapChecks": true,
++    "pythonParse": false,
++    "controllerExecution": false,
++    "compiler": false,
++    "goTests": 0,
++    "nativeProcesses": 0,
++    "accountOrFixtureReads": false,
++    "oracleCalls": false,
++    "preparationHasNotExecutedPythonSource": true,
++    "laterIndependentModuleSyntaxOnlyPass": true,
++    "laterSyntaxOwner": "Root",
++    "targetImports": 0,
++    "targetExecutions": 0,
++    "referenceDerivedControllerParsed": false,
++    "latestN24Rewritten": false
++  },
++  "preservedBoot33Proposal": {
++    "sourceCommit": "5f86ea97cd4a9aee102163a5d7ff59b796e4c381",
++    "evidenceCommit": "e677e7ced419becaf7d4e03a7387d23ead892a1f",
++    "prefix": "Tools/AnyEngineValidation/native_boot_lifecycle_extension_20261128",
++    "module": {
++      "blob": "a7e3301193b4e13c4a2b568573e5925871f8c731",
++      "bytes": 35333,
++      "sha256": "33b529935d3e179e4e33a49b6e185faf15722167491ed856df64d5958e541a51"
++    },
++    "plan": {
++      "blob": "7d45ac1d50b5462dc6fcdd76f1ce180e83792f67",
++      "bytes": 15362,
++      "sha256": "196ce1f14be9f2aa9df69fe5b87c49424c6358164aff7931bf7b753375d2ba8e"
++    },
++    "untouched": true,
++    "all13AssetsUnchanged": true,
++    "fullModuleTextInverse": true,
++    "fullReferenceGraftInverse": true
++  },
++  "laterSyntaxObservation": {
++    "repository": "davidpovarsky/anytype-swift",
++    "blob": "f2a7d142809a48f8564078bff7176037e1ed2e16",
++    "bytes": 815,
++    "sha256": "b47cd9d31e69e0d930cc46d7ed0c6782aaef4cc7b6f2bee41a2b415e1d073657",
++    "moduleSha256": "fa34191fa1dccfdeea8e6cd3b81370dd994c37d57ff84b79cc4f71aff323a3e7",
++    "scope": "Syntax-only parse of the exact unchanged import-only module as stdin data; no import/execution, project write, compiler, native or test."
++  },
++  "independentCompositionPeer": {
++    "repository": "davidpovarsky/anytype-swift",
++    "blob": "20d71b9174b010a1f3ef002e86803943bc5d2cc1",
++    "bytes": 3540,
++    "sha256": "ce68cf34f6e4aba750529fd8b5fb0b9b51d8ed672ee0cf9581faf19311d21123",
++    "scope": "Full map/SDK/selection source peer only; module/graft review is separate."
++  }
+-  ]
+ }

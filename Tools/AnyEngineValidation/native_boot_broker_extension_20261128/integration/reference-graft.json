@@ -1,0 +1,134 @@
+{
+  "assignsPreparationOrOutputNamespace": false,
+  "donor": {
+    "blob": "62c0c0db7b356817e4dbb3e4503dd78d7f9b0a38",
+    "bytes": 42012,
+    "repository": "davidpovarsky/anytype-swift",
+    "role": "Exact preserved N24 attempt1; unavailable current attempt2 is not reconstructed.",
+    "sha256": "c83aa7aaeeee3c40f488b93573c162f253cae8f18856594187cbd301b0c3acb6"
+  },
+  "edits": [
+    {
+      "after": "    parser.add_argument('--root-cache-release-confirmed', action='store_true', required=True)\n    parser.add_argument('--embedded-extension-plan-sha256', required=True)\n",
+      "before": "    parser.add_argument('--root-cache-release-confirmed', action='store_true', required=True)\n",
+      "label": "explicit-extension-plan-caller-pin",
+      "referenceLine": 231
+    },
+    {
+      "after": "    for value in (args.self_sha256, args.e_native_receipt_sha256, args.e_swift_receipt_sha256,\n                  args.embedded_extension_plan_sha256):",
+      "before": "    for value in (args.self_sha256, args.e_native_receipt_sha256, args.e_swift_receipt_sha256):",
+      "label": "validate-all-caller-pins",
+      "referenceLine": 234
+    },
+    {
+      "after": "        'protocol': 'pinkha-bound-http-native24-embedded33-broker7-qualification-v1', 'status': 'RUNNING',",
+      "before": "        'protocol': 'pinkha-bound-http-native24-qualification-v1', 'status': 'RUNNING',",
+      "label": "separate-composite-receipt-protocol",
+      "referenceLine": 253
+    },
+    {
+      "after": "        'retainedC13Runtime18TestMethodsReexecuted': 0, 'retainedPrivateAccountInputs': 0, 'privateRecordExports': 0,\n        'affectedExistingEmbeddedParentSelections': 4, 'affectedExistingBrokerParentSelections': 3,",
+      "before": "        'priorTestMethodsReexecuted': 0, 'retainedPrivateAccountInputs': 0, 'privateRecordExports': 0,",
+      "label": "scope-old-cohort-count",
+      "referenceLine": 255
+    },
+    {
+      "after": "        'newRequiredEvents': {'originalUnrunBoundObligations': 17, 'addedTypedACLErrorObligations': 7,\n            'embeddedBootLifecycleSelectedEvents': 33, 'brokerCancellationSelectedEvents': 7, 'total': 64},",
+      "before": "        'newRequiredEvents': {'originalUnrunBoundObligations': 17, 'addedTypedACLErrorObligations': 7, 'total': 24},",
+      "label": "separate-obligation-counts",
+      "referenceLine": 258
+    },
+    {
+      "after": "            'estimateBasis': 'Actual Runtime18 owned peak265449472B and cache growth276299776B. Combined64 source/test/product peak on the separately released E cache is unmeasured; the original caps and deadline still stop the run.'}}",
+      "before": "            'estimateBasis': 'Actual Runtime18 owned peak265449472B and cache growth276299776B. New24 source/test/product peak on the separately released E cache is unmeasured.'}}",
+      "label": "honest-unmeasured-composite-resource-scope",
+      "referenceLine": 275
+    },
+    {
+      "after": "        admitted_source = inputs.admit_sources(plan, pin, require, normal, identity,\n                                                source_inventory, checkpoint, parse_events, result)\n        extension_root = HERE/'embedded-boot-lifecycle'\n        extension_plan_raw = pin(extension_root/'EXTENSION_PLAN.json',\n                                 args.embedded_extension_plan_sha256, 128*1024, mode=0o600)\n        extension_plan = json.loads(extension_plan_raw)\n        require(extension_plan['protocol'] == 'pinkha-embedded-boot-lifecycle-broker-extension-plan-v1' and\n                extension_plan['status'] == 'SOURCE_ONLY_REQUIRES_N_OWNER_ADOPTION_AND_REVIEW' and\n                extension_plan['module'] == {'file': 'embedded_boot_lifecycle_broker.py', 'bytes': 59090,\n                    'sha256': 'fa34191fa1dccfdeea8e6cd3b81370dd994c37d57ff84b79cc4f71aff323a3e7', 'mode': 0o600} and\n                extension_plan['scope']['extensionEvents'] == 33 and\n                extension_plan['scope']['brokerEvents'] == 7 and\n                extension_plan['scope']['combinedEvents'] == 64 and\n                extension_plan['scope']['combinedOwnedCommands'] == 10,\n                'explicit caller-pinned source-only extension proposal, not a runtime grant')\n        extension_raw = pin(extension_root/'embedded_boot_lifecycle_broker.py',\n                            'fa34191fa1dccfdeea8e6cd3b81370dd994c37d57ff84b79cc4f71aff323a3e7', 64*1024, mode=0o600)\n        require(len(extension_raw) == 59090, 'complete exact import-only extension source')\n        extension = types.ModuleType('embedded_boot_lifecycle_broker')\n        exec(compile(extension_raw, str(extension_root/'embedded_boot_lifecycle_broker.py'), 'exec'), extension.__dict__)\n        admitted_source = extension.admit_composition(admitted_source, extension_root, pin, identity, result)\n        result['embeddedExtensionPlan'] = {'path': str(extension_root/'EXTENSION_PLAN.json'),\n                                          **identity(extension_plan_raw)}\n        result['embeddedExtensionModule'] = {'path': str(extension_root/'embedded_boot_lifecycle_broker.py'),\n                                            **identity(extension_raw)}\n        prior = admitted_source['prior']",
+      "before": "        admitted_source = inputs.admit_sources(plan, pin, require, normal, identity,\n                                                source_inventory, checkpoint, parse_events, result)\n        prior = admitted_source['prior']",
+      "label": "import-pinned-extension-after-original-cache-and-source-admission",
+      "referenceLine": 461
+    },
+    {
+      "after": "        result['mutations'].append({'operation': 'compose-new-1657-public-source', 'state': 'dispatching'})",
+      "before": "        result['mutations'].append({'operation': 'compose-new-1649-public-source', 'state': 'dispatching'})",
+      "label": "explicit-new-full-source-composition",
+      "referenceLine": 494
+    },
+    {
+      "after": "        result['sourceFiles'], result['sdkSourceFiles'] = 1657, 757\n        result['productionFiles'], result['sdkProductionFiles'] = 1648, 755\n        result['sourceComposition'] = {'baseFiles': 1638, 'baseSDKFiles': 750,\n            'productionChanges': 21, 'productionAdditions': 10, 'productionReplacements': 11,\n            'newTestFiles': 9, 'qualifiedFiles': 1657, 'qualifiedSDKFiles': 757,\n            'oldC13OrRuntime18MethodsReexecuted': 0, 'affectedExistingEmbeddedParentsSelected': 4,\n            'affectedExistingBrokerParentsSelected': 3}\n        original_n24_manifest = admitted_source['originalN24Manifest']\n        result['wireContract'] = original_n24_manifest['wire']\n        result['localBuiltin'] = original_n24_manifest['localBuiltin']\n        result['typedACLConsumedRecordContract'] = original_n24_manifest['aclConsumedRecordContract']",
+      "before": "        result['sourceFiles'], result['sdkSourceFiles'] = 1649, 756\n        result['productionFiles'], result['sdkProductionFiles'] = 1645, 755\n        result['sourceComposition'] = {'baseFiles': 1638, 'baseSDKFiles': 750,\n            'productionChanges': 16, 'productionAdditions': 7, 'productionReplacements': 9,\n            'newTestFiles': 4, 'qualifiedFiles': 1649, 'qualifiedSDKFiles': 756,\n            'oldC13OrRuntime18MethodsReexecuted': 0}\n        result['wireContract'] = manifest['wire']\n        result['localBuiltin'] = manifest['localBuiltin']\n        result['typedACLConsumedRecordContract'] = manifest['aclConsumedRecordContract']",
+      "label": "exact-composite-counts-and-preserved-n24-contract",
+      "referenceLine": 521
+    },
+    {
+      "after": "        result['actualFreshOSDenialVerified'] = True\n        result['controllerReadFreshPrivatePayloads'] = False\n        extension.run_selected(source, source_before, driver, python, OFFLINE, environment,\n            command=command, source_inventory=source_inventory, checkpoint=checkpoint,\n            frozen=frozen, identity=identity, parse_events=parse_events, normal=normal,\n            result=result, save=save)\n        extension.run_broker_selected(source, source_before, driver, python, OFFLINE, environment,\n            command=command, source_inventory=source_inventory, checkpoint=checkpoint,\n            frozen=frozen, identity=identity, parse_events=parse_events, normal=normal,\n            result=result, save=save)\n        require(fixture_directories() == plan['fixtureMethodDirectories'],\n                'same four declared immediate N24 fixture directory names after extension')\n        binary = output/'any'",
+      "before": "        result['actualFreshOSDenialVerified'] = True\n        result['controllerReadFreshPrivatePayloads'] = False\n        binary = output/'any'",
+      "label": "three-boot-and-one-broker-command-before-sole-native-build",
+      "referenceLine": 625
+    },
+    {
+      "after": "        result['standaloneAnySDKProducerNotEmbeddedHeart'] = True\n        extension.finalize_combined(result, normal)\n        result['status'] = 'PASS_NATIVE64_N24_EMBEDDED_BOOT_LIFECYCLE_AND_BROKER_ONE_STANDALONE_PRODUCT_NOT_APPLE'",
+      "before": "        result['standaloneAnySDKProducerNotEmbeddedHeart'] = True\n        result['status'] = 'PASS_NATIVE24_BOUND_HTTP_AND_TYPED_ACL_ERRORS_ONE_STANDALONE_PRODUCT'",
+      "label": "separate-composite-pass-after-exact-evidence-join",
+      "referenceLine": 654
+    },
+    {
+      "after": "                require(len(result['processes']) == 10 and all(normal(row) for row in result['processes']) and\n                        result['allOwnedGroupsPositivelyAbsent'] is True and\n                        all(value is True for value in result['finalIntegrity'].values()) and\n                        result['nativeProductBuilds'] == 1 and result['errors'] == result['completionErrors'] == [] and\n                        result['actualMethods']['runs'] == result['actualMethods']['passes'] == 24 and\n                        result['embeddedBootLifecycle']['actualRuns'] ==\n                            result['embeddedBootLifecycle']['actualPasses'] == 33 and\n                        result['brokerCancellation']['actualRuns'] ==\n                            result['brokerCancellation']['actualPasses'] == 7 and\n                        result['combinedActualMethods']['runs'] == result['combinedActualMethods']['passes'] == 64,\n                        'ten normal owned commands, separate24+33+7 events and complete source/product finalization')",
+      "before": "                require(len(result['processes']) == 6 and all(normal(row) for row in result['processes']) and\n                        result['allOwnedGroupsPositivelyAbsent'] is True and\n                        all(value is True for value in result['finalIntegrity'].values()) and\n                        result['nativeProductBuilds'] == 1 and result['errors'] == result['completionErrors'] == [] and\n                        result['actualMethods']['runs'] == result['actualMethods']['passes'] == 24,\n                        'six normal owned commands,24 exact events and complete source/product finalization')",
+      "label": "outer-finalization-binds-composite-without-weakening-old24",
+      "referenceLine": 693
+    },
+    {
+      "after": "            'newRunPassEvents': result.get('combinedActualMethods'),\n            'n24Events': result.get('actualMethods'),\n            'embeddedEvents': result.get('embeddedBootLifecycle'),\n            'brokerEvents': result.get('brokerCancellation'), 'errors': result['errors'],",
+      "before": "            'newRunPassEvents': result.get('actualMethods'), 'errors': result['errors'],",
+      "label": "terminal-separate-and-combined-counts",
+      "referenceLine": 724
+    }
+  ],
+  "exactWholeInverse": true,
+  "limitations": [
+    "This is an exact reference graft, not a runnable released controller.",
+    "N must review and adopt the source changes in an additive successor of its actual current tuple.",
+    "The original cache-release helper is intentionally untouched and still rejects the failed historical E candidate.",
+    "Original fixed preparation/output/control pins remain in the reference text; this artifact assigns no execution namespace.",
+    "No module, Python controller, compiler, Go test, native process, or fixture was executed.",
+    "Only the exact separately pinned broker composition412d is included. Any further source change requires another explicit full-map and selection review."
+  ],
+  "module": {
+    "file": "embedded_boot_lifecycle_broker.py",
+    "bytes": 59090,
+    "sha256": "fa34191fa1dccfdeea8e6cd3b81370dd994c37d57ff84b79cc4f71aff323a3e7",
+    "mode": 384
+  },
+  "oldECacheReleaseStillUnsatisfied": true,
+  "preservesWholeNonMainText": true,
+  "protocol": "pinkha-n-owned-boot-broker64-reference-graft-v1",
+  "referenceDerivedText": {
+    "bytes": 46137,
+    "sha256": "275f3ee6470ec1ad5b6f5645b296326b9d5e8d74ca63ff3d9d1f4d570d2971ba"
+  },
+  "runtimeAdmissionUntouched": true,
+  "status": "REFERENCE_ONLY_NOT_CURRENT_N24_NOT_INSTALLED_NOT_PYTHON_PARSED",
+  "updatesCurrentN24": false,
+  "predecessorReference": {
+    "sourceCommit": "5f86ea97cd4a9aee102163a5d7ff59b796e4c381",
+    "graftBlob": "db90573d6a844fcf4f202d104785a31af05eeee3",
+    "graftSHA256": "6a8c73fd40e1474e6447334923e35a2c5b2e529022629071c2271ee2d1a72744",
+    "derivedText": {
+      "bytes": 45350,
+      "sha256": "53841836f06d090faa91d54b2f9bea20ac3f29ec7e97bcedffa6c162b5f18c17"
+    },
+    "wholeNewToOldTextInverse": true
+  },
+  "currentSourceComposition": {
+    "commit": "412d8e77e54ddd4c8f138643d4d4bab18c684aec",
+    "production": "437ded56616ae2c342076aaad30e8bf56c0a6d5e2033a9146de1676985027c66",
+    "qualification": "0b581b558f1750e62aeb3eb5aa1370fcced7aff03d2613085406ca7a05db4d14",
+    "selection": "e58943629c5c6524e9b4ebe1a0b418842b1a87a4b8d9ebc81dfecafc7aaa1c07",
+    "events": 64,
+    "ownedCommands": 10,
+    "productBuilds": 1
+  }
+}

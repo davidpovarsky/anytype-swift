@@ -1,0 +1,38 @@
+--- boot33/run_selected
++++ broker64/run_selected
+@@ -3,13 +3,16 @@
+                  parse_events, normal, result, save):
+     """Use only the caller's f9de command owner, deadlines and original budgets."""
+     proof = result.get('embeddedBootLifecycleSourceAdmission', {})
++    broker_proof = result.get('brokerSourceAdmission', {})
+     require(proof.get('completeForwardAndInverse') is True and
+             proof.get('qualificationFiles') == 1656 and
++            broker_proof.get('completeForwardAndInverse') is True and
++            broker_proof.get('qualificationFiles') == 1657 and
+             result.get('RootCacheReleaseAcknowledgedByCaller') is True and
+             identity(canonical(source_before)) == {
++                key: BROKER_ASSET_ROWS['broker64/native-qualification-source.json'][key]
+-                key: ASSET_ROWS['native-qualification-source.json'][key]
+                 for key in ('bytes', 'sha256')},
++            'complete explicit final source and upstream ownership admission')
+-            'complete extension source and upstream ownership admission')
+     require(str(offline) == OFFLINE_PATH and
+             result['OSPolicy']['helperSHA256'] == OFFLINE_SHA and
+             result['OSPolicy']['appliedBeforeEveryTestCommand'] is True and
+@@ -20,6 +23,7 @@
+     selected_result = {
+         'protocol': PROTOCOL, 'status': 'RUNNING_SELECTED_COMPONENTS',
+         'sourceSelection': ASSET_ROWS['selection.json'], 'phases': {},
++        'fullQualificationMap': BROKER_ASSET_ROWS['broker64/native-qualification-source.json'],
+         'privateControlledRunnerParents': 6, 'realMixedExportManagedParents': 1,
+         'affectedExistingStandaloneParents': 4, 'additionalNativeProductBuilds': 0,
+         'generatedAppleABIQualified': False, 'gomobileGeneratedBindingQualified': False,
+@@ -28,7 +32,7 @@
+     result['embeddedBootLifecycle'] = selected_result
+     for phase in PHASES:
+         require(source_inventory(source, checkpoint) == source_before,
++                'complete physical1657-source map before each boot selection')
+-                'complete physical1656-source map before each extension selection')
+         package = phase['package']
+         methods = phase['parents']
+         require(len(methods) == len(set(methods)), 'unique exact parent names')
