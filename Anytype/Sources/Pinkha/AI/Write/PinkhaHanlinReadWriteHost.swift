@@ -48,21 +48,31 @@ final class PinkhaHanlinReadWriteHost: HanlinHostCancellationDrainSource {
                          installation: installation, write: write, saveMessage: saveMessage)
     }
 
+    /// Explicit production save composition with the original Heart context.
+    /// Native eligibility, mounted consent and the protected shared worker
+    /// remain authoritative. Ordinary make stays read/create-only until the
+    /// separately reviewed production entry is admitted.
+    static func makeForSavingMessages(presenter: UIViewController,
+        routeOwner: SpaceHubCoordinatorViewModel, conversationID: UUID,
+        locale: Locale = .autoupdatingCurrent) throws -> PinkhaHanlinReadWriteHost {
+        let context = try PinkhaHanlinCreatePageContext(presenter: presenter, routeOwner: routeOwner,
+            conversationID: conversationID, locale: locale)
+        return try make(context: context, includeSaveMessage: true)
+    }
+
     #if DEBUG
     static func readOnlyForTesting(read: PinkhaHanlinHostAdapter,
                                    session: HanlinHostSession) throws -> PinkhaHanlinReadWriteHost {
         try .init(read: read, session: session, installation: nil, write: nil, saveMessage: nil)
     }
 
-    /// Explicit native acceptance composition only. Ordinary app construction
-    /// keeps save absent until its real body/authority acceptance is complete.
-    /// This has no launch-argument, settings, model or remote activation path.
+    /// Existing native acceptance uses the same production composition.
+    /// The real fixture, body and authority admission remain with its caller.
     static func makeForSaveMessageAcceptance(presenter: UIViewController,
         routeOwner: SpaceHubCoordinatorViewModel, conversationID: UUID,
         locale: Locale = .autoupdatingCurrent) throws -> PinkhaHanlinReadWriteHost {
-        let context = try PinkhaHanlinCreatePageContext(presenter: presenter, routeOwner: routeOwner,
+        try makeForSavingMessages(presenter: presenter, routeOwner: routeOwner,
             conversationID: conversationID, locale: locale)
-        return try make(context: context, includeSaveMessage: true)
     }
     #endif
 

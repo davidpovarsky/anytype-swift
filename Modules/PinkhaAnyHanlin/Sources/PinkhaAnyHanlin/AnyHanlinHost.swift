@@ -91,15 +91,28 @@ public final class AnyHanlinHost: HanlinHostCancellationDrainSource, PinkhaHanli
         access.observeInvalidation { [weak self] in self?.invalidate() }
     }
 
-    #if DEBUG
-    /// Uncalled native acceptance assembly. Ordinary production initialization
-    /// keeps the save capability absent until real body/authority qualification.
-    public static func makeForSaveMessageAcceptance(native: AnyApplicationSession,
+    /// Explicit full-message composition for the original native services.
+    /// The mounted presentation, current authority, consent and protected
+    /// journal still determine whether the shared router can expose a save.
+    /// Ordinary initialization remains read/create-only until its separately
+    /// reviewed production entry is admitted.
+    public static func makeForSavingMessages(native: AnyApplicationSession,
         documents: AnyEditorDocumentStore, owner: any AnyHanlinPresentationOwner,
         conversationID: UUID, locale: Locale = .current, creation: AnyHanlinCreationServices,
         saveServices: AnyHanlinSaveMessageServices) throws -> AnyHanlinHost {
         try .init(native: native, documents: documents, owner: owner, conversationID: conversationID,
                   locale: locale, creation: creation, saveServices: saveServices)
+    }
+
+    #if DEBUG
+    /// The acceptance route exercises the same explicit production composition.
+    /// Its fixture and native readback admission remain with the existing caller.
+    public static func makeForSaveMessageAcceptance(native: AnyApplicationSession,
+        documents: AnyEditorDocumentStore, owner: any AnyHanlinPresentationOwner,
+        conversationID: UUID, locale: Locale = .current, creation: AnyHanlinCreationServices,
+        saveServices: AnyHanlinSaveMessageServices) throws -> AnyHanlinHost {
+        try makeForSavingMessages(native: native, documents: documents, owner: owner,
+            conversationID: conversationID, locale: locale, creation: creation, saveServices: saveServices)
     }
     #endif
 

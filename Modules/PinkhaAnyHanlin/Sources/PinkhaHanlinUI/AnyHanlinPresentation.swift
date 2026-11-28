@@ -41,11 +41,12 @@ public enum AnyHanlinPresentation {
         }
     }
 
-    #if DEBUG
-    /// Real original-parser/native acceptance path only. No production call,
-    /// settings switch, model argument or launch argument alone can select this path.
+    /// Explicit production save composition using the original native client,
+    /// creator, authority and Markdown planner. This uses the same mounted
+    /// presentation as the read/create-only entry and grants no permission.
+    /// Ordinary editor activation remains a separate source-reviewed change.
     @discardableResult
-    public static func presentForSaveMessageAcceptance(
+    public static func presentForSavingMessages(
         from presenter: UIViewController, native: AnyApplicationSession,
         documents: AnyEditorDocumentStore, client: AnyHTTPClient,
         sourceOwner: any AnyHanlinSourcePresentationOwner,
@@ -57,10 +58,27 @@ public enum AnyHanlinPresentation {
             try await PinkhaHanlinOriginalMarkdownSavePlanner.convert($0)
         }
         return try present(from: presenter, sourceOwner: sourceOwner, hooks: hooks) { owner in
-            try AnyHanlinHost.makeForSaveMessageAcceptance(native: native, documents: documents,
+            try AnyHanlinHost.makeForSavingMessages(native: native, documents: documents,
                 owner: owner, conversationID: conversationID, locale: locale,
                 creation: creation, saveServices: services)
         }
+    }
+
+    #if DEBUG
+    /// Existing fixture admission and hooks exercise the production composition.
+    /// Neither a model argument nor a launch argument alone grants a capability.
+    @discardableResult
+    public static func presentForSaveMessageAcceptance(
+        from presenter: UIViewController, native: AnyApplicationSession,
+        documents: AnyEditorDocumentStore, client: AnyHTTPClient,
+        sourceOwner: any AnyHanlinSourcePresentationOwner,
+        conversationID: UUID, locale: Locale = .autoupdatingCurrent,
+        creation: AnyHanlinCreationServices,
+        hooks: PinkhaHanlinPresentationHooks = .init()
+    ) throws -> PinkhaHanlinChatController {
+        try presentForSavingMessages(from: presenter, native: native, documents: documents,
+            client: client, sourceOwner: sourceOwner, conversationID: conversationID,
+            locale: locale, creation: creation, hooks: hooks)
     }
     #endif
 
