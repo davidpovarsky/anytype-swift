@@ -322,8 +322,8 @@ public struct AnyNativeImportedDefinitionDirectory: Sendable {
         supplementalCanonicalDefinitions = preservation.supplementalCanonicalDefinitions
         supplementalPropertyBindings = [propertySupplement.binding]
         namespacePrerequisite = nil
-        unresolvedSourceDefinitionIDs = source.sourceObjectIDs.filter {
-            guard let member = source.definitionMembers[Data($0.utf8)] else { return false }
+        unresolvedSourceDefinitionIDs = preservation.source.sourceObjectIDs.filter {
+            guard let member = preservation.source.definitionMembers[Data($0.utf8)] else { return false }
             return [528, 521, 529].contains(member.nativeType) && merged[Data($0.utf8)] == nil
         }.sorted { Data($0.utf8).lexicographicallyPrecedes(Data($1.utf8)) }
     }
