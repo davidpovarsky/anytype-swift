@@ -1,0 +1,220 @@
+{
+  "schema": "pinkha-wave2-personal-navigation-literal-replacements-v1",
+  "sourceBaseline": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+  "sourceTree": "9f2a5dae2df4b2d0fb7627b39120566e40a4cd7b",
+  "status": "FROZEN_SOURCE_ONLY_RUNTIME_BRIDGE_SOURCE_PENDING",
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeApplication.swift",
+      "original": {
+        "commit": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+        "bytes": 23564,
+        "sha256": "c5474020ad3bababfef8fc43ea8624ecf0b9b8e80bfacfa5eb5caeb09142b40c",
+        "gitBlob": "110de501e91665280e4751da7b7b6a8392a47913"
+      },
+      "candidate": {
+        "bytes": 24728,
+        "sha256": "db5fac51bf6af8481b3b95f35dc5f13e216bb13dd6c8997fbf17972112d8a00c",
+        "gitBlob": "1d69d208865c2f5ae4477916520612fb1af35476"
+      },
+      "replacements": [
+        {
+          "label": "one workspace-owned personal-navigation store and compatible internal initializer",
+          "before": "    public let capabilities: AnyUIFoundationCapabilities\n\n    public var workspace: AnyTorahWorkspace { session.workspace }\n",
+          "after": "    public let capabilities: AnyUIFoundationCapabilities\n    public let personalNavigation: AnyNativePersonalNavigationStore?\n\n    init(client: AnyHTTPClient, session: AnyApplicationSession, journal: AnyProtectedCreationJournal,\n         objects: AnyNativeObjectCreator, blocks: AnyNativeBlockCreator,\n         capabilities: AnyUIFoundationCapabilities,\n         personalNavigation: AnyNativePersonalNavigationStore? = nil) {\n        self.client = client; self.session = session; self.journal = journal\n        self.objects = objects; self.blocks = blocks; self.capabilities = capabilities\n        self.personalNavigation = personalNavigation\n    }\n\n    public var workspace: AnyTorahWorkspace { session.workspace }\n"
+        },
+        {
+          "label": "capture authoritative network from the original owned boot before awaits",
+          "before": "    private func connectOwnedSpace(id: String) async throws -> AnyNativeWorkspaceOwner {\n        let client = try accountClient(requireBackup: true)\n        if let current = workspaceOwner, current.workspace.spaceID == id { return current }\n",
+          "after": "    private func connectOwnedSpace(id: String) async throws -> AnyNativeWorkspaceOwner {\n        let client = try accountClient(requireBackup: true)\n        guard let embedded else { throw AnyNativeApplicationError.closed }\n        let expectedNetworkID = embedded.expectedNetworkID\n        if let current = workspaceOwner, current.workspace.spaceID == id { return current }\n"
+        },
+        {
+          "label": "capture exact binding once under original session lease with all failures propagated",
+          "before": "            guard gateway[\"mobileManagedTokenGateway\"]?.integer == 1 else {\n                throw AnyUIActivationError.missingCapability(\"mobileManagedTokenGateway\")\n            }\n            let journal = try await AnyProtectedCreationJournal.open(workspace: workspace)\n",
+          "after": "            guard gateway[\"mobileManagedTokenGateway\"]?.integer == 1 else {\n                throw AnyUIActivationError.missingCapability(\"mobileManagedTokenGateway\")\n            }\n            let personalNavigation = try await session.perform { lease in\n                let binding = try await client.nativeAccountRunBinding(expectedNetworkID: expectedNetworkID)\n                try await lease.validate()\n                return try AnyNativePersonalNavigationStore(client: client,\n                    workspace: lease.workspace, binding: binding)\n            }\n            let journal = try await AnyProtectedCreationJournal.open(workspace: workspace)\n"
+        },
+        {
+          "label": "pass captured store into original owner construction",
+          "before": "            let owner = AnyNativeWorkspaceOwner(client: client, session: session, journal: journal,\n                objects: objects, blocks: blocks, capabilities: capabilities)\n",
+          "after": "            let owner = AnyNativeWorkspaceOwner(client: client, session: session, journal: journal,\n                objects: objects, blocks: blocks, capabilities: capabilities,\n                personalNavigation: personalNavigation)\n"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+      "original": {
+        "commit": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+        "bytes": 25011,
+        "sha256": "54cd42c28ef5d5dce53e1a52495f97a87cc06af68c58bfa5bebb9a51b8b458b8",
+        "gitBlob": "112250ced570144979043c9c0a5c58c4af33e22c"
+      },
+      "candidate": {
+        "bytes": 25081,
+        "sha256": "b029c7f5e3064c3333117301478633f70a2dd8768dde57a0d1df2d38b807e775",
+        "gitBlob": "7356bed6598d094e4945d1265e67a6433ac3ab22"
+      },
+      "replacements": [
+        {
+          "label": "pass the original workspace navigation owner",
+          "before": "                        onManageMembers: { model.showMembers() })\n",
+          "after": "                        onManageMembers: { model.showMembers() },\n                        personalNavigation: owner.personalNavigation)\n"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+      "original": {
+        "commit": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+        "bytes": 42248,
+        "sha256": "48eb452e97598c6a9453b03b5c99ecba3a0c12026d6b0456bee784d4345b732c",
+        "gitBlob": "24f08c4c7bfece4a2b711762c20783bd7a45f5f3"
+      },
+      "candidate": {
+        "bytes": 51701,
+        "sha256": "e6111e18c38b582437651cf80f420e5282d8ec473da69cf56ae67c4ef18645d4",
+        "gitBlob": "74afcb956d26ccfa709dbc392fa87ea9ae563f42"
+      },
+      "replacements": [
+        {
+          "label": "shared synchronous acknowledgment holder and finite Home intent types",
+          "before": "private enum AnyLibraryOpenError: Error { case setupMissing }\n",
+          "after": "/// A synchronous receipt sink for one original personal-navigation intent.\n/// It retains only operation/ownership metadata and never becomes a journal.\nfinal class AnyNativeNavigationAcknowledgmentHolder: @unchecked Sendable {\n    private let operationID: UUID\n    private let workspace: AnyTorahWorkspace\n    private let generation: UUID\n    private let binding: AnyNativeAccountRunBinding\n    private let kind: AnyNativeNavigationAcknowledgment.Kind\n    private let lock = NSLock()\n    private var value: AnyNativeNavigationAcknowledgment?\n\n    init(operationID: UUID, workspace: AnyTorahWorkspace, generation: UUID,\n         binding: AnyNativeAccountRunBinding, kind: AnyNativeNavigationAcknowledgment.Kind) {\n        self.operationID = operationID; self.workspace = workspace\n        self.generation = generation; self.binding = binding; self.kind = kind\n    }\n\n    func retain(_ acknowledgment: AnyNativeNavigationAcknowledgment) {\n        guard acknowledgment.operationID == operationID,\n              Self.sameWorkspace(acknowledgment.workspace, workspace),\n              acknowledgment.generation == generation, acknowledgment.binding == binding,\n              acknowledgment.kind == kind else { return }\n        lock.lock(); defer { lock.unlock() }\n        if value == nil { value = acknowledgment }\n    }\n\n    var acknowledgment: AnyNativeNavigationAcknowledgment? {\n        lock.lock(); defer { lock.unlock() }\n        return value\n    }\n\n    static func sameWorkspace(_ lhs: AnyTorahWorkspace, _ rhs: AnyTorahWorkspace) -> Bool {\n        lhs.accountID.utf8.elementsEqual(rhs.accountID.utf8)\n            && lhs.spaceID.utf8.elementsEqual(rhs.spaceID.utf8)\n    }\n}\n\nprivate enum AnyLibraryHomeAction: Sendable {\n    case open\n    case set(AnyNativeHomeSelection?)\n}\n\nprivate struct AnyLibraryHomeAttempt: Sendable {\n    let intent: AnyPreparedNativeHomeSelection\n    let acknowledgment: AnyNativeNavigationAcknowledgmentHolder\n}\n\nprivate enum AnyLibraryOpenError: Error { case setupMissing }\n"
+        },
+        {
+          "label": "Home busy state",
+          "before": "    public private(set) var canWrite = false\n",
+          "after": "    public private(set) var canWrite = false\n    public private(set) var isWorkingWithHome = false\n"
+        },
+        {
+          "label": "owned navigation dependency and retained operation state",
+          "before": "    @ObservationIgnored public let recovery: AnyNativeLibraryRecovery\n",
+          "after": "    @ObservationIgnored public let recovery: AnyNativeLibraryRecovery\n    @ObservationIgnored public let personalNavigation: AnyNativePersonalNavigationStore?\n    @ObservationIgnored private var homeSnapshot: AnyNativeHomeSnapshot?\n    @ObservationIgnored private var homeTask: Task<Void, Never>?\n    @ObservationIgnored private var homeRequestID: UUID?\n    @ObservationIgnored private var homeAttempts: [UUID: AnyLibraryHomeAttempt] = [:]\n"
+        },
+        {
+          "label": "compatible initializer argument",
+          "before": "                recovery: AnyNativeLibraryRecovery) {\n",
+          "after": "                recovery: AnyNativeLibraryRecovery,\n                personalNavigation: AnyNativePersonalNavigationStore? = nil) {\n"
+        },
+        {
+          "label": "retain original navigation dependency",
+          "before": "        self.capabilities = capabilities; self.lifetime = lifetime; self.recovery = recovery\n",
+          "after": "        self.capabilities = capabilities; self.lifetime = lifetime; self.recovery = recovery\n        self.personalNavigation = personalNavigation\n"
+        },
+        {
+          "label": "forward same store into original document model",
+          "before": "            noteMarker: marker, objectID: id, lifetime: lifetime, recovery: recovery, hierarchySchema: hierarchy?.schema)\n",
+          "after": "            noteMarker: marker, objectID: id, lifetime: lifetime, recovery: recovery, hierarchySchema: hierarchy?.schema,\n            personalNavigation: personalNavigation)\n"
+        },
+        {
+          "label": "explicit Home operations",
+          "before": "    public func create(title: String, kind: PinkhaHierarchyNodeKind, parentID: String?, isNote: Bool = false) async {\n",
+          "after": "    /// These personal preferences require current READ authority, independently\n    /// of the permission to edit shared document content.\n    public func openHome() { beginHomeAction(.open) }\n    public func setHome(documentID: String) { beginHomeAction(.set(.object(documentID))) }\n    public func unsetHome() { beginHomeAction(.set(nil)) }\n\n    private func beginHomeAction(_ action: AnyLibraryHomeAction) {\n        guard lifetime.isActive, isReady, homeTask == nil else { return }\n        guard let personalNavigation else {\n            message = AnyUIErrorText.text(\"הניווט לבית אינו זמין כרגע.\",\n                                          \"Home navigation is unavailable right now.\")\n            return\n        }\n        guard AnyNativeNavigationAcknowledgmentHolder.sameWorkspace(\n            personalNavigation.workspace, session.workspace) else {\n            message = AnyUIErrorText.describe(AnyHostError.wrongWorkspace)\n            return\n        }\n        let expected = epoch, requestID = UUID()\n        homeRequestID = requestID; isWorkingWithHome = true\n        homeTask = Task { [weak self] in\n            guard let self else { return }\n            await performHomeAction(action, store: personalNavigation,\n                                    expected: expected, requestID: requestID)\n        }\n    }\n\n    private func requireHomeRequest(_ requestID: UUID, expected: UUID) throws {\n        try Task.checkCancellation()\n        try validate(expected)\n        guard homeRequestID == requestID else { throw AnyHostError.sessionClosed }\n    }\n\n    private func performHomeAction(_ action: AnyLibraryHomeAction,\n                                   store: AnyNativePersonalNavigationStore,\n                                   expected: UUID, requestID: UUID) async {\n        defer {\n            if homeRequestID == requestID {\n                homeRequestID = nil; homeTask = nil; isWorkingWithHome = false\n            }\n        }\n        var retainedAttempt: AnyLibraryHomeAttempt?\n        do {\n            try requireHomeRequest(requestID, expected: expected)\n            switch action {\n            case .open:\n                let current = try await session.perform { lease in\n                    try await store.readHome(lease: lease)\n                }\n                try requireHomeRequest(requestID, expected: expected)\n                homeSnapshot = current\n                let destination = try await session.perform { lease in\n                    try await store.requireHomeDestination(current, lease: lease)\n                }\n                try requireHomeRequest(requestID, expected: expected)\n                switch current.value {\n                case .absent:\n                    message = AnyUIErrorText.text(\"עדיין לא נבחר מסמך בית.\",\n                                                  \"No Home document has been selected.\")\n                case .selection(.empty):\n                    message = AnyUIErrorText.text(\"הבית מוגדר כתצוגה ריקה.\",\n                                                  \"Home is set to an empty view.\")\n                case .selection(.object(let objectID)):\n                    guard case .object(let verifiedID)? = destination,\n                          verifiedID.utf8.elementsEqual(objectID.utf8) else {\n                        throw AnyNativePersonalNavigationError.invalidHome\n                    }\n                    onOpenDocument?(objectID, nil)\n                case .selection(.builtIn), .unsupported:\n                    message = AnyUIErrorText.text(\"תצוגת הבית שנבחרה אינה זמינה כאן.\",\n                                                  \"The selected Home view is unavailable here.\")\n                }\n            case .set(let selection):\n                guard homeAttempts.count < 256 else {\n                    throw AnyNativePersonalNavigationError.sessionAttemptLimit\n                }\n                let intent = try await session.perform { lease in\n                    try await store.prepareHome(selection, lease: lease)\n                }\n                try requireHomeRequest(requestID, expected: expected)\n                let acknowledgment = AnyNativeNavigationAcknowledgmentHolder(\n                    operationID: intent.operationID, workspace: session.workspace,\n                    generation: session.generation, binding: store.binding, kind: .home)\n                let attempt = AnyLibraryHomeAttempt(intent: intent, acknowledgment: acknowledgment)\n                // Save the exact prepared intent before the first dispatch.\n                homeAttempts[intent.operationID] = attempt\n                retainedAttempt = attempt\n                let receipt = try await session.perform { lease in\n                    try await self.requireHomeRequest(requestID, expected: expected)\n                    return try await store.commitHome(intent, lease: lease,\n                        onAcknowledged: { acknowledgment.retain($0) })\n                }\n                try requireHomeRequest(requestID, expected: expected)\n                guard acknowledgment.acknowledgment != nil else { throw AnyHostError.writeUncertain }\n                switch receipt.readback {\n                case .verifiedCurrent:\n                    guard let snapshot = receipt.snapshot else { throw AnyHostError.writeUncertain }\n                    homeSnapshot = snapshot\n                    message = selection == nil\n                        ? AnyUIErrorText.text(\"בחירת מסמך הבית הוסרה.\", \"The Home document selection was cleared.\")\n                        : AnyUIErrorText.text(\"מסמך הבית עודכן.\", \"The Home document was updated.\")\n                case .nativeAcknowledgedCurrentStateUnverified:\n                    homeSnapshot = nil\n                    message = Self.homeAcknowledgedWithoutReadback\n                }\n            }\n        } catch {\n            guard expected == epoch, lifetime.isActive,\n                  homeRequestID == requestID, !Task.isCancelled else { return }\n            if retainedAttempt?.acknowledgment.acknowledgment != nil {\n                homeSnapshot = nil\n                message = Self.homeAcknowledgedWithoutReadback\n            } else {\n                message = AnyUIErrorText.describe(error)\n            }\n        }\n    }\n\n    private static var homeAcknowledgedWithoutReadback: String {\n        AnyUIErrorText.text(\"השינוי בבית אושר, אך לא ניתן לבדוק את ההגדרה הנוכחית. אפשר לפתוח את הבית כדי לבדוק.\",\n                           \"The Home change was accepted, but the current setting could not be checked. Open Home to check.\")\n    }\n\n    public func create(title: String, kind: PinkhaHierarchyNodeKind, parentID: String?, isNote: Bool = false) async {\n"
+        },
+        {
+          "label": "retire and join original Home task",
+          "before": "    public func revoke() {\n        epoch = UUID(); canWrite = false; bookmarkTypes = []\n",
+          "after": "    public func revoke() {\n        epoch = UUID(); canWrite = false; bookmarkTypes = []\n        homeRequestID = nil; isWorkingWithHome = false; homeSnapshot = nil\n        homeTask?.cancel()\n        if let homeTask { closingObservations.append(homeTask) }\n        homeTask = nil\n"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "original": {
+        "commit": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+        "bytes": 34388,
+        "sha256": "a5252e690004cb50ea4bb0cad6d101b0427a80b37e3ef641db0ed703e312f90e",
+        "gitBlob": "138fdcfcd61dfe59700e38751887ee61647b0c03"
+      },
+      "candidate": {
+        "bytes": 36115,
+        "sha256": "53e7281e78d75cf8b67391a2b9b7d9e8b844faaed034ef2e02b92f2d9ca6c55e",
+        "gitBlob": "b5c45b5568c08408b31d78e00a44cdf758d3941b"
+      },
+      "replacements": [
+        {
+          "label": "compatible optional navigation dependency",
+          "before": "                onManageMembers: (@MainActor () -> Void)? = nil) {\n",
+          "after": "                onManageMembers: (@MainActor () -> Void)? = nil,\n                personalNavigation: AnyNativePersonalNavigationStore? = nil) {\n"
+        },
+        {
+          "label": "same owner forwarded to original Library model",
+          "before": "            objects: objects, blocks: blocks, capabilities: capabilities, lifetime: lifetime, recovery: recovery))\n",
+          "after": "            objects: objects, blocks: blocks, capabilities: capabilities, lifetime: lifetime, recovery: recovery,\n            personalNavigation: personalNavigation))\n"
+        },
+        {
+          "label": "explicit Home route and explicit unset only",
+          "before": "                        if parentID == nil {\n                            Section {\n                                NavigationLink(value: AnyNativeLibraryDestination.allDocuments) {\n",
+          "after": "                        if parentID == nil {\n                            Section {\n                                Button { model.openHome() } label: {\n                                    Label(AnyUIErrorText.text(\"בית\", \"Home\"), systemImage: \"house\")\n                                }\n                                .disabled(!lifetime.isActive || model.isWorkingWithHome)\n                                .accessibilityIdentifier(\"any-native-open-home\")\n                                .contextMenu {\n                                    Button(AnyUIErrorText.text(\"ביטול בחירת מסמך הבית\", \"Clear Home document selection\")) {\n                                        model.unsetHome()\n                                    }\n                                    .disabled(!lifetime.isActive || model.isWorkingWithHome)\n                                    .accessibilityIdentifier(\"any-native-unset-home\")\n                                }\n                                NavigationLink(value: AnyNativeLibraryDestination.allDocuments) {\n"
+        },
+        {
+          "label": "READ-authorized Home selection independent of shared-content editing",
+          "before": "    private func hierarchyActions(_ item: AnyHierarchyPresentationItem) -> some View {\n        Button(AnyUIErrorText.text(\"שינוי שם\", \"Rename\"), systemImage: \"pencil\") {\n",
+          "after": "    private func hierarchyActions(_ item: AnyHierarchyPresentationItem) -> some View {\n        if item.kind == .writingDocument {\n            Button(AnyUIErrorText.text(\"הגדרה כמסמך הבית\", \"Set as Home document\"), systemImage: \"house\") {\n                model.setHome(documentID: item.objectID)\n            }\n            .disabled(!lifetime.isActive || model.isWorkingWithHome)\n            .accessibilityIdentifier(\"any-native-set-home\")\n        }\n        Button(AnyUIErrorText.text(\"שינוי שם\", \"Rename\"), systemImage: \"pencil\") {\n"
+        },
+        {
+          "label": "same explicit Home action for ordinary document lists",
+          "before": "                if let snippet = item.snippet { Text(snippet).font(.caption).lineLimit(3).foregroundStyle(.secondary) }\n            }\n        }\n    }\n\n    private func movePicker",
+          "after": "                if let snippet = item.snippet { Text(snippet).font(.caption).lineLimit(3).foregroundStyle(.secondary) }\n            }\n        }\n        .contextMenu {\n            Button(AnyUIErrorText.text(\"הגדרה כמסמך הבית\", \"Set as Home document\"), systemImage: \"house\") {\n                model.setHome(documentID: item.id)\n            }\n            .disabled(!lifetime.isActive || model.isWorkingWithHome)\n            .accessibilityIdentifier(\"any-native-set-home\")\n        }\n    }\n\n    private func movePicker"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "original": {
+        "commit": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+        "bytes": 73179,
+        "sha256": "82b5b2dd0ac3978ec6a867cb3f9220527e1a111e89a601c4f4e9baf15d2c38fb",
+        "gitBlob": "475624e12bbb9c97dc96295b107e21611a798639"
+      },
+      "candidate": {
+        "bytes": 79044,
+        "sha256": "178c290b468f5bc187fe9c344629c03630922b16acb7242734406ac00cf9ff1f",
+        "gitBlob": "7ad9963cc9537da17e313779647984082233b143"
+      },
+      "replacements": [
+        {
+          "label": "original scoped store and bounded intent retention",
+          "before": "    @ObservationIgnored private var recoveryWasRestored = false\n",
+          "after": "    @ObservationIgnored private var recoveryWasRestored = false\n    @ObservationIgnored private let personalNavigation: AnyNativePersonalNavigationStore?\n    @ObservationIgnored private var actualOpenMountID: UUID?\n    @ObservationIgnored private var actualOpenAttemptedMountID: UUID?\n    @ObservationIgnored private var actualOpenReadOwner: UUID?\n    @ObservationIgnored private var actualOpenTaskID: UUID?\n    @ObservationIgnored private var actualOpenTask: Task<Void, Never>?\n    @ObservationIgnored private var actualOpenAttempts: [UUID: (\n        intent: AnyPreparedNativeObjectOpen, acknowledgment: AnyNativeNavigationAcknowledgmentHolder)] = [:]\n"
+        },
+        {
+          "label": "compatible optional dependency argument",
+          "before": "                sourceWorkspace: AnytypeTorahWorkspace? = nil) throws {\n",
+          "after": "                sourceWorkspace: AnytypeTorahWorkspace? = nil,\n                personalNavigation: AnyNativePersonalNavigationStore? = nil) throws {\n"
+        },
+        {
+          "label": "same-workspace dependency guard",
+          "before": "        try lifetime.requireActive()\n        try recovery.requireWorkspace(session.workspace)\n",
+          "after": "        try lifetime.requireActive()\n        try recovery.requireWorkspace(session.workspace)\n        if let personalNavigation {\n            guard AnyNativeNavigationAcknowledgmentHolder.sameWorkspace(\n                personalNavigation.workspace, session.workspace) else { throw AnyHostError.wrongWorkspace }\n        }\n        self.personalNavigation = personalNavigation\n"
+        },
+        {
+          "label": "fresh mounted-open identity",
+          "before": "        if !isMounted {\n            epoch = UUID()\n            retireEditorReads()\n        }\n        self.surface = surface; isMounted = true\n",
+          "after": "        if !isMounted {\n            epoch = UUID()\n            retireEditorReads()\n            actualOpenMountID = UUID(); actualOpenAttemptedMountID = nil\n            actualOpenReadOwner = nil\n        }\n        self.surface = surface; isMounted = true\n"
+        },
+        {
+          "label": "mounted readiness observation",
+          "before": "        if startsMountedOwner, showsProperties { updateSourceDocumentsPresentation() }\n        torah.activateDocument()\n",
+          "after": "        if startsMountedOwner, showsProperties { updateSourceDocumentsPresentation() }\n        torah.activateDocument()\n        beginActualOpenIfReady()\n"
+        },
+        {
+          "label": "current accepted-read prerequisite",
+          "before": "            accept(result.0); canWrite = result.1\n            await torah.refreshAssociationSnapshot()\n",
+          "after": "            accept(result.0); canWrite = result.1\n            actualOpenReadOwner = requestEpoch\n            beginActualOpenIfReady()\n            await torah.refreshAssociationSnapshot()\n"
+        },
+        {
+          "label": "real open operation and retained acknowledgment",
+          "before": "    private func mayPublishRead(_ requestID: UUID, owner: UUID) -> Bool {\n",
+          "after": "    /// Mount identity is independent of read/observation revisions. A refresh\n    /// cannot turn an already observed open into another native mutation.\n    private func beginActualOpenIfReady() {\n        guard let personalNavigation, let mountID = actualOpenMountID,\n              actualOpenAttemptedMountID != mountID, actualOpenReadOwner == epoch,\n              isMounted, read != nil, surface?.isForegroundMounted == true,\n              lifetime.isActive else { return }\n        let owner = epoch, observedAt = Date()\n        actualOpenAttemptedMountID = mountID\n        let preceding = actualOpenTask\n        actualOpenTaskID = mountID\n        actualOpenTask = Task { [weak self] in\n            // A previously cancelled open of this same document must drain\n            // before a later observation can publish a newer local timestamp.\n            await preceding?.value\n            guard let self else { return }\n            defer {\n                if actualOpenTaskID == mountID {\n                    actualOpenTaskID = nil; actualOpenTask = nil\n                }\n            }\n            var retained: AnyNativeNavigationAcknowledgmentHolder?\n            do {\n                try requireActualOpen(mountID: mountID, owner: owner)\n                guard actualOpenAttempts.count < 256 else {\n                    throw AnyNativePersonalNavigationError.sessionAttemptLimit\n                }\n                let objectID = objectID, session = nativeSession\n                let intent = try await session.perform { lease in\n                    try await personalNavigation.prepareActualOpen(\n                        objectID: objectID, observedAt: observedAt, lease: lease)\n                }\n                try requireActualOpen(mountID: mountID, owner: owner)\n                let acknowledgment = AnyNativeNavigationAcknowledgmentHolder(\n                    operationID: intent.operationID, workspace: workspace,\n                    generation: session.generation, binding: personalNavigation.binding,\n                    kind: .lastOpened)\n                // This exact intent and its ACK remain available in the old\n                // owner even when session.perform rejects postflight delivery.\n                actualOpenAttempts[intent.operationID] = (intent, acknowledgment)\n                retained = acknowledgment\n                let receipt = try await session.perform { lease in\n                    try await self.requireActualOpen(mountID: mountID, owner: owner)\n                    return try await personalNavigation.commitActualOpen(intent, lease: lease,\n                        onAcknowledged: { acknowledgment.retain($0) })\n                }\n                try requireActualOpen(mountID: mountID, owner: owner)\n                guard acknowledgment.acknowledgment != nil else { throw AnyHostError.writeUncertain }\n                switch receipt.readback {\n                case .verifiedCurrent: break\n                case .nativeAcknowledgedCurrentStateUnverified:\n                    if message == nil { message = Self.actualOpenUnverified }\n                }\n            } catch {\n                guard epoch == owner, actualOpenMountID == mountID, isMounted,\n                      lifetime.isActive, surface?.isForegroundMounted == true,\n                      !Task.isCancelled else { return }\n                // Navigation metadata never changes editor write authority,\n                // drafts, or the already accepted document read.\n                if message == nil {\n                    message = retained?.acknowledgment == nil\n                        ? AnyUIErrorText.text(\"המסמך נפתח, אך לא ניתן לאמת את תאריך הפתיחה האחרון.\",\n                                              \"The document opened, but its last-opened date could not be confirmed.\")\n                        : Self.actualOpenUnverified\n                }\n            }\n        }\n    }\n\n    private func requireActualOpen(mountID: UUID, owner: UUID) throws {\n        try Task.checkCancellation()\n        try requireMounted(owner)\n        guard actualOpenMountID == mountID, actualOpenTaskID == mountID,\n              actualOpenReadOwner == owner else { throw AnyHostError.sessionClosed }\n    }\n\n    private static var actualOpenUnverified: String {\n        AnyUIErrorText.text(\"תאריך הפתיחה עודכן, אך לא ניתן לבדוק את הערך הנוכחי.\",\n                           \"The last-opened date was updated, but the current value could not be checked.\")\n    }\n\n    private func mayPublishRead(_ requestID: UUID, owner: UUID) -> Bool {\n"
+        },
+        {
+          "label": "cancel and drain only owned open work",
+          "before": "        isMounted = false; epoch = UUID()\n        updateSourceDocumentsPresentation()\n",
+          "after": "        isMounted = false; epoch = UUID()\n        actualOpenMountID = nil; actualOpenReadOwner = nil\n        actualOpenTask?.cancel()\n        if let actualOpenTask { closingObservers.append(actualOpenTask) }\n        updateSourceDocumentsPresentation()\n"
+        }
+      ]
+    }
+  ],
+  "ruleCount": 26,
+  "reverse": "Apply each file's exact after→before literals in reverse order; all replacements must occur exactly once. Whole result must match the original full byte/SHA/Git identity."
+}

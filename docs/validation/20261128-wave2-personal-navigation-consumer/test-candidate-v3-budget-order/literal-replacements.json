@@ -1,0 +1,121 @@
+{
+  "schema": "pinkha-navigation-test-v3-literal-inverse",
+  "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+  "predecessor": {
+    "bytes": 73757,
+    "sha256": "019f231b850c6b838e1d02f474b4e513533a1dc75e21fac74305b64a839ba95b",
+    "gitBlob": "51cbffeb7919b8e760b23af096d750c85c8f16dd"
+  },
+  "candidate": {
+    "bytes": 77600,
+    "sha256": "259e5fe8a96d397aec345ca60af304e2371259aa80ad73e39a71d1164e6428e6",
+    "gitBlob": "96ef43c61390b71bffeb048ecf2182e9398f57e2"
+  },
+  "rules": [
+    {
+      "label": "navigation-only finite request budget",
+      "count": 1,
+      "before": "    private let navigationEnabled: Bool\n",
+      "after": "    private let navigationEnabled: Bool\n    private let requestLimit: Int\n"
+    },
+    {
+      "label": "default512 retained; new navigation1024 only",
+      "count": 1,
+      "before": "        self.navigationEnabled = navigationEnabled\n        self.holdFirstNavigationDefinition = holdFirstNavigationDefinition\n",
+      "after": "        self.navigationEnabled = navigationEnabled\n        self.requestLimit = navigationEnabled ? 1_024 : 512\n        self.holdFirstNavigationDefinition = holdFirstNavigationDefinition\n"
+    },
+    {
+      "label": "cumulative accepts use the same finite per-mode budget",
+      "count": 1,
+      "before": "        listener.newConnectionLimit = 512\n",
+      "after": "        listener.newConnectionLimit = requestLimit\n"
+    },
+    {
+      "label": "all three existing request-count assertions use the per-mode budget",
+      "count": 3,
+      "before": "requests <= 512",
+      "after": "requests <= requestLimit"
+    },
+    {
+      "label": "marker binds an actual mounted owner rather than only a Boolean",
+      "count": 1,
+      "before": "    @TaskLocal static var ownsPersonalOpen = false\n",
+      "after": "    @TaskLocal static var personalOpenOwnerID: UUID? = nil\n"
+    },
+    {
+      "label": "scope marker around only actual owner activation",
+      "count": 1,
+      "before": "        MountedNavigationTaskContext.$ownsPersonalOpen.withValue(true) {\n",
+      "after": "        MountedNavigationTaskContext.$personalOpenOwnerID.withValue(presentation.mountedOwnerID) {\n"
+    },
+    {
+      "label": "bounded per-owner entry observation state",
+      "count": 1,
+      "before": "    private var waiter: CheckedContinuation<Void, any Error>?\n\n    var isHeld: Bool",
+      "after": "    private var waiter: CheckedContinuation<Void, any Error>?\n    private var enteredOwners: Set<UUID> = []\n    private var observedOwner: UUID?\n    private var entryObservation: AsyncStream<Bool>.Continuation?\n\n    var isHeld: Bool"
+    },
+    {
+      "label": "record marked first boundary before any real run-verification I/O",
+      "count": 1,
+      "before": "            let readRun: @Sendable () async throws -> String = {\n                let health = try await client.requestJSON(method: \"GET\", path: [\"v1\", \"health\"])\n",
+      "after": "            let readRun: @Sendable () async throws -> String = {\n                let actualOpenOwnerID = MountedNavigationTaskContext.personalOpenOwnerID\n                if let actualOpenOwnerID { try runGate.recordEntry(for: actualOpenOwnerID) }\n                let health = try await client.requestJSON(method: \"GET\", path: [\"v1\", \"health\"])\n"
+    },
+    {
+      "label": "same marked task alone may consume the original controlled pause",
+      "count": 1,
+      "before": "                if MountedNavigationTaskContext.ownsPersonalOpen {\n",
+      "after": "                if actualOpenOwnerID != nil {\n"
+    },
+    {
+      "label": "finite entry observation tied to exact mounted owner; no source authority added",
+      "count": 1,
+      "before": "    func release(rejectFurtherReads: Bool = false) {\n",
+      "after": "    func recordEntry(for owner: UUID) throws {\n        lock.lock()\n        guard enteredOwners.contains(owner) || enteredOwners.count < 4 else {\n            lock.unlock()\n            throw MountedRefreshFixtureFailure.invalid(\"navigation owner observation bound\")\n        }\n        enteredOwners.insert(owner)\n        let observation = observedOwner == owner ? entryObservation : nil\n        lock.unlock()\n        observation?.yield(true)\n    }\n\n    func hasEntered(_ owner: UUID) -> Bool {\n        lock.lock(); defer { lock.unlock() }\n        return enteredOwners.contains(owner)\n    }\n\n    func beginEntryObservation(for owner: UUID) throws -> AsyncStream<Bool> {\n        let pair = AsyncStream<Bool>.makeStream(bufferingPolicy: .bufferingNewest(1))\n        lock.lock()\n        guard observedOwner == nil, entryObservation == nil else {\n            lock.unlock()\n            pair.continuation.finish()\n            throw MountedRefreshFixtureFailure.invalid(\"duplicate navigation entry observation\")\n        }\n        observedOwner = owner; entryObservation = pair.continuation\n        let alreadyEntered = enteredOwners.contains(owner)\n        lock.unlock()\n        if alreadyEntered { pair.continuation.yield(true) }\n        return pair.stream\n    }\n\n    @discardableResult\n    func finishEntryObservation(for owner: UUID) -> Bool {\n        lock.lock()\n        let entered = enteredOwners.contains(owner)\n        let continuation = observedOwner == owner ? entryObservation : nil\n        if observedOwner == owner { observedOwner = nil; entryObservation = nil }\n        lock.unlock()\n        continuation?.finish()\n        return entered\n    }\n\n    func release(rejectFurtherReads: Bool = false) {\n"
+    },
+    {
+      "label": "await a scoped inverted event observation before releasing the old task",
+      "count": 1,
+      "before": "            try await self.requireNavigationRead(context, expected: \"XbeforeY\")\n            context.activateOpen()\n            XCTAssertTrue(context.runGate.isHeld)\n            XCTAssertEqual(fixture.navigationWriteCount, 1)\n            fixture.recordNavigationGateRelease()\n",
+      "after": "            try await self.requireNavigationRead(context, expected: \"XbeforeY\")\n            let successorOwner = model.mountedOwnerID\n            let prematureEntry = try context.runGate.beginEntryObservation(for: successorOwner)\n            context.activateOpen()\n            let enteredBeforeDrain = try await self.observePrematureNavigationEntry(\n                prematureEntry, gate: context.runGate, owner: successorOwner)\n            XCTAssertFalse(enteredBeforeDrain, \"The new actual-open task entered its lease before its predecessor drained\")\n            XCTAssertFalse(context.runGate.hasEntered(successorOwner))\n            XCTAssertTrue(context.runGate.isHeld)\n            XCTAssertEqual(fixture.navigationWriteCount, 1)\n            fixture.recordNavigationGateRelease()\n"
+    },
+    {
+      "label": "require positive successor entry after actual release",
+      "count": 1,
+      "before": "                fixture.navigationWriteCount == 2 && fixture.navigationReadbacks >= 1\n            }\n            XCTAssertNil(model.message, \"A retired completion must not publish over the current owner\")\n",
+      "after": "                fixture.navigationWriteCount == 2 && fixture.navigationReadbacks >= 1\n            }\n            XCTAssertTrue(context.runGate.hasEntered(successorOwner))\n            XCTAssertNil(model.message, \"A retired completion must not publish over the current owner\")\n"
+    },
+    {
+      "label": "bounded inverted observation yields MainActor and finishes both group children",
+      "count": 1,
+      "before": "    @MainActor\n    private func withMountedNavigation(\n",
+      "after": "    @MainActor\n    private func observePrematureNavigationEntry(\n        _ stream: AsyncStream<Bool>, gate: MountedNavigationGate, owner: UUID\n    ) async throws -> Bool {\n        defer { gate.finishEntryObservation(for: owner) }\n        try Task.checkCancellation()\n        let observed = await withTaskGroup(of: Bool.self) { group in\n            defer {\n                gate.finishEntryObservation(for: owner)\n                group.cancelAll()\n            }\n            group.addTask {\n                var iterator = stream.makeAsyncIterator()\n                return await iterator.next() ?? false\n            }\n            group.addTask {\n                do { try await Task.sleep(for: .seconds(1)) }\n                catch { return false }\n                return false\n            }\n            return await group.next() ?? false\n        }\n        try Task.checkCancellation()\n        // The ledger also catches an entry racing registration or the deadline.\n        return observed || gate.hasEntered(owner)\n    }\n\n    @MainActor\n    private func withMountedNavigation(\n"
+    },
+    {
+      "label": "release also closes any scoped entry observer during error cleanup",
+      "count": 1,
+      "before": "        let pending = waiter\n        waiter = nil; held = false; target = nil; reject = rejectFurtherReads\n        lock.unlock()\n        if rejectFurtherReads {\n",
+      "after": "        let pending = waiter\n        let observation = entryObservation\n        waiter = nil; held = false; target = nil; reject = rejectFurtherReads\n        observedOwner = nil; entryObservation = nil\n        lock.unlock()\n        observation?.finish()\n        if rejectFurtherReads {\n"
+    }
+  ],
+  "verifiedForwardExact": true,
+  "verifiedReverseExact": true,
+  "chain": [
+    {
+      "step": "v3-to-v2",
+      "rules": 14,
+      "sites": 16,
+      "sha256": "019f231b850c6b838e1d02f474b4e513533a1dc75e21fac74305b64a839ba95b"
+    },
+    {
+      "step": "v2-to-v1",
+      "path": "../test-candidate-v2-task-local/literal-replacements.json",
+      "sha256": "4a77b1e68ca6985e8a007ad68d6783dd3097f113cbd7187cba7df622f1c36e28"
+    },
+    {
+      "step": "v1-to-original",
+      "path": "../test-candidate-v1/literal-replacements.json",
+      "sha256": "2d36e4c0b5a02d1cfd29478851b7879d4de24d832f35461fafef681e17b19cc8"
+    }
+  ],
+  "instructions": "Apply after-to-before in reverse order, require each exact recorded occurrence count, and compare the entire result to019f. The retained prior inverses then restore4975 and complete original30de."
+}

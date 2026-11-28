@@ -1,0 +1,163 @@
+{
+  "schema": "pinkha.w2.personal-navigation-consumer.peer-review.v2",
+  "status": "PASS_SOURCE_REVIEW_ONLY_RUNTIME_CLOSED",
+  "reviewedBy": "/root/editor",
+  "scope": "Narrow foreground successor and sixth-source preimage; retained v1 full-source review applies to unchanged code.",
+  "baseline": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+  "retainedV1Review": {
+    "path": "/mnt/development/projects/evidence/pinkha-wave2-personal-navigation-consumer-20261128/source-candidate-v1/editor-independent-source-review.json",
+    "bytes": 12065,
+    "sha256": "1e4285c1a86e65dd5e3f9a4632c3c00b66c3c429d3fb3907c1c340cec56cc7d7",
+    "unchanged": true
+  },
+  "reviewedArtifacts": [
+    {
+      "path": "candidate-manifest.json",
+      "bytes": 7206,
+      "sha256": "30a6f25774320c4882d0325906270725d1122af23cb37c95cdbe8ed98e69b374"
+    },
+    {
+      "path": "literal-replacements.json",
+      "bytes": 2673,
+      "sha256": "c26355838ba086bebbfed3c83d0087e04ecfdf423fc127c3f61ca41274bf7fd1"
+    },
+    {
+      "path": "source-proof.json",
+      "bytes": 2038,
+      "sha256": "3b01d2d2746e48350dc9ad33a1ba623a73087ee5b381b64311d1c7d02e3ddc13"
+    }
+  ],
+  "fullByteVerification": {
+    "rules": [
+      {
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+        "preimage": {
+          "bytes": 79044,
+          "sha256": "178c290b468f5bc187fe9c344629c03630922b16acb7242734406ac00cf9ff1f",
+          "gitBlob": "7ad9963cc9537da17e313779647984082233b143"
+        },
+        "candidate": {
+          "bytes": 79276,
+          "sha256": "e868915c4ce6edc1cf2104f395af3a104750f7c745bf62023e666d582cd1bf7b",
+          "gitBlob": "8ede71cdf594e78b0f9b8ded8406a21780652380"
+        },
+        "fullForward": true,
+        "fullInverse": true,
+        "addedBytes": 232
+      },
+      {
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+        "preimage": {
+          "bytes": 36414,
+          "sha256": "31f5200514b239b777679568c215a0ddb89fb0af9c41987d178deb2a06c408db",
+          "gitBlob": "44418e9710c16412d3dced2e8ce53ae94eb264cc"
+        },
+        "candidate": {
+          "bytes": 36457,
+          "sha256": "bbee3b3bd5c65e7170dc99f8c0252a9310595f76eb382d1036027318e8840c3f",
+          "gitBlob": "a39d0b6c7234a64323bbe26d45554097f9fdf7fb"
+        },
+        "fullForward": true,
+        "fullInverse": true,
+        "addedBytes": 43
+      }
+    ],
+    "unchanged": [
+      {
+        "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeApplication.swift",
+        "sha256": "db5fac51bf6af8481b3b95f35dc5f13e216bb13dd6c8997fbf17972112d8a00c",
+        "bytes": 24728,
+        "gitBlob": "1d69d208865c2f5ae4477916520612fb1af35476"
+      },
+      {
+        "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+        "sha256": "b029c7f5e3064c3333117301478633f70a2dd8768dde57a0d1df2d38b807e775",
+        "bytes": 25081,
+        "gitBlob": "7356bed6598d094e4945d1265e67a6433ac3ab22"
+      },
+      {
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+        "sha256": "e6111e18c38b582437651cf80f420e5282d8ec473da69cf56ae67c4ef18645d4",
+        "bytes": 51701,
+        "gitBlob": "74afcb956d26ccfa709dbc392fa87ea9ae563f42"
+      },
+      {
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+        "sha256": "53e7281e78d75cf8b67391a2b9b7d9e8b844faaed034ef2e02b92f2d9ca6c55e",
+        "bytes": 36115,
+        "gitBlob": "b5c45b5568c08408b31d78e00a44cdf758d3941b"
+      }
+    ],
+    "totalAddedBytes": 275
+  },
+  "actualReadback": {
+    "document": {
+      "ranges": [
+        [
+          1,
+          800
+        ],
+        [
+          801,
+          1487
+        ]
+      ],
+      "rangeBytes": [
+        42625,
+        36651
+      ],
+      "joinedBytes": 79276,
+      "sha256": "e868915c4ce6edc1cf2104f395af3a104750f7c745bf62023e666d582cd1bf7b",
+      "gitBlob": "8ede71cdf594e78b0f9b8ded8406a21780652380"
+    },
+    "view": {
+      "bytes": 36457,
+      "sha256": "bbee3b3bd5c65e7170dc99f8c0252a9310595f76eb382d1036027318e8840c3f",
+      "gitBlob": "a39d0b6c7234a64323bbe26d45554097f9fdf7fb"
+    },
+    "sixthSourcePreimage": "The exact complete bae AnyNativeDocumentView primary body was independently fetched and SHA/Git-blob verified during the v1 lifecycle check, then used for this whole-file inverse. No inferred historical-body equivalence."
+  },
+  "findingResolution": {
+    "id": "NAV-CONSUMER-FOREGROUND-01",
+    "disposition": "CLOSED_BY_SOURCE_CORRECTION_RUNTIME_NOT_RUN",
+    "changes": [
+      "One synchronous public didBecomeActive method delegates to the unchanged private beginActualOpenIfReady guard.",
+      "The existing UIApplication.didBecomeActiveNotification callback invokes the method between the original diagnostic and MiniApps callbacks."
+    ],
+    "behavior": [
+      "A still-mounted current accepted read whose initial readiness check declined while inactive is now revisited by the existing real activation notification.",
+      "The callback does not mutate or reset mount, epoch, read or attempted-operation identity. The existing real surface foreground/current-owner/accepted-read/lifetime guards remain the sole readiness checks.",
+      "Already attempted observations remain consumed; repeated activation and ordinary refresh cannot rearm or resend them through this insertion.",
+      "The same MainActor model owns the synchronous method, and the existing SwiftUI notification closure already calls its actor-isolated diagnostic and MiniApps methods. No new task, timer, observer, Sendable facade or process owner is introduced.",
+      "Cancelled predecessor and cached successor task ownership is unchanged from the retained review: identity-gated cleanup, waiting for the predecessor, and existing drain remain exact."
+    ]
+  },
+  "preservation": {
+    "productFiles": 6,
+    "originalV1LiteralRules": 26,
+    "addedLiteralRules": 2,
+    "totalLiteralRules": 28,
+    "insertedBytes": 275,
+    "unchangedOtherProductBodies": 4,
+    "allOriginalViewStatementsRetained": true,
+    "allOriginalV1DocumentStatementsRetained": true,
+    "editorDraftReadWriteAuthorizationUnchanged": true,
+    "hostApiAndNativeContractsChanged": false,
+    "originalDiagnosticAndMiniAppsCallsPreserved": true,
+    "broaderSourceAuditRepeated": false
+  },
+  "residualAcceptance": [
+    "No remaining concrete source blocker was found in this finite delta plus the retained v1 review.",
+    "Interfaces' separate meaningful test additions are outside this review; no test methods, compiler or runtime were executed here.",
+    "Actual mounted background/foreground behavior, cached close/reopen with late acknowledgment, and both mixed App/OS language directions remain NOT_RUN.",
+    "The consumer still requires the authoritative nonoptional expectedNetworkID Runtime source and coherent new bound-start Native exports. Current 8ac does not qualify it; this source review grants no ABI, App-build or execution admission."
+  ],
+  "activity": {
+    "sourceEditsByReviewer": 0,
+    "compilerInvocations": 0,
+    "testExecutions": 0,
+    "controllerExecutions": 0,
+    "processQueries": 0,
+    "githubMutations": 0
+  }
+}

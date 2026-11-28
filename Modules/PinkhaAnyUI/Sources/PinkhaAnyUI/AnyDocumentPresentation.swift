@@ -105,6 +105,14 @@ public final class AnyDocumentPresentation: Sendable {
     @ObservationIgnored let lifetime: AnyUIPresentationLifetime
     @ObservationIgnored private let recovery: AnyNativeLibraryRecovery
     @ObservationIgnored private var recoveryWasRestored = false
+    @ObservationIgnored private let personalNavigation: AnyNativePersonalNavigationStore?
+    @ObservationIgnored private var actualOpenMountID: UUID?
+    @ObservationIgnored private var actualOpenAttemptedMountID: UUID?
+    @ObservationIgnored private var actualOpenReadOwner: UUID?
+    @ObservationIgnored private var actualOpenTaskID: UUID?
+    @ObservationIgnored private var actualOpenTask: Task<Void, Never>?
+    @ObservationIgnored private var actualOpenAttempts: [UUID: (
+        intent: AnyPreparedNativeObjectOpen, acknowledgment: AnyNativeNavigationAcknowledgmentHolder)] = [:]
     @ObservationIgnored private var registration: UUID?
     @ObservationIgnored private var epoch = UUID()
     // The default still performs the real native read. Tests can delay delivery
@@ -146,7 +154,8 @@ public final class AnyDocumentPresentation: Sendable {
                 objectID: String, lifetime: AnyUIPresentationLifetime,
                 recovery: AnyNativeLibraryRecovery,
                 hierarchySchema: AnyHierarchySchema? = nil,
-                sourceWorkspace: AnytypeTorahWorkspace? = nil) throws {
+                sourceWorkspace: AnytypeTorahWorkspace? = nil,
+                personalNavigation: AnyNativePersonalNavigationStore? = nil) throws {
         guard operations.workspace == session.workspace, noteMarker.workspace == session.workspace,
               objects.workspace == session.workspace, blocks.workspace == session.workspace,
               client.expectedAccountID == session.workspace.accountID, !objectID.isEmpty else {
@@ -154,6 +163,11 @@ public final class AnyDocumentPresentation: Sendable {
         }
         try lifetime.requireActive()
         try recovery.requireWorkspace(session.workspace)
+        if let personalNavigation {
+            guard AnyNativeNavigationAcknowledgmentHolder.sameWorkspace(
+                personalNavigation.workspace, session.workspace) else { throw AnyHostError.wrongWorkspace }
+        }
+        self.personalNavigation = personalNavigation
         self.recovery = recovery
         self.objectID = objectID; self.workspace = session.workspace
         self.client = client; self.nativeSession = session; self.objects = objects; self.blocks = blocks
@@ -246,10 +260,19 @@ public final class AnyDocumentPresentation: Sendable {
         if !isMounted {
             epoch = UUID()
             retireEditorReads()
+            actualOpenMountID = UUID(); actualOpenAttemptedMountID = nil
+            actualOpenReadOwner = nil
         }
         self.surface = surface; isMounted = true
         if startsMountedOwner, showsProperties { updateSourceDocumentsPresentation() }
         torah.activateDocument()
+        beginActualOpenIfReady()
+    }
+
+    /// Recheck an already loaded mount after foreground activation. This keeps
+    /// the existing mount token and never rearms an attempted observation.
+    public func didBecomeActive() {
+        beginActualOpenIfReady()
     }
 
     /// The normal Note/related-document route closes the actual owned sheets
@@ -335,6 +358,8 @@ public final class AnyDocumentPresentation: Sendable {
             }
             guard mayPublishRead(requestID, owner: requestEpoch) else { return }
             accept(result.0); canWrite = result.1
+            actualOpenReadOwner = requestEpoch
+            beginActualOpenIfReady()
             await torah.refreshAssociationSnapshot()
             guard mayPublishRead(requestID, owner: requestEpoch) else { return }
             try await refreshNativeProperties(expectedEpoch: requestEpoch, editorRequestID: requestID)
@@ -344,6 +369,87 @@ public final class AnyDocumentPresentation: Sendable {
             guard mayPublishRead(requestID, owner: requestEpoch) else { return }
             message = AnyUIErrorText.describe(error)
         }
+    }
+
+    /// Mount identity is independent of read/observation revisions. A refresh
+    /// cannot turn an already observed open into another native mutation.
+    private func beginActualOpenIfReady() {
+        guard let personalNavigation, let mountID = actualOpenMountID,
+              actualOpenAttemptedMountID != mountID, actualOpenReadOwner == epoch,
+              isMounted, read != nil, surface?.isForegroundMounted == true,
+              lifetime.isActive else { return }
+        let owner = epoch, observedAt = Date()
+        actualOpenAttemptedMountID = mountID
+        let preceding = actualOpenTask
+        actualOpenTaskID = mountID
+        actualOpenTask = Task { [weak self] in
+            // A previously cancelled open of this same document must drain
+            // before a later observation can publish a newer local timestamp.
+            await preceding?.value
+            guard let self else { return }
+            defer {
+                if actualOpenTaskID == mountID {
+                    actualOpenTaskID = nil; actualOpenTask = nil
+                }
+            }
+            var retained: AnyNativeNavigationAcknowledgmentHolder?
+            do {
+                try requireActualOpen(mountID: mountID, owner: owner)
+                guard actualOpenAttempts.count < 256 else {
+                    throw AnyNativePersonalNavigationError.sessionAttemptLimit
+                }
+                let objectID = objectID, session = nativeSession
+                let intent = try await session.perform { lease in
+                    try await personalNavigation.prepareActualOpen(
+                        objectID: objectID, observedAt: observedAt, lease: lease)
+                }
+                try requireActualOpen(mountID: mountID, owner: owner)
+                let acknowledgment = AnyNativeNavigationAcknowledgmentHolder(
+                    operationID: intent.operationID, workspace: workspace,
+                    generation: session.generation, binding: personalNavigation.binding,
+                    kind: .lastOpened)
+                // This exact intent and its ACK remain available in the old
+                // owner even when session.perform rejects postflight delivery.
+                actualOpenAttempts[intent.operationID] = (intent, acknowledgment)
+                retained = acknowledgment
+                let receipt = try await session.perform { lease in
+                    try await self.requireActualOpen(mountID: mountID, owner: owner)
+                    return try await personalNavigation.commitActualOpen(intent, lease: lease,
+                        onAcknowledged: { acknowledgment.retain($0) })
+                }
+                try requireActualOpen(mountID: mountID, owner: owner)
+                guard acknowledgment.acknowledgment != nil else { throw AnyHostError.writeUncertain }
+                switch receipt.readback {
+                case .verifiedCurrent: break
+                case .nativeAcknowledgedCurrentStateUnverified:
+                    if message == nil { message = Self.actualOpenUnverified }
+                }
+            } catch {
+                guard epoch == owner, actualOpenMountID == mountID, isMounted,
+                      lifetime.isActive, surface?.isForegroundMounted == true,
+                      !Task.isCancelled else { return }
+                // Navigation metadata never changes editor write authority,
+                // drafts, or the already accepted document read.
+                if message == nil {
+                    message = retained?.acknowledgment == nil
+                        ? AnyUIErrorText.text("המסמך נפתח, אך לא ניתן לאמת את תאריך הפתיחה האחרון.",
+                                              "The document opened, but its last-opened date could not be confirmed.")
+                        : Self.actualOpenUnverified
+                }
+            }
+        }
+    }
+
+    private func requireActualOpen(mountID: UUID, owner: UUID) throws {
+        try Task.checkCancellation()
+        try requireMounted(owner)
+        guard actualOpenMountID == mountID, actualOpenTaskID == mountID,
+              actualOpenReadOwner == owner else { throw AnyHostError.sessionClosed }
+    }
+
+    private static var actualOpenUnverified: String {
+        AnyUIErrorText.text("תאריך הפתיחה עודכן, אך לא ניתן לבדוק את הערך הנוכחי.",
+                           "The last-opened date was updated, but the current value could not be checked.")
     }
 
     private func mayPublishRead(_ requestID: UUID, owner: UUID) -> Bool {
@@ -1254,6 +1360,9 @@ public final class AnyDocumentPresentation: Sendable {
         retainRecovery()
         guard isMounted else { return }
         isMounted = false; epoch = UUID()
+        actualOpenMountID = nil; actualOpenReadOwner = nil
+        actualOpenTask?.cancel()
+        if let actualOpenTask { closingObservers.append(actualOpenTask) }
         updateSourceDocumentsPresentation()
         semanticAnchorIntent = nil; semanticAnchorPreparationID = nil
         semanticAnchorMutationID = nil; isCreatingTextAnchor = false

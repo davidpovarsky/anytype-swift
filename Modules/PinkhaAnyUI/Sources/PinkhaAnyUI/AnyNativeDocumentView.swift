@@ -220,6 +220,7 @@ public struct AnyNativeDocumentView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
             presentation.recordEditorDiagnostic(.documentSceneChanged)
+            presentation.didBecomeActive()
             presentation.consumeMiniAppsResults()
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in

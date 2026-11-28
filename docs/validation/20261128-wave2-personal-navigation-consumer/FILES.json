@@ -1,0 +1,407 @@
+{
+  "schema": "pinkha.wave2.personal-navigation.publication-files.v1",
+  "status": "SOURCE_REVIEWED_COMPILATION_XCTEST_APPLE_NATIVE_AND_VISUAL_ACCEPTANCE_NOT_RUN",
+  "repository": "davidpovarsky/anytype-swift",
+  "ownedBranch": "codex/chatgpt-wave15-wave2-personal-navigation-20261128",
+  "sourceCommitSoleParent": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+  "sourceCommitBaseTree": "02a44909e89d06f63b636b8cce9391c22dd2202d",
+  "sharedSourceBeforeRuntimeDonor": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+  "sourceFileCount": 7,
+  "productionFileCount": 6,
+  "testFileCount": 1,
+  "sourceBytes": 330958,
+  "changedExistingPreimages": [
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeApplication.swift",
+      "preimage": "110de501e91665280e4751da7b7b6a8392a47913",
+      "parentTree": "95c3f5a204e91b06d448f831cd45a7fc7cbf3062",
+      "mode": "100644",
+      "exact": true
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+      "preimage": "112250ced570144979043c9c0a5c58c4af33e22c",
+      "parentTree": "95c3f5a204e91b06d448f831cd45a7fc7cbf3062",
+      "mode": "100644",
+      "exact": true
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+      "preimage": "24f08c4c7bfece4a2b711762c20783bd7a45f5f3",
+      "parentTree": "d53c327f562836512c9bf1ccac94321bea790663",
+      "mode": "100644",
+      "exact": true
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "preimage": "138fdcfcd61dfe59700e38751887ee61647b0c03",
+      "parentTree": "d53c327f562836512c9bf1ccac94321bea790663",
+      "mode": "100644",
+      "exact": true
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "preimage": "475624e12bbb9c97dc96295b107e21611a798639",
+      "parentTree": "d53c327f562836512c9bf1ccac94321bea790663",
+      "mode": "100644",
+      "exact": true
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+      "preimage": "44418e9710c16412d3dced2e8ce53ae94eb264cc",
+      "parentTree": "d53c327f562836512c9bf1ccac94321bea790663",
+      "mode": "100644",
+      "exact": true
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+      "preimage": "07a523228f184625e44aa2430b26836fdb00f94c",
+      "parentTree": "48f0f8c836b6eb7be9b6aa7cb416eda5d00ce1fd",
+      "mode": "100644",
+      "exact": true
+    }
+  ],
+  "testSelection": {
+    "declaredPackageTarget": "PinkhaAnyUITests",
+    "testClass": "AnyNativeTextRendererTests",
+    "methodNames": [
+      "testPersonalOpenWaitsForForegroundAndRecordsOncePerMount",
+      "testPersonalOpenRejectsRetiredReadAndCancellationBeforeDispatch",
+      "testPersonalOpenRetainsLateAcknowledgmentAndDrainsBeforeReopen"
+    ],
+    "actualSharedAppTargetPrefix": "Pending W3 exact built-product enumeration; package identifiers are source locators, not claimed executed selectors.",
+    "expectedNewMethods": 3,
+    "expectedControlledFlows": 4,
+    "oldFiveMethodsToReplay": 0,
+    "executionStatus": "NOT_RUN"
+  },
+  "dependency": {
+    "runtimeDonor": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+    "hostContract": "d1b04526825ad10b07c59313727629cec35f9559",
+    "publishedContract": {
+      "path": "docs/validation/20261128-native-boot-network-binding/CONSUMER_CONTRACT.md",
+      "bytes": 3718,
+      "sha256": "3d7ced972a581e2ddeb3f0bd219f430abbc6ba0d1d2e96a0b4194967f683217e",
+      "gitBlob": "ca3bad697ff8a8425aeb898fe272bdb5b345f312"
+    },
+    "newExportsRequired": true,
+    "old8acQualifies": false,
+    "finalCompositionOwner": "Wave3"
+  },
+  "primaryProof": {
+    "wholeProductReview": "fffb7ee08f43029d465ff645834257f2afefc8fe32afa127068df4192b46aeab",
+    "wholeTestRootReview": "5f34b9eb3f7faa4874f685b37b5be5d1d1d186e50d03430d2e89324d94c4d557",
+    "wholeTestPeerReview": "7214b593fd0b2dc6a562b274003ccf17cda644e6afbd1ba0d82161c13cae9765",
+    "finiteDependencyReview": "44bbd3caaba19b133bbb91b9dcfb38c5f8b3e406392849633b1d12216e6d2037",
+    "completePrimaryTrees": "11d4abb7e01836aba8c65ccdd6326eaaa3ad5c67ccd24e252c834b9f55403cb1"
+  },
+  "historicalSnapshots": "Original v1/v2 product and test manifests retain their then-current pending/blocked wording. This manifest supplies the subsequent exact source donor and reviewed source identities; it never upgrades those records to runtime passes.",
+  "preservation": "Candidate source copies are retained in their original Oracle evidence directories. Published final source plus the complete literal inverse chain reconstruct every intermediate and original whole file, so no redundant source copies are added to docs.",
+  "filesExcludingThisManifest": [
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeApplication.swift",
+      "mode": "100644",
+      "bytes": 24728,
+      "sha256": "db5fac51bf6af8481b3b95f35dc5f13e216bb13dd6c8997fbf17972112d8a00c",
+      "gitBlob": "1d69d208865c2f5ae4477916520612fb1af35476"
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+      "mode": "100644",
+      "bytes": 25081,
+      "sha256": "b029c7f5e3064c3333117301478633f70a2dd8768dde57a0d1df2d38b807e775",
+      "gitBlob": "7356bed6598d094e4945d1265e67a6433ac3ab22"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+      "mode": "100644",
+      "bytes": 51701,
+      "sha256": "e6111e18c38b582437651cf80f420e5282d8ec473da69cf56ae67c4ef18645d4",
+      "gitBlob": "74afcb956d26ccfa709dbc392fa87ea9ae563f42"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "mode": "100644",
+      "bytes": 36115,
+      "sha256": "53e7281e78d75cf8b67391a2b9b7d9e8b844faaed034ef2e02b92f2d9ca6c55e",
+      "gitBlob": "b5c45b5568c08408b31d78e00a44cdf758d3941b"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "mode": "100644",
+      "bytes": 79276,
+      "sha256": "e868915c4ce6edc1cf2104f395af3a104750f7c745bf62023e666d582cd1bf7b",
+      "gitBlob": "8ede71cdf594e78b0f9b8ded8406a21780652380"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+      "mode": "100644",
+      "bytes": 36457,
+      "sha256": "bbee3b3bd5c65e7170dc99f8c0252a9310595f76eb382d1036027318e8840c3f",
+      "gitBlob": "a39d0b6c7234a64323bbe26d45554097f9fdf7fb"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/source-candidate-v1/candidate-manifest.json",
+      "mode": "100644",
+      "bytes": 6338,
+      "sha256": "bf9d615b4065e0136c0ffc803b048f11ff4ca4c8ea43177e853ac87da860d876",
+      "gitBlob": "69a7239e8ccbba344f18782b20642b70fab989e9"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/source-candidate-v1/literal-replacements.json",
+      "mode": "100644",
+      "bytes": 31811,
+      "sha256": "66d52b7116bb0b55c17d3538c19fffd0ad123d71208edd2769a5345a1cb3aa27",
+      "gitBlob": "9cd32d1e5660e380a9b42b6983b439a70117b935"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/source-candidate-v1/source-proof.json",
+      "mode": "100644",
+      "bytes": 8501,
+      "sha256": "9ef94c26423ffd83a6963fe14319034c42b1792ce16852524d4a0504ae77727c",
+      "gitBlob": "1fbf3c59c2f724e626dae85deb1f7cbd00d388c6"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/source-candidate-v1/implementation-matrix.json",
+      "mode": "100644",
+      "bytes": 3448,
+      "sha256": "592b57bafce2eed956fc25d9eef1479f63a56aaf61f2738a42c356a8d1f380e9",
+      "gitBlob": "ba5e291b9d58339fdffe4804c372c3a82e62388c"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/source-candidate-v1/README.md",
+      "mode": "100644",
+      "bytes": 2999,
+      "sha256": "271cb0928cfb062bee8d6f17e7575f8512b6af4fd279a38d2ab48404422e2575",
+      "gitBlob": "a79a09a60d065828305a3e26e6011eaeb4f148a0"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/source-candidate-v1/editor-independent-source-review.json",
+      "mode": "100644",
+      "bytes": 12065,
+      "sha256": "1e4285c1a86e65dd5e3f9a4632c3c00b66c3c429d3fb3907c1c340cec56cc7d7",
+      "gitBlob": "31a156e89b5d3cef6f92abcdf252e92d618a4ac9"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/source-candidate-v2-foreground/candidate-manifest.json",
+      "mode": "100644",
+      "bytes": 7206,
+      "sha256": "30a6f25774320c4882d0325906270725d1122af23cb37c95cdbe8ed98e69b374",
+      "gitBlob": "e464ae6d0ced1da7a0a88050c016a634cf16e3f7"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/source-candidate-v2-foreground/literal-replacements.json",
+      "mode": "100644",
+      "bytes": 2673,
+      "sha256": "c26355838ba086bebbfed3c83d0087e04ecfdf423fc127c3f61ca41274bf7fd1",
+      "gitBlob": "23da0077d66af0bd16da0d2ace92cb3f39be26e5"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/source-candidate-v2-foreground/source-proof.json",
+      "mode": "100644",
+      "bytes": 2038,
+      "sha256": "3b01d2d2746e48350dc9ad33a1ba623a73087ee5b381b64311d1c7d02e3ddc13",
+      "gitBlob": "3f9e4dbc45295bef6a1e613915ed93a087fc3328"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/source-candidate-v2-foreground/README.md",
+      "mode": "100644",
+      "bytes": 1918,
+      "sha256": "89cf2ec3b9cbe8abee879fcd8c9ac878abe6e8d2cf11794343182bd61deba167",
+      "gitBlob": "b06b01e46197446078071f3cf4a99676acdb383a"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/source-candidate-v2-foreground/editor-independent-source-review.json",
+      "mode": "100644",
+      "bytes": 7231,
+      "sha256": "d730dd5a8f888ef9e10cb7930f068c3a1af6037efd5d3c6d40bab0ef208d318b",
+      "gitBlob": "74357a1cbf3cc8a5168c1b894dd41496ceb16bff"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/source-candidate-v2-foreground/root-source-review-v2.json",
+      "mode": "100644",
+      "bytes": 15486,
+      "sha256": "fffb7ee08f43029d465ff645834257f2afefc8fe32afa127068df4192b46aeab",
+      "gitBlob": "4cc8e7e6be6557979ae6ed9bc9830da26f701cf8"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/source-dependency-f372/dependency-preimage-review.json",
+      "mode": "100644",
+      "bytes": 9745,
+      "sha256": "44bbd3caaba19b133bbb91b9dcfb38c5f8b3e406392849633b1d12216e6d2037",
+      "gitBlob": "172d13e2b3f909ad46a47fbda5d86d33d09810b9"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/source-dependency-f372/primary-trees.jsonl",
+      "mode": "100644",
+      "bytes": 66370,
+      "sha256": "11d4abb7e01836aba8c65ccdd6326eaaa3ad5c67ccd24e252c834b9f55403cb1",
+      "gitBlob": "e1b8b202c84e97e43a69d05c584626cf86b07be4"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+      "mode": "100644",
+      "bytes": 77600,
+      "sha256": "259e5fe8a96d397aec345ca60af304e2371259aa80ad73e39a71d1164e6428e6",
+      "gitBlob": "96ef43c61390b71bffeb048ecf2182e9398f57e2"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/test-candidate-v1/candidate-manifest.json",
+      "mode": "100644",
+      "bytes": 3696,
+      "sha256": "f3966035eebafaa204988249586d2a4bcbbc2ba495949f7aa2fece8dc7287d64",
+      "gitBlob": "58d4ca7f5f0b3d13bdbb46f2e1b916160c1a6aff"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/test-candidate-v1/literal-replacements.json",
+      "mode": "100644",
+      "bytes": 9958,
+      "sha256": "2d36e4c0b5a02d1cfd29478851b7879d4de24d832f35461fafef681e17b19cc8",
+      "gitBlob": "712057cbcdcb4e3bd41ae20cfc8d78c8875e6c2c"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/test-candidate-v1/source-proof.json",
+      "mode": "100644",
+      "bytes": 7922,
+      "sha256": "a95079339d3b1d0b9244114a780b283af5467de32e5a4a691ed0449dfa2bcc07",
+      "gitBlob": "70df9c3c958f55a96d5ef6e84e0472b9bb1b1e10"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/test-candidate-v1/acceptance-map.json",
+      "mode": "100644",
+      "bytes": 4754,
+      "sha256": "4d350edb51c1751b38968abc8cfeefbc5b5e0b761c16d0797b0da54d05fe417f",
+      "gitBlob": "0fa8365e7babc708621a4a82f7a406b106aa79d2"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/test-candidate-v1/README.md",
+      "mode": "100644",
+      "bytes": 3460,
+      "sha256": "414c1777bfe0dd022c54845c176be83a161f81a8d95fe0faed43f43c6a28ea3c",
+      "gitBlob": "bb840df32cbf947d2a3e4a234f3aa27e81df2476"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/test-candidate-v2-task-local/candidate-manifest.json",
+      "mode": "100644",
+      "bytes": 3440,
+      "sha256": "374ddee00e8e1455cc427283f3b16f993ea4efc36050530e3f20e07e9c0700cd",
+      "gitBlob": "61b2ad7f4c34b6089bdb98811e2094ef4b22e493"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/test-candidate-v2-task-local/self-review-finding.json",
+      "mode": "100644",
+      "bytes": 1752,
+      "sha256": "0b3d6adde579731e9e8d236fd951cc34bcdf4c5d0384a0ea04352fb188215662",
+      "gitBlob": "0c80e5126b95e00ed42c87772f04bcdf52d79be9"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/test-candidate-v2-task-local/literal-replacements.json",
+      "mode": "100644",
+      "bytes": 6528,
+      "sha256": "4a77b1e68ca6985e8a007ad68d6783dd3097f113cbd7187cba7df622f1c36e28",
+      "gitBlob": "f2f4547e372ac808b2ddd2b4d1a474c2ee5ca258"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/test-candidate-v2-task-local/source-proof.json",
+      "mode": "100644",
+      "bytes": 5415,
+      "sha256": "39b4ce70edf3790431e843b3bcd3dec2ad0bb93799ab5cbc32e0340424347ed9",
+      "gitBlob": "c3f30592812282947333cb106f6f9aa771278e04"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/test-candidate-v2-task-local/acceptance-map.json",
+      "mode": "100644",
+      "bytes": 4946,
+      "sha256": "7a8e370dba93c1d1e6e85493f6b74d842d5c4cdc1c4b0a00d357d9c5bce9b8af",
+      "gitBlob": "ab3655108c568ae328966f4932ae64b467584e9d"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/test-candidate-v2-task-local/README.md",
+      "mode": "100644",
+      "bytes": 3284,
+      "sha256": "a1846abe4dc2867a98e57225bbceb081e186937563bd3260933b6c5fb083f61d",
+      "gitBlob": "eee817ae2541c13e3c3ae9369fd49fa3f261a815"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/test-candidate-v3-budget-order/candidate-manifest.json",
+      "mode": "100644",
+      "bytes": 4126,
+      "sha256": "5543ac8f914b1a57ad64d3dd30c6bae27d4fa00504563ecec9554c1e67ae4e2c",
+      "gitBlob": "cbc2dfe94771d5265e4178e4da4368d45924d3aa"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/test-candidate-v3-budget-order/request-budget-derivation.json",
+      "mode": "100644",
+      "bytes": 4470,
+      "sha256": "d31e2fc8469fe9ab21068f0fdbf38b1f3918a4e85a8bd5f1694c9d5ba131e4bc",
+      "gitBlob": "cb761235bf443e9ef4ddb9fe9428f2d75faa9962"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/test-candidate-v3-budget-order/review-findings.json",
+      "mode": "100644",
+      "bytes": 2212,
+      "sha256": "b10f7924804e94042915a087d27fc7957b7a7fdc62965d685021a74ea9d95629",
+      "gitBlob": "33d82e94b44e47d5884123b6a3eee677fe366e59"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/test-candidate-v3-budget-order/literal-replacements.json",
+      "mode": "100644",
+      "bytes": 10245,
+      "sha256": "9e289266c5daa828b8ad5e17161e4aeaca04cddfc15a1b9b4296b9229f952865",
+      "gitBlob": "a9ea0b7f2580e5f808dc5f5690c1f07cae3f2b5d"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/test-candidate-v3-budget-order/source-proof.json",
+      "mode": "100644",
+      "bytes": 4316,
+      "sha256": "4fb9a862961570a663d42bd3b7dfab6c07ca5eb49d42a540c072a953fb0e3564",
+      "gitBlob": "1b772af7c4578f446e02462e1369fd02e5fec2be"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/test-candidate-v3-budget-order/acceptance-map.json",
+      "mode": "100644",
+      "bytes": 5219,
+      "sha256": "52ebf5cd38bced356f8690c68acdc98c1885a76407579781916e920c93f21278",
+      "gitBlob": "00809690eeefe262a1e781ddbc5e62e55645ef47"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/test-candidate-v3-budget-order/README.md",
+      "mode": "100644",
+      "bytes": 3551,
+      "sha256": "5538a8d631816266dcf73be40b36ce3308dbcc6119c83343a056ed8d117265db",
+      "gitBlob": "168cc4381052b4b2ec27805f713c82f8316c8af9"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/test-candidate-v3-budget-order/root-source-review.json",
+      "mode": "100644",
+      "bytes": 14336,
+      "sha256": "5f34b9eb3f7faa4874f685b37b5be5d1d1d186e50d03430d2e89324d94c4d557",
+      "gitBlob": "6eb2774ea01297c520e4d4cd8209c5ed3611c697"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/test-candidate-v3-budget-order/editor-independent-test-review.json",
+      "mode": "100644",
+      "bytes": 16163,
+      "sha256": "7214b593fd0b2dc6a562b274003ccf17cda644e6afbd1ba0d82161c13cae9765",
+      "gitBlob": "0291300e83d6204d710e312ec7df193cfc7a993d"
+    },
+    {
+      "path": "docs/validation/20261128-wave2-personal-navigation-consumer/README.md",
+      "mode": "100644",
+      "bytes": 7514,
+      "sha256": "5e961c92eb32d233946cda8a36f15785ae37d0383dcb0de8b01c52071dfe66c8",
+      "gitBlob": "7c03447dce872503b190826a85439be03caed909"
+    }
+  ],
+  "sourceCommitFileCountIncludingThisManifest": 43,
+  "publicationVerification": "The source commit's complete expected Git tree is calculated from full primary ancestor trees before dispatch. A subsequent evidence-only record may capture its actual commit/tree/source-body readback and does not expand source scope.",
+  "runtimeActivity": {
+    "compilerInvocations": 0,
+    "newXCTestMethodsExecuted": 0,
+    "oldCohortsReplayed": 0,
+    "nativeAccountsStarted": 0,
+    "MacActions": 0,
+    "physicalDeviceRuns": 0
+  },
+  "capacity": "All candidate/review artifacts were already complete when W1's new ROOT hold was received. Current publication uses cloud Git; no new Oracle source allocations, bulk relocation, census or runtime are part of it."
+}

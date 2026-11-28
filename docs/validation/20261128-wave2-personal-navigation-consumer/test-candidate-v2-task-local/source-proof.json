@@ -1,0 +1,103 @@
+{
+  "schema": "pinkha-navigation-consumer-test-proof-v2",
+  "status": "FROZEN_SOURCE_FOR_REVIEW_NOT_COMPILED_NOT_RUN",
+  "source": {
+    "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+    "base": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+    "bytes": 73757,
+    "sha256": "019f231b850c6b838e1d02f474b4e513533a1dc75e21fac74305b64a839ba95b",
+    "gitBlob": "51cbffeb7919b8e760b23af096d750c85c8f16dd"
+  },
+  "preserved": {
+    "originalFiveMethodPins": [
+      {
+        "name": "testEqualNativeTextChangesAttributesWithoutReplacingCharactersOrSelection",
+        "bytes": 1343,
+        "sha256": "f9bcb9bf5d0a4fb855ddb13b10057b2b5397575d2729a00ac935bd1dc8a788c7",
+        "gitBlob": "fd62761640cd8df423252a9a9d1fc57c430ca883"
+      },
+      {
+        "name": "testChangedNativeTextReplacesCharactersAndKeepsValidSelection",
+        "bytes": 482,
+        "sha256": "d056bb13e40176d0c83698004b1a60a2a5699d764b82fcbb5e2afdba169bb4c5",
+        "gitBlob": "3632a2137dea2797459fe2652b6606e38769e12d"
+      },
+      {
+        "name": "testMarkedTextKeepsCharactersSelectionAndAttributesUntilCommit",
+        "bytes": 897,
+        "sha256": "b81668188f5e3bf34e72af0e3fe52fde59394d9d545015000a0c97d33efcebb1",
+        "gitBlob": "4a630c80b16fb59f6f9a3fd3807fb604fd7c6ce0"
+      },
+      {
+        "name": "testMountedControllerRefreshesCanonicalEquivalentLatinTextInTheSameCell",
+        "bytes": 194,
+        "sha256": "d4b56c868492e6a95e3b51293162c654d8a6791e79128dbc3289be6717bf7ddc",
+        "gitBlob": "3d8575448aba5d5043b8537679744101ffe2af1b"
+      },
+      {
+        "name": "testMountedControllerRefreshesHebrewCombiningOrderInTheSameCell",
+        "bytes": 252,
+        "sha256": "61cb9fe519c429397c6fc1794250c967d19edfa7e8b2e49fef37087ca213362e",
+        "gitBlob": "0808fcfc9a50d6cf7b20bdc954caf01c04efe658"
+      }
+    ],
+    "originalWholeInputBytes": 40939,
+    "originalSHA256": "30de75af908469666c19ef37ecc830dee6305e6ca6f7a937cc68862cd15369ca",
+    "unchangedFourteenFixtureRules": true,
+    "unchangedTransportAndGateBodies": true,
+    "unchangedThreeMethodFourFlowScope": true,
+    "productFilesChanged": 0
+  },
+  "marker": {
+    "definitionCount": 1,
+    "withValueScopeCount": 1,
+    "readCount": 1,
+    "activationCalls": 7,
+    "setupMountsOutsideWindow": 6,
+    "flow": "Real public load and settled observation setup occur unmarked while the actual controller has no window. activateOpen attaches the real view, then sets the flag only for the synchronous current public activation hook. The hook creates the original Task; its original session.perform child inherits the task-local. The run verifier always performs real HTTP first and applies the artificial pause only if marked.",
+    "excluded": [
+      "Initial account/session connect/setup",
+      "EditorReadOperation and normal refresh tasks",
+      "Unrelated Torah/session reads",
+      "Normal session cleanup"
+    ],
+    "semantics": {
+      "primaryURL": "https://github.com/swiftlang/swift-evolution/blob/main/proposals/0311-task-locals.md",
+      "immutableBlobURL": "https://api.github.com/repos/swiftlang/swift-evolution/git/blobs/d6f48593e5cd13e6885110cc1c98ee50163ce5fb",
+      "bytes": 78494,
+      "sha256": "2c7c8f3d477a697dd3de856ddbbdafa6e64e6d74ae77860c0309eb563d104432",
+      "gitBlob": "d6f48593e5cd13e6885110cc1c98ee50163ce5fb",
+      "selectedSections": [
+        "Task-local bindings and scoped withValue",
+        "Task-local values in non-detached asynchronous tasks",
+        "No-task synchronous binding context"
+      ],
+      "note": "Primary proposal supplies task-local scope/inheritance semantics, including values copied to non-detached tasks. Product uses ordinary Task, not Task.detached. Actual current Apple compilation remains required; the entire proposal is retained in V8, not duplicated in this packet."
+    }
+  },
+  "controlsAndResources": {
+    "requestsPerFixture": 512,
+    "simultaneousConnections": 16,
+    "cumulativeListenerAllowance": 512,
+    "maximumLocalWritesPerFixture": 2,
+    "requestBytes": 32768,
+    "responseBytes": 16384,
+    "lifetimeSeconds": 45,
+    "listenerAndDrainDeadlineSeconds": 5,
+    "positiveEventWaitSeconds": 5
+  },
+  "cleanup": "Retire original lifetime, cancel explicit load tasks, release both bounded continuations and any held definition, join explicit loads/presentation/session, then await listener and all owned connection cancellation. Preserve first error and secondary cleanup failures; always attach synthetic trace.",
+  "productDependency": {
+    "v1Manifest": "bf9d615b4065e0136c0ffc803b048f11ff4ca4c8ea43177e853ac87da860d876",
+    "v2Manifest": "30a6f25774320c4882d0325906270725d1122af23cb37c95cdbe8ed98e69b374",
+    "documentSHA256": "e868915c4ce6edc1cf2104f395af3a104750f7c745bf62023e666d582cd1bf7b",
+    "viewSHA256": "bbee3b3bd5c65e7170dc99f8c0252a9310595f76eb382d1036027318e8840c3f",
+    "qualifiedNativeRuntimeStillRequired": true
+  },
+  "limits": [
+    "Four synthetic HTTP/UIKit component flows, not real Native permission or actual App UI acceptance.",
+    "The foreground regression drives real view/window visibility and the current public hook, not UIApplication background/foreground or SwiftUI notification delivery.",
+    "No Home Library readiness or Home mutation test is fabricated.",
+    "No old accepted tests, controls, selectors, profiles or runtime gates are replayed/changed."
+  ]
+}

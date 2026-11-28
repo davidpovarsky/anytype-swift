@@ -1,0 +1,215 @@
+{
+  "schema": "pinkha.w2.personal-navigation-consumer.peer-review.v1",
+  "status": "SOURCE_REVIEW_BLOCKED_FOREGROUND_TRIGGER",
+  "sourceOnly": true,
+  "reviewedBy": "/root/editor",
+  "baseline": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+  "baselineTree": "9f2a5dae2df4b2d0fb7627b39120566e40a4cd7b",
+  "candidateRoot": "/mnt/development/projects/evidence/pinkha-wave2-personal-navigation-consumer-20261128/source-candidate-v1",
+  "reviewedArtifacts": [
+    {
+      "path": "candidate-manifest.json",
+      "bytes": 6338,
+      "sha256": "bf9d615b4065e0136c0ffc803b048f11ff4ca4c8ea43177e853ac87da860d876"
+    },
+    {
+      "path": "literal-replacements.json",
+      "bytes": 31811,
+      "sha256": "66d52b7116bb0b55c17d3538c19fffd0ad123d71208edd2769a5345a1cb3aa27"
+    },
+    {
+      "path": "source-proof.json",
+      "bytes": 8501,
+      "sha256": "9ef94c26423ffd83a6963fe14319034c42b1792ce16852524d4a0504ae77727c"
+    }
+  ],
+  "fullSourceInverse": [
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeApplication.swift",
+      "rules": 4,
+      "fullForward": true,
+      "fullInverse": true,
+      "original": {
+        "commit": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+        "bytes": 23564,
+        "sha256": "c5474020ad3bababfef8fc43ea8624ecf0b9b8e80bfacfa5eb5caeb09142b40c",
+        "gitBlob": "110de501e91665280e4751da7b7b6a8392a47913"
+      },
+      "candidate": {
+        "bytes": 24728,
+        "sha256": "db5fac51bf6af8481b3b95f35dc5f13e216bb13dd6c8997fbf17972112d8a00c",
+        "gitBlob": "1d69d208865c2f5ae4477916520612fb1af35476"
+      }
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+      "rules": 1,
+      "fullForward": true,
+      "fullInverse": true,
+      "original": {
+        "commit": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+        "bytes": 25011,
+        "sha256": "54cd42c28ef5d5dce53e1a52495f97a87cc06af68c58bfa5bebb9a51b8b458b8",
+        "gitBlob": "112250ced570144979043c9c0a5c58c4af33e22c"
+      },
+      "candidate": {
+        "bytes": 25081,
+        "sha256": "b029c7f5e3064c3333117301478633f70a2dd8768dde57a0d1df2d38b807e775",
+        "gitBlob": "7356bed6598d094e4945d1265e67a6433ac3ab22"
+      }
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+      "rules": 8,
+      "fullForward": true,
+      "fullInverse": true,
+      "original": {
+        "commit": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+        "bytes": 42248,
+        "sha256": "48eb452e97598c6a9453b03b5c99ecba3a0c12026d6b0456bee784d4345b732c",
+        "gitBlob": "24f08c4c7bfece4a2b711762c20783bd7a45f5f3"
+      },
+      "candidate": {
+        "bytes": 51701,
+        "sha256": "e6111e18c38b582437651cf80f420e5282d8ec473da69cf56ae67c4ef18645d4",
+        "gitBlob": "74afcb956d26ccfa709dbc392fa87ea9ae563f42"
+      }
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "rules": 5,
+      "fullForward": true,
+      "fullInverse": true,
+      "original": {
+        "commit": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+        "bytes": 34388,
+        "sha256": "a5252e690004cb50ea4bb0cad6d101b0427a80b37e3ef641db0ed703e312f90e",
+        "gitBlob": "138fdcfcd61dfe59700e38751887ee61647b0c03"
+      },
+      "candidate": {
+        "bytes": 36115,
+        "sha256": "53e7281e78d75cf8b67391a2b9b7d9e8b844faaed034ef2e02b92f2d9ca6c55e",
+        "gitBlob": "b5c45b5568c08408b31d78e00a44cdf758d3941b"
+      }
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "rules": 8,
+      "fullForward": true,
+      "fullInverse": true,
+      "original": {
+        "commit": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+        "bytes": 73179,
+        "sha256": "82b5b2dd0ac3978ec6a867cb3f9220527e1a111e89a601c4f4e9baf15d2c38fb",
+        "gitBlob": "475624e12bbb9c97dc96295b107e21611a798639"
+      },
+      "candidate": {
+        "bytes": 79044,
+        "sha256": "178c290b468f5bc187fe9c344629c03630922b16acb7242734406ac00cf9ff1f",
+        "gitBlob": "7ad9963cc9537da17e313779647984082233b143"
+      }
+    }
+  ],
+  "byteVerification": {
+    "files": 5,
+    "literalRules": 26,
+    "allFullForwardAndInverse": true,
+    "originalBytes": 198390,
+    "candidateBytes": 216669,
+    "documentReadRanges": [
+      [
+        1,
+        800
+      ],
+      [
+        801,
+        1481
+      ]
+    ],
+    "documentReadBytes": [
+      42793,
+      36251
+    ],
+    "documentJoinedBytes": 79044
+  },
+  "currentLifecyclePrimarySources": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+      "commit": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+      "bytes": 61405,
+      "sha256": "ec8f72a34e9823c7ba84ab8dbb013d9827c9302fc6143436de3ec8a3bfdf2f37",
+      "gitBlob": "45144274ff51800b21d608d2a2df8f1db8b11477"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+      "commit": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+      "bytes": 36414,
+      "sha256": "31f5200514b239b777679568c215a0ddb89fb0af9c41987d178deb2a06c408db",
+      "gitBlob": "44418e9710c16412d3dced2e8ce53ae94eb264cc"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeMiniApps.swift",
+      "commit": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+      "bytes": 11854,
+      "sha256": "ac5cb7a9ee1be034cc7ba4a6adefd2e496804236bb9990757d0ff99bf662fb89",
+      "gitBlob": "e193bc307106fb8e32af2332d64747ae7d414150"
+    }
+  ],
+  "findings": [
+    {
+      "id": "NAV-CONSUMER-FOREGROUND-01",
+      "severity": "source blocker",
+      "title": "An accepted initial read can remain unobserved after foreground return",
+      "trace": [
+        "Candidate load() accepts a current read using mayPublishRead, which checks the current epoch/read ID, lifetime, saving and cancellation but does not require a foreground surface. It then sets actualOpenReadOwner = requestEpoch.",
+        "beginActualOpenIfReady refuses an inactive surface without consuming actualOpenAttemptedMountID. Its only current call sites are mount() and load().",
+        "Current UIKit viewDidAppear calls mount and requests load. updateUIViewController only calls applyInterfaceDirection and render; render/observation is not an activation trigger for the new operation.",
+        "Current DocumentView didBecomeActive notification calls recordEditorDiagnostic and consumeMiniAppsResults only. The diagnostic records state only; the complete current MiniApps implementation has no mount/load call and an empty pending-result collection produces no native operation.",
+        "Therefore a still-mounted document whose initial accepted read finishes while its scene is inactive has no activation callback that revisits the unattempted actual open. Ordinary foreground return without a new view appearance or explicit load can leave it unrecorded."
+      ],
+      "codeLocations": [
+        "candidate AnyDocumentPresentation.swift: load lines 330-365; beginActualOpenIfReady lines 370-435; mayPublishRead lines 449-452",
+        "current AnyNativeEditor.swift: updateUIViewController lines 28-31; viewDidAppear lines 132-141; isForegroundMounted lines 180-183",
+        "current AnyNativeDocumentView.swift: didBecomeActive notification lines 221-224",
+        "current AnyNativeMiniApps.swift: consume lines 123-186 and presentation extension lines 207-211"
+      ],
+      "minimumCorrection": "Route the existing real activation callback through the same guarded readiness function, retaining the current mount/attempt identity. Do not reset the token, trigger writes from every refresh, retry an already attempted intent, or change editor read/draft authority.",
+      "meaningfulRegression": "An accepted read with a mounted but inactive surface produces no open dispatch; activating that same surface produces exactly one operation with the original mounted owner; repeated activation and ordinary refresh do not add operations.",
+      "runtimeObserved": false
+    }
+  ],
+  "acceptedSourceBoundaries": [
+    "Real connectOwnedSpace captures expectedNetworkID from the original owned embedded session before suspension. Native account/run binding acquisition occurs inside the original session lease; all failures propagate to the existing session drain and journal close path. There is no unsupported-capability or HTTP-status downgrade.",
+    "A single captured actor store is passed through the original workspace owner, Root, Library and cached document construction. Explicit optional defaults preserve injected caller compatibility and are not a fallback in the canonical App connect path.",
+    "New Home actions are explicit. Their UI availability is independent of canWrite; current READ and account/run/lease validation remain delegated to the real Host API. Outer hierarchy menus do not suppress the new action for a reader. Built-in, absent, empty and unsupported selections are not converted to a Page.",
+    "The original prepared Home/open intent is retained before commit. The lock-protected Sendable holder synchronously checks and retains acknowledgment ownership metadata before the Host callback returns, without an actor hop. Original store consumption/ledger remains authoritative; no automatic resend or durable-journal claim is added.",
+    "Home defer checks the request ID, while publication checks the epoch/lifetime/request. Revoke cancels and retains owned Home work for the original drain. Document metadata operations leave accepted editor content, canWrite, drafts, save and composition behavior unchanged outside the exact additions.",
+    "Cached reopening is coherent in the inspected source: unmount cancels and retains the predecessor task; a new mount gets a new token/read owner; the successor installs its task ID before awaiting the predecessor. The old task's ID-gated defer cannot erase the successor, and old epoch/mount guards refuse stale publication. Drain retains and awaits the owned tasks.",
+    "Both the shared acknowledgment holder and document source use the same SwiftUI compilation guard. New cross-actor calls use the existing Sendable Host types and actor API; synchronous locking occurs outside async methods. No further concrete compile-shape blocker was found by source inspection."
+  ],
+  "language": {
+    "existingMechanism": "All new strings use unchanged AnyUIErrorText.text(he,en), which branches on Locale.autoupdatingCurrent.",
+    "retainedTrace": {
+      "bytes": 12407,
+      "sha256": "51fc7b386639c41d3763afb9c1625afed5a079078b10b185f438addbd6b8c9bc"
+    },
+    "conclusion": "The retained bounded source trace found no divergent production App-language owner. It does not establish equality of Foundation, SwiftUI and bundle languages in every runtime state; both mixed App/OS visual directions remain NOT_RUN."
+  },
+  "apiAndRuntime": {
+    "hostSourceCommit": "d1b04526825ad10b07c59313727629cec35f9559",
+    "hostPersonalNavigationSourceSHA256": "c3dd3dc0255d2c6265693ced3bd7d7dbd6d4ed7772f2b851f7424c9dfb57b73b",
+    "requiredRuntimeProperty": "AnyEmbeddedSession.public let expectedNetworkID: String",
+    "parentVerifiedRuntimeOverlaySHA256": "f7dfcc406b10e2a5db01b2ce0cc32f4e6bd6b896eb00799b81442de86f6634ea",
+    "parentVerifiedBridgeOverlaySHA256": "3dacbcc9ae422fb5997e04bf17e7dc394eb1e9d7a8fa68d21d82c8e786083a0b",
+    "qualification": "New bound-start source and coherent Native exports remain required. The current 8ac artifact and the bae source alone do not establish compile/runtime acceptance."
+  },
+  "activity": {
+    "candidateEdits": 0,
+    "testExecutions": 0,
+    "compilerInvocations": 0,
+    "runtimeOrProcessCalls": 0,
+    "controlImportsOrExecutions": 0,
+    "githubMutations": 0
+  },
+  "inspectionLimits": "Exact fixed-file read transport errors and output truncation were retained as inspection-only; successful complete source bodies were rehashed. This review is not test, Apple, Native, mixed-language or visual acceptance. Interfaces owns subsequent source correction and test additions."
+}

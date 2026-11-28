@@ -1,0 +1,29 @@
+{
+  "schema": "pinkha-navigation-test-v3-findings",
+  "status": "SOURCE_FINDINGS_NOT_TEST_RUNTIME_FAILURES",
+  "predecessor": {
+    "bytes": 73757,
+    "sha256": "019f231b850c6b838e1d02f474b4e513533a1dc75e21fac74305b64a839ba95b",
+    "gitBlob": "51cbffeb7919b8e760b23af096d750c85c8f16dd"
+  },
+  "items": [
+    {
+      "id": "NAV-TEST-REQUEST-BUDGET-01",
+      "origin": "Interfaces static source count; Root accepted finite navigation-only1024 correction.",
+      "finding": "The original512 request/acceptance allowance cannot complete the first intended test: two verified local opens392 plus three mandatory load lower bounds207 already total599.",
+      "resolution": "Only the opt-in navigation mode uses1024 for request and cumulative-acceptance guards. Original default512/concurrent16/lifetime45s/positive waits5s and all route/body/header assertions are unchanged.",
+      "derivation": {
+        "file": "request-budget-derivation.json",
+        "sha256": "d31e2fc8469fe9ab21068f0fdbf38b1f3918a4e85a8bd5f1694c9d5ba131e4bc"
+      }
+    },
+    {
+      "id": "NAV-TEST-ORDER-01",
+      "origin": "Root source review of complete019f suffix.",
+      "finding": "The prior second late-ACK flow created the new MainActor task, immediately inspected counters and released its predecessor without suspending. A missing predecessor await could therefore pass before the new task had a chance to execute.",
+      "resolution": "The task-local marker now carries the actual mounted owner UUID. The session verifier records that marked owner's first entry before real /health I/O. A scoped AsyncStream observer is registered before activation, then a one-second inverted event observation yields MainActor while the old gate remains held. Early entry fails; an entry ledger covers registration/deadline races. After release the test also requires the new owner to enter and complete the second effect.",
+      "limits": "This is a concrete bounded scheduler observation, not exhaustive interleaving coverage or an executed mutant result."
+    }
+  ],
+  "preserved": "Entire019f source/manifest and prior4975 finding remain unchanged in sibling directories. No new test method/flow or product correction is added."
+}

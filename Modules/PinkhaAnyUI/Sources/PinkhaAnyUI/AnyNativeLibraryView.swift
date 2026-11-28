@@ -52,9 +52,11 @@ public struct AnyNativeLibraryView: View {
                 capabilities: AnyUIFoundationCapabilities,
                 onRequestClose: @escaping @MainActor () async -> Void,
                 lifetime: AnyUIPresentationLifetime, recovery: AnyNativeLibraryRecovery,
-                onManageMembers: (@MainActor () -> Void)? = nil) {
+                onManageMembers: (@MainActor () -> Void)? = nil,
+                personalNavigation: AnyNativePersonalNavigationStore? = nil) {
         _model = State(initialValue: AnyLibraryPresentation(client: client, session: session,
-            objects: objects, blocks: blocks, capabilities: capabilities, lifetime: lifetime, recovery: recovery))
+            objects: objects, blocks: blocks, capabilities: capabilities, lifetime: lifetime, recovery: recovery,
+            personalNavigation: personalNavigation))
         _path = State(initialValue: recovery.workspace == session.workspace ? recovery.navigation : [])
         self.onRequestClose = onRequestClose; self.lifetime = lifetime
         self.onManageMembers = onManageMembers
@@ -208,6 +210,18 @@ public struct AnyNativeLibraryView: View {
                     } else {
                         if parentID == nil {
                             Section {
+                                Button { model.openHome() } label: {
+                                    Label(AnyUIErrorText.text("בית", "Home"), systemImage: "house")
+                                }
+                                .disabled(!lifetime.isActive || model.isWorkingWithHome)
+                                .accessibilityIdentifier("any-native-open-home")
+                                .contextMenu {
+                                    Button(AnyUIErrorText.text("ביטול בחירת מסמך הבית", "Clear Home document selection")) {
+                                        model.unsetHome()
+                                    }
+                                    .disabled(!lifetime.isActive || model.isWorkingWithHome)
+                                    .accessibilityIdentifier("any-native-unset-home")
+                                }
                                 NavigationLink(value: AnyNativeLibraryDestination.allDocuments) {
                                     Label(AnyUIErrorText.text("כל המסמכים", "All documents"), systemImage: "doc.on.doc")
                                 }
@@ -351,6 +365,13 @@ public struct AnyNativeLibraryView: View {
 
     @ViewBuilder
     private func hierarchyActions(_ item: AnyHierarchyPresentationItem) -> some View {
+        if item.kind == .writingDocument {
+            Button(AnyUIErrorText.text("הגדרה כמסמך הבית", "Set as Home document"), systemImage: "house") {
+                model.setHome(documentID: item.objectID)
+            }
+            .disabled(!lifetime.isActive || model.isWorkingWithHome)
+            .accessibilityIdentifier("any-native-set-home")
+        }
         Button(AnyUIErrorText.text("שינוי שם", "Rename"), systemImage: "pencil") {
             beginNaming(.init(item: item.native, kind: item.kind, parentID: item.parentID, isNote: false))
         }.disabled(!model.canWrite)
@@ -432,6 +453,13 @@ public struct AnyNativeLibraryView: View {
                       systemImage: item.isNote ? "note.text" : "doc.text").foregroundStyle(.primary)
                 if let snippet = item.snippet { Text(snippet).font(.caption).lineLimit(3).foregroundStyle(.secondary) }
             }
+        }
+        .contextMenu {
+            Button(AnyUIErrorText.text("הגדרה כמסמך הבית", "Set as Home document"), systemImage: "house") {
+                model.setHome(documentID: item.id)
+            }
+            .disabled(!lifetime.isActive || model.isWorkingWithHome)
+            .accessibilityIdentifier("any-native-set-home")
         }
     }
 

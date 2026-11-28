@@ -1,0 +1,249 @@
+{
+  "schema": "pinkha.wave2.personal-navigation.root-test-source-review.v3",
+  "status": "PASS_SOURCE_REVIEW_ONLY_COMPILATION_AND_EXECUTION_NOT_RUN",
+  "reviewer": "Wave2 Root",
+  "source": {
+    "path": "/mnt/development/projects/evidence/pinkha-wave2-personal-navigation-consumer-20261128/test-candidate-v3-budget-order/candidate/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+    "bytes": 77600,
+    "sha256": "259e5fe8a96d397aec345ca60af304e2371259aa80ad73e39a71d1164e6428e6",
+    "gitBlob": "96ef43c61390b71bffeb048ecf2182e9398f57e2"
+  },
+  "exactParent": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+  "parentTestPreimage": {
+    "bytes": 40939,
+    "sha256": "30de75af908469666c19ef37ecc830dee6305e6ca6f7a937cc68862cd15369ca",
+    "gitBlob": "07a523228f184625e44aa2430b26836fdb00f94c"
+  },
+  "completePrimaryRead": {
+    "ranges": [
+      [
+        1,
+        750
+      ],
+      [
+        751,
+        1458
+      ]
+    ],
+    "parts": [
+      {
+        "path": "/mnt/development/projects/evidence/pinkha-wave2-personal-navigation-consumer-20261128/test-candidate-v3-budget-order/candidate/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+        "bytes": 41913,
+        "sha256": "f5e88a3c7967476633726abf335ced93e66d359a0e34e9205251e26e0a6b4eda",
+        "gitBlob": "20d454491a035f3fdbb07bfb50a17b44ea3c073a"
+      },
+      {
+        "path": "/mnt/development/projects/evidence/pinkha-wave2-personal-navigation-consumer-20261128/test-candidate-v3-budget-order/candidate/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+        "bytes": 35687,
+        "sha256": "d433555f71b8c8d4bacbfb9968531733fbd59980e240dfcaf6f652990b6831f1",
+        "gitBlob": "eedf6e6f45595417c07e5b9162de7aab8f943078"
+      }
+    ],
+    "concatenatedBytes": 77600,
+    "allComplete": true
+  },
+  "exactSourceScope": {
+    "status": "PASS_EXACT_SOURCE_INVERSE_ONLY",
+    "candidate": {
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-personal-navigation-consumer-20261128/test-candidate-v3-budget-order/candidate/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+      "bytes": 77600,
+      "sha256": "259e5fe8a96d397aec345ca60af304e2371259aa80ad73e39a71d1164e6428e6",
+      "gitBlob": "96ef43c61390b71bffeb048ecf2182e9398f57e2"
+    },
+    "predecessor": {
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-personal-navigation-consumer-20261128/test-candidate-v2-task-local/candidate/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+      "bytes": 73757,
+      "sha256": "019f231b850c6b838e1d02f474b4e513533a1dc75e21fac74305b64a839ba95b",
+      "gitBlob": "51cbffeb7919b8e760b23af096d750c85c8f16dd"
+    },
+    "v3Rules": 14,
+    "v3Sites": 16,
+    "fullForward": true,
+    "fullInverse": true,
+    "remainingChain": {
+      "status": "PASS_EXACT_SOURCE_INVERSE_ONLY",
+      "v2Rules": 10,
+      "v2Sites": 16,
+      "v1FixtureRules": 14,
+      "original": {
+        "bytes": 40939,
+        "sha256": "30de75af908469666c19ef37ecc830dee6305e6ca6f7a937cc68862cd15369ca",
+        "gitBlob": "07a523228f184625e44aa2430b26836fdb00f94c"
+      },
+      "predecessor": {
+        "bytes": 73043,
+        "sha256": "4975c0c01f754c528f860cb03916b54ec263f5c5785bc861effbb600c5163c04",
+        "gitBlob": "a356d29ee8e74df4683087d4292333d0a69a4c88"
+      },
+      "final": {
+        "bytes": 73757,
+        "sha256": "019f231b850c6b838e1d02f474b4e513533a1dc75e21fac74305b64a839ba95b",
+        "gitBlob": "51cbffeb7919b8e760b23af096d750c85c8f16dd"
+      },
+      "suffix": {
+        "bytes": 29487,
+        "sha256": "e00eca8ed1880ab57dee3adb386f68174f75b9fa593513b065fbf3648fccd9ec",
+        "gitBlob": "f0103a978ae8968a8cb19e4411e986d1998d658c",
+        "remove": "Require the exact trailing UTF-8 byte count/hash, then remove these bytes before reversing the fourteen fixture literals."
+      },
+      "fullForward": true,
+      "fullInverse": true,
+      "compilerRuns": 0,
+      "testRuns": 0
+    },
+    "originalMethods": [
+      {
+        "name": "testEqualNativeTextChangesAttributesWithoutReplacingCharactersOrSelection",
+        "exact": true
+      },
+      {
+        "name": "testChangedNativeTextReplacesCharactersAndKeepsValidSelection",
+        "exact": true
+      },
+      {
+        "name": "testMarkedTextKeepsCharactersSelectionAndAttributesUntilCommit",
+        "exact": true
+      },
+      {
+        "name": "testMountedControllerRefreshesCanonicalEquivalentLatinTextInTheSameCell",
+        "exact": true
+      },
+      {
+        "name": "testMountedControllerRefreshesHebrewCombiningOrderInTheSameCell",
+        "exact": true
+      }
+    ],
+    "newMethods": 3,
+    "controlledFlows": 4,
+    "compilerRuns": 0,
+    "testRuns": 0,
+    "inspectionStops": [
+      {
+        "id": "literals-primary-read-1",
+        "kind": "MCP_-32603",
+        "disposition": "same immutable full-file retry succeeded; original response retained",
+        "runtimeFailure": false
+      }
+    ]
+  },
+  "sourceSelection": {
+    "declaredPackageTarget": "PinkhaAnyUITests",
+    "testClass": "AnyNativeTextRendererTests",
+    "methodNames": [
+      "testPersonalOpenWaitsForForegroundAndRecordsOncePerMount",
+      "testPersonalOpenRejectsRetiredReadAndCancellationBeforeDispatch",
+      "testPersonalOpenRetainsLateAcknowledgmentAndDrainsBeforeReopen"
+    ],
+    "actualSharedAppTargetPrefix": "Pending W3 exact built-product enumeration; package identifiers are source locators, not claimed executed selectors.",
+    "expectedNewMethods": 3,
+    "expectedControlledFlows": 4,
+    "oldFiveMethodsToReplay": 0,
+    "executionStatus": "NOT_RUN"
+  },
+  "semanticReview": [
+    {
+      "area": "Real current read and mount",
+      "finding": "The tests obtain values through the original public document load, actual HTTP client/session/Host store and real UIKit controller. The container withholds the editor view initially and suppresses appearance forwarding, then attaches to an actual foreground scene and calls the public activation hook. No readiness, foreground or content authority setter is added."
+    },
+    {
+      "area": "Once per actual mount",
+      "finding": "A successful inactive read and an inactive activation cannot dispatch. After the same owner is visibly attached, the first write/readback must occur; refresh and repeated activation retain the owner and do not create a second write. Original unmount/drain followed by a new owner requires the second effect."
+    },
+    {
+      "area": "Stale read and predispatch cancellation",
+      "finding": "A completed real HTTP editor read is held only at the existing delivery seam. A newer owner accepts different source bytes before that older result returns; the old delivery cannot overwrite them. The current open is then cancelled while its exact type-definition request is held before bound dispatch, released/drained with zero effects, and a later owner writes once."
+    },
+    {
+      "area": "Synchronous acknowledgment retention",
+      "finding": "The controlled bound response matches the original account/run headers, exact local-property body and response shape. A real subsequent run check is held after the local write. Rejected readback and outer postflight must still classify as acknowledged-but-unverified, with no content write authority, draft mutation or automatic resend."
+    },
+    {
+      "area": "Task identity",
+      "finding": "Only the synchronous public activation hook installs the actual mounted owner UUID in TaskLocal storage. Its original actual-open Task inherits that value. The existing session verifier records that marked owner's entry and still performs its real health request. Setup, document/Torah reads and cleanup remain unmarked; the fixture never supplies current authority in place of the original checks."
+    },
+    {
+      "area": "Drainage order correction",
+      "finding": "Before activation of the successor, the fixture installs an observer for its exact owner UUID. The test then awaits an event-versus-one-second deadline while the old task remains held. Both observed and retained-ledger entry are required absent before release; afterward positive successor entry and the second exact local mutation must occur. This provides a bounded scheduling opportunity and exposes premature lease entry."
+    },
+    {
+      "area": "Observer races and bounds",
+      "finding": "The NSLock protects a four-owner ledger, one owner observer and newest-one-event buffer. Registration checks existing ledger state; event delivery happens outside the lock; the post-await ledger check covers the registration/deadline window. Finishing is idempotent. The task group finishes the stream, cancels and joins both children on every return; outer cancellation remains an error."
+    },
+    {
+      "area": "Request budget",
+      "finding": "The retained static derivation counts the unchanged authorization brackets and a mandatory document-read lower bound of599 requests for the first new method, making512 inadequate. Only navigation-enabled fixtures use1024 for request checks and cumulative accepts. The ordinary renderer default512, simultaneous16, lifetime45s and positive/startup/drain5s stay unchanged. This is a finite allowance, not measured runtime or a guaranteed usage prediction."
+    },
+    {
+      "area": "Finite cleanup and error retention",
+      "finding": "Cleanup marks fixture drainage, revokes the original lifetime, cancels explicit loads, releases both deliberate noncooperative gates and any held definition, joins explicit loads and original lifetime/session tasks, then closes/waits for listener and owned connections. Observer release closes residual streams. First errors and secondary cleanup/attachment errors remain visible."
+    },
+    {
+      "area": "Original source and test preservation",
+      "finding": "All14 v3 rules/16 sites restore the complete019f predecessor. Its10 rules/16 sites restore4975. Removing the verified29487-byte suffix and reversing14 fixture literals restores the entire40939-byte original30de/Git07a523. Each of the original five method bodies also occurs exactly once unchanged in the final source. No production body was changed by these test corrections."
+    }
+  ],
+  "retainedFindings": [
+    {
+      "id": "NAV-TEST-TASK-SELECTION",
+      "source": "test-candidate-v2-task-local/self-review-finding.json",
+      "sha256": "0b3d6adde579731e9e8d236fd951cc34bcdf4c5d0384a0ea04352fb188215662",
+      "disposition": "Source corrected by explicit activation TaskLocal scope; v3 refines marker to exact owner UUID."
+    },
+    {
+      "id": "NAV-TEST-REQUEST-BUDGET-01",
+      "source": "test-candidate-v3-budget-order/review-findings.json",
+      "sha256": "b10f7924804e94042915a087d27fc7957b7a7fdc62965d685021a74ea9d95629",
+      "disposition": "Source corrected only in opted navigation allowance; original defaults preserved."
+    },
+    {
+      "id": "NAV-TEST-DRAIN-SCHEDULING-01",
+      "artifactAlias": "NAV-TEST-ORDER-01",
+      "originalRootFinding": {
+        "id": "NAV-TEST-DRAIN-SCHEDULING-01",
+        "status": "SOURCE_TEST_FINDING_AWAITING_CORRECTION",
+        "reviewer": "Wave2 Root",
+        "source": {
+          "path": "/mnt/development/projects/evidence/pinkha-wave2-personal-navigation-consumer-20261128/test-candidate-v2-task-local/candidate/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+          "bytes": 73757,
+          "sha256": "019f231b850c6b838e1d02f474b4e513533a1dc75e21fac74305b64a839ba95b",
+          "gitBlob": "51cbffeb7919b8e760b23af096d750c85c8f16dd"
+        },
+        "method": "AnyNativeTextRendererTests/testPersonalOpenRetainsLateAcknowledgmentAndDrainsBeforeReopen",
+        "flow": "second controlled flow",
+        "trace": "After context.activateOpen() the MainActor test performs only synchronous held/count assertions and immediately releases the predecessor runGate. The unstructured MainActor actualOpen Task created by the hook has no suspension window in which to attempt work before that release.",
+        "risk": "A broken consumer that omits awaiting its predecessor could pass the claimed drainage-order check; the release-before-write event assertion would still be satisfied.",
+        "requiredCorrection": "Keep the old gate held while an explicit finite awaited observation permits the new owned task to reach its first lease/dispatch boundary; detect premature successor progress without bypassing authority or changing production behavior. A lone Task.yield is not treated as proof.",
+        "runtimeFailure": false,
+        "executionCount": 0,
+        "scope": "focused test only; six production bodies remain unchanged"
+      },
+      "disposition": "Source corrected by the awaited owner-entry observation in259e. No mutation test or runtime result is claimed."
+    }
+  ],
+  "independentReview": "Editor has independently reported the same source-only conclusion; its sealed review is a separate publication artifact.",
+  "acceptanceLimits": {
+    "compilerRuns": 0,
+    "newXCTestRuns": 0,
+    "oldCohortReplays": 0,
+    "realNativeBackendRuns": 0,
+    "MacActions": 0,
+    "physicalDeviceRuns": 0,
+    "controlledForeground": "Real window/scene predicate and direct hook only; UIApplication background/return and SwiftUI notification delivery are not exercised by this source review.",
+    "Home": "Real Library.open/read/set/unset/stale-owner and mounted visual acceptance remain separate; no fake readiness was added.",
+    "required": [
+      "W3 coherent native bound-start exports, runtime/profile and actual application source admission",
+      "Apple UIKit/Network full-target typecheck and exact shared-app target/selector enumeration",
+      "Actual3 new methods/4 controlled flows with xcresult, attachment trace and finite cleanup evidence",
+      "Actual scene/cold-owner/Space/account/RTL/light-dark/accessibility/device acceptance"
+    ]
+  },
+  "inspectionStops": [
+    {
+      "id": "literals-primary-read-1",
+      "kind": "MCP_-32603",
+      "disposition": "same immutable full-file retry succeeded; original response retained",
+      "runtimeFailure": false
+    }
+  ],
+  "preservation": "All v1/v2 source candidates, their recorded findings, source metadata and inverse chain remain unchanged."
+}

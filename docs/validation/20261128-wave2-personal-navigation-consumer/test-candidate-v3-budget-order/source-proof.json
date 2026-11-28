@@ -1,0 +1,82 @@
+{
+  "schema": "pinkha-navigation-consumer-test-proof-v3",
+  "status": "FROZEN_SOURCE_FOR_REVIEW_NOT_COMPILED_NOT_RUN",
+  "source": {
+    "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+    "base": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+    "bytes": 77600,
+    "sha256": "259e5fe8a96d397aec345ca60af304e2371259aa80ad73e39a71d1164e6428e6",
+    "gitBlob": "96ef43c61390b71bffeb048ecf2182e9398f57e2"
+  },
+  "preserved": {
+    "originalFiveMethodPins": [
+      {
+        "name": "testEqualNativeTextChangesAttributesWithoutReplacingCharactersOrSelection",
+        "bytes": 1343,
+        "sha256": "f9bcb9bf5d0a4fb855ddb13b10057b2b5397575d2729a00ac935bd1dc8a788c7",
+        "gitBlob": "fd62761640cd8df423252a9a9d1fc57c430ca883"
+      },
+      {
+        "name": "testChangedNativeTextReplacesCharactersAndKeepsValidSelection",
+        "bytes": 482,
+        "sha256": "d056bb13e40176d0c83698004b1a60a2a5699d764b82fcbb5e2afdba169bb4c5",
+        "gitBlob": "3632a2137dea2797459fe2652b6606e38769e12d"
+      },
+      {
+        "name": "testMarkedTextKeepsCharactersSelectionAndAttributesUntilCommit",
+        "bytes": 897,
+        "sha256": "b81668188f5e3bf34e72af0e3fe52fde59394d9d545015000a0c97d33efcebb1",
+        "gitBlob": "4a630c80b16fb59f6f9a3fd3807fb604fd7c6ce0"
+      },
+      {
+        "name": "testMountedControllerRefreshesCanonicalEquivalentLatinTextInTheSameCell",
+        "bytes": 194,
+        "sha256": "d4b56c868492e6a95e3b51293162c654d8a6791e79128dbc3289be6717bf7ddc",
+        "gitBlob": "3d8575448aba5d5043b8537679744101ffe2af1b"
+      },
+      {
+        "name": "testMountedControllerRefreshesHebrewCombiningOrderInTheSameCell",
+        "bytes": 252,
+        "sha256": "61cb9fe519c429397c6fc1794250c967d19edfa7e8b2e49fef37087ca213362e",
+        "gitBlob": "0808fcfc9a50d6cf7b20bdc954caf01c04efe658"
+      }
+    ],
+    "originalInputBytes": 40939,
+    "originalInputSHA256": "30de75af908469666c19ef37ecc830dee6305e6ca6f7a937cc68862cd15369ca",
+    "newMethods": [
+      "testPersonalOpenWaitsForForegroundAndRecordsOncePerMount",
+      "testPersonalOpenRejectsRetiredReadAndCancellationBeforeDispatch",
+      "testPersonalOpenRetainsLateAcknowledgmentAndDrainsBeforeReopen"
+    ],
+    "controlledFlows": 4,
+    "wholeClassMethods": 8,
+    "productSourceChanges": 0
+  },
+  "correction": {
+    "literalRules": 14,
+    "sites": 16,
+    "marker": "Optional exact mounted owner UUID, defaultnil; scoped only to synchronous didBecomeActive task creation.",
+    "verifier": "Record marked owner entry before /health; perform the same real current-run check; apply original noncooperative gate only to a marked actual-open operation.",
+    "observer": "One owner-matched AsyncStream at a time; four-owner ledger cap; newest1 event buffer. Register before creating the successor task; detect any already-entered owner. Wait on event versus one-second deadline in a TaskGroup; finish stream and cancel/await both children on every path. Check parent cancellation and persistent entry ledger before allowing release.",
+    "completion": "Keep old gate held through the observation. After release require positive new-owner entry and exact second local write/readback. No Task.yield or immediate counter inspection is used as scheduling proof.",
+    "cleanup": "The original gate.release also finishes any remaining entry observer. Explicit load tasks, both controlled pauses, exact held definition, original lifetime/session, listener and all owned connections retain deterministic cleanup."
+  },
+  "bounds": {
+    "oldDefaultRequests": 512,
+    "navigationRequests": 1024,
+    "simultaneousConnections": 16,
+    "localWrites": 2,
+    "requestBytes": 32768,
+    "responseBytes": 16384,
+    "fixtureSeconds": 45,
+    "startupDrainPositiveWaitSeconds": 5,
+    "newInvertedObservationSeconds": 1
+  },
+  "runtime": "No compiler/test/control/runtime/process/account action. All new methods remainNOT_RUN. Actual background/foreground publisher/Home/Native/C3/App-language/cold acceptance are separate.",
+  "productDependency": {
+    "manifest": "30a6f25774320c4882d0325906270725d1122af23cb37c95cdbe8ed98e69b374",
+    "sixProductBodiesUnchanged": true,
+    "RuntimeSourceDonorReportedByRoot": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+    "nativeABIRuntimeNotInferred": true
+  }
+}

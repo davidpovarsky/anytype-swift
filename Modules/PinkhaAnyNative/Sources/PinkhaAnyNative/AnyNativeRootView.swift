@@ -59,7 +59,8 @@ public struct AnyNativeRootView: View {
                         objects: owner.objects, blocks: owner.blocks, capabilities: owner.capabilities,
                         onRequestClose: { await model.closeWorkspace(expectedSession: owner.session) },
                         lifetime: lifetime, recovery: recovery,
-                        onManageMembers: { model.showMembers() })
+                        onManageMembers: { model.showMembers() },
+                        personalNavigation: owner.personalNavigation)
                 } else {
                     ProgressView()
                 }

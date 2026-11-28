@@ -1,0 +1,95 @@
+{
+  "schema": "pinkha-navigation-consumer-test-inverse-v1",
+  "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+  "base": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+  "original": {
+    "bytes": 40939,
+    "sha256": "30de75af908469666c19ef37ecc830dee6305e6ca6f7a937cc68862cd15369ca",
+    "gitBlob": "07a523228f184625e44aa2430b26836fdb00f94c"
+  },
+  "candidate": {
+    "bytes": 73043,
+    "sha256": "4975c0c01f754c528f860cb03916b54ec263f5c5785bc861effbb600c5163c04",
+    "gitBlob": "a356d29ee8e74df4683087d4292333d0a69a4c88"
+  },
+  "appendedSuffix": {
+    "bytes": 29487,
+    "sha256": "e00eca8ed1880ab57dee3adb386f68174f75b9fa593513b065fbf3648fccd9ec",
+    "gitBlob": "f0103a978ae8968a8cb19e4411e986d1998d658c",
+    "remove": "Require the exact trailing UTF-8 byte count/hash, then remove these bytes before reversing the fourteen fixture literals."
+  },
+  "rules": [
+    {
+      "label": "existing Host testability seam",
+      "before": "import PinkhaAnyHost\n",
+      "after": "@testable import PinkhaAnyHost\n"
+    },
+    {
+      "label": "optional navigation-only fixture state",
+      "before": "    private var stopWaiter: CheckedContinuation<Void, any Error>?\n",
+      "after": "    private var stopWaiter: CheckedContinuation<Void, any Error>?\n    // Navigation mode is opt-in; all five original renderer methods keep the\n    // exact original route values, deadlines and connection/request limits.\n    let navigationNetworkID = \"controlled-navigation-network\"\n    private let navigationRunID = String(repeating: \"d\", count: 64)\n    private let navigationEnabled: Bool\n    private let navigationEarliestSecond = Int64(Date().timeIntervalSince1970.rounded(.down))\n    private var holdFirstNavigationDefinition: Bool\n    private var heldNavigationDefinition: (id: UUID, connection: NWConnection)?\n    private var navigationApplied: [Int64] = []\n    private var navigationLastOpened: AnyJSON?\n    private var navigationReadbackWrites: Set<Int> = []\n    private var navigationEvents: [String] = []\n    private var navigationObservationIDs: [UUID: String] = [:]\n    private var navigationAllowedClosure: Set<UUID> = []\n"
+    },
+    {
+      "label": "preserved old fixture defaults",
+      "before": "    init(before: String, after: String) throws {\n        self.before = before; self.after = after\n",
+      "after": "    init(before: String, after: String, navigationEnabled: Bool = false,\n         holdFirstNavigationDefinition: Bool = false) throws {\n        self.before = before; self.after = after\n        self.navigationEnabled = navigationEnabled\n        self.holdFirstNavigationDefinition = holdFirstNavigationDefinition\n"
+    },
+    {
+      "label": "navigation trace is opt-in; old default trace exact",
+      "before": "    func retainedTrace() throws -> Data {\n        try queue.sync {\n            let value: [String: Any] = [\n                \"scope\": \"controlled-loopback-hosted-UIKit-not-Native-acceptance\",\n                \"requests\": requestTrace, \"failures\": failures,\n                \"queriesBySourcePhase\": readsByPhase, \"propertiesBySourcePhase\": completedPropertiesByPhase,\n                \"heldObservationKinds\": heldKinds.sorted(), \"listenerCancelled\": listenerClosed,\n                \"remainingOwnedConnections\": connections.count]\n            return try JSONSerialization.data(withJSONObject: value, options: [.sortedKeys])\n        }\n    }\n\n",
+      "after": "    func retainedTrace() throws -> Data {\n        try queue.sync {\n            var value: [String: Any] = [\n                \"scope\": \"controlled-loopback-hosted-UIKit-not-Native-acceptance\",\n                \"requests\": requestTrace, \"failures\": failures,\n                \"queriesBySourcePhase\": readsByPhase, \"propertiesBySourcePhase\": completedPropertiesByPhase,\n                \"heldObservationKinds\": heldKinds.sorted(), \"listenerCancelled\": listenerClosed,\n                \"remainingOwnedConnections\": connections.count]\n            if navigationEnabled {\n                value[\"navigationEnabled\"] = true\n                value[\"navigationEvents\"] = navigationEvents\n                value[\"localOpenMilliseconds\"] = navigationApplied\n                value[\"localOpenReadbackOrdinals\"] = navigationReadbackWrites.sorted()\n            }\n            return try JSONSerialization.data(withJSONObject: value, options: [.sortedKeys])\n        }\n    }\n\n"
+    },
+    {
+      "label": "per-owned-observation retirement permission",
+      "before": "                if !self.draining { self.fail(\"connection failed: \\(error)\") }\n",
+      "after": "                if !self.draining, !self.navigationAllowedClosure.contains(id) {\n                    self.fail(\"connection failed: \\(error)\")\n                }\n"
+    },
+    {
+      "label": "retire navigation observation slots on actual cancellation",
+      "before": "                self.connections.removeValue(forKey: id)\n                self.finishStopIfClosed()\n",
+      "after": "                self.connections.removeValue(forKey: id)\n                if let kind = self.navigationObservationIDs.removeValue(forKey: id) {\n                    self.heldKinds.remove(kind)\n                }\n                self.finishStopIfClosed()\n"
+    },
+    {
+      "label": "pass parsed request headers to exact bound route",
+      "before": "                try self.route(connection, method: String(request[0]), target: String(request[1]), body: Data(body))\n",
+      "after": "                try self.route(connection, method: String(request[0]), target: String(request[1]),\n                               body: Data(body), headers: headers)\n"
+    },
+    {
+      "label": "route signature",
+      "before": "    private func route(_ connection: NWConnection, method: String, target: String, body: Data) throws {\n",
+      "after": "    private func route(_ connection: NWConnection, method: String, target: String,\n                       body: Data, headers: [String: String]) throws {\n"
+    },
+    {
+      "label": "opt-in navigation route before original editor routes",
+      "before": "        let limited = queryItems.count == 1\n        let space = [\"v1\", \"spaces\", spaceID]\n",
+      "after": "        let limited = queryItems.count == 1\n        if try routeNavigation(connection, method: method, parts: parts, body: body,\n                               headers: headers, limited: limited) { return }\n        let space = [\"v1\", \"spaces\", spaceID]\n"
+    },
+    {
+      "label": "Reader only in opt-in navigation mode",
+      "before": "                value = .object([\"identity\": .string(accountID), \"status\": .string(\"active\"), \"permission\": .string(\"owner\")])\n",
+      "after": "                value = .object([\"identity\": .string(accountID), \"status\": .string(\"active\"),\n                                 \"permission\": .string(navigationEnabled ? \"reader\" : \"owner\")])\n"
+    },
+    {
+      "label": "actual local navigation readback on original object route",
+      "before": "                value = .object([\"objectId\": .string(objectID), \"record\": .object([\n                    \"id\": .string(objectID), \"spaceId\": .string(spaceID),\n                    \"any\": .object([\"name\": .string(\"Mounted refresh fixture\"), \"type\": .string(\"page\"), \"collections\": .array([])])])])\n",
+      "after": "                var properties: [String: AnyJSON] = [\"name\": .string(\"Mounted refresh fixture\"),\n                    \"type\": .string(\"page\"), \"collections\": .array([])]\n                if navigationEnabled, let navigationLastOpened {\n                    properties[\"pinkhaLastOpenedV1\"] = navigationLastOpened\n                    navigationReadbackWrites.insert(navigationApplied.count)\n                }\n                value = .object([\"objectId\": .string(objectID), \"record\": .object([\n                    \"id\": .string(objectID), \"spaceId\": .string(spaceID), \"any\": .object(properties)])])\n"
+    },
+    {
+      "label": "record original observation identity only for navigation reopens",
+      "before": "        let response = \"HTTP/1.1 200 OK\\r\\nContent-Type: text/event-stream\\r\\nCache-Control: no-cache\\r\\nConnection: keep-alive\\r\\n\\r\\n: controlled fixture held\\n\\n\"\n",
+      "after": "        let navigationConnectionID = navigationEnabled\n            ? connections.first(where: { $0.value === connection })?.key : nil\n        if let navigationConnectionID { navigationObservationIDs[navigationConnectionID] = kind }\n        let response = \"HTTP/1.1 200 OK\\r\\nContent-Type: text/event-stream\\r\\nCache-Control: no-cache\\r\\nConnection: keep-alive\\r\\n\\r\\n: controlled fixture held\\n\\n\"\n"
+    },
+    {
+      "label": "retired observation EOF is permitted only for exact owner IDs",
+      "before": "                if let self, !self.draining {\n                    self.fail(\"held observation ended before owner drainage: bytes=\\(data?.count ?? 0), error=\\(String(describing: error))\")\n",
+      "after": "                if let self, !self.draining,\n                   !(navigationConnectionID.map { self.navigationAllowedClosure.contains($0) } ?? false) {\n                    self.fail(\"held observation ended before owner drainage: bytes=\\(data?.count ?? 0), error=\\(String(describing: error))\")\n"
+    },
+    {
+      "label": "read-only target proof in navigation mode",
+      "before": "            \"canWrite\": .bool(true), \"collections\": .array([]),\n",
+      "after": "            \"canWrite\": .bool(!navigationEnabled), \"collections\": .array([]),\n"
+    }
+  ],
+  "inverseOrder": "Remove the verified appended suffix, then apply each after-to-before literal replacement in reverse array order, requiring exactly one occurrence. The whole result equals the original full source.",
+  "verifiedForwardAndInverse": true
+}

@@ -1,0 +1,22 @@
+{
+  "schema": "pinkha-navigation-test-self-review-v1",
+  "id": "NAV-TEST-GATE-OWNER-01",
+  "classification": "SOURCE_TEST_FIXTURE_OWNERSHIP_CORRECTION_NOT_RUNTIME_FAILURE",
+  "predecessor": {
+    "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+    "bytes": 73043,
+    "sha256": "4975c0c01f754c528f860cb03916b54ec263f5c5785bc861effbb600c5163c04",
+    "gitBlob": "a356d29ee8e74df4683087d4292333d0a69a4c88",
+    "manifest": "f3966035eebafaa204988249586d2a4bcbbc2ba495949f7aa2fece8dc7287d64",
+    "retainedDirectory": "../test-candidate-v1"
+  },
+  "finding": "The first draft paused the shared session run-verifier solely when the fixture's local-write count reached one. A still-pending unrelated Torah/session read could consume that pause. That would not establish that the original actual-open operation itself was held or drained.",
+  "correction": "A test-only TaskLocal flag is set only while calling the synchronous public didBecomeActive lifecycle method after a completed real inactive read and actual view attachment. The original actual-open Task and its original session.perform inherit the value. Only that marked verification can consume/reject through the controlled gate.",
+  "unaffected": "Setup, explicit editor reads, unrelated Torah work, and cleanup verification remain outside the marked scope and continue to verify the real HTTP run. No production setter/authority hook, new scenario, or API change.",
+  "current": {
+    "bytes": 73757,
+    "sha256": "019f231b850c6b838e1d02f474b4e513533a1dc75e21fac74305b64a839ba95b",
+    "gitBlob": "51cbffeb7919b8e760b23af096d750c85c8f16dd"
+  },
+  "runtime": "No compile, test, parser control, process, Native, account, or Apple operation has occurred."
+}
