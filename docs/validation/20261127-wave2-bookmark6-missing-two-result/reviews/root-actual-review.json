@@ -1,0 +1,86 @@
+{
+  "schema": "root-missing-two-actual-closed-attempt-review/v1",
+  "reviewedAtUTC": "2026-11-28T00:11:10.262976+00:00",
+  "actualJob": "job_57ce10beab09",
+  "status": "ACTUAL_FAIL_DIRECT_RUNNER_EXIT69_NO_OBSERVED_TEST_EVENTS",
+  "actualReceiptSHA256": "fe4dcf305e035f38b237b198e9db956aff63aa8bd8e4f34a6ff539f2b9d5bb64",
+  "processExit": 69,
+  "stdoutBytes": 0,
+  "stderrBytes": 0,
+  "observedSwiftTestingEvents": 0,
+  "originalFourXCTestMethodsReplayed": 0,
+  "all9Originals": [
+    {
+      "path": "command.json",
+      "bytes": 1649,
+      "sha256": "b870c5387a23a6d6fd34336513329cf6ea98897653c47727c07843cfa42a61eb"
+    },
+    {
+      "path": "immutable-witness-after.json",
+      "bytes": 162800,
+      "sha256": "ce9a153b4656baf71f3fe316e758a9fd56a9fc2607ae6cd1674f2d05ce3a05b8"
+    },
+    {
+      "path": "immutable-witness-before.json",
+      "bytes": 162800,
+      "sha256": "ce9a153b4656baf71f3fe316e758a9fd56a9fc2607ae6cd1674f2d05ce3a05b8"
+    },
+    {
+      "path": "immutable-witness-final.json",
+      "bytes": 162800,
+      "sha256": "ce9a153b4656baf71f3fe316e758a9fd56a9fc2607ae6cd1674f2d05ce3a05b8"
+    },
+    {
+      "path": "process.json",
+      "bytes": 102,
+      "sha256": "d9551adcd2847702726d0a03c2bee1c000ff2cc1fc8271d942d6b1543f843c99"
+    },
+    {
+      "path": "receipt.json",
+      "bytes": 4021,
+      "sha256": "fe4dcf305e035f38b237b198e9db956aff63aa8bd8e4f34a6ff539f2b9d5bb64"
+    },
+    {
+      "path": "resource-samples.json",
+      "bytes": 1253,
+      "sha256": "3ae486e39c0bf501f71cd819aac41b32b1e15575c5caac8bac1e8fbe3565f3e9"
+    },
+    {
+      "path": "stderr.original.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "stdout.original.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "totalOriginalBytes": 495425,
+  "beforeAfterFinalWitnessByteIdentical": true,
+  "witnessBytes": 162800,
+  "witnessSHA256": "ce9a153b4656baf71f3fe316e758a9fd56a9fc2607ae6cd1674f2d05ce3a05b8",
+  "maximumOwnedAllocatedBytes": 217595904,
+  "minimumRootFreeBytes": 2346201088,
+  "minimumDevelopmentFreeBytes": 1433419776,
+  "newOwnedGroup": 2862993,
+  "actualClosure": {
+    "absenceEvidence": {
+      "atUTC": "2026-11-28T00:06:12.465711+00:00",
+      "errno": 3,
+      "error": "[Errno 3] No such process",
+      "processGroup": 2862993,
+      "signal": 0,
+      "status": "ABSENT_ESRCH"
+    },
+    "historicalGroupReprobed": false,
+    "processGroup": 2862993,
+    "status": "PASS_OWNED_GROUP_ABSENT"
+  },
+  "safeToReleaseRuntimeSlot": true,
+  "noFutureQueryOfThisClosedGroup": true,
+  "cause": "UNDETERMINED_BY_THIS_ACTUAL_ONLY_REVIEW; source diagnosis separate",
+  "originalSixMethodFAILAndFourPassesPreserved": true,
+  "automaticRetry": false,
+  "sourceOrNativeOrAppleQualification": false
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "bookmark-missing-two-result-local-packet-inspection-stop/v1",
+  "status": "LOCAL_PREPARATION_ASSERTION_ONLY_NO_RUNTIME_OR_SOURCE_FAILURE",
+  "error": "AssertionError at direct array equality between previously generated expected-tree entries and primary GitHub tree entries.",
+  "cause": "Both complete maps are identical, but their root/validation array orders differ. Canonical Git tree ordering is required for byte reconstruction.",
+  "retainedBeforeStop": "All23 copied origins and four derived evidence documents were already written; all remain unchanged. No packet manifest, target or Git object/ref was created.",
+  "correction": "Compare the complete path-keyed entry/mode/type/SHA maps, then independently serialize canonical Git ordering and require the exact original tree SHA. All three ancestor trees pass both checks.",
+  "verifiedParentTrees": [
+    "fdaab65201112cc86a57d55d633cba9b2ef48335",
+    "0b0400f000338bafe32df7f79835f4e66a884f9d",
+    "885cf74447da1a18982f03396a29e9a099b1fe96"
+  ],
+  "originalFilesChanged": false,
+  "testControlRuntimeHostOrGitActions": 0
+}

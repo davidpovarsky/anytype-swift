@@ -1,0 +1,79 @@
+{
+  "schema": "missing-two-collector-literal-derivation/v1",
+  "status": "SOURCE_REVIEW_ONLY_NOT_EXECUTED",
+  "original": {
+    "path": "wave2-bookmark6-component/runtime-attempt1-root-custody/collect_original_attempt.py",
+    "bytes": 9941,
+    "sha256": "595d29d22ce99ca3833a848ef2d34c37c74b52f687ea78e2318fa774582f3393"
+  },
+  "candidate": {
+    "path": "wave2-bookmark6-component/missing-two-execution-preparation/collect_continuation_originals.py",
+    "bytes": 9956,
+    "sha256": "50a9ccbe76f54133b6d94f852d62a7242cbc2b1cd77c1465fa31f34dc8413225"
+  },
+  "replacements": [
+    {
+      "old": "Only the ten named originals are opened.",
+      "new": "Only the nine named continuation originals are opened.",
+      "count": 1
+    },
+    {
+      "old": "ATTEMPT = ROOT / 'attempt1'",
+      "new": "ATTEMPT = ROOT / 'continuation1'",
+      "count": 1
+    },
+    {
+      "old": "FILES = ('actual-dependency-copies.json', 'command.json', 'process.json', 'receipt.json',\n         'resource-samples.json', 'source-inputs-after.json', 'source-inputs-before.json',\n         'source-inputs-final.json', 'stderr.original.log', 'stdout.original.log')",
+      "new": "FILES = ('command.json', 'process.json', 'receipt.json', 'resource-samples.json',\n         'immutable-witness-after.json', 'immutable-witness-before.json',\n         'immutable-witness-final.json', 'stderr.original.log', 'stdout.original.log')",
+      "count": 1
+    },
+    {
+      "old": "CONTROLLER = '3729eed7d91e3400c19137420df96465d4785c0bd9587d81553864e1041f176c'",
+      "new": "CONTROLLER = '0e8fa19767222fef6f954bf4bfdb34e58a77986251e69cf461b29f7311f01627'",
+      "count": 1
+    },
+    {
+      "old": "assert len(stages) <= 1 and len(summaries) <= 1 and (stages or summaries), 'Completed job does not bind this fixed attempt'",
+      "new": "assert len(stages) == 0 and len(summaries) == 1, 'Completed job does not bind this fixed continuation'",
+      "count": 1
+    },
+    {
+      "old": "Later chunks re-read only these same ten paths",
+      "new": "Later chunks re-read only these same nine paths",
+      "count": 1
+    },
+    {
+      "old": "receipt['schema'] == 'pinkha-bookmark-six-component/v1'",
+      "new": "receipt['schema'] == 'pinkha-bookmark-missing-two-continuation/v1'",
+      "count": 1
+    },
+    {
+      "old": "len(contents) == len(FILES) == 10",
+      "new": "len(contents) == len(FILES) == 9",
+      "count": 1
+    },
+    {
+      "old": "'pinkha-bookmark6-exact-original-attempt-export/v1'",
+      "new": "'pinkha-bookmark-missing-two-exact-original-export/v1'",
+      "count": 1
+    },
+    {
+      "old": "'ALL_TEN_ORIGINALS_COLLECTED'",
+      "new": "'ALL_NINE_CONTINUATION_ORIGINALS_COLLECTED'",
+      "count": 1
+    },
+    {
+      "old": "'pinkha-bookmark6-original-export-transfer/v1'",
+      "new": "'pinkha-bookmark-missing-two-original-export-transfer/v1'",
+      "count": 1
+    },
+    {
+      "old": "'expectedFiles': 10",
+      "new": "'expectedFiles': 9",
+      "count": 1
+    }
+  ],
+  "completeOriginalInverse": true,
+  "unchangedBody": "Full read_original, identity, SHA, size caps, directory/file stable-stat checks, gzip/chunk hashing and no-write/no-child/no-process behavior remain exact. completed_job is narrowed to exactly one continuation summary and no staging summary.",
+  "futureOnly": "A real terminal job envelope must precede all file reads; receipt hash/schema/controller/product must agree. Does not run controller or grant test/closure qualification."
+}

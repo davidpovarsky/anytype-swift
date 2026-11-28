@@ -1,0 +1,316 @@
+{
+  "schema": "pinkha-bookmark-missing-two-independent-actual-review/v1",
+  "status": "VERIFIED_ACTUAL_FAILURE_WITH_RETAINED_INPUTS_AND_CLOSED_OWNED_GROUP",
+  "reviewer": "torah_continue",
+  "reviewedAtUTC": "2026-11-28T00:13:42.796456+00:00",
+  "scope": "Independent local artifact review only: actual continuation1 failure, exact nine-file custody, retained original source/product identities, sampled resources and original positive owned-child closure. No execution or renewed process observation.",
+  "actual": {
+    "jobID": "job_57ce10beab09",
+    "jobStartedAtUTC": "2026-11-28T00:06:09.560633+00:00",
+    "jobFinishedAtUTC": "2026-11-28T00:06:13.433233+00:00",
+    "jobSeconds": 3.87,
+    "outerExit": 1,
+    "controllerStartedAtUTC": "2026-11-28T00:06:12.327163+00:00",
+    "controllerFinishedAtUTC": "2026-11-28T00:06:13.411986+00:00",
+    "controllerSeconds": 1.085,
+    "childExit": 69,
+    "originalReceiptStatus": "FAIL",
+    "originalReceipt": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-execution-preparation/actual-continuation1/receipt.json",
+      "bytes": 4021,
+      "sha256": "fe4dcf305e035f38b237b198e9db956aff63aa8bd8e4f34a6ff539f2b9d5bb64"
+    },
+    "soleOriginalFailure": {
+      "phase": "missing-two-continuation",
+      "traceback": "Traceback (most recent call last):\n  File \"/var/lib/sentinelx/uploads/pinkha-wave2-bookmark-missing-two-0e8fa19767222fef.py\", line 355, in main\n    assert process.returncode == 0, 'Direct Integration test-runner failed'\n           ^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Direct Integration test-runner failed\n",
+      "type": "AssertionError"
+    },
+    "stdoutBytes": 0,
+    "stderrBytes": 0,
+    "observedSwiftTestingStartOrPassEvents": 0,
+    "observedXCTestStartOrPassEvents": 0,
+    "testResultFieldPresent": false,
+    "newMethodAcceptance": false,
+    "interpretation": "The direct selected runner launched and returned69. Its output files contain zero bytes, and the controller failed before result qualification. No positive or negative per-test assertion result is established. Runtime exit69 cause is not established by this artifact review."
+  },
+  "custody": {
+    "collectionStatus": "ALL_NINE_CONTINUATION_ORIGINALS_COLLECTED",
+    "nineOriginalFileCount": 9,
+    "nineOriginalBytes": 495425,
+    "computedFacts": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-execution-preparation/torah-actual-review-computed-facts.json",
+      "bytes": 5320,
+      "sha256": "cccad54d259e9f696a471cf37c37e9031a112235e7f8643d84d03a92a43f4645"
+    },
+    "collection": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-execution-preparation/actual-originals.collection.json",
+      "bytes": 670209,
+      "sha256": "d7563d7e8a0297ea3c4b086d6828741856686b71960797b9b0307916510d71ec"
+    },
+    "gzip": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-execution-preparation/actual-originals.collection.json.gz",
+      "bytes": 127285,
+      "sha256": "62b77af3b3dc4c5d6226acd76ce37c8c2e3686c3e22eefda74aeb028139fb89e"
+    },
+    "base64": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-execution-preparation/actual-originals.collection.json.gz.b64",
+      "bytes": 169717,
+      "sha256": "ed6e2b00a90f6244bc87b523295ab94236a2b0a5d71368e8d0470ce60f6ac265"
+    },
+    "gzipAndBase64LosslessAgainstEntireRawCollection": true,
+    "allNineBase64BodiesEqualLocalCompleteOriginalBytes": true,
+    "allNineByteCountsAndSHA256Matched": true,
+    "allNineOriginalFDAndPathIdentitiesStable": true,
+    "allNineRegularSingleLinkFiles": true,
+    "bothOriginalDirectoriesStable": true,
+    "collectionIssues": [],
+    "atimePreservationClaim": false,
+    "terminalNotificationExact": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-execution-preparation/actual-notification-tool.json",
+      "bytes": 2090,
+      "sha256": "ba1571c37f9a7c099942b94506ab3b50d4d81cd5efdb8eab64560fcb1f34a14d"
+    },
+    "terminalJobExact": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-execution-preparation/actual-completed-job.json",
+      "bytes": 983,
+      "sha256": "a3240f03f15110ba9be2f20c82ec889c2b1a88dfb600042f5b627356c35d9ae6"
+    },
+    "terminalEmbeddedSummaryMatchesOriginalReceiptSHAStatusAndReleaseField": true
+  },
+  "dispatchBinding": {
+    "publishedControllerCommit": "e01176b6a15bdb6a8ff7fedbca5c880634a773ef",
+    "productSourceCommit": "3d2abbf8b1017204e2b93b53ea83ff6f053e67b3",
+    "controller": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-preparation/run_missing_two.py",
+      "bytes": 34063,
+      "sha256": "0e8fa19767222fef6f954bf4bfdb34e58a77986251e69cf461b29f7311f01627"
+    },
+    "sourceUpload": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-execution-preparation/source-upload-result.json",
+      "bytes": 634,
+      "sha256": "e0cad7cd4b4cec996da8b677a44e3c09d6cc4b1a3450db9799ea3e7c3a0fe7cf"
+    },
+    "uploadedBase64DecodedToExactController": true,
+    "launcher": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-execution-preparation/launch_exact_missing_two.py",
+      "bytes": 636,
+      "sha256": "5af075fc4aa900cd7efb24e500b8f2ba4f6233bec97cee52930b01ee482da4c1"
+    },
+    "collector": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-execution-preparation/collect_continuation_originals.py",
+      "bytes": 9956,
+      "sha256": "50a9ccbe76f54133b6d94f852d62a7242cbc2b1cd77c1465fa31f34dc8413225"
+    },
+    "priorEnvelopeCollectorSourceReview": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-execution-preparation/torah-envelope-collector-review.json",
+      "bytes": 6088,
+      "sha256": "e520846b77cdb93e430a51207c4d0d71b217353a5adb6c64b92266b96cdcd030"
+    },
+    "externalGrantStory": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-execution-preparation/runtime-grant.story.json",
+      "bytes": 1556,
+      "sha256": "32ddafa1a519f4ec29dc4f980f7e359aa3d327399f0220cf870650f07c244396"
+    },
+    "externalGrantStoryID": "1220963582698278",
+    "originalDispatch": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-execution-preparation/actual-dispatch.json",
+      "bytes": 1696,
+      "sha256": "21ce409aa3dc6a0b2cbe6a99dc14c4c550169b18922e3f530a71ec7e8c65389d"
+    },
+    "commandOriginal": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-execution-preparation/actual-continuation1/command.json",
+      "bytes": 1649,
+      "sha256": "b870c5387a23a6d6fd34336513329cf6ea98897653c47727c07843cfa42a61eb"
+    },
+    "exactArgv": [
+      "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner",
+      "--testing-library",
+      "swift-testing",
+      "--no-parallel",
+      "--filter",
+      "(?:creationOverrideRejectsAnotherWorkspaceBeforeDispatch|creationOverrideAndDefaultCreatorShareTheExistingMutationQueue)(?:\\(\\))?$"
+    ],
+    "exactCWD": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/component",
+    "exactRecordedEnvironmentOverrides": {
+      "GIT_TERMINAL_PROMPT": "0",
+      "LD_LIBRARY_PATH": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build/out/Products/Debug-linux-aarch64:/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux",
+      "NO_COLOR": "1",
+      "PATH": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin:/usr/bin:/bin",
+      "PWD": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "TMPDIR": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/continuation1/tmp"
+    },
+    "runner": {
+      "bytes": 10805344,
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner",
+      "sha256": "c5334175861cc165de9751240d4532e2eea73d4ac850756074f7ffb150d91b34"
+    },
+    "testLibrary": {
+      "bytes": 21171736,
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegrationTests.so",
+      "sha256": "5eac396345bc469d9712ec7a776e10671652cc1366aa6f08b4269ff49f8f70ab"
+    },
+    "noFreshCompilationOrSwiftPMInvocationByController": true,
+    "noAutomaticRetry": true
+  },
+  "immutableRetention": {
+    "before": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-execution-preparation/actual-continuation1/immutable-witness-before.json",
+      "bytes": 162800,
+      "sha256": "ce9a153b4656baf71f3fe316e758a9fd56a9fc2607ae6cd1674f2d05ce3a05b8"
+    },
+    "after": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-execution-preparation/actual-continuation1/immutable-witness-after.json",
+      "bytes": 162800,
+      "sha256": "ce9a153b4656baf71f3fe316e758a9fd56a9fc2607ae6cd1674f2d05ce3a05b8"
+    },
+    "final": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-execution-preparation/actual-continuation1/immutable-witness-final.json",
+      "bytes": 162800,
+      "sha256": "ce9a153b4656baf71f3fe316e758a9fd56a9fc2607ae6cd1674f2d05ce3a05b8"
+    },
+    "allThreeCompleteFilesByteIdentical": true,
+    "all438RecordsIdenticalIncludingDeviceInodeModeMtimeLengthHash": true,
+    "independentlyJoinedExactExpectedPathSet": true,
+    "joinCounts": {
+      "immutablePaths": 438,
+      "SHA256Joins": 438,
+      "knownByteJoins": 420,
+      "frozenInputs": 90,
+      "compiledPackageAndSourceCopies": 85,
+      "originalAttemptArtifacts": 10,
+      "compilerArtifactPaths": 150,
+      "cryptoCopies": 102,
+      "qualifiedCompletion": 1
+    },
+    "authoritySHA256Joins": 438,
+    "authorityByteLengthJoinsWherePriorReceiptProvidesLength": 420,
+    "remaining18LengthsStillExactAcrossAllThreeCurrentWitnesses": true,
+    "priorCompletion": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/runtime-attempt1-root-custody/completion1.json",
+      "bytes": 589557,
+      "sha256": "ac38377da08aac68629d2ae04f8d4878a52eb8b28ee3e1009700c810902302d7"
+    },
+    "priorCompletionScope": "Existing compiler custody only; original six-method result remains FAIL. No new compiler qualification was executed in this review or continuation.",
+    "priorOriginalReceipt": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/runtime-attempt1-root-custody/original-attempt/receipt.json",
+      "bytes": 4923,
+      "sha256": "4441afb94ce64ef8656dd001ec040bee2cb69201eaddba16d2fc8e7a3d4fb556"
+    },
+    "frozenInputPacket": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/execution-preparation/input-packet.json",
+      "bytes": 28662,
+      "sha256": "2341bdb226521d368b37f37c402c83b6bb20ae1db6efe4d7f65938198f5f1353"
+    },
+    "all90LocalFrozenInputBodiesMatchedPacketAndActualWitness": true,
+    "copiedPackageAndSourceMapCount": 85,
+    "actualCompilerArtifactPathCount": 150,
+    "actualCompilerGroupNames": [
+      "PinkhaAnyEngine",
+      "PinkhaAnyHost",
+      "PinkhaAnyHostTests",
+      "PinkhaAnyHostTests_test_runner",
+      "PinkhaAnyIntegration",
+      "PinkhaAnyIntegrationTests",
+      "PinkhaAnyIntegrationTests_test_runner",
+      "PinkhaKit",
+      "TorahInspectorCore"
+    ],
+    "cryptoCopies": 102,
+    "cryptoLogicalBytes": 19775715,
+    "cryptoScope": "All102 private target identities match the exact retained qualified-copy inventory and all three continuation witnesses. The unchanged snapshot source also performs original/alias/copy Crypto checks; this reviewer used retained local evidence only.",
+    "oldFourXCTestResultPreservedSeparately": true,
+    "oldIntegration27AndHost7NotSelected": true
+  },
+  "resources": {
+    "samples": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-execution-preparation/actual-continuation1/resource-samples.json",
+      "bytes": 1253,
+      "sha256": "3ae486e39c0bf501f71cd819aac41b32b1e15575c5caac8bac1e8fbe3565f3e9"
+    },
+    "sampleCount": 4,
+    "initialAdmissionFloors": {
+      "rootBytes": 2181038080,
+      "developmentBytes": 838860800,
+      "memoryBytes": 536870912
+    },
+    "laterFloors": {
+      "rootBytes": 2147483648,
+      "developmentBytes": 536870912,
+      "memoryBytes": 536870912
+    },
+    "wholeOwnedAllocationCapBytes": 268435456,
+    "finalEvidenceReserveWithinCapBytes": 1048576,
+    "effectiveSampleAllocationMaximumBytes": 267386880,
+    "allFourSamplesMeetApplicableFloorsAndCap": true,
+    "minimumRootFreeBytes": 2346201088,
+    "minimumDevelopmentFreeBytes": 1433419776,
+    "minimumMemoryAvailableBytes": 4273704960,
+    "maximumOwnedAllocatedBytes": 217595904,
+    "finalReservePlusCapHeadroomBytes": 50839552,
+    "observationalBoundary": "Four recorded samples are qualified. They are not continuous telemetry, a current capacity reading, or authorization for another runtime slot."
+  },
+  "ownedClosure": {
+    "originalProcessReceipt": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-execution-preparation/actual-continuation1/process.json",
+      "bytes": 102,
+      "sha256": "d9551adcd2847702726d0a03c2bee1c000ff2cc1fc8271d942d6b1543f843c99"
+    },
+    "originalObservedClosure": {
+      "atUTC": "2026-11-28T00:06:12.465711+00:00",
+      "errno": 3,
+      "error": "[Errno 3] No such process",
+      "processGroup": 2862993,
+      "signal": 0,
+      "status": "ABSENT_ESRCH"
+    },
+    "ownedCleanupRecord": {
+      "absenceEvidence": {
+        "atUTC": "2026-11-28T00:06:12.465711+00:00",
+        "errno": 3,
+        "error": "[Errno 3] No such process",
+        "processGroup": 2862993,
+        "signal": 0,
+        "status": "ABSENT_ESRCH"
+      },
+      "historicalGroupReprobed": false,
+      "processGroup": 2862993,
+      "status": "PASS_OWNED_GROUP_ABSENT"
+    },
+    "sameNewGroupInProcessAndBothClosureRecords": true,
+    "noTerminationSignalRecorded": true,
+    "originalSafeToReleaseRuntimeSlot": true,
+    "closureAuthority": "Reuse only the original positive ABSENT_ESRCH observation at00:06:12.465711. No historical or new process query is performed by this review.",
+    "oldGroup2634766Reprobed": false,
+    "newGroup2862993ReprobedByReviewer": false,
+    "runtimeGrantCreatedByThisReview": false
+  },
+  "acceptanceBoundary": {
+    "originalAttempt1FourXCTestPositiveResult": "PRESERVED_IN_ORIGINAL4441_ENVELOPE",
+    "originalAttempt1OverallResult": "FAIL",
+    "continuation1OverallResult": "FAIL",
+    "missingTwoMethods": "NO_OBSERVED_START_OR_PASS_EVENTS",
+    "sixMethodAcceptance": false,
+    "controlledHTTPOrNativeAcceptance": false,
+    "AppleOrMountedUIAcceptance": false,
+    "failureCause": "UNPROVEN_BY_THIS_REVIEW; separate source analysis owns diagnosis",
+    "retryAuthorizedByThisReview": false
+  },
+  "reviewOperations": {
+    "localWholeFileReadsHashesJSONGzipBase64AndASTOnly": true,
+    "importedControllerOrCollector": false,
+    "invokedQualifierParserOrControl": false,
+    "executedRuntimeTestCompilerOrSwift": false,
+    "hostCalls": 0,
+    "processQueriesOrSignals": 0,
+    "NativeOrAppleCalls": 0,
+    "sourceOrOriginalArtifactChanges": 0,
+    "inspectionDisplayLimit": "An initial display-only metadata listing was truncated; all qualification used complete retained local byte arrays and bounded summaries afterward. No inspection assertion failed or runtime outcome was changed."
+  },
+  "findings": {
+    "custodyOrRetentionBlocker": null,
+    "resourceOrOwnedClosureBlockerInRetainedEvidence": null,
+    "actualExecutionFailureRetained": true,
+    "noProductAcceptancePromotion": true
+  }
+}

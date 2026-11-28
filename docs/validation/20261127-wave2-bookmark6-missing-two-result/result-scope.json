@@ -1,0 +1,73 @@
+{
+  "schema": "bookmark-missing-two-continuation1-result-scope/v1",
+  "status": "ACTUAL_FAIL_CHILD_EXIT69_ZERO_OBSERVED_TEST_EVENTS",
+  "actualJob": {
+    "id": "job_57ce10beab09",
+    "startedAtUTC": "2026-11-28T00:06:09.560633+00:00",
+    "finishedAtUTC": "2026-11-28T00:06:13.433233+00:00",
+    "seconds": 3.87,
+    "outerExit": 1
+  },
+  "childExit": 69,
+  "controllerSeconds": 1.085,
+  "stdoutBytes": 0,
+  "stderrBytes": 0,
+  "testResultPresent": false,
+  "observedSwiftTestingStartPassEvents": 0,
+  "observedXCTestStartPassEvents": 0,
+  "selectedMethods": [
+    "creationOverrideRejectsAnotherWorkspaceBeforeDispatch",
+    "creationOverrideAndDefaultCreatorShareTheExistingMutationQueue"
+  ],
+  "actualReceiptSHA256": "fe4dcf305e035f38b237b198e9db956aff63aa8bd8e4f34a6ff539f2b9d5bb64",
+  "actualFailure": "Direct Integration test-runner failed at child returncode check. No test-result parser ran.",
+  "causeEstablished": false,
+  "noPerTestFailureOrSkippedStatusInferred": true,
+  "originalSixMethodStatus": "FAIL",
+  "originalFourXCTestPositiveResult": "Retained only in original attempt1 envelope; not replayed or reattributed.",
+  "missingTwoMethodAcceptance": false,
+  "aggregateSixMethodAcceptance": false,
+  "compilerOrSwiftPMInvocationsInContinuation": 0,
+  "NativeOrAppleAcceptance": false,
+  "priorCompilerCustodyReusedOnly": true,
+  "witness": {
+    "paths": 438,
+    "bytesPerOriginalWitness": 162800,
+    "sha256": "ce9a153b4656baf71f3fe316e758a9fd56a9fc2607ae6cd1674f2d05ce3a05b8",
+    "beforeAfterFinalByteIdentical": true,
+    "joinedFrozenInputs": 90,
+    "joinedCopiedSourcesAndPackage": 85,
+    "joinedCompilerArtifactPaths": 150,
+    "joinedCryptoCopies": 102,
+    "joinedPriorOriginals": 10,
+    "joinedPriorCompletion": 1
+  },
+  "recordedResourceSamples": {
+    "count": 4,
+    "minimumRootFreeBytes": 2346201088,
+    "minimumDevelopmentFreeBytes": 1433419776,
+    "minimumMemoryAvailableBytes": 4273704960,
+    "maximumOwnedAllocatedBytes": 217595904,
+    "allOriginalApplicableGatesSatisfied": true,
+    "currentCapacityClaim": false
+  },
+  "originalOwnedClosure": {
+    "absenceEvidence": {
+      "atUTC": "2026-11-28T00:06:12.465711+00:00",
+      "errno": 3,
+      "error": "[Errno 3] No such process",
+      "processGroup": 2862993,
+      "signal": 0,
+      "status": "ABSENT_ESRCH"
+    },
+    "historicalGroupReprobed": false,
+    "processGroup": 2862993,
+    "status": "PASS_OWNED_GROUP_ABSENT"
+  },
+  "recordedSafeToReleaseRuntimeSlot": true,
+  "historicalClosureNeverReprobed": true,
+  "automaticRetry": false,
+  "newRuntimeGrant": false,
+  "sourceOrLimitChanges": 0,
+  "publicationScope": "Docs-only preservation of a completed failure. Any later source diagnosis must be separately labeled and must not replace original evidence."
+}
