@@ -1,0 +1,119 @@
+{
+  "schema": "pinkha-root-same-owner-destination-operation-source-peer-v1",
+  "reviewedAtUTC": "2026-11-28 10:10:40 UTC",
+  "status": "SOURCE_CLEAR_WITH_EXPLICIT_RUNTIME_AND_CALLER_COMPOSITION_GATES",
+  "sourceBaseCommit": "daaedc545eac20df260489b8a7579527c057aeac",
+  "newIntegrationObservation": {
+    "commit": "af1aca9c33c0b38101c20ab24c88b1cfc07d7a17",
+    "asanaStory": "1220966371131297",
+    "limit": "W3-reported source union. E independently reports exact current-ref recheck of all seven beforeimage/dependency Git blobs and whole bytes at af1aca9c; Root's independent whole-text peer remains pinned to the immutable blobs below.",
+    "EReportedPreimagesUnchanged": true
+  },
+  "proposal": {
+    "blob": "5149cb803f11239387789b71fa5cabc3f1986310",
+    "bytes": 15754,
+    "sha256": "6963f548d9a57986acf252f6e6cdd10beb1d98fe70fadff2df9d0750211d5a94"
+  },
+  "wholeTextReadsAndInverse": [
+    {
+      "name": "root",
+      "before": {
+        "blob": "7356bed6598d094e4945d1265e67a6433ac3ab22",
+        "bytes": 25081,
+        "sha256": "b029c7f5e3064c3333117301478633f70a2dd8768dde57a0d1df2d38b807e775"
+      },
+      "after": {
+        "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+        "blob": "5a032474b2e2bc7c07d502920042741d22eff1f5",
+        "bytes": 29548,
+        "sha256": "8a610e6869a941d07d2d6a2c7e10a3b917427e89ee6f1f00cbe5cc5adfcde7fe"
+      },
+      "edits": 3,
+      "wholeForwardInverse": true
+    },
+    {
+      "name": "host",
+      "before": {
+        "blob": "9821f005c15f993c8ded7765efcfd645b7fa0eba",
+        "bytes": 2875,
+        "sha256": "96199ef741b8a432fc9c2dd50f063f427052f35e904da5ce16fc1facefceec72"
+      },
+      "after": {
+        "path": "Modules/PinkhaEngineHost/Sources/PinkhaEngineHost/PinkhaEngineHost.swift",
+        "blob": "07629409adc5a6e762e582f8e81adcb621700bd4",
+        "bytes": 3438,
+        "sha256": "0e7e1fe0b692a7c3178fc9176e672e09b2352a0b06e286b9526f6b752cd87175"
+      },
+      "edits": 2,
+      "wholeForwardInverse": true
+    },
+    {
+      "name": "package",
+      "before": {
+        "blob": "a5c131d2ceb0b661b4fbcec4d5bd69989947f41f",
+        "bytes": 1111,
+        "sha256": "0032ffe0b212d501e7d9eaf4ec99e854c138f72b3e5bcf24a6f8821c21a8271b"
+      },
+      "after": {
+        "path": "Modules/PinkhaEngineHost/Package.swift",
+        "blob": "3abede4c18c7e608fd630ef30c9bb0e57af2fa9b",
+        "bytes": 1249,
+        "sha256": "c2f33b0401d4f73f1e274ee74ef4b7a4bf806c4b8e1585d403ff5bfb6e09a477"
+      },
+      "edits": 2,
+      "wholeForwardInverse": true
+    }
+  ],
+  "unchangedDependencies": [
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+      "blob": "1dae52636c3a6eb6dfe2aa88d548d6982a9d8dd0",
+      "bytes": 5633,
+      "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyUIPresentationLifetime.swift",
+      "blob": "45cc719e6aebc1559620589710fa6acf78f7656c",
+      "bytes": 1809,
+      "sha256": "43f92a43f956d475a0f87c02c62210a8811da80333b2ec9ccdf554a7fd0b1deb"
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeApplication.swift",
+      "blob": "1d69d208865c2f5ae4477916520612fb1af35476",
+      "bytes": 24728,
+      "sha256": "db5fac51bf6af8481b3b95f35dc5f13e216bb13dd6c8997fbf17972112d8a00c"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Package.swift",
+      "blob": "4b5f21e56f8110acfcada98a740cc08eed2cbcdc",
+      "bytes": 773,
+      "sha256": "2bfbf014cbfb6ce37764a2900743783fe3af2535ad4809aa4fc9ea67d16d2e5f"
+    }
+  ],
+  "reviewFindings": [
+    "All seven literal edits were independently applied forward and reversed against whole before/after bodies. Existing session.perform and suspend/drain paths remain unchanged.",
+    "Expected account and Space identifiers, current workspace/session identity, presentation lifetime, foreground/start state, epoch and absence of another operation are checked before first suspension.",
+    "The typed callback task and its completion-fence tracker are installed into the existing operation slot before awaiting a result. The callback uses the existing native session owner and its lease; no new engine/session is constructed.",
+    "Model success delivery checks caller cancellation and the same MainActor identity after worker completion without a further suspension; deferred cleanup completes the fence on both success and failure.",
+    "Suspend cancels the existing operation tracker and waits for its completion fence before draining the presentation lifetime and stopping the application. A cancelled tracker still joins the fence.",
+    "Source wait graph is caller-to-worker, tracker-to-completion-fence and suspend-to-tracker. Caller does not await its own tracker. No cycle or stale-success path was found in these reviewed bodies.",
+    "The conditional unified-engine package graph adds only the direct engine import/product needed by the public callback's AnyHTTPClient signature. The Heart-only conditional dependency graph remains unchanged."
+  ],
+  "materialLimits": [
+    "No Swift parse, typecheck, compilation or test was performed; no actual concurrency/runtime acceptance is supplied.",
+    "Drain depends on the callback eventually terminating after cancellation. It is not a forced kill or bounded-time guarantee.",
+    "The API requires an already active destination workspace and explicit expected identifiers. It does not expose or choose a destination or provision a new one.",
+    "The actual App must retain the original live Heart capture while using the same resumed destination owner. Current selection/capture coexistence, invocation, persistence, mounting and post-return readiness remain W3 ownership.",
+    "C must register its entire invocation of this destination-operation API, including session.perform final awaited validation, in its outer migration lifetime. Wrapping only the inner callback leaves a source invalidation gap. Draft f96aed is therefore not granted producer-composition clearance by this record.",
+    "Post-return persistence is outside this API's operation fence. W3 must use the existing persistence/ownership boundary and current identity checks.",
+    "Native account/run server support, current ABI, Apple/App behavior and cold reopen acceptance remain separate required gates.",
+    "No cache/compiler/native release or storage-capacity admission is granted."
+  ],
+  "observations": {
+    "originalSessionOrNativeOwnerChanged": false,
+    "AppSourceChanged": false,
+    "OracleCallsForThisPeer": 0,
+    "compilerCalls": 0,
+    "testsRun": 0
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "schema": "pinkha-e-c-destination-operation-caller-contract-v1",
+  "status": "SOURCE_API_CONTRACT_ONLY_REAL_APP_CALLER_PENDING",
+  "destination": {
+    "publicType": "PinkhaEmbeddedAnyPresentation",
+    "method": "performDestinationOperation(expectedAccountID:expectedSpaceID:_:)",
+    "result": "async throws -> Value where Value: Sendable",
+    "callback": "@Sendable (AnyHTTPClient, AnyApplicationSession, AnyHostLease) async throws -> Value",
+    "alreadyActiveWorkspaceRequired": true,
+    "explicitExpectedAccountAndSpaceRequired": true,
+    "selectionGetterAdded": false,
+    "provisionsDestination": false
+  },
+  "producer": {
+    "publicType": "AnyHeartNativeMigrationProducer",
+    "method": "execute(_:inDestination:)",
+    "source": {
+      "blob": "b79eda7132645e4e91d3da2877e63a64469dfb40",
+      "bytes": 16714,
+      "sha256": "b5163df521675a4aa66abd109e9cc1c6bf3db943d85b1e6f79097eec5d1ae5ac"
+    },
+    "priorCorrectedBody": {
+      "blob": "3271d972579d432182891838ea77f8a6235c3748",
+      "bytes": 16700,
+      "sha256": "25e8b34d9a5b6cd75bf3dbad6e8e97d3b2f3527f343c796ecb469e05a0c659ad"
+    },
+    "finalCommentDelta": [
+      {
+        "line": 53,
+        "before": "/// Invoke execute from the same presentation owner's destination-operation API;",
+        "after": "/// Pass the same presentation owner's destination-operation API as the adapter"
+      },
+      {
+        "line": 54,
+        "before": "/// the client/session/lease must be the triple supplied by that callback.",
+        "after": "/// to execute(..., inDestination:). Its callback supplies the real client/session/lease."
+      }
+    ],
+    "producerCodeAppliedByThisCommit": false,
+    "RootStorageOrFunctionalReviewIncluded": false
+  },
+  "invocation": [
+    "The App retains the existing live source capture controller and supplies that same private SourceAccountController to C's real producer through its capture facade.",
+    "The source owner invokes the complete destination adapter, not only a callback nested inside an independently owned destination call.",
+    "The adapter awaits presentation.performDestinationOperation with the exact intended destination account and Space and the producer-supplied callback.",
+    "The actual presentation supplies its own client/session/lease. The producer creates and executes the plan from the admitted request and that exact triple.",
+    "Account, Space, engine change, cancellation and window release must invalidate and await the producer owner; its original source close failure remains retryable and blocks transfer.",
+    "W3 still has to implement the actual destination-selection handoff and post-return persistence/mount/cold-open checks."
+  ],
+  "inputOwnership": {
+    "sourceCapture": "Existing current Heart full-session capture owner; the retained archive is evidence and does not mint authority.",
+    "destinationSelection": "Actual active Any presentation/workspace with explicit intended account/Space; no title/default or bare owner getter.",
+    "request": "C request carries explicit networkID, workspace, storeID, SHA256-form planID, private journalParent and payloadParent, and bounded supplemental canonical definitions.",
+    "privateNamespaces": "W3 supplies explicit dedicated private journal/payload parents under C's separately reviewed storage contract; capture input is not an output directory. This E code creates no filesystem namespace.",
+    "result": "C's actual completed journal/verifier produces the reference and completion value; E does not fabricate completion, transfer current native authority, or claim source history became target history."
+  },
+  "unchangedGates": [
+    "Original native source/run/ACL assertions",
+    "Current native/ABI/network and dual-runtime qualification",
+    "E Native97 and Swift23 admission/acceptance",
+    "Current N24 adoption/cache release",
+    "Apple parse/compile/focused race tests",
+    "Real App invocation, cancellation, persistence, mount and cold reopen"
+  ],
+  "codeOwners": {
+    "E": [
+      "AnyNativeRootView.swift operation/fence",
+      "PinkhaEngineHost forwarding",
+      "conditional EngineHost package dependency"
+    ],
+    "C": [
+      "Direct capture preservation source integration",
+      "original executor producer",
+      "source-owner invalidation",
+      "private archive storage"
+    ],
+    "W3": [
+      "Actual App callsite and destination selection",
+      "capture-facade producer construction",
+      "post-return persistence/mount/cold reopen"
+    ]
+  }
+}

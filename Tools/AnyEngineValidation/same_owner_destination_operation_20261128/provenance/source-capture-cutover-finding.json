@@ -1,0 +1,207 @@
+{
+  "protocol": "pinkha-e-real-app-source-verifier-cutover-feasibility-v1",
+  "status": "CURRENT_ROUTE_GAP_CONFIRMED_CONDITIONAL_HANDOFF_ONLY_NO_IMPLEMENTATION_OR_RUNTIME_CLAIM",
+  "repository": "davidpovarsky/anytype-swift",
+  "immutableCurrentAppCommit": "daaedc545eac20df260489b8a7579527c057aeac",
+  "scope": "E owns only live source-verifier and engine-cutover lifecycle feasibility. C owns the real producer and input/recovery provenance audit; W3 owns App persistence, mounting and UI.",
+  "mainFinding": "The existing App source adapter can supply the executor's real live verifySource callback, but the current select(.any) route first invalidates and closes that capture owner. Retaining the captured files or review value cannot make later execution valid. The lower-level existing Any application has a real client/session owner, but the current public EngineHost facade does not expose an execution handoff to that owner.",
+  "sourceInputs": [
+    {
+      "key": "scene",
+      "repository": "davidpovarsky/anytype-swift",
+      "commit": "daaedc545eac20df260489b8a7579527c057aeac",
+      "path": "Anytype/Sources/Pinkha/Bootstrap/PinkhaEngineSceneView.swift",
+      "gitBlob": "6636723aebf70fde2adce7d3b844b148ed338c92",
+      "bytes": 18052,
+      "sha256": "9d89e24f75a7be24e90beab75d2cfc1813df0dd404b2ebcb62c6421c64116cf2",
+      "wholeGitBytesPinned": true,
+      "semanticReadScope": "Complete current scene owner, capture/cleanup, engine selection, account/Space observers, window and mounted-view bodies."
+    },
+    {
+      "key": "selection",
+      "repository": "davidpovarsky/anytype-swift",
+      "commit": "daaedc545eac20df260489b8a7579527c057aeac",
+      "path": "Anytype/Sources/Pinkha/Migration/PinkhaHeartSourceSelection.swift",
+      "gitBlob": "8eb991878415d612ef9d611c7172e67fa8983ca0",
+      "bytes": 2636,
+      "sha256": "f2302a0972708928a3cac074f293a0a9c336d5bd3c1519e789991400ee4c6bdc",
+      "wholeGitBytesPinned": true,
+      "semanticReadScope": "Complete exact active Heart account/Space selection and private source directory construction."
+    },
+    {
+      "key": "captureBridge",
+      "repository": "davidpovarsky/anytype-swift",
+      "commit": "daaedc545eac20df260489b8a7579527c057aeac",
+      "path": "Anytype/Sources/Pinkha/Migration/PinkhaHeartSourceCaptureController.swift",
+      "gitBlob": "d2b089e27a1e92a391b811da4e6a12b8e8c3a462",
+      "bytes": 7247,
+      "sha256": "adf72a3a142559bf3fd49f99e7d17e3b4294494e8ea43938a8d9bd7bd36a7771",
+      "wholeGitBytesPinned": true,
+      "semanticReadScope": "Complete current App adapter, real session/native bridge, qualified-runtime gate and forwarding methods."
+    },
+    {
+      "key": "sourceAccount",
+      "repository": "davidpovarsky/anytype-swift",
+      "commit": "daaedc545eac20df260489b8a7579527c057aeac",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourceAccountController.swift",
+      "gitBlob": "63f2a6083f487acd925e525e4922ccc98c900d67",
+      "bytes": 10161,
+      "sha256": "87ae93153c2f425c20e842dac6b60d18fae867978fe6d180a717faee9bf465cd",
+      "wholeGitBytesPinned": true,
+      "semanticReadScope": "Complete additional Full-session ownership, capture/validation lifecycle, invalidation/drain and retryable close."
+    },
+    {
+      "key": "capture_coordinator",
+      "repository": "davidpovarsky/anytype-swift",
+      "commit": "daaedc545eac20df260489b8a7579527c057aeac",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourceCaptureCoordinator.swift",
+      "gitBlob": "f8bb507c5604ffcc7556693403bb4af10ce7a446",
+      "bytes": 13243,
+      "sha256": "3d77b08c4d3c14c9520d116fdd382244cfad796378fa6e4b065ef5e7061c3da7",
+      "wholeGitBytesPinned": true,
+      "semanticReadScope": "Complete captured-source review/binding and capture/revalidation/invalidation lifecycle."
+    },
+    {
+      "key": "engine-host",
+      "repository": "davidpovarsky/anytype-swift",
+      "commit": "daaedc545eac20df260489b8a7579527c057aeac",
+      "path": "Modules/PinkhaEngineHost/Sources/PinkhaEngineHost/PinkhaEngineHost.swift",
+      "gitBlob": "9821f005c15f993c8ded7765efcfd645b7fa0eba",
+      "bytes": 2875,
+      "sha256": "96199ef741b8a432fc9c2dd50f063f427052f35e904da5ce16fc1facefceec72",
+      "wholeGitBytesPinned": true,
+      "semanticReadScope": "Complete current public Any application/presentation facade."
+    },
+    {
+      "key": "heart-session",
+      "repository": "davidpovarsky/anytype-swift",
+      "commit": "daaedc545eac20df260489b8a7579527c057aeac",
+      "path": "Modules/PinkhaHeartEngine/Sources/PinkhaHeartEngine/HeartAuthorizedOperationSession.swift",
+      "gitBlob": "69a03a2a8cc0bd0363393ca99451817622fbd2f2",
+      "bytes": 3258,
+      "sha256": "36a49a912f64224e33d4f590522842fb77e8e6aa33953c574b775a43599d1712",
+      "wholeGitBytesPinned": true,
+      "semanticReadScope": "Complete original authorized-operation session invalidation/read/publication boundary."
+    },
+    {
+      "key": "anyApplication",
+      "repository": "davidpovarsky/anytype-swift",
+      "commit": "daaedc545eac20df260489b8a7579527c057aeac",
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeApplication.swift",
+      "gitBlob": "1d69d208865c2f5ae4477916520612fb1af35476",
+      "bytes": 24728,
+      "sha256": "db5fac51bf6af8481b3b95f35dc5f13e216bb13dd6c8997fbf17972112d8a00c",
+      "wholeGitBytesPinned": true,
+      "semanticReadScope": "Complete bytes pinned. Semantic read limited to workspace owner, application fields/init/start/authenticate, connectSpace/currentWorkspace, close/signOut/stop and transition bodies; other account/Space mutation helpers are outside this review."
+    },
+    {
+      "key": "executor",
+      "repository": "davidpovarsky/anytype-swift",
+      "commit": "daaedc545eac20df260489b8a7579527c057aeac",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationExecutor.swift",
+      "gitBlob": "aeca8507f67581edb57d315fe43322c6946edc0d",
+      "bytes": 25038,
+      "sha256": "37a827abab7f8458ff0274bc0cc99a65ba62ea6068e7498d025be7fee1fee8dd",
+      "wholeGitBytesPinned": true,
+      "semanticReadScope": "Complete current bytes equal preserved accepted37a. This pass reads execute admission, mutation/receipt and final reconciliation plus completed-checkpoint boundary; original full review is retained separately."
+    },
+    {
+      "key": "nativeClients",
+      "repository": "davidpovarsky/anytype-swift",
+      "commit": "daaedc545eac20df260489b8a7579527c057aeac",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationNativeMigration.swift",
+      "gitBlob": "f4f23e111468ca494ae661019610463247161df5",
+      "bytes": 24363,
+      "sha256": "b47533f131f3919336c9667d80be1911aedcd131544b5e73ee8910f100d18850",
+      "wholeGitBytesPinned": true,
+      "semanticReadScope": "Complete current bytes equal preserved acceptedb475. This pass reads exact open/status and same-store/client binding; original full production review is retained separately."
+    }
+  ],
+  "wholeInputBytes": 131601,
+  "observedExistingAPIs": [
+    {
+      "api": "PinkhaHeartSourceCaptureController.capture(accountID:spaceID:) / revalidate(source:) / invalidate(reason:) / cancel() / release()",
+      "owner": "Current App actor in PinkhaHeartSourceCaptureController.swift",
+      "role": "Wraps the same AnyHeartNativeSourceAccountController. Its revalidate callback reaches current native Heart validation; it does not need a raw token handoff."
+    },
+    {
+      "api": "AnyHeartNativeSourceAccountController",
+      "role": "Mints and owns an actual additional Full, non-app-associated Wallet session, validates the returned account/scope, and keeps the token only in memory. Capture/revalidation are lifecycle-ID bound. Invalidation cancels/drains native tasks and closes only the owned token; close failure retains explicit ownership for retry."
+    },
+    {
+      "api": "AnyHeartNativeSourceCaptureCoordinator.revalidate(source:)",
+      "role": "Requires ready state and the existing token/request/review, checks exact source account/Space, manifest/witness/definition bytes and complete head-ID set, then invokes the actual native validate bridge with token/request/manifest. This is current source authorization/checkpoint verification, separate from semantic plan admission."
+    },
+    {
+      "api": "AnyDestinationMigrationExecutor.execute(plan:payloads:verifySource:authorize:)",
+      "role": "Every admitted stage calls verifySource(plan.source) before destination authorization, including native driver operations and the final reconciliation. A previously captured bundle does not substitute for the callback. The same existing journal/intent rules retain known receipts and uncertain-write behavior."
+    },
+    {
+      "api": "AnyNativeApplication.start(network:) / connectSpace(id:) / currentWorkspace()",
+      "role": "The same existing application actor starts its shared Any runtime and produces an AnyNativeWorkspaceOwner containing the actual AnyHTTPClient and AnyApplicationSession. connectSpace checks account backup, membership, foundation capabilities, managed authorization and network/run-bound personal navigation."
+    },
+    {
+      "api": "AnyNativeWorkspaceOwner.close(), AnyNativeApplication.closeSpace()/signOut()/stop()",
+      "role": "Existing destination lifetime closes the workspace by revoking/draining its actual session before journal close. Application stop marks closing, changes generation, cancels/drains its owned transitions and workspace before native stop."
+    },
+    {
+      "api": "PinkhaEmbeddedAnyApplication / PinkhaEmbeddedAnyPresentation",
+      "role": "The current public facade holds its actual AnyNativeApplication and presentation fields fileprivate. Public presentation operations are resume() and suspendAndWait(). It does not expose a migration operation or public current workspace/session handoff."
+    }
+  ],
+  "exactCurrentOrdering": [
+    "The scene captures only while engine == .heart, with a source ticket and exact selected current account/Space.",
+    "select(.any) first awaits endSourceReview(.engineChanged). That method invalidates the source controller, drains pending work and clears source review/binding only after successful close.",
+    "Only after that source close does the scene create the Any application/presentation if needed, deactivate/drain Heart miniapp/Sharing presentation services, select the Any engine and call presentation.resume().",
+    "The Heart view remains mounted, hidden and noninteractive; this source path intentionally retains its native account. Thus these App sources do not establish that a physical Heart runtime stop is required to display Any.",
+    "Account/Space observation, explicit prepareHeartAccountChange, dismiss and source-window release also call the existing source cleanup path. A real migration owner must remain correctly connected to these invalidation boundaries.",
+    "A failed source close is not treated as a completed switch: its owned token remains for retry and the scene does not proceed to Any."
+  ],
+  "concreteConsequences": [
+    "A real executor invoked after the current select(.any) route cannot use the earlier capture coordinator: its live token/request/review have been released and revalidate refuses inactive capture.",
+    "Passing a closure that checks only retained files, a cached descriptor, matching public IDs or the earlier capture receipt would remove the current native source guard and is not an acceptable fix.",
+    "The source adapter already offers the correct callback. The missing boundary is ownership and real caller wiring across the executor's whole lifetime, not a new token format or another wrapper that is never invoked.",
+    "A separate newly constructed AnyNativeApplication must not be substituted for the existing UI's actual application merely to obtain a client. It owns the same shared native runtime and its own account/session lifecycle; the actual handoff must use the intended existing owner.",
+    "The current facade does not provide that handoff, so no ready execution API or successful coexistence path is claimed."
+  ],
+  "conditionalSourceLevelHandoff": {
+    "status": "PROPOSED_OWNERSHIP_BOUNDARY_REQUIRES_REVIEWED_REAL_CALLER_AND_NATIVE_QUALIFICATION",
+    "prerequisites": [
+      "C first establishes a complete admissible real source bundle/recovery/archive/payload producer. This report does not qualify or repair those inputs.",
+      "The real destination account/Space must be opened through the same existing Any application and its actual workspace client/session, with all original native capability, run/network and mutation authorization gates.",
+      "W3/C must agree on a real invoked facade/owner boundary. Keeping references alive alone is not proof of native authorization or complete migration."
+    ],
+    "requiredLifetime": [
+      "The actual migration operation must own the existing App source controller and its exact capture ticket through all executor admissions and final reconciliation.",
+      "It must not run the ordinary engineChanged source cleanup before execution completes; this needs an explicit migration lifecycle in the real caller, rather than bypassing the existing switch cleanup.",
+      "The original source revalidate callback must remain live, and account/Space/runtime changes must still invalidate it. Invalidations/cancellation must also cancel and drain the migration operation and settle original-scope receipts before any owner transfer.",
+      "The destination must use its existing AnyApplicationSession and current native write/run/ACL checks; a captured source or presentation enum does not grant destination authority.",
+      "After known completion and the real saved checkpoint/receipt exist, drain the operation and successfully release the additional source session before the final UI/context transfer.",
+      "On failure, retain original source data, exact journal/known acknowledgements and ownership needed for cleanup. Do not turn an ambiguous or cancelled effect into automatic replay, fabricate completion, reopen a source token silently or weaken the original plan/census guards."
+    ],
+    "notEstablished": [
+      "No current code implements this proposed ownership handoff.",
+      "No actual linked Heart/Any runtime coexistence, App migration, source export/recovery, destination write or cold mount was executed or qualified here.",
+      "Whether the precise matched native product supports the needed dual-live interval still requires separate actual qualification.",
+      "C's direct-capture versus historical recovered-definition contract gap remains independent and unresolved by this lifecycle report.",
+      "The later cold imported-context consumer reads completed checkpoints; it cannot manufacture the missing producer completion."
+    ]
+  },
+  "preservedGuardDetails": [
+    "The App adapter checks AppGetVersion exactly against PinkhaUnifiedRuntimeProfile.heartVersion before seed/session creation and before native validation. This source observation does not assert that the running product passes that check.",
+    "Session creation/closure use the original masked Wallet commands, and capture/validate/cancel/release use PinkhaLoadedAccountSourceNative. No seed, token, mnemonic, account payload or private journal was read for this review.",
+    "The full-census source comparison and separate semantic admission remain unchanged.",
+    "The original no-await final publication fences and destination session drain semantics are retained as source dependencies, without claiming an atomic remote snapshot."
+  ],
+  "boundariesNotExpanded": {
+    "CProducerImplementationOwnership": "C",
+    "AppPersistenceMountUIOwnership": "W3",
+    "original182Replay": false,
+    "sourceAccountOrUserDataAccess": false,
+    "MacOrOracleOperation": false,
+    "compilerOrNativeInvocation": false,
+    "codeEdits": false,
+    "runtimeGateChange": false
+  },
+  "preparedEffect": "One public-safe source finding Git blob only; no branch or project source change."
+}

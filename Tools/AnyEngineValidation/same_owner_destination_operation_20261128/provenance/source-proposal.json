@@ -1,0 +1,194 @@
+{
+  "schema": "pinkha-e-same-owner-destination-operation-source-proposal-v1",
+  "status": "SOURCE_ONLY_UNPARSED_UNCOMPILED_UNRUN_PENDING_INDEPENDENT_PEER",
+  "repository": "davidpovarsky/anytype-swift",
+  "sourceBaseCommit": "daaedc545eac20df260489b8a7579527c057aeac",
+  "scope": {
+    "changedSwiftFiles": 3,
+    "AppFilesChanged": 0,
+    "originalSessionChanged": false,
+    "sourceCaptureControllerChanged": false,
+    "nativeProducerChanged": false,
+    "oracleCalls": 0,
+    "compilerCalls": 0,
+    "testsRun": 0,
+    "cacheAccess": false,
+    "branchOrCommitPublished": false
+  },
+  "requestedCaller": {
+    "owner": "C real direct-capture existing-executor producer; W3 actual App invocation/persistence",
+    "contract": "The actual producer supplies expected destination account/Space and an awaited Sendable operation using the same client, session and AnyHostLease.",
+    "callerImplementedOrQualifiedByThisPacket": false
+  },
+  "sourceRows": [
+    {
+      "name": "root",
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+      "before": {
+        "blob": "7356bed6598d094e4945d1265e67a6433ac3ab22",
+        "bytes": 25081,
+        "sha256": "b029c7f5e3064c3333117301478633f70a2dd8768dde57a0d1df2d38b807e775"
+      },
+      "after": {
+        "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+        "blob": "5a032474b2e2bc7c07d502920042741d22eff1f5",
+        "bytes": 29548,
+        "sha256": "8a610e6869a941d07d2d6a2c7e10a3b917427e89ee6f1f00cbe5cc5adfcde7fe"
+      },
+      "patch": {
+        "blob": "3ed4d82b581aa9aa5202ef120a00eafa3db63d78",
+        "bytes": 5253,
+        "sha256": "867af508ff6790a4a5da686ebc841c41a6bdee09cb2c984e9c87e768ee30963e"
+      },
+      "literalEdits": [
+        {
+          "label": "public throwing operation",
+          "old": "    public func resume() { model.resume() }\n\n    public func suspendAndWait() async {\n",
+          "new": "    public func resume() { model.resume() }\n\n    /// Runs against this presentation's actual destination owner. The caller\n    /// supplies its expected account/Space and awaits all work in the operation.\n    public func performDestinationOperation<Value: Sendable>(\n        expectedAccountID: String, expectedSpaceID: String,\n        _ operation: @escaping @Sendable (\n            AnyHTTPClient, AnyApplicationSession, AnyHostLease\n        ) async throws -> Value\n    ) async throws -> Value {\n        try await model.performDestinationOperation(\n            expectedAccountID: expectedAccountID, expectedSpaceID: expectedSpaceID,\n            operation)\n    }\n\n    public func suspendAndWait() async {\n"
+        },
+        {
+          "label": "completion fence",
+          "old": "@Observable\n@MainActor\nfileprivate final class AnyNativeRootModel {\n",
+          "new": "/// A cancelled drain still waits for the public operation's terminal decision.\n/// The typed operation never awaits this fence, so cancellation cannot form a\n/// cycle between its result and the presentation's suspend-and-drain path.\n@MainActor\nfileprivate final class AnyNativeDestinationOperationCompletion {\n    private var completed = false\n    private var waiter: CheckedContinuation<Void, Never>?\n\n    func wait() async {\n        guard !completed else { return }\n        await withCheckedContinuation { continuation in\n            waiter = continuation\n        }\n    }\n\n    func finish() {\n        guard !completed else { return }\n        completed = true\n        let pending = waiter\n        waiter = nil\n        pending?.resume()\n    }\n}\n\n@Observable\n@MainActor\nfileprivate final class AnyNativeRootModel {\n"
+        },
+        {
+          "label": "same owner operation",
+          "old": "    func showMembers() {\n",
+          "new": "    /// Reserves the same slot as account/Space UI operations. Suspension cancels\n    /// the typed task and waits until this call has delivered or refused its\n    /// result before the application can stop or a new presentation can resume.\n    func performDestinationOperation<Value: Sendable>(\n        expectedAccountID: String, expectedSpaceID: String,\n        _ action: @escaping @Sendable (\n            AnyHTTPClient, AnyApplicationSession, AnyHostLease\n        ) async throws -> Value\n    ) async throws -> Value {\n        try Task.checkCancellation()\n        guard operation == nil, suspension == nil, joining == nil else {\n            throw AnyNativeApplicationError.busy\n        }\n        guard let owner = workspace, let lifetime = presentationLifetime else {\n            throw AnyHostError.sessionClosed\n        }\n        let ticket = epoch\n        try requireDestinationOwner(owner, lifetime: lifetime, ticket: ticket,\n            expectedAccountID: expectedAccountID, expectedSpaceID: expectedSpaceID)\n\n        let completion = AnyNativeDestinationOperationCompletion()\n        let work = Task<Value, Error> {\n            try Task.checkCancellation()\n            return try await owner.session.perform { lease in\n                try await action(owner.client, owner.session, lease)\n            }\n        }\n        let drain = Task<Void, Never> {\n            await withTaskCancellationHandler {\n                await completion.wait()\n            } onCancel: {\n                work.cancel()\n            }\n        }\n        operation = drain\n        busy = true\n        defer {\n            operation = nil\n            if ticket == epoch { busy = false }\n            completion.finish()\n        }\n\n        let value = try await withTaskCancellationHandler {\n            try await work.value\n        } onCancel: {\n            work.cancel()\n        }\n        try Task.checkCancellation()\n        // No suspension between this MainActor identity check and return.\n        try requireDestinationOwner(owner, lifetime: lifetime, ticket: ticket,\n            expectedAccountID: expectedAccountID, expectedSpaceID: expectedSpaceID)\n        return value\n    }\n\n    private func requireDestinationOwner(\n        _ owner: AnyNativeWorkspaceOwner, lifetime: AnyUIPresentationLifetime,\n        ticket: UUID, expectedAccountID: String, expectedSpaceID: String\n    ) throws {\n        guard ticket == epoch, wantsForeground, started, suspension == nil,\n              page == .workspace, let current = workspace,\n              current.session === owner.session,\n              presentationLifetime === lifetime, lifetime.isActive else {\n            throw AnyHostError.sessionClosed\n        }\n        guard let account,\n              Data(account.id.utf8) == Data(expectedAccountID.utf8),\n              Data(owner.client.expectedAccountID.utf8) == Data(expectedAccountID.utf8),\n              Data(owner.workspace.accountID.utf8) == Data(expectedAccountID.utf8),\n              Data(owner.workspace.spaceID.utf8) == Data(expectedSpaceID.utf8) else {\n            throw AnyHostError.wrongWorkspace\n        }\n    }\n\n    func showMembers() {\n"
+        }
+      ],
+      "wholeForwardAndInverseChecked": true
+    },
+    {
+      "name": "host",
+      "path": "Modules/PinkhaEngineHost/Sources/PinkhaEngineHost/PinkhaEngineHost.swift",
+      "before": {
+        "blob": "9821f005c15f993c8ded7765efcfd645b7fa0eba",
+        "bytes": 2875,
+        "sha256": "96199ef741b8a432fc9c2dd50f063f427052f35e904da5ce16fc1facefceec72"
+      },
+      "after": {
+        "path": "Modules/PinkhaEngineHost/Sources/PinkhaEngineHost/PinkhaEngineHost.swift",
+        "blob": "07629409adc5a6e762e582f8e81adcb621700bd4",
+        "bytes": 3438,
+        "sha256": "0e7e1fe0b692a7c3178fc9176e672e09b2352a0b06e286b9526f6b752cd87175"
+      },
+      "patch": {
+        "blob": "a06b6eb8a6b76979ed6b975bfee90a182f02e117",
+        "bytes": 1128,
+        "sha256": "6c7c8fcb28fc7446c12451f430df92f22f10be8b296fda08306acd11d3ea4cc1"
+      },
+      "literalEdits": [
+        {
+          "label": "public client type import",
+          "old": "import PinkhaAnyUI\nimport PinkhaAnyHost\n",
+          "new": "import PinkhaAnyUI\nimport PinkhaAnyHost\nimport PinkhaAnyEngine\n"
+        },
+        {
+          "label": "same presentation forward",
+          "old": "    public func resume() { session.resume() }\n    public func suspendAndWait() async { await session.suspendAndWait() }\n",
+          "new": "    public func resume() { session.resume() }\n\n    /// Forwards into the same presentation owner used by the mounted Any view.\n    public func performDestinationOperation<Value: Sendable>(\n        expectedAccountID: String, expectedSpaceID: String,\n        _ operation: @escaping @Sendable (\n            AnyHTTPClient, AnyApplicationSession, AnyHostLease\n        ) async throws -> Value\n    ) async throws -> Value {\n        try await session.performDestinationOperation(\n            expectedAccountID: expectedAccountID, expectedSpaceID: expectedSpaceID,\n            operation)\n    }\n\n    public func suspendAndWait() async { await session.suspendAndWait() }\n"
+        }
+      ],
+      "wholeForwardAndInverseChecked": true
+    },
+    {
+      "name": "package",
+      "path": "Modules/PinkhaEngineHost/Package.swift",
+      "before": {
+        "blob": "a5c131d2ceb0b661b4fbcec4d5bd69989947f41f",
+        "bytes": 1111,
+        "sha256": "0032ffe0b212d501e7d9eaf4ec99e854c138f72b3e5bcf24a6f8821c21a8271b"
+      },
+      "after": {
+        "path": "Modules/PinkhaEngineHost/Package.swift",
+        "blob": "3abede4c18c7e608fd630ef30c9bb0e57af2fa9b",
+        "bytes": 1249,
+        "sha256": "c2f33b0401d4f73f1e274ee74ef4b7a4bf806c4b8e1585d403ff5bfb6e09a477"
+      },
+      "patch": {
+        "blob": "42021477be0dc10cc3c4769152572f8c015ba21c",
+        "bytes": 1164,
+        "sha256": "1845344e45720a4aed9217c0f3c1ff896c3c68c44f0e6a8e525e4a5f6db34e36"
+      },
+      "literalEdits": [
+        {
+          "label": "conditional package",
+          "old": "                             .package(path: \"../PinkhaAnyHost\")] : [],",
+          "new": "                             .package(path: \"../PinkhaAnyHost\"), .package(path: \"../PinkhaAnyEngine\")] : [],"
+        },
+        {
+          "label": "conditional product",
+          "old": "                                     .product(name: \"PinkhaAnyHost\", package: \"PinkhaAnyHost\")] : [],",
+          "new": "                                     .product(name: \"PinkhaAnyHost\", package: \"PinkhaAnyHost\"),\n                                     .product(name: \"PinkhaAnyEngine\", package: \"PinkhaAnyEngine\")] : [],"
+        }
+      ],
+      "wholeForwardAndInverseChecked": true
+    }
+  ],
+  "unchangedDependencies": [
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+      "blob": "1dae52636c3a6eb6dfe2aa88d548d6982a9d8dd0",
+      "bytes": 5633,
+      "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyUIPresentationLifetime.swift",
+      "blob": "45cc719e6aebc1559620589710fa6acf78f7656c",
+      "bytes": 1809,
+      "sha256": "43f92a43f956d475a0f87c02c62210a8811da80333b2ec9ccdf554a7fd0b1deb"
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeApplication.swift",
+      "blob": "1d69d208865c2f5ae4477916520612fb1af35476",
+      "bytes": 24728,
+      "sha256": "db5fac51bf6af8481b3b95f35dc5f13e216bb13dd6c8997fbf17972112d8a00c"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Package.swift",
+      "blob": "4b5f21e56f8110acfcada98a740cc08eed2cbcdc",
+      "bytes": 773,
+      "sha256": "2bfbf014cbfb6ce37764a2900743783fe3af2535ad4809aa4fc9ea67d16d2e5f"
+    }
+  ],
+  "sourceFinding": {
+    "blob": "48679795a430ec6ec08ac2c16b1733d33927374b",
+    "bytes": 16119,
+    "sha256": "59903ecacb96a7fc0f619169d231c30a64ac47a0028d2fa46cd35514d1c3350e",
+    "scope": "Existing App closes source capture before switching; this packet does not change that App route."
+  },
+  "lifecycle": {
+    "admission": "Cancellation, existing operation/suspension/joining slots, active foreground workspace/presentation, exact client/account/Space UTF-8 and actual session identity are required.",
+    "reservation": "A non-cancellable completion wait is installed in the existing operation slot before the first suspension. The typed worker and tracker are each fixed one-per-call.",
+    "nativeAuthority": "The callback runs inside the unchanged actual AnyApplicationSession.perform and receives that exact AnyHostLease; neither this UI fence nor the source archive replaces native authorization.",
+    "cancellation": "Caller cancellation cancels the typed worker. Existing suspend cancels the same operation slot; its tracker forwards cancellation to that worker but continues waiting for public terminal completion.",
+    "failure": "Callback, session validation and identity errors are thrown to the caller, not swallowed or converted to a successful UI operation.",
+    "delivery": "After the last await, the MainActor checks caller cancellation, epoch, foreground/start/suspension, workspace session identity, exact presentation lifetime and expected account/Space before return.",
+    "drain": "Public-method defer clears its occupied slot, conditionally clears busy for its epoch, and signals completion synchronously. The public method never awaits its own drain tracker, preventing a result/drain cycle.",
+    "originalPaths": "Existing resume, execute, join, closeWorkspace, signOut and suspend bodies remain byte-identical; they already refuse another operation or cancel/drain the occupied slot.",
+    "package": "Only the unified EngineHost branch gains the real PinkhaAnyEngine package/product dependency needed by AnyHTTPClient. The preserved Heart-only branch stays empty and its facade stays conditionally excluded."
+  },
+  "sourceOwnerAdvice": {
+    "implementationByC": true,
+    "unchangedNativeCleanup": "Do not add the migration task to SourceAccountController.drainAndClose.",
+    "outerFence": "Before await, mark producer inactive and cancel its task. Begin original source invalidation, join producer terminal and source cleanup even if either fails. Internal revalidate failure awaits only original native cleanup, so no cleanup edge returns to the producer.",
+    "retryableClose": "Retain actual close failure/owned token for retry and refuse account/engine transfer until cleanup succeeds."
+  },
+  "requiredFutureChecks": [
+    "Matching actual workspace returns the typed operation result exactly.",
+    "Busy, wrong account/Space, inactive presentation and caller cancellation before admission invoke no callback.",
+    "Callback failure propagates without successful result publication and releases the reserved slot.",
+    "Caller cancellation reaches the worker but does not release the slot before its terminal unwind.",
+    "Suspension cancels the worker and cannot finish application stop/resume before the public completion fence settles.",
+    "A result arriving after suspension/epoch/lifetime invalidation is refused.",
+    "A current original session/run validation failure remains a failure and never delivers a success.",
+    "The actual C producer/App caller composition must use this operation and keep the real source owner alive; archive, fixture and dual-runtime behavior remain separately unqualified."
+  ],
+  "proofLimits": [
+    "Text/literal/unified-patch inverses only; no Swift parser/compiler/test execution.",
+    "No App caller or capture lifetime implementation is supplied by these three source changes.",
+    "No runtime coexistence, migration completion, native authority, source export or capacity success is inferred.",
+    "No actual native97/Swift23 release or N24 adoption gate changes."
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "protocol": "pinkha-same-owner-destination-operation-independent-peer-v1",
+  "status": "SOURCE_REVIEW_CLEAR_NOT_PARSED_COMPILED_OR_RUN",
+  "inputs": {
+    "rootView": {
+      "gitBlob": "5a032474b2e2bc7c07d502920042741d22eff1f5",
+      "bytes": 29548,
+      "sha256": "8a610e6869a941d07d2d6a2c7e10a3b917427e89ee6f1f00cbe5cc5adfcde7fe",
+      "wholeReadback": true
+    },
+    "engineHost": {
+      "gitBlob": "07629409adc5a6e762e582f8e81adcb621700bd4",
+      "bytes": 3438,
+      "sha256": "0e7e1fe0b692a7c3178fc9176e672e09b2352a0b06e286b9526f6b752cd87175",
+      "wholeReadback": true
+    },
+    "package": {
+      "gitBlob": "3abede4c18c7e608fd630ef30c9bb0e57af2fa9b",
+      "bytes": 1249,
+      "sha256": "c2f33b0401d4f73f1e274ee74ef4b7a4bf806c4b8e1585d403ff5bfb6e09a477",
+      "wholeReadback": true
+    },
+    "proof": {
+      "gitBlob": "5149cb803f11239387789b71fa5cabc3f1986310",
+      "bytes": 15754,
+      "sha256": "6963f548d9a57986acf252f6e6cdd10beb1d98fe70fadff2df9d0750211d5a94",
+      "wholeReadback": true
+    }
+  },
+  "literalProof": [
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+      "changes": [
+        "public throwing operation",
+        "completion fence",
+        "same owner operation"
+      ],
+      "literalEditCount": 3,
+      "wholeForwardExact": true,
+      "wholeInverseExact": true,
+      "afterBytes": 29548,
+      "afterSHA256": "8a610e6869a941d07d2d6a2c7e10a3b917427e89ee6f1f00cbe5cc5adfcde7fe"
+    },
+    {
+      "path": "Modules/PinkhaEngineHost/Sources/PinkhaEngineHost/PinkhaEngineHost.swift",
+      "changes": [
+        "public client type import",
+        "same presentation forward"
+      ],
+      "literalEditCount": 2,
+      "wholeForwardExact": true,
+      "wholeInverseExact": true,
+      "afterBytes": 3438,
+      "afterSHA256": "0e7e1fe0b692a7c3178fc9176e672e09b2352a0b06e286b9526f6b752cd87175"
+    },
+    {
+      "path": "Modules/PinkhaEngineHost/Package.swift",
+      "changes": [
+        "conditional package",
+        "conditional product"
+      ],
+      "literalEditCount": 2,
+      "wholeForwardExact": true,
+      "wholeInverseExact": true,
+      "afterBytes": 1249,
+      "afterSHA256": "c2f33b0401d4f73f1e274ee74ef4b7a4bf806c4b8e1585d403ff5bfb6e09a477"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+      "blob": "1dae52636c3a6eb6dfe2aa88d548d6982a9d8dd0",
+      "bytes": 5633,
+      "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyUIPresentationLifetime.swift",
+      "blob": "45cc719e6aebc1559620589710fa6acf78f7656c",
+      "bytes": 1809,
+      "sha256": "43f92a43f956d475a0f87c02c62210a8811da80333b2ec9ccdf554a7fd0b1deb"
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeApplication.swift",
+      "blob": "1d69d208865c2f5ae4477916520612fb1af35476",
+      "bytes": 24728,
+      "sha256": "db5fac51bf6af8481b3b95f35dc5f13e216bb13dd6c8997fbf17972112d8a00c"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Package.swift",
+      "blob": "4b5f21e56f8110acfcada98a740cc08eed2cbcdc",
+      "bytes": 773,
+      "sha256": "2bfbf014cbfb6ce37764a2900743783fe3af2535ad4809aa4fc9ea67d16d2e5f"
+    }
+  ],
+  "checks": [
+    "Same MainActor operation slot is reserved before first suspension.",
+    "Typed worker enters unchanged actual session.perform and receives its exact lease.",
+    "Caller and suspend cancellation each reach the same worker.",
+    "One non-cancellable tracker waits for completion; completion finish is synchronous in public model-method defer.",
+    "The public model method does not await its own tracker, avoiding a direct result/drain cycle.",
+    "The final cancellation and MainActor epoch/session/lifetime/account/Space gate follows the last await.",
+    "Original UI execute/join/close/signout/suspend paths and real native session owner are unchanged.",
+    "Conditional facade dependency exposes AnyHTTPClient only in the unchanged unified branch."
+  ],
+  "findings": [],
+  "limitations": [
+    "Cancellation remains cooperative; a callback that never settles can keep draining blocked.",
+    "Caller must await all owned callback work; detached work and a callback awaiting its own presentation suspension are not qualified by this boundary.",
+    "No deterministic race tests, Swift parser/compiler, actual source producer/App caller, native authorization or dual-runtime behavior were executed.",
+    "No Oracle/source edits/publication were performed for this peer."
+  ]
+}
