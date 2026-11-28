@@ -1,0 +1,328 @@
+{
+  "schema": "pinkha-heart-notes-tool-source-proof-v1",
+  "status": "PASS_EXACT_SOURCE_CHANGE_ONLY_APPLE_NOT_RUN",
+  "baseCommit": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+  "baseTree": "1875b474c3930e2f9388f9fd5b26d35536eee163",
+  "ownedBranch": "codex/chatgpt-wave15-wave2-heart-notes-tool-20261128",
+  "product": {
+    "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift",
+    "original": {
+      "bytes": 5356,
+      "sha256": "e36b7b7dbde28bbfc431a40dfbf59a49a05d973217f2b7be46a61e6cb1334bbf",
+      "gitBlob": "bf6063cbc59ab5f689486d29c9dd1661b44173bc"
+    },
+    "candidate": {
+      "bytes": 5364,
+      "sha256": "adf601dc09bd2abee727fce05b3141f7e9344dfb2dd45b8731f99461cc7caf99",
+      "gitBlob": "a7d778a5827efd573800f96e14fdc60fd58b5fc7"
+    },
+    "before": "availableTools: [.commentaries, .links, .relatedDocuments],",
+    "after": "availableTools: [.commentaries, .links, .relatedDocuments, .notes],",
+    "uniqueLiteralOccurrences": 1,
+    "addedUTF8Bytes": 8,
+    "wholeFileInverseExact": true,
+    "allOtherSourceBytesUnchanged": true
+  },
+  "rootPrimaryReads": [
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift",
+      "bytes": 5356,
+      "sha256": "e36b7b7dbde28bbfc431a40dfbf59a49a05d973217f2b7be46a61e6cb1334bbf",
+      "gitBlob": "bf6063cbc59ab5f689486d29c9dd1661b44173bc"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/PinkhaTorahPropertiesModel.swift",
+      "bytes": 5746,
+      "sha256": "50ff5358f4813570bec1c60496fff33a1cd9a94d0065da1da27d9e0f35efb59c",
+      "gitBlob": "5c556164e65e073fbc602a4317057a2e69e2bb0a"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Flows/EditorPageFlow/EditorPageCoordinatorViewModel.swift",
+      "bytes": 5302,
+      "sha256": "bf2b8be55550995c1b9aab0fda968bd4932427950eade4c9592a3a23ffa636d1",
+      "gitBlob": "85da21c26ba18c548a482d99e4ec349c97c266e0"
+    }
+  ],
+  "reviewEvidence": {
+    "capabilityAndLoadAssessment": {
+      "filename": "source-assessment.json",
+      "bytes": 11718,
+      "sha256": "70cb5ae3faae78cb6e2d709068915b8f9f2f8e8c66ad2a8d5ed63ce46909a793",
+      "gitBlob": "6cfce4613fdd738135c233bd1d88349c47eb3235",
+      "scope": "Nineteen finite immutable source reads; original proposal-only report retained unchanged. Later data-only persistence is separate."
+    },
+    "independentOwnerReview": {
+      "filename": "independent-owner-review.json",
+      "bytes": 4200,
+      "sha256": "c8c69253e03d68a6b18156093668a7d39c2e2c6cc4655b21070510df3adf3b1b",
+      "gitBlob": "67c089e3afcec663f4bee4d2334c8cd851f25131",
+      "scope": "Session/open owner, exact document association policy and single-literal inverse; mount timing unproven."
+    }
+  },
+  "scope": {
+    "preserved": [
+      "Commentaries, Links and Related Documents and their order",
+      "Existing shared Kit Notes controls, real repository and canonical service",
+      "Original permission, action epoch, selection, repository and native-write guards",
+      "Original three distinct Torah document Types and native Properties",
+      "Original selection/presentation bindings, lifecycle, locale and anytype theme",
+      "All existing tests, acceptance methods, controls, source pins and frameworks"
+    ],
+    "changed": "Advertise the already-connected Notes tool in the original Heart host's availableTools."
+  },
+  "acceptance": {
+    "compiler": "NOT_RUN",
+    "Apple": "NOT_RUN",
+    "mountedNotes": "NOT_RUN",
+    "firstSequence": "Original 22 focus methods/34 cases, original application preparation, four original Stage1 UI methods",
+    "authorityRegression": "Existing TorahNoteRepositoryAuthorityTests 2 methods/10 cases, isolated hosted selection remains NOT_RUN",
+    "existingT5": "Historical 36+9 preserved; no replay",
+    "pendingCoverage": "Actual Notes tab/list visibility requires mounted coverage; hosted service tests are not UI. The separate UI coverage locator work does not modify this packet."
+  },
+  "workflow": {
+    "unchangedSubtree": "6c902a0b4534a833972c3ba3e98ea16356b63d52",
+    "retainedFullWorkflowRead": "8e6fe6d8f47c0229853e8948edbd58ca01dd1a9e",
+    "yamlWorkflows": 83,
+    "pushDefinitionCount": 5,
+    "branchMatchesNone": true,
+    "noCreateEvent": true,
+    "automaticRuntimeDispatched": false
+  },
+  "unmodifiedRootEntries": [
+    {
+      "path": ".agents",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "34522331153c6aa261482a8502f32466c7b076ac"
+    },
+    {
+      "path": ".claude",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "dd8d21c36c93b4b975b3186c8dd5ae4bcee7d4fa"
+    },
+    {
+      "path": ".codex",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e9bfebb3d7f618c75f73f4aca4b3fb43fe7f6957"
+    },
+    {
+      "path": ".editorconfig",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a9ee6a3196e9556b1d7efcade8b36dd3661d575c"
+    },
+    {
+      "path": ".gitattributes",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "40c9c4e228c33c5211fdbbdd756840036a469178"
+    },
+    {
+      "path": ".githooks",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0dcd900530e3621b2934eab01701216152e170a2"
+    },
+    {
+      "path": ".github",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6c902a0b4534a833972c3ba3e98ea16356b63d52"
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b42273a6489ec16850bbf8e80dccbf4c9a1a59c7"
+    },
+    {
+      "path": ".mcp.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2aec98619ddc4e2e1abb8d08e96c9119387039bd"
+    },
+    {
+      "path": ".pre-commit-config.yaml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "43f091d046b577462316e3e63318a2824c787cb0"
+    },
+    {
+      "path": "AGENTS.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "908d94f93d40ca5994d9ef8e7a280f5ebc4a560b"
+    },
+    {
+      "path": "AnyTypeTests",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "88cafbf900578ffe720233cc41539008c6e67a72"
+    },
+    {
+      "path": "Anytype.xcodeproj",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6b72cd7ce5115f769955ee3a68fbd4a28019f348"
+    },
+    {
+      "path": "AnytypeNotificationServiceExtension",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "cb6da34c1cc85bd34aee1357185c67438fc1942e"
+    },
+    {
+      "path": "AnytypeShareExtension",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "12ba6566c1246c0d08e7c4930160cfa0fda1a7f6"
+    },
+    {
+      "path": "AnytypeTests",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5d7e283eb484d2f1b0d73076a8f68759e43ddb06"
+    },
+    {
+      "path": "AnytypeWidget",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1108084a01a1bb3127a40c9f8a148ccfaf97f48c"
+    },
+    {
+      "path": "CLAUDE.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8c60d6d172fdc79de9c585aafccf3070c0dcc30a"
+    },
+    {
+      "path": "Config",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "052da102c4cf801bf29c548129b222bda1b1b2e4"
+    },
+    {
+      "path": "Distribution",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f5c1c8cf91690251977a9e027c5f61d268549d97"
+    },
+    {
+      "path": "Docs",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "388e5d2da27650b02b0253838c6d022617378a28"
+    },
+    {
+      "path": "GEMINI.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "987e5c34247948596d7f6a8562e1eaf192f072ee"
+    },
+    {
+      "path": "Gemfile",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f7b52e98e6c3ea21c6501cf9cc2b0f972d10d6fe"
+    },
+    {
+      "path": "Gemfile.lock",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6745e355b4d7b805c1587d429acfc8ff0fd4ed8b"
+    },
+    {
+      "path": "LICENSE.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1781d06251cf12f23221899f9b32e41b4de8107d"
+    },
+    {
+      "path": "Libraryfile",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "03640a96b799d0516fae337baf2ac31e7eafc6f0"
+    },
+    {
+      "path": "Makefile",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ea18aa0ecb23116d8c8ede71a64f69e0ecdd3d51"
+    },
+    {
+      "path": "MiniApps",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "cd3e5d6bf43dd69cd7b59f31eed584e107f725b7"
+    },
+    {
+      "path": "Modules",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "02c5ffafa945bfbd4f849e75ab7143d107c0fe33"
+    },
+    {
+      "path": "NativeApp",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4ee29d1fbd3515fbcfb13fb1d50d4f4f14481244"
+    },
+    {
+      "path": "PROJECT_BOARD.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "720b9a33fd3eb2ee8ccf466e98ef8ce4af8f9e08"
+    },
+    {
+      "path": "PinkhaStage1Acceptance",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "361b3ca2657d90b4d75d90ebb9add50f2cadeed3"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "693f65f7535762f2ffa3221aab1a94d0ab4c81a2"
+    },
+    {
+      "path": "Scripts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "37fde5ac7e90e5bb82b247bf835911b85477830b"
+    },
+    {
+      "path": "TASTE_INVARIANTS.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "484b06ef4564c6700e08005704d59fa571c4f43d"
+    },
+    {
+      "path": "Tools",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6ab05c0e7caf1cc17e8230c37a9b5271a42bb488"
+    },
+    {
+      "path": "crowdin.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b82b969212916893c4d2eb88cd279e8e80845173"
+    },
+    {
+      "path": "fastlane",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "de0c2c64325c0f72afa4deb85c0c13b90fda9b63"
+    },
+    {
+      "path": "scripts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "954edd75a33852bf59442c8745e30d4f06e5349b"
+    }
+  ],
+  "publicationCheck": "Expected finite trees are recomputed from exact unchanged original entries and the five declared file bodies; post-publication primary readback and inverse are retained separately."
+}
