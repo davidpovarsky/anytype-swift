@@ -1,0 +1,172 @@
+{
+  "schema": "pinkha.sharing-role3.swiftpm-option-source-proof.v1",
+  "status": "SOURCE_QUALIFIED_NOT_EXECUTED",
+  "officialRepository": "swiftlang/swift-package-manager",
+  "tag": "swift-6.4.3-RELEASE",
+  "tagCommit": "d3981a709cca4a739cde8762fb5fa38e7aee888b",
+  "toolchain": {
+    "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift",
+    "rootReportedActualVersionLogSHA256": "59360730c588801a672c1118d5d1debc93581f6b74e6a82d5d8cbda1b4a729ce",
+    "versionCommandRunByThisTask": false
+  },
+  "wholePrimaryFiles": [
+    {
+      "path": "Sources/CoreCommands/Options.swift",
+      "bytes": 37058,
+      "sha256": "57abeb57bf47a9c65eca51fd1cd183ed6f98bc6a9e3cb85125a1dcf1e011102a",
+      "gitBlob": "97ac882836f467a842abfe84062f4890ec7a5ced",
+      "url": "https://github.com/swiftlang/swift-package-manager/blob/d3981a709cca4a739cde8762fb5fa38e7aee888b/Sources/CoreCommands/Options.swift"
+    },
+    {
+      "path": "Sources/CoreCommands/SwiftCommandState.swift",
+      "bytes": 62788,
+      "sha256": "b55c403ec0577b3084b6da08d9aea405f3d7baee632937c11cfe2ff60c2de36a",
+      "gitBlob": "409c9f346410639325098905f14a9c1c615d0ea5",
+      "url": "https://github.com/swiftlang/swift-package-manager/blob/d3981a709cca4a739cde8762fb5fa38e7aee888b/Sources/CoreCommands/SwiftCommandState.swift"
+    },
+    {
+      "path": "Sources/Commands/SwiftTestCommand.swift",
+      "bytes": 87123,
+      "sha256": "1e51f46b52df6ad9fde0982b6d180b16c3c9e7a016eeb4050b077b34faccfee3",
+      "gitBlob": "19d3cffbbfe5f45c63638aa0baa172d3204c8ccd",
+      "url": "https://github.com/swiftlang/swift-package-manager/blob/d3981a709cca4a739cde8762fb5fa38e7aee888b/Sources/Commands/SwiftTestCommand.swift"
+    },
+    {
+      "path": "Sources/PackageLoading/ManifestLoader.swift",
+      "bytes": 46128,
+      "sha256": "724d54df740d741ad3608a4fbaf3ff7fb6e43a703bcc5a1e3e4d9be80f51be5e",
+      "gitBlob": "c3ee04f840efe728956aba2069967fff8957492f",
+      "url": "https://github.com/swiftlang/swift-package-manager/blob/d3981a709cca4a739cde8762fb5fa38e7aee888b/Sources/PackageLoading/ManifestLoader.swift"
+    },
+    {
+      "path": "Sources/SPMBuildCore/BuildSystem/BuildSystem.swift",
+      "bytes": 13141,
+      "sha256": "e684b33a7f9453b04e9febb85d157c08eadf1055f05b498a09c92a089a324d59",
+      "gitBlob": "d683063ee6c8d338135167458c07327c07a7f8c4",
+      "url": "https://github.com/swiftlang/swift-package-manager/blob/d3981a709cca4a739cde8762fb5fa38e7aee888b/Sources/SPMBuildCore/BuildSystem/BuildSystem.swift"
+    },
+    {
+      "path": "Sources/Basics/FileSystem/FileSystem+Extensions.swift",
+      "bytes": 28607,
+      "sha256": "ee6e2dd33e4a3bd9f996f11e131894e6fd25bdae3889020a5031ba4648b5ebeb",
+      "gitBlob": "7d11be05ff57b8dc12c430bd04f29555af255025",
+      "url": "https://github.com/swiftlang/swift-package-manager/blob/d3981a709cca4a739cde8762fb5fa38e7aee888b/Sources/Basics/FileSystem/FileSystem+Extensions.swift"
+    }
+  ],
+  "excerpts": [
+    {
+      "path": "Sources/CoreCommands/Options.swift",
+      "firstLine": 80,
+      "lastLine": 116,
+      "exactText": "    @Option(\n        name: .customLong(\"package-path\"),\n        help: \"Specify the package path to operate on (default current directory). This changes the working directory before any other operation.\",\n        completion: .directory\n    )\n    public var packageDirectory: AbsolutePath?\n\n    @Option(name: .customLong(\"cache-path\"), help: \"Specify the shared cache directory path.\", completion: .directory)\n    public var cacheDirectory: AbsolutePath?\n\n    @Option(\n        name: .customLong(\"config-path\"),\n        help: \"Specify the shared configuration directory path.\",\n        completion: .directory\n    )\n    public var configurationDirectory: AbsolutePath?\n\n    @Option(\n        name: .customLong(\"security-path\"),\n        help: \"Specify the shared security directory path.\",\n        completion: .directory\n    )\n    public var securityDirectory: AbsolutePath?\n\n    /// The custom .build directory, if provided.\n    @Option(\n        name: .customLong(\"scratch-path\"),\n        help: \"Specify a custom scratch directory path. (default .build)\",\n        completion: .directory\n    )\n    var _scratchDirectory: AbsolutePath?\n\n    @Option(name: .customLong(\"build-path\"), help: .hidden)\n    var _deprecated_buildPath: AbsolutePath?\n\n    var scratchDirectory: AbsolutePath? {\n        self._scratchDirectory ?? self._deprecated_buildPath"
+    },
+    {
+      "path": "Sources/CoreCommands/Options.swift",
+      "firstLine": 191,
+      "lastLine": 201,
+      "exactText": "    /// Disables manifest caching.\n    @Option(\n        name: .customLong(\"manifest-cache\"),\n        help: \"Caching mode of Package.swift manifests. Valid values are: (shared: shared cache, local: package's build directory, none: disabled)\"\n    )\n    public var manifestCachingMode: ManifestCachingMode = .shared\n\n    public enum ManifestCachingMode: String, ExpressibleByArgument {\n        case none\n        case local\n        case shared"
+    },
+    {
+      "path": "Sources/CoreCommands/Options.swift",
+      "firstLine": 537,
+      "lastLine": 539,
+      "exactText": "    /// The number of jobs for `llbuild` to start (aka the number of `schedulerLanes`).\n    @Option(name: .shortAndLong, help: \"The number of jobs to spawn in parallel during the build process.\")\n    public var jobs: UInt32 = UInt32(ProcessInfo.processInfo.activeProcessorCount)"
+    },
+    {
+      "path": "Sources/CoreCommands/Options.swift",
+      "firstLine": 682,
+      "lastLine": 698,
+      "exactText": "    /// Whether to enable support for XCTest (as explicitly specified by the user).\n    ///\n    /// Callers generally want to use ``enableXCTestSupport`` because it\n    /// has the correct default value if the user doesn't specify one.\n    @Flag(name: .customLong(\"xctest\"),\n          inversion: .prefixedEnableDisable,\n          help: \"Determines whether the build includes XCTest support.\")\n    public var explicitlyEnableXCTestSupport: Bool?\n\n    /// Whether to enable support for Swift Testing (as explicitly specified by the user).\n    ///\n    /// Callers generally want to use ``enableSwiftTestingLibrarySupport`` because it\n    /// has the correct default value if the user doesn't specify one.\n    @Flag(name: .customLong(\"swift-testing\"),\n          inversion: .prefixedEnableDisable,\n          help: \"Determines whether the build includes Swift Testing support.\")\n    public var explicitlyEnableSwiftTestingLibrarySupport: Bool?"
+    },
+    {
+      "path": "Sources/CoreCommands/SwiftCommandState.swift",
+      "firstLine": 444,
+      "lastLine": 474,
+      "exactText": "            // Honor package-path option is provided.\n            try Self.chdirIfNeeded(\n                packageDirectory: self.options.locations.packageDirectory,\n                createPackagePath: createPackagePath\n            )\n        } catch {\n            self.observabilityScope.emit(error)\n            throw ExitCode.failure\n        }\n\n        if toolWorkspaceConfiguration.shouldInstallSignalHandlers {\n            cancellator.installSignalHandlers()\n        }\n        self.cancellator = cancellator\n\n        // Create local variables to use while finding build path to avoid capture self before init error.\n        let packageRoot = findPackageRoot(fileSystem: fileSystem)\n\n        self.packageRoot = packageRoot\n        self.scratchDirectory =\n            try BuildSystemUtilities.getEnvBuildPath(workingDir: cwd) ??\n            options.locations.scratchDirectory ??\n            (packageRoot ?? cwd).appending(\".build\")\n\n        // make sure common directories are created\n        self.sharedSecurityDirectory = try getSharedSecurityDirectory(options: options, fileSystem: fileSystem)\n        self.sharedConfigurationDirectory = try getSharedConfigurationDirectory(\n            options: options,\n            fileSystem: fileSystem\n        )\n        self.sharedCacheDirectory = try getSharedCacheDirectory(options: options, fileSystem: fileSystem)"
+    },
+    {
+      "path": "Sources/CoreCommands/SwiftCommandState.swift",
+      "firstLine": 1199,
+      "lastLine": 1228,
+      "exactText": "    private lazy var _manifestLoader: Result<ManifestLoader, Swift.Error> = Result(catching: {\n        let cachePath: AbsolutePath? = switch (\n            self.options.caching.shouldDisableManifestCaching,\n            self.options.caching.manifestCachingMode\n        ) {\n        case (true, _):\n            // backwards compatibility\n            .none\n        case (false, .none):\n            .none\n        case (false, .local):\n            self.scratchDirectory\n        case (false, .shared):\n            Workspace.DefaultLocations.manifestsDirectory(at: self.sharedCacheDirectory)\n        }\n\n        var extraManifestFlags = self.options.build.manifestFlags\n        if self.logLevel <= .info {\n            extraManifestFlags.append(\"-v\")\n        }\n\n        return try ManifestLoader(\n            // Always use the host toolchain's resources for parsing manifest.\n            toolchain: self.getHostToolchain(),\n            isManifestSandboxEnabled: !self.shouldDisableSandbox,\n            cacheDir: cachePath,\n            extraManifestFlags: extraManifestFlags,\n            importRestrictions: .none,\n            pruneDependencies: self.options.resolver.pruneDependencies\n        )"
+    },
+    {
+      "path": "Sources/CoreCommands/SwiftCommandState.swift",
+      "firstLine": 1365,
+      "lastLine": 1401,
+      "exactText": "private func getSharedSecurityDirectory(options: GlobalOptions, fileSystem: FileSystem) throws -> AbsolutePath {\n    if let explicitSecurityDirectory = options.locations.securityDirectory {\n        // Create the explicit security path if necessary\n        if !fileSystem.exists(explicitSecurityDirectory) {\n            try fileSystem.createDirectory(explicitSecurityDirectory, recursive: true)\n        }\n        return explicitSecurityDirectory\n    } else {\n        // further validation is done in workspace\n        return try fileSystem.swiftPMSecurityDirectory\n    }\n}\n\nprivate func getSharedConfigurationDirectory(options: GlobalOptions, fileSystem: FileSystem) throws -> AbsolutePath {\n    if let explicitConfigurationDirectory = options.locations.configurationDirectory {\n        // Create the explicit config path if necessary\n        if !fileSystem.exists(explicitConfigurationDirectory) {\n            try fileSystem.createDirectory(explicitConfigurationDirectory, recursive: true)\n        }\n        return explicitConfigurationDirectory\n    } else {\n        // further validation is done in workspace\n        return try fileSystem.swiftPMConfigurationDirectory\n    }\n}\n\nprivate func getSharedCacheDirectory(options: GlobalOptions, fileSystem: FileSystem) throws -> AbsolutePath {\n    if let explicitCacheDirectory = options.locations.cacheDirectory {\n        // Create the explicit cache path if necessary\n        if !fileSystem.exists(explicitCacheDirectory) {\n            try fileSystem.createDirectory(explicitCacheDirectory, recursive: true)\n        }\n        return explicitCacheDirectory\n    } else {\n        // further validation is done in workspace\n        return try fileSystem.swiftPMCacheDirectory\n    }"
+    },
+    {
+      "path": "Sources/Commands/SwiftTestCommand.swift",
+      "firstLine": 191,
+      "lastLine": 210,
+      "exactText": "          help: \"Print the path of the exported code coverage JSON file.\")\n    var shouldPrintCodeCovPath: Bool = false\n\n    var testCaseSpecifier: TestCaseSpecifier {\n        if !filter.isEmpty {\n            return .regex(filter)\n        }\n\n        return _testCaseSpecifier.map { .specific($0) } ?? .none\n    }\n\n    @Option(name: [.customShort(\"s\"), .customLong(\"specifier\")])\n    var _testCaseSpecifier: String?\n\n    @Option(help: \"\"\"\n        Run test cases that match a regular expression, for example, \\\n        <test-target>.<test-case> or <test-target>.<test-case>/<test>.\n        \"\"\")\n    var filter: [String] = []\n"
+    },
+    {
+      "path": "Sources/Commands/SwiftTestCommand.swift",
+      "firstLine": 343,
+      "lastLine": 373,
+      "exactText": "        // Run XCTest.\n        if !options.shouldLaunchInLLDB && options.testLibraryOptions.isEnabled(.xctest, swiftCommandState: swiftCommandState) {\n            // Validate XCTest is available on Darwin-based systems. If it's not available and you hit this code\n            // path, the developer explicitly passed `--enable-xctest` or the toolchain is\n            // corrupt.)\n            let toolchain = try swiftCommandState.getTargetToolchain()\n            if case let .unsupported(reason) = try swiftCommandState.getHostToolchain().swiftSDK.xctestSupport {\n                if let reason {\n                    throw TestError.xctestNotAvailable(reason: reason)\n                } else {\n                    throw TestError.xcodeNotInstalled\n                }\n            } else if toolchain.targetTriple.isDarwin() && toolchain.xctestPath == nil {\n                throw TestError.xcodeNotInstalled\n            }\n\n            if !self.options.shouldRunInParallel {\n                let (xctestArgs, testCount) = try await xctestArgs(for: testProducts, swiftCommandState: swiftCommandState, buildSystem: buildSystem)\n                if testCount == 0 {\n                    // Record no-matching-tests for each test product.\n                    results += testProducts.lazy\n                        .map { TestProductResult(productName: $0.productName, library: .xctest, result: .noMatchingTests) }\n                } else {\n                    let productResults = try await runTestProducts(\n                        testProducts,\n                        additionalArguments: xctestArgs,\n                        productsBuildParameters: buildParameters,\n                        swiftCommandState: swiftCommandState,\n                        library: .xctest,\n                        buildSystem: buildSystem\n                    )"
+    },
+    {
+      "path": "Sources/Commands/SwiftTestCommand.swift",
+      "firstLine": 430,
+      "lastLine": 448,
+      "exactText": "        // Run Swift Testing (parallel or not, it has a single entry point.)\n        if !options.shouldLaunchInLLDB && options.testLibraryOptions.isEnabled(.swiftTesting, swiftCommandState: swiftCommandState) {\n            lazy var testEntryPointPath = testProducts.lazy.compactMap(\\.testEntryPointPath).first\n            if options.testLibraryOptions.isExplicitlyEnabled(.swiftTesting, swiftCommandState: swiftCommandState) || testEntryPointPath == nil {\n                results.append(contentsOf:\n                    try await runTestProducts(\n                        testProducts,\n                        additionalArguments: [],\n                        productsBuildParameters: buildParameters,\n                        swiftCommandState: swiftCommandState,\n                        library: .swiftTesting,\n                        buildSystem: buildSystem\n                    )\n                )\n            } else if let testEntryPointPath {\n                // Can't run Swift Testing because an entry point file was used and the developer\n                // didn't explicitly enable Swift Testing.\n                swiftCommandState.observabilityScope.emit(\n                    debug: \"Skipping automatic Swift Testing invocation because a test entry point path is present: \\(testEntryPointPath)\""
+    },
+    {
+      "path": "Sources/Commands/SwiftTestCommand.swift",
+      "firstLine": 473,
+      "lastLine": 515,
+      "exactText": "    private func xctestArgs(for testProducts: [BuiltTestProduct], swiftCommandState: SwiftCommandState, buildSystem: any BuildSystem) async throws -> (arguments: [String], testCount: Int?) {\n        switch options.testCaseSpecifier {\n        case .none:\n            if case .skip = options.skippedTests(fileSystem: swiftCommandState.fileSystem) {\n                fallthrough\n            } else {\n                return ([], nil)\n            }\n\n        case .regex, .specific, .skip:\n            // If the previous specifier `-s` option was used, emit the deprecation notice.\n            if case .specific = options.testCaseSpecifier {\n                swiftCommandState.observabilityScope.emit(warning: \"'--specifier' option is deprecated; use '--filter' instead\")\n            }\n\n            // Find the tests you need to run.\n            let testSuites = try await TestingSupport.getTestSuites(\n                in: testProducts,\n                swiftCommandState: swiftCommandState,\n                enableCodeCoverage: options.enableCodeCoverage,\n                shouldSkipBuilding: options.sharedOptions.shouldSkipBuilding,\n                experimentalTestOutput: options.enableExperimentalTestOutput,\n                sanitizers: globalOptions.build.sanitizers,\n                buildSystem: buildSystem\n            )\n            let tests = try testSuites\n                .filteredTests(specifier: options.testCaseSpecifier)\n                .skippedTests(specifier: options.skippedTests(fileSystem: swiftCommandState.fileSystem))\n\n            return (TestRunner.xctestArguments(forTestSpecifiers: tests.map(\\.specifier)), tests.count)\n        }\n    }\n\n    /// Generate the xUnit file if requested.\n    private func generateXUnitOutputIfRequested(\n        for testResults: [ParallelTestRunner.TestResult],\n        swiftCommandState: SwiftCommandState\n    ) throws {\n        guard let xUnitOutput = options.xUnitOutput else {\n            return\n        }\n\n        let generator = XUnitGenerator("
+    },
+    {
+      "path": "Sources/Commands/SwiftTestCommand.swift",
+      "firstLine": 1328,
+      "lastLine": 1344,
+      "exactText": "/// A structure representing an individual unit test.\nstruct UnitTest {\n    /// The test product containing the test.\n    let testProduct: BuiltTestProduct\n\n    /// The name of the unit test.\n    let name: String\n\n    /// The name of the test case.\n    let testCase: String\n\n    /// The specifier argument that can be passed to XCTest.\n    var specifier: String {\n        return testCase + \"/\" + name\n    }\n}\n"
+    },
+    {
+      "path": "Sources/Commands/SwiftTestCommand.swift",
+      "firstLine": 1833,
+      "lastLine": 1845,
+      "exactText": "    func filteredTests(specifier: TestCaseSpecifier) throws -> [UnitTest] {\n        switch specifier {\n        case .none:\n            return allTests\n        case .regex(let patterns):\n            return allTests.filter({ test in\n                patterns.contains { pattern in\n                    test.specifier.range(of: pattern,\n                                         options: .regularExpression) != nil\n                }\n            })\n        case .specific(let name):\n            return allTests.filter{ $0.specifier == name }"
+    },
+    {
+      "path": "Sources/PackageLoading/ManifestLoader.swift",
+      "firstLine": 708,
+      "lastLine": 712,
+      "exactText": "        // FIXME: Workaround for the module cache bug that's been haunting Swift CI\n        // <rdar://problem/48443680>\n        let moduleCachePath = try (\n            Environment.current[\"SWIFTPM_MODULECACHE_OVERRIDE\"] ??\n            Environment.current[\"SWIFTPM_TESTS_MODULECACHE\"]).flatMap { try AbsolutePath(validating: $0) }"
+    },
+    {
+      "path": "Sources/PackageLoading/ManifestLoader.swift",
+      "firstLine": 758,
+      "lastLine": 762,
+      "exactText": "\n        cmd += self.interpreterFlags(for: toolsVersion)\n        if let moduleCachePath {\n            cmd += [\"-module-cache-path\", moduleCachePath.pathString]\n        }"
+    },
+    {
+      "path": "Sources/SPMBuildCore/BuildSystem/BuildSystem.swift",
+      "firstLine": 329,
+      "lastLine": 338,
+      "exactText": "public enum BuildSystemUtilities {\n    /// Returns the build path from the environment, if present.\n    public static func getEnvBuildPath(workingDir: AbsolutePath) throws -> AbsolutePath? {\n        // Don't rely on build path from env for SwiftPM's own tests.\n        guard Environment.current[\"SWIFTPM_TESTS_MODULECACHE\"] == nil else { return nil }\n        guard let env = Environment.current[\"SWIFTPM_BUILD_DIR\"] else { return nil }\n        return try AbsolutePath(validating: env, relativeTo: workingDir)\n    }\n}\n"
+    }
+  ],
+  "decisions": [
+    "Pass explicit package, scratch, cache, configuration and security paths under the fixed newly owned ROOT. Exact getShared* branches return explicit paths without invoking default shared-directory creation.",
+    "Use --manifest-cache local; loader selects scratchDirectory. SWIFTPM_MODULECACHE_OVERRIDE points to an owned manifest module-cache directory.",
+    "Build a finite child environment rather than inheriting SWIFTPM_BUILD_DIR or other output/toolchain overrides. Preserve the parent's HOME/USER/LOGNAME values without modifying them. PWD and TMP/TMPDIR/TEMP/XDG paths are owned.",
+    "Use --enable-xctest and --disable-swift-testing via original prefixedEnableDisable options. Original SwiftTestCommand gates each framework with its actual option.",
+    "The exact --filter is applied to UnitTest.specifier via Foundation regularExpression matching. specifier is testCase + slash + name. The complete Sharing target/class and exactly three method names are anchored; looped fixture rows are not selected test identities.",
+    "Actual verbose compiler commands, original-source FileList membership, generated Swift bodies and linked product hashes are captured. Generated semantics/full final link closure require independent actual review; no current build layout or compiled declaration count is assumed.",
+    "Root/W1 thresholds are required caller inputs, never a current grant. One command, child300/outer360, jobs2, fixed256MiB observed owned-output containment. Peak and duration are unmeasured."
+  ],
+  "noCompilerHelpOrProcessCalls": true,
+  "publicationBinding": {
+    "commit": "80bd7636bb53391d8350a7ef39810e0b2cd9b733",
+    "tree": "aa886f51c746cfcedd71557b803618e4d2b614cd",
+    "parent": "6ade3661c261e66c987b7017a6181bdfcebc1d58",
+    "rootReportedPrimaryReceiptSHA256": "e3287d807e49bfbc7cfa9da59f07a829ae39cc33dfe2fac483c6569e27836ba2",
+    "candidateHashesUnchanged": true,
+    "originalManifestAndPlanPreserved": true
+  }
+}

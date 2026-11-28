@@ -1,0 +1,378 @@
+warning: 'package': /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-frontend -frontend -c -primary-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package/Package.swift -target aarch64-unknown-linux-gnu -Xllvm -aarch64-use-tbi -disable-objc-interop -I /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/pm/ManifestAPI -vfsoverlay /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/tmp/TemporaryDirectory.cBxEHW/vfs.yaml -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/manifest-module-cache -no-color-diagnostics -Xcc -fno-color-diagnostics -swift-version 6 -package-description-version 6.2.0 -empty-abi-descriptor -no-auto-bridging-header-chaining -module-name main -in-process-plugin-server-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/libSwiftInProcPluginServer.so -plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins -plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/local/lib/swift/host/plugins -o /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/tmp/TemporaryDirectory.GpxBqF/Package-1.o
+/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-autolink-extract /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/tmp/TemporaryDirectory.GpxBqF/Package-1.o -o /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/tmp/TemporaryDirectory.GpxBqF/main-1.autolink
+/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/clang -pie -Xlinker --build-id -Xlinker -rpath -Xlinker /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/aarch64/swiftrt.o /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/tmp/TemporaryDirectory.GpxBqF/Package-1.o @/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/tmp/TemporaryDirectory.GpxBqF/main-1.autolink -L /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux -lswiftCore --target=aarch64-unknown-linux-gnu -v -L /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/pm/ManifestAPI -lPackageDescription -Xlinker -rpath -Xlinker /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/pm/ManifestAPI -o /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/tmp/TemporaryDirectory.R1L99l/package-manifest
+Swift version 6.4.3 (swift-6.4.3-RELEASE)
+Target: aarch64-unknown-linux-gnu
+clang version 21.0.0 (https://github.com/swiftlang/llvm-project.git fb5f84d903a3b4e7aea15cd5666598a46f56c833)
+Target: aarch64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin
+Found candidate GCC installation: /usr/lib/gcc/aarch64-linux-gnu/13
+Selected GCC installation: /usr/lib/gcc/aarch64-linux-gnu/13
+Candidate multilib: .;@m64
+Selected multilib: .;@m64
+ "/usr/bin/ld.gold" -EL -z relro --hash-style=gnu --eh-frame-hdr -m aarch64linux -pie -dynamic-linker /lib/ld-linux-aarch64.so.1 -o /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/tmp/TemporaryDirectory.R1L99l/package-manifest /lib/aarch64-linux-gnu/Scrt1.o /lib/aarch64-linux-gnu/crti.o /usr/lib/gcc/aarch64-linux-gnu/13/crtbeginS.o -L/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux -L/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/pm/ManifestAPI -L/usr/lib/gcc/aarch64-linux-gnu/13 -L/lib/aarch64-linux-gnu -L/usr/lib/aarch64-linux-gnu -L/lib -L/usr/lib --build-id -rpath /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/aarch64/swiftrt.o /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/tmp/TemporaryDirectory.GpxBqF/Package-1.o -lswiftSwiftOnoneSupport -lswiftCore -lswift_Concurrency -lswift_StringProcessing -lswift_RegexParser -lswiftCore -lPackageDescription -rpath /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/pm/ManifestAPI -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/aarch64-linux-gnu/13/crtendS.o /lib/aarch64-linux-gnu/crtn.o
+Building for debugging...
+Planning build
+[Computing dependencies]
+Compute target dependency graph
+info: Building targets in dependency order
+info: Target dependency graph (6 targets)
+info: Target 'AllIncludingTests' in project 'Aggregate'
+info: ➜ Explicit dependency on target 'PinkhaSharingTests-product' in project 'PinkhaSharing'
+info: ➜ Explicit dependency on target 'PinkhaSharingTests-test-runner' in project 'PinkhaSharing'
+info: ➜ Explicit dependency on target 'PinkhaSharing-product' in project 'PinkhaSharing'
+info: ➜ Explicit dependency on target 'PinkhaSharing' in project 'PinkhaSharing'
+info: ➜ Explicit dependency on target 'PinkhaSharing_PinkhaSharing' in project 'PinkhaSharing'
+info: Target 'PinkhaSharing-product' in project 'PinkhaSharing'
+info: ➜ Explicit dependency on target 'PinkhaSharing' in project 'PinkhaSharing'
+info: ➜ Explicit dependency on target 'PinkhaSharing_PinkhaSharing' in project 'PinkhaSharing'
+info: Target 'PinkhaSharingTests-test-runner' in project 'PinkhaSharing'
+info: ➜ Explicit dependency on target 'PinkhaSharingTests-product' in project 'PinkhaSharing'
+info: Target 'PinkhaSharingTests-product' in project 'PinkhaSharing'
+info: ➜ Explicit dependency on target 'PinkhaSharing' in project 'PinkhaSharing'
+info: Target 'PinkhaSharing' in project 'PinkhaSharing'
+info: ➜ Explicit dependency on target 'PinkhaSharing_PinkhaSharing' in project 'PinkhaSharing'
+info: Target 'PinkhaSharing_PinkhaSharing' in project 'PinkhaSharing' (no dependencies)
+Gather provisioning inputs
+Planning complete
+[Pre-planning 1 / 153]
+Discovering version info for clang
+Discovering version info for swiftc
+Discovering version info for ld
+[Planning deferred tasks]
+Create build description
+Build description signature: 63a4e8a8f84f01017994a6d93ea84f6a7d592c3b7432bb35f165c4fbac419edd
+Build description path: /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/XCBuildData/63a4e8a8f84f01017994a6d93ea84f6a7d592c3b7432bb35f165c4fbac419edd.xcbuilddata
+Create build directory $(TARGET_BUILD_DIR)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products
+
+Create build directory $(DERIVED_DATA_DIR)/SDKExplicitPrecompiledModules
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/SDKExplicitPrecompiledModules
+
+Create build directory $(DERIVED_DATA_DIR)/PCH
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/PCH
+
+Create build directory $(DERIVED_DATA_DIR)/ModuleCache.noindex
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/ModuleCache.noindex
+
+Create build directory $(TARGET_BUILD_DIR)/Debug-linux-aarch64
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64
+
+Create build directory $(OBJROOT)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex
+
+Create build directory $(DERIVED_DATA_DIR)/CompilationCache.noindex
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/CompilationCache.noindex
+
+Create build directory $(TARGET_BUILD_DIR)/Debug-linux-aarch64/PackageFrameworks
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PackageFrameworks
+
+Create build directory $(OBJROOT)/SwiftExplicitPrecompiledModules
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+Create build directory $(OBJROOT)/ExplicitPrecompiledModules
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/ExplicitPrecompiledModules
+
+Create build directory $(OBJROOT)/EagerLinkingTBDs/Debug-linux-aarch64
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/EagerLinkingTBDs/Debug-linux-aarch64
+
+Create directory PinkhaSharing_PinkhaSharing.bundle
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    /bin/mkdir -p /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharing_PinkhaSharing.bundle
+
+Write empty-PinkhaSharing_PinkhaSharing.plist
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    write-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing_PinkhaSharing-b.build/empty-PinkhaSharing_PinkhaSharing.plist
+
+Write PinkhaSharingTests-test-runner_const_extract_protocols.json (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    write-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/PinkhaSharingTests-test-runner_const_extract_protocols.json
+
+Write PinkhaSharingTests-test-runner.SwiftFileList (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    write-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/PinkhaSharingTests-test-runner.SwiftFileList
+
+Write PinkhaSharingTests-test-runner.LinkFileList (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    write-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/PinkhaSharingTests-test-runner.LinkFileList
+
+Write PinkhaSharingTests-test-runner-OutputFileMap.json (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    write-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/PinkhaSharingTests-test-runner-OutputFileMap.json
+
+Write PinkhaSharingTests_const_extract_protocols.json (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    write-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/PinkhaSharingTests_const_extract_protocols.json
+
+Write PinkhaSharingTests.LinkFileList (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    write-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/PinkhaSharingTests.LinkFileList
+
+Write PinkhaSharingTests.SwiftFileList (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    write-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/PinkhaSharingTests.SwiftFileList
+
+Write PinkhaSharingTests-OutputFileMap.json (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    write-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/PinkhaSharingTests-OutputFileMap.json
+
+Write test_anchor.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    write-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/DerivedSources/test_anchor.swift
+
+Write PinkhaSharing.modulemap
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    write-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/PinkhaSharing.modulemap
+
+Write PinkhaSharing.LinkFileList (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    write-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-product-p.build/Objects-normal/aarch64/PinkhaSharing.LinkFileList
+
+Write PinkhaSharing_const_extract_protocols.json (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    write-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/PinkhaSharing_const_extract_protocols.json
+
+Write PinkhaSharing.SwiftFileList (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    write-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/PinkhaSharing.SwiftFileList
+
+[27 / 57] PinkhaSharing
+Write PinkhaSharing-OutputFileMap.json (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    write-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/PinkhaSharing-OutputFileMap.json
+
+Write PinkhaSharing.LinkFileList (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    write-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/PinkhaSharing.LinkFileList
+
+Write resource_bundle_accessor.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    write-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/DerivedSources/resource_bundle_accessor.swift
+
+Copy PinkhaSharing.modulemap
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/PinkhaSharing.modulemap /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/GeneratedModuleMaps-linux-aarch64
+
+Copy Localizable.strings
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package/Sources/PinkhaSharing/Resources/he.lproj/Localizable.strings /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharing_PinkhaSharing.bundle/he.lproj
+
+Copy Localizable.strings
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package/Sources/PinkhaSharing/Resources/en.lproj/Localizable.strings /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharing_PinkhaSharing.bundle/en.lproj
+
+Process empty-PinkhaSharing_PinkhaSharing.plist
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    builtin-infoPlistUtility /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing_PinkhaSharing-b.build/empty-PinkhaSharing_PinkhaSharing.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform linux -o /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharing_PinkhaSharing.bundle/Info.plist
+
+Touch PinkhaSharing_PinkhaSharing.bundle
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    /usr/bin/touch -c /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharing_PinkhaSharing.bundle
+
+Planning Swift module PinkhaSharing (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-SwiftDriver -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaSharing -Onone @/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/PinkhaSharing.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_AVAILABLE -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/PinkhaSharing-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/Modules/PinkhaSharing.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name package -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/PinkhaSharing_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/PinkhaSharing-Swift.h -working-directory /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128 -experimental-emit-module-separately -disable-cmo
+
+Compile
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    
+
+Emitting module for PinkhaSharing
+[38 / 61] PinkhaSharing
+Discovering Swift tasks after 'Emitting module for PinkhaSharing'
+Compile resource_bundle_accessor.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-SwiftPerFileCompile resource_bundle_accessor.swift
+
+Compile PinkhaSharingAccountOwner.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-SwiftPerFileCompile PinkhaSharingAccountOwner.swift
+
+Compiling resource_bundle_accessor.swift, PinkhaSharingAccountOwner.swift
+[39 / 61] PinkhaSharing
+Unblock downstream dependents of PinkhaSharing (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-Swift-Compilation-Requirements -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaSharing -Onone @/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/PinkhaSharing.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_AVAILABLE -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/PinkhaSharing-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/Modules/PinkhaSharing.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name package -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/PinkhaSharing_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/PinkhaSharing-Swift.h -working-directory /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128 -experimental-emit-module-separately -disable-cmo
+
+Discovering Swift tasks after 'Compiling resource_bundle_accessor.swift, PinkhaSharingAccountOwner.swift'
+Merge Objective-C generated interface headers
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    builtin-swiftHeaderTool -single -arch aarch64 /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/PinkhaSharing-Swift.h -o /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/GeneratedModuleMaps-linux-aarch64/PinkhaSharing-Swift.h
+
+Copy PinkhaSharing.swiftdoc (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/Modules/PinkhaSharing.swiftdoc /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharing.swiftmodule/aarch64-unknown-linux-gnu.swiftdoc
+
+Copy PinkhaSharing.swiftmodule (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/Modules/PinkhaSharing.swiftmodule /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharing.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule
+
+Copy PinkhaSharing.swiftsourceinfo (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/Modules/PinkhaSharing.swiftsourceinfo /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharing.swiftmodule/Project/aarch64-unknown-linux-gnu.swiftsourceinfo
+
+Planning Swift module PinkhaSharingTests (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-SwiftDriver -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaSharingTests -Onone @/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/PinkhaSharingTests.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/PinkhaSharingTests-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/Modules/PinkhaSharingTests.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name package -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/PinkhaSharingTests_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128 -experimental-emit-module-separately -disable-cmo
+
+Compile PinkhaSpaceMembersView.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-SwiftPerFileCompile PinkhaSpaceMembersView.swift
+
+Compile PinkhaSpaceSharing.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-SwiftPerFileCompile PinkhaSpaceSharing.swift
+
+Compiling PinkhaSpaceMembersView.swift, PinkhaSpaceSharing.swift
+Discovering Swift tasks after 'Compiling PinkhaSpaceMembersView.swift, PinkhaSpaceSharing.swift'
+Compile
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    
+
+Emitting module for PinkhaSharingTests
+[47 / 66] PinkhaSharingTests-product
+Discovering Swift tasks after 'Emitting module for PinkhaSharingTests'
+Compile SharingPresentationTests.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-SwiftPerFileCompile SharingPresentationTests.swift
+
+Compiling SharingPresentationTests.swift
+[48 / 66] PinkhaSharingTests-product
+Unblock downstream dependents of PinkhaSharingTests (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-Swift-Compilation-Requirements -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaSharingTests -Onone @/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/PinkhaSharingTests.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/PinkhaSharingTests-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/Modules/PinkhaSharingTests.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name package -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/PinkhaSharingTests_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128 -experimental-emit-module-separately -disable-cmo
+
+Discovering Swift tasks after 'Compiling SharingPresentationTests.swift'
+Wrapping Swift module PinkhaSharing
+Discovering Swift tasks after 'Wrapping Swift module PinkhaSharing'
+Copy PinkhaSharingTests.swiftmodule (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/Modules/PinkhaSharingTests.swiftmodule /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharingTests.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule
+
+Copy PinkhaSharingTests.swiftdoc (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/Modules/PinkhaSharingTests.swiftdoc /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharingTests.swiftmodule/aarch64-unknown-linux-gnu.swiftdoc
+
+Copy PinkhaSharingTests.swiftsourceinfo (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/Modules/PinkhaSharingTests.swiftsourceinfo /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharingTests.swiftmodule/Project/aarch64-unknown-linux-gnu.swiftsourceinfo
+
+Compile PinkhaSharing (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-Swift-Compilation -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaSharing -Onone @/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/PinkhaSharing.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_AVAILABLE -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/PinkhaSharing-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/Modules/PinkhaSharing.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name package -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/PinkhaSharing_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/PinkhaSharing-Swift.h -working-directory /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128 -experimental-emit-module-separately -disable-cmo
+
+Link PinkhaSharing.o (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/clang -target aarch64-unknown-linux-gnu -r --sysroot / -O0 @/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/PinkhaSharing.LinkFileList -nostdlib -o /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharing.o
+
+Compile test_anchor.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-SwiftPerFileCompile test_anchor.swift
+
+Compile SharingAuthorityTests.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-SwiftPerFileCompile SharingAuthorityTests.swift
+
+Compiling test_anchor.swift, SharingAuthorityTests.swift
+Discovering Swift tasks after 'Compiling test_anchor.swift, SharingAuthorityTests.swift'
+Create static library libPinkhaSharing.a (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/llvm-ar rcs /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/libPinkhaSharing.a @/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-product-p.build/Objects-normal/aarch64/PinkhaSharing.LinkFileList
+
+[56 / 67] PinkhaSharing-product
+Wrapping Swift module PinkhaSharingTests
+Discovering Swift tasks after 'Wrapping Swift module PinkhaSharingTests'
+Compile PinkhaSharingTests (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-Swift-Compilation -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaSharingTests -Onone @/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/PinkhaSharingTests.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/PinkhaSharingTests-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/Modules/PinkhaSharingTests.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name package -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/PinkhaSharingTests_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128 -experimental-emit-module-separately -disable-cmo
+
+Extract autolink entries for 'PinkhaSharingTests'
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-autolink-extract /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/test_anchor.o /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/SharingAuthorityTests.o /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/SharingPresentationTests.o -o /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/PinkhaSharingTests-swiftbuild.autolink
+
+Link PinkhaSharingTests.so (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -target aarch64-unknown-linux-gnu -emit-library -L/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/EagerLinkingTBDs/Debug-linux-aarch64 -L/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64 @/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/PinkhaSharingTests.LinkFileList -Xlinker -soname -Xlinker PinkhaSharingTests.so -Xlinker -rpath -Xlinker \$ORIGIN -Xlinker -rpath -Xlinker /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PackageFrameworks -Xlinker -rpath -Xlinker \$ORIGIN/Frameworks -Xlinker -rpath -Xlinker \$ORIGIN/../Frameworks -Xlinker --gc-sections -Xclang-linker -rdynamic -L/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux -L/usr/lib/swift @/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/PinkhaSharingTests-swiftbuild.autolink -o /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharingTests.so
+
+[59 / 67] PinkhaSharingTests-product
+Generate entry point for PinkhaSharingTests-test-runner
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    builtin-generateTestEntryPoint --output /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/DerivedSources/test_entry_point.swift --discover-tests --linker-file-list-format unixShellQuotedNewlineSeparated --index-store-library-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/libIndexStore.so --linker-filelist /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/PinkhaSharingTests.LinkFileList --index-store /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out --index-unit-base-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex --test-anchor-module PinkhaSharingTests
+
+Planning Swift module PinkhaSharingTests_test_runner (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-SwiftDriver -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -module-name PinkhaSharingTests_test_runner -Onone @/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/PinkhaSharingTests-test-runner.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64 -parse-as-library -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/PinkhaSharingTests-test-runner-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/Modules/PinkhaSharingTests_test_runner.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/PinkhaSharingTests-test-runner_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128 -experimental-emit-module-separately -disable-cmo
+
+Compile
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    
+
+Emitting module for PinkhaSharingTests_test_runner
+[63 / 70] PinkhaSharingTests-test-runner
+Discovering Swift tasks after 'Emitting module for PinkhaSharingTests_test_runner'
+Unblock downstream dependents of PinkhaSharingTests-test-runner (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-Swift-Compilation-Requirements -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -module-name PinkhaSharingTests_test_runner -Onone @/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/PinkhaSharingTests-test-runner.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64 -parse-as-library -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/PinkhaSharingTests-test-runner-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/Modules/PinkhaSharingTests_test_runner.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/PinkhaSharingTests-test-runner_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128 -experimental-emit-module-separately -disable-cmo
+
+Copy PinkhaSharingTests_test_runner.swiftmodule (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/Modules/PinkhaSharingTests_test_runner.swiftmodule /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharingTests_test_runner.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule
+
+Copy PinkhaSharingTests_test_runner.swiftdoc (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/Modules/PinkhaSharingTests_test_runner.swiftdoc /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharingTests_test_runner.swiftmodule/aarch64-unknown-linux-gnu.swiftdoc
+
+Copy PinkhaSharingTests_test_runner.swiftsourceinfo (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/Modules/PinkhaSharingTests_test_runner.swiftsourceinfo /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharingTests_test_runner.swiftmodule/Project/aarch64-unknown-linux-gnu.swiftsourceinfo
+
+Compile test_entry_point.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-SwiftPerFileCompile test_entry_point.swift
+
+Compiling test_entry_point.swift
+[67 / 70] PinkhaSharingTests-test-runner
+Discovering Swift tasks after 'Compiling test_entry_point.swift'
+Wrapping Swift module PinkhaSharingTests_test_runner
+Discovering Swift tasks after 'Wrapping Swift module PinkhaSharingTests_test_runner'
+Compile PinkhaSharingTests-test-runner (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    builtin-Swift-Compilation -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -module-name PinkhaSharingTests_test_runner -Onone @/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/PinkhaSharingTests-test-runner.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64 -parse-as-library -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/PinkhaSharingTests-test-runner-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/Modules/PinkhaSharingTests_test_runner.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/PinkhaSharingTests-test-runner_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128 -experimental-emit-module-separately -disable-cmo
+
+Extract autolink entries for 'PinkhaSharingTests_test_runner'
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-autolink-extract /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/test_entry_point.o -o /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/PinkhaSharingTests_test_runner-swiftbuild.autolink
+
+Link PinkhaSharingTests-test-runner (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -target aarch64-unknown-linux-gnu -emit-executable -L/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/EagerLinkingTBDs/Debug-linux-aarch64 -L/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64 @/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/PinkhaSharingTests-test-runner.LinkFileList -Xlinker -rpath -Xlinker \$ORIGIN -Xlinker -rpath -Xlinker /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PackageFrameworks -Xlinker --gc-sections -Xclang-linker -rdynamic -L/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux -L/usr/lib/swift @/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/PinkhaSharingTests_test_runner-swiftbuild.autolink /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharingTests.so -o /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharingTests-test-runner
+
+[71 / 71] PinkhaSharingTests-test-runner
+Prune stale explicit modules at /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules
+Prune stale explicit modules at /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/ExplicitPrecompiledModules
+Prune stale explicit modules at /mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/SDKExplicitPrecompiledModules
+Build complete! (12.84 secs)
+Test Suite 'Selected tests' started at 2026-11-28 05:42:49.510
+Test Suite 'SharingAuthorityTests' started at 2026-11-28 05:42:49.515
+Test Case 'SharingAuthorityTests.testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval' started at 2026-11-28 05:42:49.515
+Test Case 'SharingAuthorityTests.testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval' passed (0.001 seconds)
+Test Case 'SharingAuthorityTests.testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets' started at 2026-11-28 05:42:49.517
+Test Case 'SharingAuthorityTests.testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets' passed (0.101 seconds)
+Test Case 'SharingAuthorityTests.testPerMemberRoleOptionsRejectMalformedEntries' started at 2026-11-28 05:42:49.617
+Test Case 'SharingAuthorityTests.testPerMemberRoleOptionsRejectMalformedEntries' passed (0.0 seconds)
+Test Suite 'SharingAuthorityTests' passed at 2026-11-28 05:42:49.618
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.102 (0.102) seconds
+Test Suite 'Selected tests' passed at 2026-11-28 05:42:49.618
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.102 (0.102) seconds

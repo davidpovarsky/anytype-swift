@@ -1,0 +1,91 @@
+{
+  "schema": "pinkha.sharing-role3.compiler-list-source-correction.v1",
+  "status": "SOURCE_ONLY_NO_RUNTIME",
+  "reason": "ROOT-SHARED3-CAPTURE-01: original native SwiftPM supports a temp-directory file named sources; v1 recognized only SwiftFileList names. This is source compatibility, not an observed compile or test failure.",
+  "predecessor": {
+    "path": "prepared/run_shared_three.py",
+    "bytes": 21752,
+    "sha256": "8f7953a0e093d47ba4e0818dbb9826c3fb18481a2ff1bf7b4ab33e5c985a9b91",
+    "retainedUnchanged": true
+  },
+  "successor": {
+    "path": "prepared/run_shared_three_source2.py",
+    "bytes": 22367,
+    "sha256": "3ec0fd8ac7ae23a4c20e7a315c1b2ec83038dbfec98fc9f46b4ffcd6b7dab80e"
+  },
+  "replacements": [
+    {
+      "before": "    seen_sources = set()\n    commands = []",
+      "after": "    seen_sources = set()\n    response_paths = set()\n    output_map_directories = set()\n    commands = []"
+    },
+    {
+      "before": "        seen_sources.update(source_paths.intersection(tokens))",
+      "after": "        seen_sources.update(source_paths.intersection(tokens))\n        response_paths.update(token[1:] for token in tokens if token.startswith(\"@\"))\n        if \"-output-file-map\" in tokens:\n            index = tokens.index(\"-output-file-map\")\n            if index + 1 < len(tokens):\n                output_map_directories.add(str(Path(tokens[index + 1]).parent))"
+    },
+    {
+      "before": "            is_list = name.endswith((\"SwiftFileList\", \"LinkFileList\"))",
+      "after": "            is_source_list = name.endswith(\"SwiftFileList\") or (\n                name == \"sources\" and (str(path) in response_paths or str(path.parent) in output_map_directories)\n            )\n            is_list = is_source_list or name.endswith(\"LinkFileList\")"
+    },
+    {
+      "before": "            row = {\"path\": str(path), \"bytes\": len(data), \"sha256\": sha_bytes(data)}",
+      "after": "            row = {\"path\": str(path), \"bytes\": len(data), \"sha256\": sha_bytes(data),\n                   \"isActualSourceFileList\": is_source_list}"
+    },
+    {
+      "before": "    if not generated or not any(x[\"path\"].endswith(\"SwiftFileList\") for x in artifacts):",
+      "after": "    if not generated or not any(x[\"isActualSourceFileList\"] for x in artifacts):"
+    },
+    {
+      "before": "Path(__file__).resolve() != PREPARED / \"run_shared_three.py\"",
+      "after": "Path(__file__).resolve() != PREPARED / \"run_shared_three_source2.py\""
+    }
+  ],
+  "completeForwardAndInverse": true,
+  "authority": {
+    "repository": "swiftlang/swift-package-manager",
+    "commit": "d3981a709cca4a739cde8762fb5fa38e7aee888b",
+    "path": "Sources/Build/BuildDescription/SwiftModuleBuildDescription.swift",
+    "bytes": 52127,
+    "sha256": "29e0a96a695bc9a757bdd22b22244d6e13a7f61eab24776b9b43e1478dd86f96",
+    "gitBlob": "85ef4edd15edfdf483af1384475b61627aa61ce2",
+    "excerpts": [
+      {
+        "firstLine": 98,
+        "lastLine": 105,
+        "exactText": "    /// The list of all source files in the target, including the derived ones.\n    public var sources: [AbsolutePath] {\n        self.target.sources.paths + self.derivedSources.paths + self.pluginDerivedSources.paths\n    }\n\n    public var sourcesFileListPath: AbsolutePath {\n        self.tempsPath.appending(component: \"sources\")\n    }"
+      },
+      {
+        "firstLine": 768,
+        "lastLine": 804,
+        "exactText": "    public func emitCommandLine(scanInvocation: Bool = false, writeOutputFileMap: Bool = true) throws -> [String] {\n        var result: [String] = []\n        result.append(self.buildParameters.toolchain.swiftCompilerPath.pathString)\n\n        result.append(\"-module-name\")\n        result.append(self.target.c99name)\n        result.append(\n            contentsOf: self.package.packageNameArgument(\n                target: self.target,\n                isPackageNameSupported: self.buildParameters.driverParameters.isPackageAccessModifierSupported\n            )\n        )\n        if !scanInvocation {\n            result.append(\"-emit-dependencies\")\n\n            // FIXME: Do we always have a module?\n            result.append(\"-emit-module\")\n            result.append(\"-emit-module-path\")\n            result.append(self.moduleOutputPath.pathString)\n\n            result.append(\"-output-file-map\")\n            let outputFileMapPath = self.tempsPath.appending(\"output-file-map.json\")\n            if writeOutputFileMap {\n                // FIXME: Eliminate side effect.\n                try self.writeOutputFileMap(to: outputFileMapPath)\n            }\n            result.append(outputFileMapPath.pathString)\n        }\n\n        result.append(\"-c\")\n        result.append(contentsOf: self.sources.map(\\.pathString))\n\n        result.append(\"-I\")\n        result.append(self.modulesPath.pathString)\n\n        result += try self.compileArguments()\n        return result"
+      }
+    ]
+  },
+  "unchanged": [
+    "f9de full owned helper and single run() call",
+    "300-second child/360-second external envelope",
+    "explicit required thresholds, jobs2 and256MiB cap",
+    "all8 whole package files and original manifest/plan",
+    "exact3 XCTest filter/results/old9 exclusions",
+    "five original compiled-source membership gate",
+    "generated Swift and linked-product evidence required",
+    "normal-positive closure and first-failure retention"
+  ],
+  "preciseBinding": "A native file named sources is captured only when its exact path is referenced by an actual compiler response argument, or its parent is the exact parent of an actual -output-file-map argument. Existing SwiftFileList and LinkFileList handling is preserved.",
+  "launcher": {
+    "predecessor": {
+      "bytes": 1777,
+      "sha256": "927f8fd36940770f43b6797e7d801040cd0aac329d667601607bba4333837360"
+    },
+    "successor": {
+      "path": "prepared/launch_shared_three_source2.py",
+      "bytes": 1801,
+      "sha256": "bf446c75162e997d6b325addf0f48a5ed10402c03fcd4496ac2c55dfaa2c16b1"
+    },
+    "onlyChanges": [
+      "new fixed caller/launcher filename",
+      "exact caller byte count/hash"
+    ],
+    "subprocessManagerAdded": false
+  },
+  "outerEnvelope": "OUTER_SECONDS is explanatory metadata; Root must actually invoke Sentinel timeout:360, background:true. No execution is authorized by this artifact."
+}
