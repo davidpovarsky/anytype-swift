@@ -1,0 +1,254 @@
+{
+  "schema": "pinkha-current-app-language-owner-trace/v1",
+  "status": "NO_CONCRETE_CONFLICTING_SOURCE_OWNER_FOUND_RUNTIME_MATRIX_PENDING",
+  "reviewer": "/root/interfaces",
+  "repository": "davidpovarsky/anytype-swift",
+  "ref": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+  "finding": "No selected App-language value living only in a custom SwiftUI environment override or separate application setting was found in the inspected standalone and combined entry/settings chains. This is a bounded source conclusion, not proof that Foundation locale, bundle localization and SwiftUI locale always agree at runtime.",
+  "priorAudit": {
+    "commit": "770bc4e4a38ec299a8f0ebcc3cc5e8f0c170dabc",
+    "path": "docs/validation/20261127-wave2-native-root-error-language/source-manifest.original.json",
+    "sourceCount": 27,
+    "scope": "Reuse exact prior paths and whole-source hash identities; no resource-catalog audit repeated."
+  },
+  "observedSourceFlow": [
+    {
+      "route": "Standalone",
+      "flow": [
+        "NativeApp/Sources/AnyNativeApp.swift: WindowGroup",
+        "AnyNativeRootView(application:)",
+        "AnyUIErrorText.text"
+      ],
+      "languageOwner": "No selected-language state, Apple-language defaults write, or .environment(\\.locale, ...) exists in this entry/root. The DEBUG fixture overlays do not supply locale."
+    },
+    {
+      "route": "Combined Any",
+      "flow": [
+        "AppScene.AnytypeApp.WindowGroup",
+        "PinkhaEngineSceneView.engineContent",
+        "PinkhaEmbeddedAnyRootView",
+        "AnyNativeRootView(session:)"
+      ],
+      "languageOwner": "Engine selection persists only pinkha.app.selected-engine.v1. No inspected wrapper assigns locale; AnyView preserves the supplied subtree rather than creating a language preference."
+    },
+    {
+      "route": "Combined Heart",
+      "flow": [
+        "AppScene",
+        "ApplicationCoordinatorView.setupGlobalEnv",
+        "TorahEditorHostModifier @Environment(\\.locale)",
+        "session.updateEffectiveLocale(locale)"
+      ],
+      "languageOwner": "The host forwards the inherited environment on document load and locale.identifier change. Session initializes effectiveLocale to Locale.autoupdatingCurrent, then uses the forwarded locale for Torah messages/association labels; this is consumption, not a user-selected override."
+    },
+    {
+      "route": "Existing settings",
+      "flow": [
+        "SettingsView/SettingsViewModel",
+        "SettingsAppearanceView/SettingsAppearanceViewModel"
+      ],
+      "languageOwner": "The inspected controls/model cover profile, account, appearance, icon and other existing actions; no separate App-language property, persisted choice or locale environment modifier is present."
+    },
+    {
+      "route": "Bilingual AnyUI helper",
+      "flow": [
+        "AnyDocumentPresentation.swift: AnyUIErrorText.text"
+      ],
+      "languageOwner": "Locale.autoupdatingCurrent.language.languageCode?.identifier == \"he\" selects Hebrew, otherwise English. No argument or SwiftUI Environment locale is accepted."
+    },
+    {
+      "route": "Original Loc",
+      "flow": [
+        "Loc.tr",
+        "BundleToken.bundle.localizedString",
+        "String(format: locale: Locale.current, arguments:)"
+      ],
+      "languageOwner": "Bundle.module under SWIFT_PACKAGE, otherwise Bundle(for:). Locale.current supplies formatting, not an explicitly selected localization bundle. No private language bundle override is introduced here."
+    },
+    {
+      "route": "Actual queued Native UI selection",
+      "flow": [
+        "NativeLaunchTests.makeApplication",
+        "XCUIApplication.launchArguments",
+        "NativeApplicationUnderTest.launch→super.launch"
+      ],
+      "languageOwner": "Hebrew uses -AppleLanguages (he,en) plus -AppleLocale he_IL; English RTL/styled path replaces both with (en,he) and en_US. The unified wrapper subsequently operates the real engine selector and does not rewrite these arguments."
+    }
+  ],
+  "relevantDistinctions": [
+    "Heart's explicit effectiveLocale consumer and AnyUIErrorText's Foundation consumer use different APIs. The inspected production chain does not create a conflicting locale value, so differing APIs alone do not establish a bug.",
+    "No claim is made that Locale.autoupdatingCurrent is OS-only, App-only, or equal to the SwiftUI environment or bundle preference on all supported Apple systems.",
+    "The recovery phrase's explicit layoutDirection.leftToRight subtree is a content-direction exception, not a language-selection owner.",
+    "The existing Native UI tests request language/locale at process launch. Their source does not establish actual opposite-OS runtime behavior.",
+    "AppConfigurator's registry and AppDelegate/SceneDelegate entry bodies were read for the concrete startup chain; this audit does not claim a repository-wide semantic review of all configurator implementations."
+  ],
+  "sourceChangesProposed": 0,
+  "productionWrites": 0,
+  "hostCalls": 0,
+  "MacCalls": 0,
+  "NativeCalls": 0,
+  "testsOrCompiler": 0,
+  "remainingAcceptance": "Use the already queued UI Hebrew/OS English and UI English/OS Hebrew runs to observe actual labels, bundle/SwiftUI/Foundation language behavior and inherited layout/empty fields. No speculative helper rewrite or new test/control is justified by this source trace.",
+  "sources": [
+    {
+      "path": "Anytype/Sources/ApplicationLayer/AppScene.swift",
+      "commit": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+      "bytes": 798,
+      "sha256": "7fd3b1cd8239fbed48453229eb99bf134988bb26d25ea8fe3a379edf4efd10a0",
+      "gitBlob": "28eba6cf4bd4102239fade6e5d5f6105faaa3817",
+      "priorAuditMatched": true
+    },
+    {
+      "path": "Anytype/Sources/ApplicationLayer/GlobalEnv/GlobalEnvModifier.swift",
+      "commit": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+      "bytes": 1429,
+      "sha256": "569c5bad4783eca417fbd87b084e6bd3bc1324a2f115da3b1fe2fb8b5e4155d4",
+      "gitBlob": "40dc8585543bacb73dbc62ac5b383785d7473ae1",
+      "priorAuditMatched": true
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Bootstrap/PinkhaEngineSceneView.swift",
+      "commit": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+      "bytes": 18052,
+      "sha256": "9d89e24f75a7be24e90beab75d2cfc1813df0dd404b2ebcb62c6421c64116cf2",
+      "gitBlob": "6636723aebf70fde2adce7d3b844b148ed338c92",
+      "priorAuditMatched": true
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Settings/Settings/SettingsView.swift",
+      "commit": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+      "bytes": 5613,
+      "sha256": "01dd94f349e6174449acb5506495e6b135c6e4ecebb397d65a1d6cef8c5cf106",
+      "gitBlob": "cd19548f82de4ce6d1fa06acba04ad2822a49a6c",
+      "priorAuditMatched": true
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Settings/Settings/SettingsViewModel.swift",
+      "commit": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+      "bytes": 5470,
+      "sha256": "7c550498e21442afb4fe270fe76d8e66fac1290287a1e3679dd58736c56f937f",
+      "gitBlob": "f57338940e02dcdc6d1e21263c203e27aa101c3c",
+      "priorAuditMatched": true
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Settings/Appearance/SettingsAppearanceView.swift",
+      "commit": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+      "bytes": 4181,
+      "sha256": "e53919583d5a2f3c86846f456a0d39e06ef932f34d2e1fc32ad95ef7a79c93aa",
+      "gitBlob": "02b9f830b53a392ed425a00d1f9dbc4afd5e455b",
+      "priorAuditMatched": true
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Settings/Appearance/SettingsAppearanceViewModel.swift",
+      "commit": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+      "bytes": 995,
+      "sha256": "ed2a35b8edb97f4da06a35375f844cd58620039a72e549ada2076a7a5f4d9a3f",
+      "gitBlob": "c75144d668657e102ec79a922897bef725483998",
+      "priorAuditMatched": true
+    },
+    {
+      "path": "NativeApp/Info.plist",
+      "commit": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+      "bytes": 1088,
+      "sha256": "0e5194a520aa3c40478d71244a80702f401823965b6c422dfb9e9e9ebfdb6c1d",
+      "gitBlob": "5f0ada4f3a23e35422d25c509a272b94b1470f0b",
+      "priorAuditMatched": null
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+      "commit": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+      "bytes": 25011,
+      "sha256": "54cd42c28ef5d5dce53e1a52495f97a87cc06af68c58bfa5bebb9a51b8b458b8",
+      "gitBlob": "112250ced570144979043c9c0a5c58c4af33e22c",
+      "priorAuditMatched": false
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "commit": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+      "bytes": 73179,
+      "sha256": "82b5b2dd0ac3978ec6a867cb3f9220527e1a111e89a601c4f4e9baf15d2c38fb",
+      "gitBlob": "475624e12bbb9c97dc96295b107e21611a798639",
+      "priorAuditMatched": true
+    },
+    {
+      "path": "Anytype/Sources/ApplicationLayer/AppDelegate.swift",
+      "commit": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+      "bytes": 6887,
+      "sha256": "a89b45dae21995084e9fa6a9bfa02f87c1d960bc9988ad8fe4f3a1513a38f84d",
+      "gitBlob": "ebb6c943e24ac57b9f62f30e94d58db8586fff9d",
+      "priorAuditMatched": true
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift",
+      "commit": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+      "bytes": 5356,
+      "sha256": "e36b7b7dbde28bbfc431a40dfbf59a49a05d973217f2b7be46a61e6cb1334bbf",
+      "gitBlob": "bf6063cbc59ab5f689486d29c9dd1661b44173bc",
+      "priorAuditMatched": true
+    },
+    {
+      "path": "NativeApp/Sources/AnyNativeApp.swift",
+      "commit": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+      "bytes": 3768,
+      "sha256": "081230a8b5b2c4c032f379a03e7a29076d4c7c3f044e1d6361d52e3cd48065e0",
+      "gitBlob": "5ccd7d976a41079e6dbd4b89f0364d482d6df1db",
+      "priorAuditMatched": null
+    },
+    {
+      "path": "Modules/Loc/Sources/Loc/Generated/Strings.swift",
+      "commit": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+      "bytes": 194141,
+      "sha256": "1e9179ceea5079369a96ae29c59b73d990b6a7e102cfc8d37ab61426b79eb5aa",
+      "gitBlob": "59734004d96d3f55be78513515413aaa108bb608",
+      "priorAuditMatched": true
+    },
+    {
+      "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahEditorSession.swift",
+      "commit": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+      "bytes": 54690,
+      "sha256": "2f56aafeb516497c30c13bff9ba2da5c9cf626586b5a67826f65813c29bc716a",
+      "gitBlob": "0e9d22b56bca1176a67fa57c055cd9a5f2fb6db5",
+      "priorAuditMatched": null
+    },
+    {
+      "path": "NativeApp/UITests/NativeLaunchTests.swift",
+      "commit": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+      "bytes": 319986,
+      "sha256": "e06c55a6ed9dd6153f8aabd528f0c225246ec08da96bb515431477c234bdc03c",
+      "gitBlob": "b0cb22635c7b908b27b9013c7615926790308bad",
+      "priorAuditMatched": null
+    },
+    {
+      "path": "Anytype/Sources/ApplicationLayer/AppConfigurators/AppConfigurator.swift",
+      "commit": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+      "bytes": 745,
+      "sha256": "6505f1efe268ca9c68b0c9e753ecb22d83b97bf7951b737721810412ab86c3cc",
+      "gitBlob": "17b3133094cc79c285c29d898b2e322bd27bfe1b",
+      "priorAuditMatched": null
+    },
+    {
+      "path": "Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorView.swift",
+      "commit": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+      "bytes": 1576,
+      "sha256": "23fbbe2917266d71337ca3c6b924ef5eac7667e87dae4a3a88bfd7985ec2e877",
+      "gitBlob": "635249c36d679b823552e8f3d372056d1705db5c",
+      "priorAuditMatched": null
+    },
+    {
+      "path": "Anytype/Sources/ApplicationLayer/SceneDelegates/SceneDelegate.swift",
+      "commit": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+      "bytes": 844,
+      "sha256": "0a1546e787b7fc22065da32b865fcab614c5c073a102f5f29b5833ce8e560bba",
+      "gitBlob": "cd829954fee6d7a64c8441bdf41b36dd0743efbe",
+      "priorAuditMatched": null
+    },
+    {
+      "path": "Modules/PinkhaEngineHost/Sources/PinkhaEngineHost/PinkhaEngineHost.swift",
+      "commit": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+      "bytes": 2875,
+      "sha256": "96199ef741b8a432fc9c2dd50f063f427052f35e904da5ce16fc1facefceec72",
+      "gitBlob": "9821f005c15f993c8ded7765efcfd645b7fa0eba",
+      "priorAuditMatched": null
+    }
+  ]
+}
