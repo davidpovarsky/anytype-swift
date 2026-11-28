@@ -1,0 +1,125 @@
+{
+  "schema": "pinkha-shared-contract-hanlin-factory-source-delta-v1",
+  "status": "SOURCE_API_DELTA_REVIEWED_NO_RUNTIME_PROMOTION",
+  "sourceCommit": "f0eab88b57da3ef9b3586dc9a40c853948060eb9",
+  "soleSourceParent": "ff5777896ced23171522a0d6d735e2b235b11ffc",
+  "sourceTree": "819108a9b1b2bc3f7c1e1435c2b8c49d465d2d98",
+  "wholeInputs": [
+    {
+      "path": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinReadWriteHost.swift",
+      "side": "after",
+      "bytes": 14960,
+      "sha256": "3a9354144bf006724e9c0b5e79631cf2c8894d7c4be3985494a9c42e3b4c7774",
+      "gitBlob": "cb77c90a4aeee72a8927cfe8d8d6e117734628a9"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinReadWriteHost.swift",
+      "side": "before",
+      "bytes": 14387,
+      "sha256": "6c5ca4c50a1142a5a60c523b5367ac1751b81100708e032cfe268b793fdfcc58",
+      "gitBlob": "fdc4af17c9b08f5bb9d26c1f2ed2fb6d771f177c"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinHost.swift",
+      "side": "after",
+      "bytes": 10187,
+      "sha256": "e70dabbe24b5816a63f2fd48f48bab736c36bf1549b16b9efb685858b9dc0ab9",
+      "gitBlob": "6cc9dbc0e3ce1b43d6b23b7261598243397c9aa5"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinHost.swift",
+      "side": "before",
+      "bytes": 9301,
+      "sha256": "797badce5c2b85af3e0ce2fce1eef08a736f7ed95b502bb229f38ed82aa65f74",
+      "gitBlob": "a53045a7f35198ac198c6c08baea769037e3ad85"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/AnyHanlinPresentation.swift",
+      "side": "after",
+      "bytes": 15077,
+      "sha256": "377a49db18564d04d125d122e065f8ef574315300c50aa2c5f1e54d300501dc7",
+      "gitBlob": "57485f736788adf1e31834ef07072b3678a9d7d3"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/AnyHanlinPresentation.swift",
+      "side": "before",
+      "bytes": 14044,
+      "sha256": "adfce667d905c6f02736246fd8611b6c88cddea7a75c547ec0d11f4a9cd5988c",
+      "gitBlob": "d6f7f93a59175c7a2302705dd789fd4bfc68b7cf"
+    },
+    {
+      "path": "docs/any-engine-port/SOURCE_REFACTOR_MAP.json",
+      "side": "after",
+      "bytes": 248145,
+      "sha256": "c61e852c651f4fc339c669192c62bc7e47917b893d1e6d97b825eefdf9b03bfc",
+      "gitBlob": "eef1084617365768ef60cfc3b771a597aeeaf479"
+    },
+    {
+      "path": "docs/any-engine-port/SOURCE_REFACTOR_MAP.json",
+      "side": "before",
+      "bytes": 248145,
+      "sha256": "4c9a423e64c1814b06a54c041efb8af56e2999b74c9bf534968cf285dd6246ec",
+      "gitBlob": "f9f16815e6137af680bafa55a7da42f39e496eda"
+    }
+  ],
+  "sourceCounts": {
+    "afterSwiftFiles": 3,
+    "afterSwiftBytes": 40224,
+    "afterSourceMapBytes": 248145,
+    "completeChangedFiles": 4,
+    "afterBytes": 288369,
+    "beforeAfterWholeBytes": 574246
+  },
+  "scope": "The original daa twelve-file and native file-status observations remain literal in SOURCE_READS.json. This is the later four-path f0eab source delta only.",
+  "peer": {
+    "gitBlob": "4f0d91870ea0c817064a070e9b7022fc843bfda6",
+    "bytes": 16204,
+    "sha256": "86fe264c3fe35c531c42c2ec9bb4204744325fefdda217fcd97bf251199ca17f",
+    "wholeRootReadback": true,
+    "formalFile": "PEER_REVIEW_N_HANLIN_FACTORY.json"
+  },
+  "findings": {
+    "explicitReleaseVisibleFactories": [
+      "Heart app-internal makeForSavingMessages",
+      "AnyHanlinHost public makeForSavingMessages",
+      "AnyHanlinPresentation UIKit-only presentForSavingMessages"
+    ],
+    "acceptanceDelegatesToSameFactories": true,
+    "ordinaryHeartMakeSave": false,
+    "ordinaryAnyInitializerSaveServices": null,
+    "ordinaryAnyPresentationUsesOriginalInitializer": true,
+    "existingNativeConstructorsAndMountedConsentJournalDrainUnchanged": true,
+    "conversionBoundary": "Low-level Any host accepts explicit Save services and their conversion closure; the UIKit entry chooses the original Markdown converter.",
+    "sourceMap": {
+      "changedField": "changes[32].replacementBlob",
+      "before": "fdc4af17c9b08f5bb9d26c1f2ed2fb6d771f177c",
+      "after": "cb77c90a4aeee72a8927cfe8d8d6e117734628a9",
+      "unchangedOtherRows": 145,
+      "allOtherFieldsUnchanged": true,
+      "rootWholeForwardInverse": true,
+      "historicalReasonRetained": true
+    }
+  },
+  "documentationMutation": {
+    "parentCommit": "65326e605d6507852deb32306aec92b77e72ba93",
+    "contractBefore": {
+      "gitBlob": "4f1802456e3f2cd6fd93d82ffb9781586538ee54",
+      "bytes": 9493,
+      "sha256": "5b4eaf27cc5c51498b4817d9a9447305362125da1df58474d8c65a0c00d51c04"
+    },
+    "contractAfter": {
+      "gitBlob": "605a906801c07ddd404f2013e29d58b3d74cb848",
+      "bytes": 12037,
+      "sha256": "8d2013b4f82f812e2d726e07a1b8eb9c71a0f7cd4bca97fd958948426be5d43d"
+    },
+    "activeApplicationChanges": 0,
+    "sourceReadManifestChanged": false,
+    "priorPeerAndNativePrimaryChanged": false
+  },
+  "limits": [
+    "No Release or Apple compilation, actual mounted consent, authority, native body/readback or lifecycle result is granted.",
+    "Ordinary editor entry activation remains W3-owned and is not present in this four-path source delta.",
+    "MiniApps/Otsaria and shared storage/sync contracts receive no new runtime qualification here.",
+    "Current source/API availability does not replace exact matched component/native/consumer evidence."
+  ]
+}
