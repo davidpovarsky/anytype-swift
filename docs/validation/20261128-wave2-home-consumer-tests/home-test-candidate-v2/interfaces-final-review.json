@@ -1,0 +1,357 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_SOURCE_REVIEW_ONLY_NOT_RUN",
+  "reviewer": "interfaces",
+  "repository": "davidpovarsky/anytype-swift",
+  "baseCommit": "9a4fcf22949385771bb98faac9e4a05c9be65066",
+  "scope": "Independent Home real-Library readiness, original HTTP/schema/catalog/Note/hierarchy/SSE contracts, Home action and READ-authority semantics. Editor owns separate liveness/cleanup/parameter-isolation review; Root owns publication custody and synthesis.",
+  "finalCandidate": {
+    "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyLibrarySearchPublicationTests.swift",
+    "bytes": 45691,
+    "sha256": "e9945ab99ae82ff16e6f3e74e085ce694f38dae4eb7a1d15b129f539d417cd38",
+    "gitBlob": "868b83916c788ba0155b2df3923ebfc75bdea272"
+  },
+  "finalManifest": {
+    "bytes": 3112,
+    "sha256": "83ee9444148b6969036ce9eff699fba027467c07264840f9cab13839c357e52d",
+    "gitBlob": "6e551b44303c644f7414734f9354cf7f6ada59c0"
+  },
+  "sourceCorrection": {
+    "bytes": 3012,
+    "sha256": "6eda59a692327260db58b1ef9d57e9c6a8794a7084d2791cc2dcebb1881868db",
+    "gitBlob": "6ec898d958480bf35ad17c358b865dd4a2b31ddb"
+  },
+  "finalFullOriginalInverse": {
+    "bytes": 1891,
+    "sha256": "d498a03fbfe5596e187ab49acc6715726a349009d77b393e840187a3cdd1685d",
+    "gitBlob": "91e84c8238e07fd450618d7349beefcb9bbdf104"
+  },
+  "finalSourceProof": {
+    "bytes": 19992,
+    "sha256": "3837e1653f601ead666ad2158a4b90e82cb0cb0265efca074d0008d00ecfb420",
+    "gitBlob": "4aec4b88cfea636372ea0e9940e6458625c27fdf"
+  },
+  "finalReadme": {
+    "bytes": 6553,
+    "sha256": "f607f992cfacbf2747a5378c5e5a777b5fcdd3088469b17bfb9355df91055a2b",
+    "gitBlob": "5bb19aa9548854fe85df2c27ad6844eba06a325c"
+  },
+  "finalFindings": {
+    "bytes": 2464,
+    "sha256": "85d1779352e7618dc0df0f4b7d471208cb1de08d5e848c6e52c332ddbdde3ab3",
+    "gitBlob": "ca9df36ae9ea013ac33f583d412e988d07a946ba"
+  },
+  "preservedPredecessor": {
+    "candidate": {
+      "bytes": 45448,
+      "sha256": "5cf5c54b91b6e69db304663c769cd1a8c36022ab8b7daccf334478a8363d0a0c",
+      "gitBlob": "b1f9b270924b781db2f0c985dd0a3201ce8f2f49"
+    },
+    "manifest": {
+      "bytes": 2234,
+      "sha256": "413980bf2367df3b727c76862b03641c2329e484672e874719bc17b07f50e237",
+      "gitBlob": "80519956bee374707564238d42cc442e1466944d"
+    },
+    "allSixAuthorBlobsRetained": true
+  },
+  "exactSourceChecks": {
+    "originalPrefix": {
+      "bytes": 13860,
+      "sha256": "b242b8bdbe9f2c9c10c742d26ffe88b237b797b28dfd600e07b85f4e3c2a5494",
+      "gitBlob": "60ed50ff5847ff269bd5b78d1cbba6790ded0107"
+    },
+    "finalSuffix": {
+      "bytes": 31831,
+      "sha256": "1b0ce26656f67f88235c870d3e31cce93cd21c086c6de7f529a19c7e69f4b308",
+      "gitBlob": "5d1fc7e8c7011575f8a0f398ba6d25cb313c5ab2"
+    },
+    "completeOriginal13860BytePrefix": true,
+    "originalFourMethodsFiveCasesPreserved": true,
+    "fourUniqueLiteralForwardProducesEntireSuccessor": true,
+    "fourUniqueLiteralReverseProducesEntirePredecessor": true,
+    "finalSuffixRemovalProducesEntireOriginal": true,
+    "entireHTTPFixtureUnchangedBySuccessor": true,
+    "fixtureDerivation": {
+      "artifact": {
+        "bytes": 29511,
+        "sha256": "d6c0aa7b6b78bcdc9a3e2b7d71809af8d89b9aa532f6f81c8992087ce531ac42",
+        "gitBlob": "55022741d110b586f63e216309c3e24aeb9e3de8"
+      },
+      "donor": {
+        "bytes": 21821,
+        "sha256": "f5abc399f5d42288ba5b2500af6747b090198bb8ee3b99c9cf40d65e205c4132",
+        "gitBlob": "18c2a5f97d6127537d9c52fc67fc2cb547ec4328"
+      },
+      "candidate": {
+        "bytes": 25324,
+        "sha256": "11fc5883a4be1f4e41851fc26a0bb1e15cf21442ee415443f9444149c6e1acb4",
+        "gitBlob": "76492855921ffcc5401c8c2e33b4da3cc780aac7"
+      },
+      "orderedRules": 9,
+      "fullForwardAndReverse": true
+    },
+    "productPackagePBXControllerChanges": 0
+  },
+  "findingClosure": [
+    {
+      "id": "HOME-READINESS-PUBLICATION-01",
+      "reviewer": "Interfaces",
+      "predecessor": "5cf5c54b91b6e69db304663c769cd1a8c36022ab8b7daccf334478a8363d0a0c",
+      "sourceCause": "Fixture documentReads increments when a request is received. Its response, account/lease postflight and MainActor publication follow. The observer can increment documentsReadEpoch and retire open's earlier result, allowing the old predicate to return before allDocuments publishes.",
+      "correctedSource": "The original bounded MainActor predicate now requires both initialObservationReachedConsumer and subject.allDocuments.map(\\.id) == [server.objectID].",
+      "qualification": "Resolves the identified missing-publication wait. It proves observer refresh entry plus actual expected model publication; it does not assert that the second query specifically supplied that publication if the first already did.",
+      "actualFailureObserved": false
+    },
+    {
+      "id": "HOME-TEST-MODEL-RETENTION-01",
+      "reviewer": "Editor",
+      "sourceCause": "The do-scoped model was not test-owned across the later drain while lifetime callbacks capture it weakly.",
+      "correctedSource": "An outer optional retains the actual model and is used by withExtendedLifetime immediately after await lifetime.drain. No replacement model or readiness setter is introduced.",
+      "qualification": "Four-literal delta independently checked; complete liveness/cleanup review remains Editor's separate scope.",
+      "actualFailureObserved": false
+    }
+  ],
+  "readinessCounterProof": {
+    "exactCounterSource": "Fixture only increments documentReads for its exact documentsQuery. Hierarchy queries increment hierarchyReads separately.",
+    "setupRoutes": "Wiki schema uses installed bundle/collection/properties GETs. Note bootstrap reads its derived bundle and verifies the actual collection through the public marker verifier.",
+    "catalogRoutes": "Catalog reads types/collections and native document-type GET proof. The one controlled Page has no imported Bookmark candidate, so availableBookmarkTypes returns without another object query.",
+    "hierarchyInitial": "Repository.snapshot reads the distinct wiki-membership query; an empty complete hierarchy is legitimate for the separate ordinary document row.",
+    "subscription": "AnyHTTPHierarchyRecordStore.watch -> subscribeObjectQuery -> actual ready/snapshot SSE parser -> AnyQueryWindow -> AnyHierarchyRepository.watch. The repository yields only actual upstream updates and checks the first update is initial; no synthesized initial row is used.",
+    "consumer": "Library.startObservation accepts the snapshot then calls refreshAllDocuments. Empty snapshot types cannot take the unknown-type catalog-refresh branch.",
+    "exclusivity": "Only one public open occurs before readiness. No test calls refresh/search. Thus the second exact documents query requires observation-consumer entry; it does not independently prove response completion.",
+    "correctedBarrier": "The source now waits for both that entry and real published expected allDocuments IDs before Home actions."
+  },
+  "homeActionReview": {
+    "publicConstruction": "Public session.connect performs current account/health checks. Public nativeAccountRunBinding decodes the d1 binding against controlled account/network. Original creators use the unchanged rejecting journal.",
+    "readiness": "Real Library.open constructs the schema/marker/operations/catalog/repository and accepts the actual hierarchy; isReady is never set or bypassed.",
+    "admission": "Library.beginHomeAction requires active lifetime, isReady, matching workspace and no current task. Original request identity, session.perform and read-lease checks remain in the exercised path.",
+    "authority": "Both controlled roles traverse original currentRead: lease, native account/run, exact member identity and .read. Reader leaves canWrite false while Home preferences remain usable. This is consumer policy coverage, not Native ACL certification.",
+    "set": "Actual prepareHome(.object) validates current object. Actual commitHome dispatches the dedicated bound settings PATCH; fixture requires exact expected-account/run headers and one-field canonical string, returns bound204, then actual readHome verifies current state.",
+    "open": "Actual readHome and requireHomeDestination revalidate the same object before the model invokes onOpenDocument(objectID,nil). Assertions inspect callback IDs and nil block without constructing an editor.",
+    "unsetAndAbsent": "Actual unset sends only pinkhaHomeV1 in the unset array. Actual absent reread leaves callback count unchanged and reports the existing absent-state message.",
+    "mutationBoundary": "Exactly two bound settings dispatches are accepted. All other mutation routes, object/schema creation and unbound settings changes fail. Original journal records an issue on any accidental use.",
+    "evidencePrecision": "Messages and fixture counters supplement actual public method results. No Home buttons, SwiftUI mounting, native backend, imported context, cold persistence or visual language matrix is claimed."
+  },
+  "finiteScope": {
+    "suite": "AnyLibraryHomeReadinessTests",
+    "method": "homeSetOpenAndUnsetAfterRealReadinessUsesCurrentReadAuthority(isReader:)",
+    "newMethods": 1,
+    "newDeclaredCases": 2,
+    "arguments": [
+      false,
+      true
+    ],
+    "roles": [
+      "owner",
+      "reader"
+    ],
+    "originalMethods": 4,
+    "originalCases": 5,
+    "oldCasesSelectedForReplay": false,
+    "cumulativeConnectionsAndRequests": 1024,
+    "concurrentTrackedConnections": 16,
+    "headerBodyResponseBytes": 16384,
+    "aggregateRequestBytes": 32768,
+    "recordedTransportFailures": 16,
+    "startAndCloseSeconds": 5,
+    "progressWaitSeconds": 5,
+    "fixtureLifetimeSeconds": 45,
+    "suiteTimeLimitSeconds": 60,
+    "capacityOrRuntimeFitClaim": false
+  },
+  "independentPrimaryInputs": [
+    {
+      "key": "library-candidate",
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+      "ref": "9a4fcf22949385771bb98faac9e4a05c9be65066",
+      "bytes": 51701,
+      "sha256": "e6111e18c38b582437651cf80f420e5282d8ec473da69cf56ae67c4ef18645d4",
+      "gitBlob": "74afcb956d26ccfa709dbc392fa87ea9ae563f42",
+      "reusedExactRetainedPrimary": false
+    },
+    {
+      "key": "test-original",
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyLibrarySearchPublicationTests.swift",
+      "ref": "9a4fcf22949385771bb98faac9e4a05c9be65066",
+      "bytes": 13860,
+      "sha256": "b242b8bdbe9f2c9c10c742d26ffe88b237b797b28dfd600e07b85f4e3c2a5494",
+      "gitBlob": "60ed50ff5847ff269bd5b78d1cbba6790ded0107",
+      "reusedExactRetainedPrimary": false
+    },
+    {
+      "key": "note-bootstrap",
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNoteBootstrap.swift",
+      "ref": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+      "bytes": 253,
+      "sha256": "cb2f2ae24c7e4953cd651fc981d1250f5f4ccae0e62f1f855fafa5d9bab6d71f",
+      "gitBlob": "07bdc216acdab46c1733aece84bf6d5d06ad92c3",
+      "reusedExactRetainedPrimary": false
+    },
+    {
+      "key": "native-note-bootstrap",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeNoteBootstrap.swift",
+      "ref": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+      "bytes": 2883,
+      "sha256": "736f5eb482ba4e42305ca88af9afcd43aedc8a86f459369f721e0bed8302c738",
+      "gitBlob": "0548e7fd53ff9517501abee716ac0a3f743488d0",
+      "reusedExactRetainedPrimary": false
+    },
+    {
+      "key": "workflow",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeWorkflowBindings.swift",
+      "ref": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+      "bytes": 5271,
+      "sha256": "db86df8a9355cd693d96af642b7f9dfbdca16e8f784f3727d61e926aa117c348",
+      "gitBlob": "dfa602a0febdf8a4949967f0dc0878a7ba89eeeb",
+      "reusedExactRetainedPrimary": false
+    },
+    {
+      "key": "http-hierarchy-store",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHTTPHierarchyRecordStore.swift",
+      "ref": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+      "bytes": 11318,
+      "sha256": "7ede044c02fffbd4c0d9c9f81b78993af2ffce12ee9816e5703264200d82e963",
+      "gitBlob": "77ac68bdcf1fea26ab55f17cb74ca3465a859d3d",
+      "reusedExactRetainedPrimary": false
+    },
+    {
+      "key": "guarded-hierarchy-store",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyGuardedHTTPHierarchyRecordStore.swift",
+      "ref": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+      "bytes": 7638,
+      "sha256": "e07269b03f4ed48bea10db4cc237f4017aef30eab283192d1615c7b0696861bc",
+      "gitBlob": "2d920f139bd1a4e1680920e1c5d26063df573927",
+      "reusedExactRetainedPrimary": false
+    },
+    {
+      "key": "hierarchy-repository",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHierarchyRepository.swift",
+      "ref": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+      "bytes": 22719,
+      "sha256": "59e3404dc4553bb842ed81a9cc39b7739fab47091e480f52e753653712405135",
+      "gitBlob": "ed5b4185d1bde7655bcf9fa109e675786b88a87c",
+      "reusedExactRetainedPrimary": false
+    },
+    {
+      "key": "property-store",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "ref": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+      "bytes": 53698,
+      "sha256": "b91ed64c54ec552caa68a3b49c272ff8f008722b3a41fc76d9eadf4eaf9ef93b",
+      "gitBlob": "b8de5482053e5f7e3bf6798608f09a98d291281a",
+      "reusedExactRetainedPrimary": false
+    },
+    {
+      "key": "native-document-policy",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyNativeDocumentPolicy.swift",
+      "ref": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+      "bytes": 6882,
+      "sha256": "a4fa5fc4fc1185b1778ae960b60e39a03e3d4ce487c34bd4d69401946ff7e366",
+      "gitBlob": "ac4bada7852ecc4c3f8a2208cb05a2e188ba0229",
+      "reusedExactRetainedPrimary": false
+    },
+    {
+      "key": "guarded-claims",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahClaimsRepository.swift",
+      "ref": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+      "bytes": 9870,
+      "sha256": "cc9ee5e3eb159ef5ea68e7a87928fd94f047a8668c2f2483890faffdac8d73a1",
+      "gitBlob": "b480eee09ab02a4ad600b3dbe28d1c6b5ece3c3e",
+      "reusedExactRetainedPrimary": false
+    },
+    {
+      "key": "guarded-torah-contract",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahContract.swift",
+      "ref": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+      "bytes": 11996,
+      "sha256": "048ebd2d82e3a22265c3fea4ead6ba406b4f8d7d8f00367ec0c7779fac1b0d8f",
+      "gitBlob": "7d140ed76c16204f34e099d6d92541ca25d514ee",
+      "reusedExactRetainedPrimary": false
+    },
+    {
+      "key": "live-query",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyLiveQuery.swift",
+      "ref": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+      "bytes": 12640,
+      "sha256": "445930138f7aefe46f6d41995059acafad9363178da4bc17574d2a0e399c8cf4",
+      "gitBlob": "c0494798a93eec50a735dcff36234b1782cebfb0",
+      "reusedExactRetainedPrimary": false
+    },
+    {
+      "key": "sse-parser",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnySSEParser.swift",
+      "ref": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+      "bytes": 10163,
+      "sha256": "1b5b55f99d357418d0df7ec43bc61e8bac1e1f246c613019f8c8b025c03cbdad",
+      "gitBlob": "3add9b8db3617f585ed8b2f10c1bdf896b84c7af",
+      "reusedExactRetainedPrimary": false
+    },
+    {
+      "key": "application-session",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+      "ref": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+      "bytes": 5633,
+      "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd",
+      "gitBlob": "1dae52636c3a6eb6dfe2aa88d548d6982a9d8dd0",
+      "reusedExactRetainedPrimary": true
+    },
+    {
+      "key": "http-client",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyHTTPClient.swift",
+      "ref": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+      "bytes": 30415,
+      "sha256": "256b97b27f0806e7355bd8e8478983bc64e5688f3e69678efdaf04ecaf86505f",
+      "gitBlob": "cff52bce9d04dfa2611ee0a3de6349c660a233b6",
+      "reusedExactRetainedPrimary": true
+    },
+    {
+      "key": "native-run-binding",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeAccountRunBinding.swift",
+      "ref": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+      "bytes": 4716,
+      "sha256": "cdf064530bda6f738545e6025dbb1e53cfad9d2739c10f20b4f1c581fb2fadaa",
+      "gitBlob": "4619be7db274b9157415e87941680d5c7af7eda1",
+      "reusedExactRetainedPrimary": true
+    },
+    {
+      "key": "personal-navigation",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePersonalNavigation.swift",
+      "ref": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+      "bytes": 23420,
+      "sha256": "c3dd3dc0255d2c6265693ced3bd7d7dbd6d4ed7772f2b851f7424c9dfb57b73b",
+      "gitBlob": "93f9f67ef704dd3f888885c3897f6f19c354cbce",
+      "reusedExactRetainedPrimary": true
+    }
+  ],
+  "retainedReviewerInspectionStop": {
+    "kind": "REVIEWER_SLICE_BOUNDARY_ONLY",
+    "scope": "fixture-derivation extraction",
+    "assumption": "Included the terminal newline immediately before #endif in the extracted region.",
+    "observed": {
+      "donorBytes": 21822,
+      "candidateBytes": 25325
+    },
+    "declared": {
+      "donorBytes": 21821,
+      "candidateBytes": 25324
+    },
+    "error": "slice identity",
+    "correction": "The declared end is the final newline before #endif; exclude that one delimiter byte. No source, payload, runtime or test failure."
+  },
+  "boundaries": {
+    "compilerTypecheck": "NOT_RUN",
+    "newTests": "NOT_RUN",
+    "actualNative": "NOT_RUN",
+    "mountedSwiftUIHomeControls": "NOT_RUN",
+    "coldPersistence": "NOT_RUN",
+    "mixedAppOSLanguage": "NOT_RUN",
+    "lastOpened": "Separate published renderer candidate; no credit from this Home case.",
+    "sourceMethodCountDoesNotAdmitOldSelections": true,
+    "reviewerSourceEdits": 0,
+    "OracleAllocations": 0,
+    "processQueriesSignalsOrChildCalls": 0,
+    "testsControlsCompilerOrHostExecution": 0,
+    "treeCommitRefMutations": 0,
+    "persistence": "Authorized unreferenced Git review blob only; no commit/ref publication."
+  }
+}

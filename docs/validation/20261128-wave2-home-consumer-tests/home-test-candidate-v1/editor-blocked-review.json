@@ -1,0 +1,132 @@
+{
+  "schema": "pinkha.library-home.editor-peer-review.v1",
+  "status": "SOURCE_REVIEW_BLOCKED_PENDING_NARROW_SUCCESSOR",
+  "base": "9a4fcf22949385771bb98faac9e4a05c9be65066",
+  "candidate": {
+    "bytes": 45448,
+    "sha256": "5cf5c54b91b6e69db304663c769cd1a8c36022ab8b7daccf334478a8363d0a0c",
+    "gitBlob": "b1f9b270924b781db2f0c985dd0a3201ce8f2f49"
+  },
+  "scope": {
+    "newMethods": 1,
+    "newCases": 2,
+    "oldMethods": 4,
+    "oldCases": 5,
+    "execution": "NOT_RUN"
+  },
+  "finding": {
+    "id": "HOME-TEST-MODEL-RETENTION-01",
+    "status": "ROOT_ACCEPTED_SOURCE_FINDING",
+    "testLines": [
+      340,
+      343,
+      364,
+      412,
+      419,
+      420
+    ],
+    "dependency": {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+      "bytes": 51701,
+      "sha256": "e6111e18c38b582437651cf80f420e5282d8ec473da69cf56ae67c4ef18645d4",
+      "gitBlob": "74afcb956d26ccfa709dbc392fa87ea9ae563f42",
+      "weakRegistrationLines": [
+        171,
+        172
+      ],
+      "revokeAndDrainLines": [
+        941,
+        961
+      ]
+    },
+    "cause": "The actual model is a let inside do, but lifetime/session cleanup occurs after that scope. Both lifetime callbacks capture weak self. Strong ownership supplied incidentally by active observation/Home tasks is not a test-owned retention guarantee through asynchronous drainage; revoke can cancel/release those tasks before the weak drain callback joins closing work.",
+    "requestedCorrection": "Retain the actual model in an outer optional after construction and explicitly extend that owner's lifetime until after await lifetime.drain. Preserve the original lifetime/session drains and avoid duplicate cleanup.",
+    "runtimeFailureObserved": false
+  },
+  "separateFinding": {
+    "owner": "Interfaces",
+    "id": "HOME-TEST-READINESS-PUBLICATION-01",
+    "cause": "The fixture increments documentReads on request receipt; a second read establishes SSE refresh entry, not allDocuments publication. Preserve the stream/request witness and add the actual expected model document projection to the bounded readiness predicate.",
+    "status": "ROOT_ACCEPTED_PENDING_SUCCESSOR"
+  },
+  "checks": {
+    "prefix": {
+      "exactOriginalPrefix": true,
+      "originalBytes": 13860,
+      "originalSHA256": "b242b8bdbe9f2c9c10c742d26ffe88b237b797b28dfd600e07b85f4e3c2a5494",
+      "suffixBytes": 31588,
+      "suffixSHA256": "fd352f8648fb444694c099f571c73c52072792a715881d26f7c48d21231df01e",
+      "suffixGitBlob": "3cb739efb9888e4a647643e392fccaad5f0cee85",
+      "fullRecompositionExact": true
+    },
+    "transport": {
+      "wholeFixtureForward": true,
+      "wholeFixtureReverse": true,
+      "steps": [
+        {
+          "step": 0,
+          "kind": "unique-literal",
+          "occurrences": 1
+        },
+        {
+          "step": 1,
+          "kind": "global-name",
+          "occurrences": 1
+        },
+        {
+          "step": 2,
+          "kind": "global-name",
+          "occurrences": 26
+        },
+        {
+          "step": 3,
+          "kind": "unique-literal",
+          "occurrences": 1
+        },
+        {
+          "step": 4,
+          "kind": "unique-literal",
+          "occurrences": 1
+        },
+        {
+          "step": 5,
+          "kind": "unique-literal",
+          "occurrences": 1
+        },
+        {
+          "step": 6,
+          "kind": "unique-literal",
+          "occurrences": 1
+        },
+        {
+          "step": 7,
+          "kind": "unique-literal",
+          "occurrences": 1
+        },
+        {
+          "step": 8,
+          "kind": "unique-literal",
+          "occurrences": 1
+        }
+      ],
+      "donorSHA": "f5abc399f5d42288ba5b2500af6747b090198bb8ee3b99c9cf40d65e205c4132",
+      "candidateSHA": "11fc5883a4be1f4e41851fc26a0bb1e15cf21442ee415443f9444149c6e1acb4"
+    },
+    "positiveActions": "Synchronous isWorkingWithHome admission is required after every public action, then bounded flag completion, success/absent message and exact callback counts are checked. Bound set readback and final two-mutation sequence predicates prevent a no-op-only pass.",
+    "isolation": "Each Owner/Reader case constructs its own listener with ephemeral loopback port, unique queue, actual HTTP client, session, lifetime, recovery and local counters. Recovery persistence is unused. Equal synthetic identity constants are not cross-case shared state.",
+    "socketOwnership": "Listener and every accepted socket remain tracked until actual cancellation callbacks. Even over-budget/late sockets enter the map and are cancelled. Weak listener/state callbacks avoid retained state cycles. Original five-second readiness/stop and 45-second fixture watchdog remain.",
+    "failureCleanup": "The body retains its first thrown failure; cleanup starts server drainage, drains lifetime/session, then waits for listener/connection closure. Secondary stop failures are recorded without replacing the original. The model retention correction is still required to make the lifetime drain owner explicit.",
+    "bounds": {
+      "suiteMinutes": 1,
+      "fixtureSeconds": 45,
+      "startStopProgressSeconds": 5,
+      "cumulativeConnectionsAndRequests": 1024,
+      "concurrentConnections": 16,
+      "requestBytes": 32768,
+      "headerBodyResponseBytes": 16384,
+      "maximumSettingsWrites": 2
+    },
+    "remaining": "No other concrete liveness, actor, socket, case-isolation or vacuous-action blocker found in the complete appended source. Route/schema/authority review remains Interfaces-owned."
+  },
+  "performed": "Cloud Git reads plus in-memory exact UTF8/SHA/Git-blob and literal restoration only; no Oracle, process, runtime, compiler, test, source/tree/ref write."
+}
