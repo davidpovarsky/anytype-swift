@@ -1,0 +1,300 @@
+{
+  "schema": "pinkha-app-language-owner-continuity/v1",
+  "status": "NO_NEW_SOURCE_DEFECT_ESTABLISHED_MIXED_APP_OS_RUNTIME_PENDING",
+  "reviewer": "interfaces",
+  "repository": "davidpovarsky/anytype-swift",
+  "integrationRef": "967cee8c801c533449182c827e79cebb79d415e4",
+  "integrationTree": "29ff1f876a470d952277bc30cc3a6c9b72ab5169",
+  "navigationRef": "9a4fcf22949385771bb98faac9e4a05c9be65066",
+  "navigationTree": "ca87cd41bd2d9d6f01fd73cfe0199284b5a59012",
+  "priorTrace": {
+    "bytes": 12407,
+    "sha256": "51fc7b386639c41d3763afb9c1625afed5a079078b10b185f438addbd6b8c9bc",
+    "gitBlob": "a40871dddfda6d825f397b83a0e5652e759f22e5",
+    "ref": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+    "retainedExactBody": true
+  },
+  "conclusion": "The bounded original entry/settings/locale-consumer chain has no new conflicting language owner. No saved in-app language override or custom locale environment assignment is established by these source paths. The new navigation consumer preserves the original AnyUI helper. This does not prove Foundation, bundle localization and SwiftUI choose the same language under opposite app/OS configurations.",
+  "scope": "Reuse the sealed319 owner trace; inspect finite current Git leaves and only the changed host/helper/navigation delta. No repeated27-file body/catalog audit, default-branch chase or new source census.",
+  "observedMechanisms": [
+    {
+      "route": "Standalone Native",
+      "source": "NativeApp/Sources/AnyNativeApp.swift -> AnyNativeRootView",
+      "result": "The retained exact entry/root installs no selected-language state, Apple-language defaults write or locale environment override. Existing test fixture overlays do not supply locale."
+    },
+    {
+      "route": "Combined App",
+      "source": "AppScene -> PinkhaEngineSceneView -> ApplicationCoordinatorView/global environment or embedded Any root",
+      "result": "The existing engine preference selects an engine, not a language. The inspected wrappers inherit locale and do not assign a custom selected-language value."
+    },
+    {
+      "route": "Heart",
+      "source": "TorahEditorHostModifier -> TorahEditorSession.updateEffectiveLocale",
+      "result": "The host reads SwiftUI Environment locale and forwards it on task/load and locale.identifier changes. The session initializes with Locale.autoupdatingCurrent. These are consumers; no separate selection owner was found in the retained chain."
+    },
+    {
+      "route": "Original settings",
+      "source": "SettingsView/Model and SettingsAppearanceView/Model",
+      "result": "Exact existing controls cover account/profile/appearance and other retained actions; no separate persisted App-language control was found in those inspected bodies."
+    },
+    {
+      "route": "Original Loc",
+      "source": "Modules/Loc/Sources/Loc/Generated/Strings.swift",
+      "result": "Loc.tr resolves through BundleToken.bundle.localizedString (Bundle.module in SwiftPM, otherwise Bundle(for:)); Locale.current is passed for String formatting. The wrapper does not itself choose a private language bundle."
+    },
+    {
+      "route": "AnyUI",
+      "source": "AnyDocumentPresentation.swift -> AnyUIErrorText.text",
+      "result": "The helper selects Hebrew when Locale.autoupdatingCurrent.language.languageCode?.identifier equals he, otherwise English. It does not accept an explicit SwiftUI locale argument."
+    }
+  ],
+  "continuity": {
+    "inspectedPriorPaths": 20,
+    "identicalWholeFileGitBlobs": 19,
+    "changedHost": {
+      "before": {
+        "bytes": 5356,
+        "sha256": "e36b7b7dbde28bbfc431a40dfbf59a49a05d973217f2b7be46a61e6cb1334bbf",
+        "gitBlob": "bf6063cbc59ab5f689486d29c9dd1661b44173bc"
+      },
+      "after": {
+        "bytes": 5364,
+        "sha256": "adf601dc09bd2abee727fce05b3141f7e9344dfb2dd45b8731f99461cc7caf99",
+        "gitBlob": "a7d778a5827efd573800f96e14fdc60fd58b5fc7"
+      },
+      "onlyDelta": "exact +8 bytes ', .notes' in availableTools",
+      "localeBodyUnchanged": true
+    },
+    "finiteCurrentLeafBindings": [
+      {
+        "path": "Anytype/Sources/ApplicationLayer/AppScene.swift",
+        "gitBlob": "28eba6cf4bd4102239fade6e5d5f6105faaa3817",
+        "mode": "100644",
+        "sameAsPrior": true
+      },
+      {
+        "path": "Anytype/Sources/ApplicationLayer/GlobalEnv/GlobalEnvModifier.swift",
+        "gitBlob": "40dc8585543bacb73dbc62ac5b383785d7473ae1",
+        "mode": "100644",
+        "sameAsPrior": true
+      },
+      {
+        "path": "Anytype/Sources/Pinkha/Bootstrap/PinkhaEngineSceneView.swift",
+        "gitBlob": "6636723aebf70fde2adce7d3b844b148ed338c92",
+        "mode": "100644",
+        "sameAsPrior": true
+      },
+      {
+        "path": "Anytype/Sources/PresentationLayer/Settings/Settings/SettingsView.swift",
+        "gitBlob": "cd19548f82de4ce6d1fa06acba04ad2822a49a6c",
+        "mode": "100644",
+        "sameAsPrior": true
+      },
+      {
+        "path": "Anytype/Sources/PresentationLayer/Settings/Settings/SettingsViewModel.swift",
+        "gitBlob": "f57338940e02dcdc6d1e21263c203e27aa101c3c",
+        "mode": "100644",
+        "sameAsPrior": true
+      },
+      {
+        "path": "Anytype/Sources/PresentationLayer/Settings/Appearance/SettingsAppearanceView.swift",
+        "gitBlob": "02b9f830b53a392ed425a00d1f9dbc4afd5e455b",
+        "mode": "100644",
+        "sameAsPrior": true
+      },
+      {
+        "path": "Anytype/Sources/PresentationLayer/Settings/Appearance/SettingsAppearanceViewModel.swift",
+        "gitBlob": "c75144d668657e102ec79a922897bef725483998",
+        "mode": "100644",
+        "sameAsPrior": true
+      },
+      {
+        "path": "NativeApp/Info.plist",
+        "gitBlob": "5f0ada4f3a23e35422d25c509a272b94b1470f0b",
+        "mode": "100644",
+        "sameAsPrior": true
+      },
+      {
+        "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+        "gitBlob": "112250ced570144979043c9c0a5c58c4af33e22c",
+        "mode": "100644",
+        "sameAsPrior": true
+      },
+      {
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+        "gitBlob": "475624e12bbb9c97dc96295b107e21611a798639",
+        "mode": "100644",
+        "sameAsPrior": true
+      },
+      {
+        "path": "Anytype/Sources/ApplicationLayer/AppDelegate.swift",
+        "gitBlob": "ebb6c943e24ac57b9f62f30e94d58db8586fff9d",
+        "mode": "100644",
+        "sameAsPrior": true
+      },
+      {
+        "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift",
+        "gitBlob": "a7d778a5827efd573800f96e14fdc60fd58b5fc7",
+        "mode": "100644",
+        "sameAsPrior": false
+      },
+      {
+        "path": "NativeApp/Sources/AnyNativeApp.swift",
+        "gitBlob": "5ccd7d976a41079e6dbd4b89f0364d482d6df1db",
+        "mode": "100644",
+        "sameAsPrior": true
+      },
+      {
+        "path": "Modules/Loc/Sources/Loc/Generated/Strings.swift",
+        "gitBlob": "59734004d96d3f55be78513515413aaa108bb608",
+        "mode": "100644",
+        "sameAsPrior": true
+      },
+      {
+        "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahEditorSession.swift",
+        "gitBlob": "0e9d22b56bca1176a67fa57c055cd9a5f2fb6db5",
+        "mode": "100644",
+        "sameAsPrior": true
+      },
+      {
+        "path": "NativeApp/UITests/NativeLaunchTests.swift",
+        "gitBlob": "b0cb22635c7b908b27b9013c7615926790308bad",
+        "mode": "100644",
+        "sameAsPrior": true
+      },
+      {
+        "path": "Anytype/Sources/ApplicationLayer/AppConfigurators/AppConfigurator.swift",
+        "gitBlob": "17b3133094cc79c285c29d898b2e322bd27bfe1b",
+        "mode": "100644",
+        "sameAsPrior": true
+      },
+      {
+        "path": "Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorView.swift",
+        "gitBlob": "635249c36d679b823552e8f3d372056d1705db5c",
+        "mode": "100644",
+        "sameAsPrior": true
+      },
+      {
+        "path": "Anytype/Sources/ApplicationLayer/SceneDelegates/SceneDelegate.swift",
+        "gitBlob": "cd829954fee6d7a64c8441bdf41b36dd0743efbe",
+        "mode": "100644",
+        "sameAsPrior": true
+      },
+      {
+        "path": "Modules/PinkhaEngineHost/Sources/PinkhaEngineHost/PinkhaEngineHost.swift",
+        "gitBlob": "9821f005c15f993c8ded7765efcfd645b7fa0eba",
+        "mode": "100644",
+        "sameAsPrior": true
+      }
+    ],
+    "navigationWholeBodyBindings": [
+      {
+        "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeApplication.swift",
+        "bytes": 24728,
+        "sha256": "db5fac51bf6af8481b3b95f35dc5f13e216bb13dd6c8997fbf17972112d8a00c",
+        "gitBlob": "1d69d208865c2f5ae4477916520612fb1af35476"
+      },
+      {
+        "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+        "bytes": 25081,
+        "sha256": "b029c7f5e3064c3333117301478633f70a2dd8768dde57a0d1df2d38b807e775",
+        "gitBlob": "7356bed6598d094e4945d1265e67a6433ac3ab22"
+      },
+      {
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+        "bytes": 51701,
+        "sha256": "e6111e18c38b582437651cf80f420e5282d8ec473da69cf56ae67c4ef18645d4",
+        "gitBlob": "74afcb956d26ccfa709dbc392fa87ea9ae563f42"
+      },
+      {
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+        "bytes": 36115,
+        "sha256": "53e7281e78d75cf8b67391a2b9b7d9e8b844faaed034ef2e02b92f2d9ca6c55e",
+        "gitBlob": "b5c45b5568c08408b31d78e00a44cdf758d3941b"
+      },
+      {
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+        "bytes": 79276,
+        "sha256": "e868915c4ce6edc1cf2104f395af3a104750f7c745bf62023e666d582cd1bf7b",
+        "gitBlob": "8ede71cdf594e78b0f9b8ded8406a21780652380"
+      },
+      {
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+        "bytes": 36457,
+        "sha256": "bbee3b3bd5c65e7170dc99f8c0252a9310595f76eb382d1036027318e8840c3f",
+        "gitBlob": "a39d0b6c7234a64323bbe26d45554097f9fdf7fb"
+      }
+    ],
+    "method": "Primary immutable commit/tree endpoints, untruncated nonrecursive trees along only the named paths, whole-file leaf identity against retained full source. Navigation leaves match the frozen full bodies. This is a finite path proof, not a new repository-wide semantic audit."
+  },
+  "helper": {
+    "declarationPath": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+    "bytes": 2647,
+    "sha256": "75afe902b9eb729155b5eb2e3d2417ad91d6b58341eddcd0f21e8bcd71a30354",
+    "gitBlob": "cb10aa5ff0610ae820fa4dc07833c003d814680d",
+    "oldSource": {
+      "bytes": 73179,
+      "sha256": "82b5b2dd0ac3978ec6a867cb3f9220527e1a111e89a601c4f4e9baf15d2c38fb",
+      "gitBlob": "475624e12bbb9c97dc96295b107e21611a798639"
+    },
+    "newSource": {
+      "bytes": 79276,
+      "sha256": "e868915c4ce6edc1cf2104f395af3a104750f7c745bf62023e666d582cd1bf7b",
+      "gitBlob": "8ede71cdf594e78b0f9b8ded8406a21780652380"
+    },
+    "completeEnumByteIdentical": true,
+    "exactSelectionExpression": "Locale.autoupdatingCurrent.language.languageCode?.identifier == \"he\" ? hebrew : english",
+    "navigationDelta": {
+      "originalInsertionRules": 26,
+      "foregroundRules": 2,
+      "newLanguageOwnerOrOverrideFound": false,
+      "reviewedCallsites": [
+        {
+          "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+          "rule": "explicit Home operations"
+        },
+        {
+          "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+          "rule": "explicit Home route and explicit unset only"
+        },
+        {
+          "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+          "rule": "READ-authorized Home selection independent of shared-content editing"
+        },
+        {
+          "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+          "rule": "same explicit Home action for ordinary document lists"
+        },
+        {
+          "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+          "rule": "real open operation and retained acknowledgment"
+        }
+      ]
+    }
+  },
+  "remainingUncertainty": [
+    "Different APIs do not by themselves establish a mismatch. This source review does not characterize Locale.autoupdatingCurrent as OS-only or App-only.",
+    "The retained launch tests set AppleLanguages and AppleLocale. Their unchanged source does not establish the actual inverse app/OS behavior on the queued Apple product.",
+    "Recovery phrase left-to-right layout is a content-direction exception, not evidence of a selected-language override.",
+    "No source conclusion here replaces actual localized labels, empty fields, gestures or direction evidence in the already queued mixed-language matrix.",
+    "The prior report's finite startup/configurator boundary remains unchanged; this is not proof that every file in the repository lacks localization machinery."
+  ],
+  "recommendation": "Preserve the existing language mechanisms. No production rewrite, parallel language store, extra test cohort or runtime replay is justified by this continuity check. Use the already queued app-Hebrew/OS-English and app-English/OS-Hebrew acceptance to determine actual behavior.",
+  "sourceChangesProposed": 0,
+  "preservedInspectionStop": {
+    "status": "SOURCE_LOCATOR_404_ONLY",
+    "requestedPath": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyUIErrorText.swift",
+    "ref": "967cee8c801c533449182c827e79cebb79d415e4",
+    "meaning": "Assumed standalone file basename was absent. Exact declaration path will be reused from retained owner report. No source/runtime failure."
+  },
+  "actions": {
+    "sourceBodyAuditRepeated": false,
+    "resourceCatalogsRead": 0,
+    "OracleReadsOrWrites": 0,
+    "hostOrNativeOrMacCalls": 0,
+    "compilerTestsControls": 0,
+    "processQueriesSignals": 0,
+    "treesCommitsRefsChanged": 0,
+    "persistence": "Authorized unreferenced Git report blob only"
+  }
+}
