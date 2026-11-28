@@ -15,6 +15,7 @@ public enum AnyEmbeddedRuntimeError: Error, Equatable, Sendable {
     case randomGenerationFailed(Int32)
     case startFailed(code: Int32, message: String)
     case invalidBoundAddress
+    case invalidBoundNetwork
     case unexpectedVersion
     case notRunning
     case controlBusy
@@ -138,6 +139,9 @@ public struct AnyEmbeddedSession: Sendable, CustomStringConvertible, CustomDebug
     public let baseURL: URL
     public let generation: UUID
     public let engineVersion: String
+    /// Resolved by the native parser and captured with this exact successful boot.
+    /// Use this independent expectation when admitting an HTTP account/run binding.
+    public let expectedNetworkID: String
     private let controlToken: String
 
     public enum ControlOperation: Sendable {
@@ -146,9 +150,10 @@ public struct AnyEmbeddedSession: Sendable, CustomStringConvertible, CustomDebug
         case shutdown
     }
 
-    fileprivate init(baseURL: URL, engineVersion: String, controlToken: String) {
+    fileprivate init(baseURL: URL, engineVersion: String, expectedNetworkID: String, controlToken: String) {
         self.baseURL = baseURL
         self.engineVersion = engineVersion
+        self.expectedNetworkID = expectedNetworkID
         self.controlToken = controlToken
         self.generation = UUID()
     }
@@ -231,7 +236,7 @@ public actor AnyEmbeddedRuntime {
             throw AnyEmbeddedRuntimeError.invalidConfiguration
         }
         #if PINKHA_DUAL_ENGINE_RUNTIME
-        guard let result = PinkhaAnyEmbeddedBridge.start(dataDirectory: strings[0],
+        guard let result = PinkhaAnyEmbeddedBridge.startBound(dataDirectory: strings[0],
             listenAddress: strings[1], nodeConfiguration: strings[2], pushPeerID: strings[3],
             pushAddresses: strings[4], mode: strings[5], controlToken: strings[6]) else {
             throw AnyEmbeddedRuntimeError.allocationFailed
@@ -240,13 +245,14 @@ public actor AnyEmbeddedRuntime {
             throw AnyEmbeddedRuntimeError.startFailed(code: result.code, message: result.message)
         }
         let address = result.address
+        let expectedNetworkID = result.networkID
         #else
         let pointers = strings.map { strdup($0) }
         defer { pointers.forEach { free($0) } }
         guard pointers.allSatisfy({ $0 != nil }) else {
             throw AnyEmbeddedRuntimeError.allocationFailed
         }
-        var result = AnyLibStartWithMode(
+        var result = AnyLibStartBoundWithMode(
             pointers[0], pointers[1], pointers[2], pointers[3],
             pointers[4], pointers[5], pointers[6]
         )
@@ -254,6 +260,7 @@ public actor AnyEmbeddedRuntime {
             throw AnyEmbeddedRuntimeError.startFailed(code: result.code, message: Self.read(&result.message))
         }
         let address = Self.read(&result.address)
+        let expectedNetworkID = Self.read(&result.network_id)
         #endif
         guard let url = URL(string: "http://" + address),
               url.host == "127.0.0.1", let port = url.port, port > 0,
@@ -261,7 +268,13 @@ public actor AnyEmbeddedRuntime {
             anyNativeStop()
             throw AnyEmbeddedRuntimeError.invalidBoundAddress
         }
-        let session = AnyEmbeddedSession(baseURL: url, engineVersion: version, controlToken: token)
+        guard !expectedNetworkID.isEmpty, expectedNetworkID.utf8.count <= 4096,
+              expectedNetworkID.utf8.allSatisfy({ $0 > 32 && $0 != 127 }) else {
+            anyNativeStop()
+            throw AnyEmbeddedRuntimeError.invalidBoundNetwork
+        }
+        let session = AnyEmbeddedSession(baseURL: url, engineVersion: version,
+            expectedNetworkID: expectedNetworkID, controlToken: token)
         active = session
         AnyRuntimeEmergencyRegistry.shared.install(session.generation)
         return session

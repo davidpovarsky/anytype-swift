@@ -12,6 +12,7 @@ final class AnyEmbeddedRuntimeTests: XCTestCase {
         do {
             let first = try await runtime.start(dataDirectory: directory, network: network, build: .linked)
             XCTAssertEqual(first.baseURL.host, "127.0.0.1")
+            XCTAssertEqual(first.expectedNetworkID, "pinkha-native-lifecycle-test")
             XCTAssertTrue(first.engineVersion.hasPrefix(AnyEmbeddedBuild.linked.versionPrefix))
             let (health, response) = try await URLSession.shared.data(
                 for: first.authenticatedRead(path: "health"))
@@ -57,6 +58,7 @@ final class AnyEmbeddedRuntimeTests: XCTestCase {
             XCTAssertNil(stopped)
             let second = try await runtime.start(dataDirectory: directory, network: network, build: .linked)
             XCTAssertNotEqual(first.generation, second.generation)
+            XCTAssertEqual(second.expectedNetworkID, first.expectedNetworkID)
             XCTAssertNotEqual(
                 first.controlRequest(.signOut).value(forHTTPHeaderField: "X-Any-Control-Token"),
                 second.controlRequest(.signOut).value(forHTTPHeaderField: "X-Any-Control-Token")

@@ -1,0 +1,35 @@
+--- before/any/internal/embedded/embedded.go
++++ after/any/internal/embedded/embedded.go
+@@ -249,6 +249,12 @@
+ // returning one of the package's typed errors (ErrAlreadyRunning,
+ // ErrBadDataDir, ErrBadOptions or a *BootError); Code maps it.
+ func Start(opts Options) (string, error) {
++	return startEmbeddedWithBinding(opts, nil)
++}
++
++// The original lifecycle remains shared by legacy and network-bound starts.
++// A non-nil binding requests the independent identity of this exact boot.
++func startEmbeddedWithBinding(opts Options, binding *BoundStartResult) (string, error) {
+ 	// Soft memory cap, applied unconditionally at start so it is in force
+ 	// before the engine allocates. SetMemoryLimit's argument is a soft
+ 	// GOMEMLIMIT in bytes; -1 leaves it unchanged (used to read it back).
+@@ -276,11 +282,17 @@
+ 	if err := validateOptions(opts); err != nil {
+ 		return "", err
+ 	}
++	cfg := assembleConfig(opts)
++	if binding != nil {
++		networkID, err := pinBoundNetwork(&cfg)
++		if err != nil {
++			return "", err
++		}
++		binding.NetworkID = networkID
++	}
+ 	if _, err := config.EnsureDataDir(opts.DataDir); err != nil {
+ 		return "", fmt.Errorf("%w: %w", ErrBadDataDir, err)
+ 	}
+-
+-	cfg := assembleConfig(opts)
+ 
+ 	ctx, cancel := context.WithCancel(context.Background())
+ 	done := make(chan struct{})
