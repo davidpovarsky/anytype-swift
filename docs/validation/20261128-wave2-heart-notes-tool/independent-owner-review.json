@@ -1,0 +1,68 @@
+{
+  "schema": "pinkha.heart-notes.host-owner-review.v1",
+  "status": "PASS_SOURCE_REVIEW_ONLY",
+  "base": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+  "scope": "One existing Heart Inspector availableTools literal; exact session, document permission, open-action and mount ownership only. Interfaces independently owns Kit/provider trace.",
+  "sources": [
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift",
+      "bytes": 5356,
+      "sha256": "e36b7b7dbde28bbfc431a40dfbf59a49a05d973217f2b7be46a61e6cb1334bbf",
+      "gitBlob": "bf6063cbc59ab5f689486d29c9dd1661b44173bc"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/PinkhaTorahPropertiesModel.swift",
+      "bytes": 5746,
+      "sha256": "50ff5358f4813570bec1c60496fff33a1cd9a94d0065da1da27d9e0f35efb59c",
+      "gitBlob": "5c556164e65e073fbc602a4317057a2e69e2bb0a"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Flows/EditorPageFlow/EditorPageCoordinatorViewModel.swift",
+      "bytes": 5302,
+      "sha256": "bf2b8be55550995c1b9aab0fda968bd4932427950eade4c9592a3a23ffa636d1",
+      "gitBlob": "85da21c26ba18c548a482d99e4ec349c97c266e0"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Flows/EditorPageFlow/EditorPageCoordinatorView.swift",
+      "bytes": 2424,
+      "sha256": "c98a627a23a6249fe630221006c04c464aaed481658f9cbf9bc872f3ed06a27f",
+      "gitBlob": "a33fb6ac29c8c5421e7491d11b23053d49359440"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift",
+      "bytes": 1755,
+      "sha256": "8b32cb43447a4c7cf423f3a5b2e9442255c89fc6e4811f14387b9ae789c46762",
+      "gitBlob": "640bf7e0074d4db3e7a3cb6bc2c3af41a09b5ca7"
+    }
+  ],
+  "candidate": {
+    "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift",
+    "bytes": 5364,
+    "sha256": "adf601dc09bd2abee727fce05b3141f7e9344dfb2dd45b8731f99461cc7caf99",
+    "gitBlob": "a7d778a5827efd573800f96e14fdc60fd58b5fc7"
+  },
+  "change": {
+    "before": "availableTools: [.commentaries, .links, .relatedDocuments],",
+    "after": "availableTools: [.commentaries, .links, .relatedDocuments, .notes],",
+    "uniqueOccurrences": 1,
+    "addedUTF8Bytes": 8,
+    "completeInverseExact": true,
+    "allOtherBytesUnchanged": true
+  },
+  "findings": [
+    "Association policy caller is PinkhaTorahPropertiesModel.update(). Its MainActor initializer retains the supplied session only when both Space and object match the document, then calls update(). The installed weak-document closure returns false after document loss; otherwise it requires canEditRelationValues and details.isReadonly == false. observeDocument refreshes on sync and relevant identity notifications; edit rechecks current eligibility and permission.",
+    "EditorPageCoordinatorViewModel owns the session as a let, constructed for its data Space/object. Its installed open handler captures self weakly and opens the requested exact object/block in that same Space via pageNavigation.",
+    "EditorPageCoordinatorView retains its model in State, passes the same session to EditorPageView and torahEditorHost, and supplies pageNavigation on appearance. The App bridge constructs the existing Notes service using the same Space/object and association repository.",
+    "The one-line host change preserves the original three tools and order, theme.anytype, inline source navigation, existing session.hostActions plus embedded-search capability, presentationHost bindings, and all activate/deactivate, locale, snapshot, dismissal and route-observation bodies exactly.",
+    "The page model's insertion policy is a separate source-insertion guard; it is not reported as the association permission installer. This review does not establish when a mounted Properties model installs its policy in a particular UI journey."
+  ],
+  "limits": {
+    "sourceEditsByReviewer": false,
+    "compilerExecuted": false,
+    "testsExecuted": false,
+    "appleOrNativeRuntime": false,
+    "uiAcceptance": "NOT_RUN",
+    "mountedNotesAddOpenUnlinkSelector": "Not established by this owner-locator review; hosted realNativeQueryAndNoteLifecycle is not claimed as a mounted UI selector.",
+    "publicationOrRefMutation": false
+  }
+}

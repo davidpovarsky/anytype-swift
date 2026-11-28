@@ -1,0 +1,231 @@
+{
+  "schema": "wave2-heart-notes-tool-source-assessment-v1",
+  "status": "SOURCE_FINDING_CONFIRMED_MINIMAL_PROPOSAL_ONLY",
+  "refs": {
+    "app": {
+      "repository": "davidpovarsky/anytype-swift",
+      "commit": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588"
+    },
+    "kit": {
+      "repository": "davidpovarsky/TorahInspectorKit",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478"
+    },
+    "authority": "f9f86c7c8a5dea0e7fb2b7a9782483cd128d1406"
+  },
+  "finding": "Heart's explicit three-tool list omits the existing Notes tool. The current Native caller includes it. The shared Kit has an existing public notes ID, title, picker, list, retry and Add/Open/Unlink controls. There is no separate Notes availability capability gate in the inspected Kit/provider path.",
+  "existingFactory": "The already-enabled relatedDocuments content exposes torah-inspector-related-add-note and invokes the same onAddNote. The change introduces no factory/action implementation. Heart constructs AnytypeTorahNotesService; RepositoryFactory forwards its real notesFetcher. ServicesDI supplies normal shared ObjectActionsService/BlockService.",
+  "documentOwner": "EditorPageCoordinatorViewModel constructs one session with data.spaceId/data.objectId, owns it as a let, and installs a weak-self open handler that opens the returned object in the original data.spaceId. No arbitrary URL or replacement owner is introduced.",
+  "associationPolicyOwner": "Current PinkhaTorahPropertiesModel init accepts the supplied session only for matching document Space/object, then update() installs a weak-document closure: a missing document denies; otherwise canEditRelationValues && details.isReadonly == false. Document sync and relevant identity notifications call update. This proves the existing installer, not its timing in a mounted Notes journey. The added tool neither installs nor bypasses that policy.",
+  "actionAuthority": "hostActions captures the existing noteActionEpoch and Inspector selection ID before queued MainActor work. addNote, open and unlink reject stale document/selection/task state. noteMutationAuthorization checks cancellation, active document, captured epoch/selection and canEditAssociations. f9 forwards that same closure into the canonical repository's post-read/pre-dispatch guards for four Note writes and one related unlink. The native store rechecks actual object/Space, deletion/archive and current detail-write restrictions. T5NoteCreationFlow retains its original pending Note and partial-phase behavior; no rollback/deletion or permission relaxation.",
+  "notesReadBinding": [
+    "Kit selection is focus.selection. focus.id equals selection.id, whose existing composition is providerID:scope:canonicalRef:preferredSegmentRef; relationshipRef preserves section-versus-segment semantics.",
+    "The view task is keyed by (focus.id, selectedTool); focus change resets Notes panel state. Selecting Notes invokes loadNotes. Its post-await cancellation check precedes publish through the current focus+UUID request token. Failure and cancellation retain original panel semantics.",
+    "The current document session owns the repository instance and fetcher. AnytypeTorahNotesService reads current origin objectId/spaceId association data, then filters actual Note metadata by the exact selected ID; no synthetic Note provider is used.",
+    "Repository notes cache/in-flight work uses selection.id within that instance. Add/unlink/Retry use original invalidation. This source trace does not establish fresh cold-reopen data, external-change freshness, actual account/Space isolation or complete joins of existing unstructured work."
+  ],
+  "proposal": {
+    "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift",
+    "base": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+    "original": {
+      "bytes": 5356,
+      "sha256": "e36b7b7dbde28bbfc431a40dfbf59a49a05d973217f2b7be46a61e6cb1334bbf",
+      "gitBlob": "bf6063cbc59ab5f689486d29c9dd1661b44173bc"
+    },
+    "oldLiteral": "availableTools: [.commentaries, .links, .relatedDocuments]",
+    "newLiteral": "availableTools: [.commentaries, .links, .relatedDocuments, .notes]",
+    "candidate": {
+      "bytes": 5364,
+      "sha256": "adf601dc09bd2abee727fce05b3141f7e9344dfb2dd45b8731f99461cc7caf99",
+      "gitBlob": "a7d778a5827efd573800f96e14fdc60fd58b5fc7"
+    },
+    "occurrences": 1,
+    "addedUTF8Bytes": 8,
+    "fullInverseExact": true,
+    "scope": "One appended .notes only. Original three tools/order, defaults, theme, modifier chain, lifecycle, IDs, actions, service/factory/repository bodies and guards remain byte-for-byte unchanged. V8 proposal only; no source file or Git ref mutation."
+  },
+  "pendingAuthorityRegression": {
+    "commit": "f9f86c7c8a5dea0e7fb2b7a9782483cd128d1406",
+    "handoff": "docs/validation/20261127-wave2-heart-note-write-authority/acceptance-handoff.json",
+    "handoffSHA256": "3d60feef3a225f5e52072566d94d52b819e6efa9c7f5640877ffd226fe30e90b",
+    "target": "AnytypeTests",
+    "input": "AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift",
+    "currentDirectoryBytes": 98718,
+    "currentDirectoryGitBlob": "e187f8a307a79705010058cc4f21238398d72927",
+    "suite": "TorahNoteRepositoryAuthorityTests",
+    "methods": [
+      "noteCreationRejectsRetiredRepositoryDispatch(phase:retirement:)",
+      "unlinkRejectsRetiredRepositoryDispatch(phase:retirement:)"
+    ],
+    "declaredCases": [
+      4,
+      6
+    ],
+    "status": "NOT_RUN; isolated hosted selection, no replay or new enum-mirroring test",
+    "locatorCorrection": "Published handoff/current directory establish the NativeRepository input; an earlier peer RelatedDocumentActionTests locator was corrected."
+  },
+  "uiAcceptance": {
+    "kitSelectors": [
+      "torah-inspector-tools",
+      "torah-inspector-add-note",
+      "torah-inspector-note-<actual association id>",
+      "torah-inspector-note-unlink-<actual association id>",
+      "torah-inspector-related-add-note"
+    ],
+    "requiredJourney": "In an actually mounted Heart document/source Inspector, preserve Commentaries/Links/In Documents and observe Notes. Load that source's real list; Add Note, open the returned Note, return/reopen the same source, then unlink its source while retaining the Note. Observe list failure/Retry and denied retired/read-only actions. Cold reopen/Space isolation and both UI/OS language directions remain actual UI acceptance.",
+    "namedMountedTestMethod": "No confidently current automated Notes journey method/path established in this bounded trace; do not relabel the 2/10 service tests as UI evidence.",
+    "status": "NOT_RUN. No test, harness, target, producer, controller or selection changed."
+  },
+  "sourcePinColumns": [
+    "refKey",
+    "path",
+    "utf8Bytes",
+    "sha256",
+    "gitBlob"
+  ],
+  "sourcePins": [
+    [
+      "app",
+      "Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift",
+      5356,
+      "e36b7b7dbde28bbfc431a40dfbf59a49a05d973217f2b7be46a61e6cb1334bbf",
+      "bf6063cbc59ab5f689486d29c9dd1661b44173bc"
+    ],
+    [
+      "app",
+      "Anytype/Sources/PresentationLayer/Flows/EditorPageFlow/EditorPageCoordinatorViewModel.swift",
+      5302,
+      "bf2b8be55550995c1b9aab0fda968bd4932427950eade4c9592a3a23ffa636d1",
+      "85da21c26ba18c548a482d99e4ec349c97c266e0"
+    ],
+    [
+      "app",
+      "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift",
+      1755,
+      "8b32cb43447a4c7cf423f3a5b2e9442255c89fc6e4811f14387b9ae789c46762",
+      "640bf7e0074d4db3e7a3cb6bc2c3af41a09b5ca7"
+    ],
+    [
+      "app",
+      "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahEditorSession.swift",
+      54690,
+      "2f56aafeb516497c30c13bff9ba2da5c9cf626586b5a67826f65813c29bc716a",
+      "0e9d22b56bca1176a67fa57c055cd9a5f2fb6db5"
+    ],
+    [
+      "app",
+      "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+      6852,
+      "56fff3e1472e7e29ce3efde3f8b63eb6eb2c0e9a1920c36c6a99100bbe71f58e",
+      "698dc52075c73cc8f584abd458c3a46cbe075c4a"
+    ],
+    [
+      "app",
+      "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
+      14948,
+      "ea8acaf2189da1f6d08901dff6acdccafcdd01e8091ba9700a61cbb847a83839",
+      "68d32e623d1703c51ad01918df1572f7d96757c9"
+    ],
+    [
+      "app",
+      "Anytype/Sources/Pinkha/Torah/Storage/AnytypeTorahAssociationRepository.swift",
+      14838,
+      "888c0447a104813617cd0684f27aca4c133282e5125c3f20209e5556445f329c",
+      "515fa52e613eceab1218cfeed769ecebdfca7227"
+    ],
+    [
+      "app",
+      "Anytype/Sources/Pinkha/Torah/Storage/TorahAssociationNativeStore.swift",
+      5250,
+      "4f1b5751095aa55ca2b5db90a6ad1cf7bcf0eeef5bff9fbe1c40b12a13d629be",
+      "29eb7aed61023e7d2ad10660957e76f6fe07617a"
+    ],
+    [
+      "app",
+      "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahInspectorRepositoryFactory.swift",
+      1251,
+      "4f45989ad62295b72de28d2b1183e30cdcc46ee77d63418d76954fe8e83e982d",
+      "1caa1ed876de3c86368ab779ebc9b94292f2b29d"
+    ],
+    [
+      "app",
+      "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NoteCreationFlow.swift",
+      1996,
+      "bc01fc06a1826404db44e936ee70a45d2cb86b7f1214139700999d7261160381",
+      "33974736a19869537b6ac7d8528133a86a1bb6d8"
+    ],
+    [
+      "app",
+      "Modules/Services/Sources/ServicesDI.swift",
+      6087,
+      "8ed0366e5d9762ccaa4a6e73654b3d1e5396fc5abfc9fea0f004ab6aa31626ab",
+      "c09ce17d891b4cb35a8a51abb73c26ec0775d57d"
+    ],
+    [
+      "app",
+      "Modules/PinkhaTorahPresentation/Package.swift",
+      1106,
+      "e519cc067165f89741485fd10566b63e788f9219d11a56429b2d33fd1f21c494",
+      "14ad8b1b5a0411825ce8262eb7e0038994ed2dc6"
+    ],
+    [
+      "kit",
+      "Sources/TorahInspectorUI/TorahInspectorRoute.swift",
+      3134,
+      "837f7e9b025f0116bbe56b95fe4ccad628041df13c4089e04b0611f610370890",
+      "772c23e853c213ba701ce0d2b78ee91061fea54c"
+    ],
+    [
+      "kit",
+      "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+      56161,
+      "5ac7fad544a637c5e0ae0e2c497ac7e4c6fb0cde3bc232a620e44f390dab8464",
+      "c9e7b0fa676f13350fb9f04560b8d2fc3f344ed0"
+    ],
+    [
+      "kit",
+      "Sources/TorahInspectorUI/TorahPanelLoadState.swift",
+      2875,
+      "c8696cce4327712b339ae3028ced4e3c9e5e844d7631a69644371f35533044b7",
+      "d17bfe19e37af50d5a5bdec31b680c50d498ea89"
+    ],
+    [
+      "kit",
+      "Sources/TorahInspectorCore/TorahInspectorRepository.swift",
+      17499,
+      "519828f3d602811758d2698e00a06567b41d31d465b143175441f08873300040",
+      "e1f57e96079f5d93be37e1c014760763bc8d1bc7"
+    ],
+    [
+      "kit",
+      "Sources/TorahInspectorCore/Models.swift",
+      24592,
+      "59a0c8639c8c778c67ff9c60db4b979e3ba7a39dff4c3fb669a54ae23dc113a0",
+      "aeb7cc4215456c2db9bda284f7e947c643507408"
+    ],
+    [
+      "app",
+      "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+      36414,
+      "31f5200514b239b777679568c215a0ddb89fb0af9c41987d178deb2a06c408db",
+      "44418e9710c16412d3dced2e8ce53ae94eb264cc"
+    ],
+    [
+      "app",
+      "Anytype/Sources/Pinkha/Torah/UI/PinkhaTorahPropertiesModel.swift",
+      5746,
+      "50ff5358f4813570bec1c60496fff33a1cd9a94d0065da1da27d9e0f35efb59c",
+      "5c556164e65e073fbc602a4317057a2e69e2bb0a"
+    ]
+  ],
+  "limits": {
+    "sourceOnly": true,
+    "hostCalls": 0,
+    "tests": 0,
+    "compilerCalls": 0,
+    "sourceFileWrites": 0,
+    "gitWrites": 0,
+    "processQueries": 0,
+    "originalWholeBodies": "Retained in V8 from immutable primary reads; report carries pins only.",
+    "discoveryStops": "An absent guessed UI-test directory and an older retained permission-limited inspection are not completeness or runtime evidence."
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "GitMutations": 0,
+  "appendIndex": 145,
+  "appendOrdinal": 146,
+  "base": {
+    "commit": "5c88cf89dd26c70c285cd7d23951b26aeb5bc2d8",
+    "tree": "c16392569b2fccf488e21d0bbced8cf0cc752a5c"
+  },
+  "compilerInvocations": 0,
+  "exactGateScope": "All baseline-protected files are compared, including paths absent from the map. The missing host admission is separate from source-inventory validation, which returned no error.",
+  "failedTree": "8cebc5d2558466498e889af283e143622d268610",
+  "gateImplementation": {
+    "bytes": 7239,
+    "sha256": "f69d6a465db0517c5b41143c9b54aa275ecc6cbc63de6e9d20bc074d98feabf0"
+  },
+  "newMap": {
+    "bytes": 248145,
+    "gitBlob": "87b7d48812dfab3e49955da6009c2c617fdd1c75",
+    "gitMode": "100644",
+    "sha256": "d3174f2efc5e5c62d6b58306f9ca9e86271d32f2e6afa1e94d65b8bf801ae597"
+  },
+  "newRow": {
+    "baselineBlob": "bf6063cbc59ab5f689486d29c9dd1661b44173bc",
+    "from": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift",
+    "kind": "refactor",
+    "reason": "Retain every original host binding, presentation lifetime, permissions, session action and callback while exposing the existing Notes tool after the original Commentaries, Links and Related Documents tools. The sole product change is the reviewed eight-byte .notes append; the other 5356 baseline bytes remain exact.",
+    "replacementBlob": "a7d778a5827efd573800f96e14fdc60fd58b5fc7",
+    "sharedSources": [],
+    "to": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift",
+    "validation": [
+      "2026-11-28: exact primary586c98bcc17dee425664224e508fc0e8df277678 body is byte-identical to the retained pre-Notes host. Published84577c91e2949aead1d3e209ae7a45488e868edf changes only this eight-byte append, with full literal forward/inverse evidence; descendant155a0c751e2158ae9b5f0e219e1331e427c22909 retains the same host.",
+      "Original Notes source attempt failed the unchanged retention algorithm only because this baseline path had no mapping: receipt ebeba5c8eaa132052e01009d91178c39b3811b51b63ec5508296e0dfd3a5fd6c, gate8ee791586e31178497a2178e8fdecfdbd7e0a00d60951ec94459e30dce844944. Preserve all145 prior rows and the existing staged ordinary merge; see docs/validation/20261128-wave3-notes-map146-continuation/.",
+      "Source review only. New Notes/UI behavior remains NOT_RUN; original UI methods, assertions,300/900-second limits and historical closed T5 admission remain unchanged. This mapping does not prove native, visual, physical-device, optional Kit hook or originalType migration acceptance."
+    ]
+  },
+  "old145RowsAllMetadataPreserved": true,
+  "oldMap": {
+    "bytes": 246388,
+    "gitBlob": "0483ab6cdf65774c5fd66332143f7e804f7932a0",
+    "gitMode": "100644",
+    "sha256": "bdc83463b3fd37a37bd6f56e1719b11f853ac0de4527d074e29fb2c451829921"
+  },
+  "pendingSourceMatchesPrimary84577": true,
+  "primary": {
+    "contentIdentity": {
+      "bytes": 5356,
+      "gitBlob": "bf6063cbc59ab5f689486d29c9dd1661b44173bc",
+      "gitMode": "100644",
+      "sha256": "e36b7b7dbde28bbfc431a40dfbf59a49a05d973217f2b7be46a61e6cb1334bbf"
+    },
+    "url": "https://api.github.com/repos/davidpovarsky/anytype-swift/contents/Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift?ref=586c98bcc17dee425664224e508fc0e8df277678"
+  },
+  "schema": "pinkha-notes-map146-baseline-source-proof/v1",
+  "sourceWitness": {
+    "after": {
+      "bytes": 5364,
+      "gitBlob": "a7d778a5827efd573800f96e14fdc60fd58b5fc7",
+      "gitMode": "100644",
+      "sha256": "adf601dc09bd2abee727fce05b3141f7e9344dfb2dd45b8731f99461cc7caf99"
+    },
+    "afterLiteral": "availableTools: [.commentaries, .links, .relatedDocuments, .notes],",
+    "baseline": {
+      "bytes": 5356,
+      "gitBlob": "bf6063cbc59ab5f689486d29c9dd1661b44173bc",
+      "gitMode": "100644",
+      "sha256": "e36b7b7dbde28bbfc431a40dfbf59a49a05d973217f2b7be46a61e6cb1334bbf"
+    },
+    "baselineBase64": "aW1wb3J0IEZvdW5kYXRpb24KaW1wb3J0IFN3aWZ0VUkKaW1wb3J0IFRvcmFoSW5zcGVjdG9yVUkKCnN0cnVjdCBUb3JhaEVkaXRvckhvc3RNb2RpZmllcjogVmlld01vZGlmaWVyIHsKICAgIGxldCBzZXNzaW9uOiBUb3JhaEVkaXRvclNlc3Npb24/CiAgICB2YXIgcHJlc2VudGF0aW9uSG9zdDogVG9yYWhFZGl0b3JTZXNzaW9uLlByZXNlbnRhdGlvbkhvc3QgPSAuZWRpdG9yCiAgICBARW52aXJvbm1lbnQoXC5sb2NhbGUpIHByaXZhdGUgdmFyIGxvY2FsZQogICAgQFN0YXRlIHByaXZhdGUgdmFyIHJvdXRlSXNNb3VudGVkID0gZmFsc2UKCiAgICBAVmlld0J1aWxkZXIKICAgIGZ1bmMgYm9keShjb250ZW50OiBDb250ZW50KSAtPiBzb21lIFZpZXcgewogICAgICAgIGlmIGxldCBzZXNzaW9uIHsKICAgICAgICAgICAgQEJpbmRhYmxlIHZhciBzZXNzaW9uID0gc2Vzc2lvbgoKICAgICAgICAgICAgcm91dGVPYnNlcnZlZChjb250ZW50LCBzZXNzaW9uOiBzZXNzaW9uKQogICAgICAgICAgICAgICAgLnNoZWV0KAogICAgICAgICAgICAgICAgICAgIGlzUHJlc2VudGVkOiBCaW5kaW5nKAogICAgICAgICAgICAgICAgICAgICAgICBnZXQ6IHsgc2Vzc2lvbi5wcmVzZW50YXRpb25Ib3N0ID09IHByZXNlbnRhdGlvbkhvc3QgJiYgc2Vzc2lvbi5pc1NlYXJjaFByZXNlbnRlZCB9LAogICAgICAgICAgICAgICAgICAgICAgICBzZXQ6IHsgaWYgc2Vzc2lvbi5wcmVzZW50YXRpb25Ib3N0ID09IHByZXNlbnRhdGlvbkhvc3QgeyBzZXNzaW9uLmlzU2VhcmNoUHJlc2VudGVkID0gJDAgfSB9CiAgICAgICAgICAgICAgICAgICAgKSwKICAgICAgICAgICAgICAgICAgICBvbkRpc21pc3M6IHsKICAgICAgICAgICAgICAgICAgICAgICAgZ3VhcmQgc2Vzc2lvbi5wcmVzZW50YXRpb25Ib3N0ID09IHByZXNlbnRhdGlvbkhvc3QgZWxzZSB7IHJldHVybiB9CiAgICAgICAgICAgICAgICAgICAgICAgIHNlc3Npb24uc2VhcmNoRGlkRGlzbWlzcygpCiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgKSB7CiAgICAgICAgICAgICAgICAgICAgVG9yYWhTb3VyY2VzU2VhcmNoVmlldyhzZXNzaW9uOiBzZXNzaW9uKQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgLnRvcmFoSW5zcGVjdG9yU2hlZXQoCiAgICAgICAgICAgICAgICAgICAgc2VsZWN0aW9uOiBCaW5kaW5nKAogICAgICAgICAgICAgICAgICAgICAgICBnZXQ6IHsgc2Vzc2lvbi5wcmVzZW50YXRpb25Ib3N0ID09IHByZXNlbnRhdGlvbkhvc3QgPyBzZXNzaW9uLnNlbGVjdGlvbiA6IG5pbCB9LAogICAgICAgICAgICAgICAgICAgICAgICBzZXQ6IHsgaWYgc2Vzc2lvbi5wcmVzZW50YXRpb25Ib3N0ID09IHByZXNlbnRhdGlvbkhvc3QgeyBzZXNzaW9uLnNlbGVjdGlvbiA9ICQwIH0gfQogICAgICAgICAgICAgICAgICAgICksCiAgICAgICAgICAgICAgICAgICAgcmVwb3NpdG9yeTogc2Vzc2lvbi5yZXBvc2l0b3J5LAogICAgICAgICAgICAgICAgICAgIGVudHJ5TW9kZTogc2Vzc2lvbi5pbnNwZWN0b3JFbnRyeU1vZGUsCiAgICAgICAgICAgICAgICAgICAgc2VsZWN0ZWRUb29sOiAkc2Vzc2lvbi5zZWxlY3RlZFRvb2wsCiAgICAgICAgICAgICAgICAgICAgc2VsZWN0ZWREZXRlbnQ6ICRzZXNzaW9uLnNlbGVjdGVkRGV0ZW50LAogICAgICAgICAgICAgICAgICAgIGNvbmZpZ3VyYXRpb246IFRvcmFoSW5zcGVjdG9yQ29uZmlndXJhdGlvbigKICAgICAgICAgICAgICAgICAgICAgICAgYXZhaWxhYmxlVG9vbHM6IFsuY29tbWVudGFyaWVzLCAubGlua3MsIC5yZWxhdGVkRG9jdW1lbnRzXSwKICAgICAgICAgICAgICAgICAgICAgICAgYWxsb3dzSW5saW5lRnVsbFNvdXJjZU5hdmlnYXRpb246IHRydWUsCiAgICAgICAgICAgICAgICAgICAgICAgIHRoZW1lOiAuYW55dHlwZQogICAgICAgICAgICAgICAgICAgICksCiAgICAgICAgICAgICAgICAgICAgYWN0aW9uczogaW5zcGVjdG9yQWN0aW9ucyhmb3I6IHNlc3Npb24pCiAgICAgICAgICAgICAgICApCiAgICAgICAgICAgICAgICAuYWxlcnQoCiAgICAgICAgICAgICAgICAgICAgTG9jLlBpbmtoYS5Ub3JhaC50aXRsZSwKICAgICAgICAgICAgICAgICAgICBpc1ByZXNlbnRlZDogQmluZGluZygKICAgICAgICAgICAgICAgICAgICAgICAgZ2V0OiB7IHNlc3Npb24ucHJlc2VudGF0aW9uSG9zdCA9PSBwcmVzZW50YXRpb25Ib3N0ICYmIHNlc3Npb24ubWVzc2FnZSAhPSBuaWwgfSwKICAgICAgICAgICAgICAgICAgICAgICAgc2V0OiB7IGlmICEkMCB7IHNlc3Npb24ubWVzc2FnZSA9IG5pbCB9IH0KICAgICAgICAgICAgICAgICAgICApCiAgICAgICAgICAgICAgICApIHsKICAgICAgICAgICAgICAgICAgICBCdXR0b24oTG9jLm9rKSB7IHNlc3Npb24ubWVzc2FnZSA9IG5pbCB9CiAgICAgICAgICAgICAgICB9IG1lc3NhZ2U6IHsKICAgICAgICAgICAgICAgICAgICBUZXh0KHNlc3Npb24ubWVzc2FnZSA/PyAiIikKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIC50YXNrKGlkOiBzZXNzaW9uLm9iamVjdElkKSB7CiAgICAgICAgICAgICAgICAgICAgZ3VhcmQgcHJlc2VudGF0aW9uSG9zdCA9PSAuZWRpdG9yIGVsc2UgeyByZXR1cm4gfQogICAgICAgICAgICAgICAgICAgIHNlc3Npb24uYWN0aXZhdGVEb2N1bWVudCgpCiAgICAgICAgICAgICAgICAgICAgc2Vzc2lvbi51cGRhdGVFZmZlY3RpdmVMb2NhbGUobG9jYWxlKQogICAgICAgICAgICAgICAgICAgIGF3YWl0IHNlc3Npb24ucmVmcmVzaEFzc29jaWF0aW9uU25hcHNob3QoKQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgLm9uQXBwZWFyIHsKICAgICAgICAgICAgICAgICAgICBpZiBwcmVzZW50YXRpb25Ib3N0ID09IC5lZGl0b3IgewogICAgICAgICAgICAgICAgICAgICAgICBzZXNzaW9uLmFjdGl2YXRlRG9jdW1lbnQoKQogICAgICAgICAgICAgICAgICAgICAgICBpZiBQcm9jZXNzSW5mby5wcm9jZXNzSW5mby5lbnZpcm9ubWVudFsiUElOS0hBX1VJMjdfUk9VVEVfT0JTRVJWQVRJT04iXSA9PSAiMSIgewogICAgICAgICAgICAgICAgICAgICAgICAgICAgcm91dGVJc01vdW50ZWQgPSB0cnVlCiAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAub25EaXNhcHBlYXIgewogICAgICAgICAgICAgICAgICAgIGlmIHByZXNlbnRhdGlvbkhvc3QgPT0gLmVkaXRvciB7CiAgICAgICAgICAgICAgICAgICAgICAgIHNlc3Npb24uZGVhY3RpdmF0ZURvY3VtZW50KCkKICAgICAgICAgICAgICAgICAgICAgICAgaWYgUHJvY2Vzc0luZm8ucHJvY2Vzc0luZm8uZW52aXJvbm1lbnRbIlBJTktIQV9VSTI3X1JPVVRFX09CU0VSVkFUSU9OIl0gPT0gIjEiIHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJvdXRlSXNNb3VudGVkID0gZmFsc2UKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIC5vbkNoYW5nZShvZjogbG9jYWxlLmlkZW50aWZpZXIpIHsKICAgICAgICAgICAgICAgICAgICBzZXNzaW9uLnVwZGF0ZUVmZmVjdGl2ZUxvY2FsZShsb2NhbGUpCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAub25DaGFuZ2Uob2Y6IHNlc3Npb24uc2VsZWN0aW9uPy5pZCkgeyBfLCBzZWxlY3Rpb25JRCBpbgogICAgICAgICAgICAgICAgICAgIGd1YXJkIHNlc3Npb24ucHJlc2VudGF0aW9uSG9zdCA9PSBwcmVzZW50YXRpb25Ib3N0LCBzZWxlY3Rpb25JRCA9PSBuaWwgZWxzZSB7IHJldHVybiB9CiAgICAgICAgICAgICAgICAgICAgVGFzayB7IGF3YWl0IHNlc3Npb24ucmVmcmVzaEFzc29jaWF0aW9uU25hcHNob3QoKSB9CiAgICAgICAgICAgICAgICB9CiAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgY29udGVudAogICAgICAgIH0KICAgIH0KCiAgICAvLy8gT2JzZXJ2ZSB0aGUgbW91bnRlZCBzZXNzaW9uLCByYXRoZXIgdGhhbiBpbmZlciBpdHMgaWRlbnRpdHkgZnJvbSBhIHJlcXVlc3RlZCBVUkwuCiAgICAvLy8gVGhlIG9yZGluYXJ5IGFwcGxpY2F0aW9uIGFjY2Vzc2liaWxpdHkgdHJlZSBpcyB1bmNoYW5nZWQgdW5sZXNzIGV4cGxpY2l0bHkgb3B0ZWQgaW4uCiAgICBAVmlld0J1aWxkZXIKICAgIHByaXZhdGUgZnVuYyByb3V0ZU9ic2VydmVkKF8gY29udGVudDogQ29udGVudCwgc2Vzc2lvbjogVG9yYWhFZGl0b3JTZXNzaW9uKSAtPiBzb21lIFZpZXcgewogICAgICAgIGlmIHByZXNlbnRhdGlvbkhvc3QgPT0gLmVkaXRvciwKICAgICAgICAgICBQcm9jZXNzSW5mby5wcm9jZXNzSW5mby5lbnZpcm9ubWVudFsiUElOS0hBX1VJMjdfUk9VVEVfT0JTRVJWQVRJT04iXSA9PSAiMSIgewogICAgICAgICAgICBjb250ZW50CiAgICAgICAgICAgICAgICAuYWNjZXNzaWJpbGl0eUVsZW1lbnQoY2hpbGRyZW46IC5jb250YWluKQogICAgICAgICAgICAgICAgLmFjY2Vzc2liaWxpdHlJZGVudGlmaWVyKHJvdXRlSXNNb3VudGVkCiAgICAgICAgICAgICAgICAgICAgPyAicGlua2hhLXVpMjctZWRpdG9yOlwoc2Vzc2lvbi5zcGFjZUlkKTpcKHNlc3Npb24ub2JqZWN0SWQpIgogICAgICAgICAgICAgICAgICAgIDogInBpbmtoYS11aTI3LWVkaXRvci11bm1vdW50ZWQiKQogICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgIGNvbnRlbnQKICAgICAgICB9CiAgICB9CgogICAgcHJpdmF0ZSBmdW5jIGluc3BlY3RvckFjdGlvbnMoZm9yIHNlc3Npb246IFRvcmFoRWRpdG9yU2Vzc2lvbikgLT4gVG9yYWhJbnNwZWN0b3JIb3N0QWN0aW9ucyB7CiAgICAgICAgdmFyIGFjdGlvbnMgPSBzZXNzaW9uLmhvc3RBY3Rpb25zCiAgICAgICAgYWN0aW9ucy5zZWFyY2ggPSBUb3JhaEluc3BlY3RvclNlYXJjaENhcGFiaWxpdHkgeyBuYXZpZ2F0aW9uIGluCiAgICAgICAgICAgIFRvcmFoSW5zcGVjdG9yRW1iZWRkZWRTZWFyY2hWaWV3KAogICAgICAgICAgICAgICAgc2Vzc2lvbjogc2Vzc2lvbiwKICAgICAgICAgICAgICAgIG5hdmlnYXRpb246IG5hdmlnYXRpb24KICAgICAgICAgICAgKQogICAgICAgIH0KICAgICAgICByZXR1cm4gYWN0aW9ucwogICAgfQp9CgpleHRlbnNpb24gVmlldyB7CiAgICBmdW5jIHRvcmFoRWRpdG9ySG9zdCgKICAgICAgICBzZXNzaW9uOiBUb3JhaEVkaXRvclNlc3Npb24/LAogICAgICAgIHByZXNlbnRhdGlvbkhvc3Q6IFRvcmFoRWRpdG9yU2Vzc2lvbi5QcmVzZW50YXRpb25Ib3N0ID0gLmVkaXRvcgogICAgKSAtPiBzb21lIFZpZXcgewogICAgICAgIG1vZGlmaWVyKFRvcmFoRWRpdG9ySG9zdE1vZGlmaWVyKHNlc3Npb246IHNlc3Npb24sIHByZXNlbnRhdGlvbkhvc3Q6IHByZXNlbnRhdGlvbkhvc3QpKQogICAgfQp9Cg==",
+    "baselineCommit": "586c98bcc17dee425664224e508fc0e8df277678",
+    "before": {
+      "bytes": 5356,
+      "gitBlob": "bf6063cbc59ab5f689486d29c9dd1661b44173bc",
+      "gitMode": "100644",
+      "sha256": "e36b7b7dbde28bbfc431a40dfbf59a49a05d973217f2b7be46a61e6cb1334bbf"
+    },
+    "beforeLiteral": "availableTools: [.commentaries, .links, .relatedDocuments],",
+    "exactAddedBytes": 8,
+    "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift"
+  },
+  "status": "PASS_SOURCE_ONLY",
+  "testsExecuted": 0,
+  "wholeBeforeMapRestoredByRemovingLastRow": true
+}

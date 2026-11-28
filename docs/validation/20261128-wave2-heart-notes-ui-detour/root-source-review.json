@@ -1,0 +1,97 @@
+{
+  "schema": "pinkha-heart-notes-ui-detour-root-review-v1",
+  "status": "PASS_SOURCE_REVIEW_ONLY_COMPILE_UI_NOT_RUN",
+  "baseCommit": "84577c91e2949aead1d3e209ae7a45488e868edf",
+  "originalSourceRef": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+  "path": "PinkhaStage1Acceptance/Tests/PinkhaT5NativeAcceptanceUITests.swift",
+  "original": {
+    "ref": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+    "path": "PinkhaStage1Acceptance/Tests/PinkhaT5NativeAcceptanceUITests.swift",
+    "bytes": 34629,
+    "sha256": "b43f97b3c1283f05b728b15cc9871bfecc1692ca55563f1e2c1f1886ecd38d5e",
+    "gitBlob": "d4a15a8c318880c379c83a8ee2631e2fd6fa7568"
+  },
+  "candidate": {
+    "bytes": 38096,
+    "sha256": "2a71529b40bd0ae074bd891ad6b7705cf6372c17ef499b01b00ba2312f51c1a1",
+    "gitBlob": "ca8b7cb767ec7913131be8b6346f3cd6fc2b883f"
+  },
+  "checks": {
+    "methodsBefore": [
+      "testCurrentSpaceRowsAndExactBlockNavigation",
+      "testAddNoteEditOpenUnlinkAndRetainAfterRelaunch",
+      "testHebrewRelatedRowsLongTitlesAndReadOnlyNavigation"
+    ],
+    "methodsAfter": [
+      "testCurrentSpaceRowsAndExactBlockNavigation",
+      "testAddNoteEditOpenUnlinkAndRetainAfterRelaunch",
+      "testHebrewRelatedRowsLongTitlesAndReadOnlyNavigation"
+    ],
+    "observationsBefore": 13,
+    "observationsAfter": 13,
+    "addedBytes": 3467,
+    "fullForwardExact": true,
+    "fullInverseExact": true,
+    "baseParentHasExactOriginal": true
+  },
+  "findings": [
+    "The existing method explicitly requires English. The added step locates the existing segmented control, requires exactly one enabled/hittable Notes choice, then observes the real Add control and selected state.",
+    "The Notes-row predicate excludes the overlapping unlink prefix. The code waits, requires exactly one row, captures its actual full identifier and nonempty association ID, then re-queries that exact identifier with unique/enabled/hittable checks before tapping.",
+    "The actual association ID is distinct from the related-result ID and fixture target's association. The original requireCurrentDocument(noteID) and requireBody(editedBlockID,text:bodyText,hittable:true) verify the same already-created and edited Note after its actual Notes-row navigation.",
+    "Original nativeBack/openRelatedDocuments/linkedRows checks restore the original flow before its unchanged unlink, relaunch, no-restored-source and body/editability assertions.",
+    "The JSON and AX/screenshot attachments have separate Notes-specific names. No observations.append or new legacy stage is introduced. self.add explicitly resolves the existing local add XCUIElement shadow.",
+    "The full replacement reverses to the exact entire original test file; all helper, fixture, setup, three method declarations, R08 body and original statements remain unchanged. Source retention is not compiler or runtime proof."
+  ],
+  "sourceInputs": {
+    "replacement": {
+      "bytes": 3817,
+      "sha256": "8a71087fa0dabea24cc899c80ee57ac09de069ed172386d731cbc7357d89cd6f",
+      "gitBlob": "2b57d157e68f72a78cfb863cdd39d07e24d34933"
+    },
+    "authorHandoff": {
+      "bytes": 6552,
+      "sha256": "4f034def51ed71c21fdcca083277ffa38a4724cf1d507e34490d7b0e82c26957",
+      "gitBlob": "7e8c4844aff668bd6c0e170469f61fb3d1a31879"
+    },
+    "originalProposal": {
+      "bytes": 6965,
+      "sha256": "8cd6b2a6826d6457c29a574dc0ee3951b68b2e3b8907971268cbea1b954109f3",
+      "gitBlob": "0d23c4730758d60854342c980f45590d603aace8"
+    }
+  },
+  "retainedIntakeFailure": {
+    "kind": "Root source intake",
+    "file": "replacements.json",
+    "error": "fulfilled tool result had no structuredContent; the script stopped before qualifying remaining two already-issued reads",
+    "sourceChanges": 0,
+    "tests": 0,
+    "exactToolError": "MCP -32603: Internal error",
+    "completion": "The same replacements file and the other two unqualified JSON results were read and fully byte/hash qualified in a separate bounded completion. The original qualified Swift body was not reread."
+  },
+  "productPrerequisite": {
+    "commit": "84577c91e2949aead1d3e209ae7a45488e868edf",
+    "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift",
+    "bytes": 5364,
+    "sha256": "adf601dc09bd2abee727fce05b3141f7e9344dfb2dd45b8731f99461cc7caf99"
+  },
+  "limits": {
+    "testsExecuted": 0,
+    "compiler": 0,
+    "Mac": 0,
+    "NativeOrAccountOperations": 0,
+    "notesSpecificUnlink": "NOT_RUN and not selected by this positive detour",
+    "UI": "NOT_RUN",
+    "visualAndPhysical": "NOT_RUN",
+    "sourceAdmission": "Changed complete UI file requires explicit matching W3 source/compiler/App/UI product admission. Original controller/parser/fixture contracts and 300s method/900s outer allowance remain unchanged.",
+    "firstAppleOrder": "22 focus methods/34 cases -> original preparation -> four original Stage1 UI",
+    "oldT5": "Historical 36+9 retained without replay"
+  },
+  "workflow": {
+    "unchangedSubtree": "6c902a0b4534a833972c3ba3e98ea16356b63d52",
+    "retainedOriginalWorkflowRead": "8e6fe6d8f47c0229853e8948edbd58ca01dd1a9e",
+    "yamlWorkflows": 83,
+    "pushDefinitions": 5,
+    "noMatchingBranchTrigger": true,
+    "noCreateEvent": true
+  }
+}

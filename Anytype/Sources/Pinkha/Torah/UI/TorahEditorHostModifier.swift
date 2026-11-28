@@ -36,7 +36,7 @@ struct TorahEditorHostModifier: ViewModifier {
                     selectedTool: $session.selectedTool,
                     selectedDetent: $session.selectedDetent,
                     configuration: TorahInspectorConfiguration(
-                        availableTools: [.commentaries, .links, .relatedDocuments],
+                        availableTools: [.commentaries, .links, .relatedDocuments, .notes],
                         allowsInlineFullSourceNavigation: true,
                         theme: .anytype
                     ),

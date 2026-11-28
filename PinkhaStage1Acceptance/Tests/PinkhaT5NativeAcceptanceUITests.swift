@@ -181,6 +181,54 @@ final class PinkhaT5NativeAcceptanceUITests: XCTestCase {
         try nativeBack(to: origin.objectID)
         try openRelatedDocuments()
         try requireRows(expected: linkedRows)
+
+        // Notes rows carry origin association IDs, not related-result IDs.
+        // Reuse the one Note already created and edited by the original journey.
+        let notesPicker = app.segmentedControls["torah-inspector-tools"]
+        try require(notesPicker.waitForExistence(timeout: 30) && notesPicker.isHittable,
+                    "The existing Inspector tool picker is unavailable")
+        let notesChoices = notesPicker.buttons.matching(NSPredicate(format: "label == %@", "Notes"))
+        try require(notesChoices.count == 1 && notesChoices.element(boundBy: 0).isEnabled
+                    && notesChoices.element(boundBy: 0).isHittable, "The real Notes tool is not uniquely reachable")
+        let notesChoice = notesChoices.element(boundBy: 0)
+        notesChoice.tap()
+        let notesAdd = app.buttons["torah-inspector-add-note"]
+        try require(notesAdd.waitForExistence(timeout: 30) && notesAdd.isEnabled && notesAdd.isHittable,
+                    "The selected Notes tool did not expose its real Add note action")
+        try require(notesChoice.isSelected, "The real Notes tool is not selected")
+        let notesRowPrefix = "torah-inspector-note-"
+        let notesRows = app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@ AND NOT (identifier BEGINSWITH %@)",
+            notesRowPrefix, "torah-inspector-note-unlink-"))
+        try require(notesRows.firstMatch.waitForExistence(timeout: 45) && notesRows.count == 1,
+                    "The fresh origin must expose exactly the one UI-created Note")
+        let notesRowIdentifier = notesRows.element(boundBy: 0).identifier
+        let notesAssociationID = String(notesRowIdentifier.dropFirst(notesRowPrefix.count))
+        try require(!notesAssociationID.isEmpty, "The actual Notes row has no association identity")
+        let exactNotesRows = app.buttons.matching(NSPredicate(format: "identifier == %@", notesRowIdentifier))
+        try require(exactNotesRows.count == 1 && exactNotesRows.element(boundBy: 0).isEnabled
+                    && exactNotesRows.element(boundBy: 0).isHittable, "The observed Notes row is not uniquely reachable")
+        let notesObservation: [String: Any] = [
+            "protocolVersion": 1, "scope": "notes-tool-positive-detour",
+            "spaceID": fixture.spaceID, "originObjectID": origin.objectID,
+            "uiCreatedNoteObjectID": noteID, "uiEditedBlockID": editedBlockID,
+            "actualNotesAssociationID": notesAssociationID,
+            "actualNotesRowIdentifier": notesRowIdentifier, "actualNotesRowCount": notesRows.count,
+            "actualSelectedToolLabel": notesChoice.label, "actualNotesToolSelected": notesChoice.isSelected
+        ]
+        let notesData = try JSONSerialization.data(withJSONObject: notesObservation, options: [.sortedKeys])
+        let notesAttachment = XCTAttachment(data: notesData, uniformTypeIdentifier: "public.json")
+        notesAttachment.name = "t5-notes-tool-positive-observation"
+        notesAttachment.lifetime = .keepAlways
+        self.add(notesAttachment)
+        attachEvidence("t5-notes-tool-positive-list")
+        exactNotesRows.element(boundBy: 0).tap()
+        try requireCurrentDocument(noteID)
+        try requireBody(editedBlockID, text: bodyText, hittable: true)
+        attachEvidence("t5-notes-tool-positive-opened-note")
+        try nativeBack(to: origin.objectID)
+        try openRelatedDocuments()
+        try requireRows(expected: linkedRows)
         let unlinkRow = relatedRow(noteResultID)
         try require(unlinkRow.isHittable, "The Note result cannot expose its real context menu")
         unlinkRow.press(forDuration: 1.0)

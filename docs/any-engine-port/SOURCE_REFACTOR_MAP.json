@@ -2514,6 +2514,20 @@
       "validation": [
         "Source-only full literal inverses, unchanged original authority declarations and exact four-method/five-case compiler/enumeration profile. No compiler, test, host or native runtime execution in this source packet; future actual shared-App acceptance remains required."
       ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift",
+      "to": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift",
+      "baselineBlob": "bf6063cbc59ab5f689486d29c9dd1661b44173bc",
+      "replacementBlob": "a7d778a5827efd573800f96e14fdc60fd58b5fc7",
+      "reason": "Retain every original host binding, presentation lifetime, permissions, session action and callback while exposing the existing Notes tool after the original Commentaries, Links and Related Documents tools. The sole product change is the reviewed eight-byte .notes append; the other 5356 baseline bytes remain exact.",
+      "sharedSources": [],
+      "validation": [
+        "2026-11-28: exact primary586c98bcc17dee425664224e508fc0e8df277678 body is byte-identical to the retained pre-Notes host. Published84577c91e2949aead1d3e209ae7a45488e868edf changes only this eight-byte append, with full literal forward/inverse evidence; descendant155a0c751e2158ae9b5f0e219e1331e427c22909 retains the same host.",
+        "Original Notes source attempt failed the unchanged retention algorithm only because this baseline path had no mapping: receipt ebeba5c8eaa132052e01009d91178c39b3811b51b63ec5508296e0dfd3a5fd6c, gate8ee791586e31178497a2178e8fdecfdbd7e0a00d60951ec94459e30dce844944. Preserve all145 prior rows and the existing staged ordinary merge; see docs/validation/20261128-wave3-notes-map146-continuation/.",
+        "Source review only. New Notes/UI behavior remains NOT_RUN; original UI methods, assertions,300/900-second limits and historical closed T5 admission remain unchanged. This mapping does not prove native, visual, physical-device, optional Kit hook or originalType migration acceptance."
+      ]
     }
   ],
   "integration": {
