@@ -1,0 +1,59 @@
+{
+  "schema": "pinkha-root-two-ordinary-syntax-actual-v1",
+  "status": "PASS_TWO_EXACT_BODIES_SYNTAX_ONLY",
+  "job": "ab2ed5ca88134e578672dbc6210dec5e",
+  "tool": {
+    "returncode": 0,
+    "durationSeconds": 0.5
+  },
+  "controller": {
+    "gitBlob": "816b84311b16e527642d55d6fd00af88a8e8dd3d",
+    "bytes": 78995,
+    "sha256": "bbbb30f7bfc80bbffc9c5afec66f5bf0e8721e72f6626af72e77a5c4af5619da"
+  },
+  "raw": {
+    "gitBlob": "ef368a0382bc13af42f63a39c831f1cd2d15ca93",
+    "bytes": 3596,
+    "sha256": "197e1cfc5f1850d25482a53d8d71021b2a2ffa1b27f245c4c0ca8d5c61705244",
+    "encoding": "Exact returned SentinelX stdout string, unmodified; original integer nanosecond metadata retained verbatim."
+  },
+  "startedAtUTC": "2026-11-28T11:45:19.368350+00:00",
+  "endedAtUTC": "2026-11-28T11:45:19.810334+00:00",
+  "controllerSeconds": 0.441972,
+  "sourceRows": [
+    {
+      "bytes": 34082,
+      "gitBlob": "63b61c3adc6b7f8eb9f4c5914bab3c1945ca47d0",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+      "sealedInputUnchanged": true,
+      "sha256": "8f20637c4f856f00f8e1b05f45195cb6f65d3dff659e72c64e73a0380fb12404"
+    },
+    {
+      "bytes": 13899,
+      "gitBlob": "b576c085c8dfd5f02a8643073ce3be866fa16e16",
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryMigrationProducerTests.swift",
+      "sealedInputUnchanged": true,
+      "sha256": "7fad6aac645aca2e37c3c1dcfa5a30f7d0357881dc87a2e56132f84922d8ce3b"
+    }
+  ],
+  "normalClosedGroups": 2,
+  "diagnosticBytes": 0,
+  "errors": [],
+  "frontendUnchanged": true,
+  "peer": {
+    "gitBlob": "b7dab1557ddbc6e1d1fb067c37b958c4ace35822",
+    "sha256": "be98193231c81668f8531b637e7daef9ace5df49d0b9561bf0432894db34237d"
+  },
+  "derivation": {
+    "gitBlob": "24d7c10372f7ab6d268c88eea702b8c6964b430e",
+    "onlyChangedDonorLines": [
+      3,
+      196
+    ],
+    "unchangedLines": 230,
+    "oldMalformedUnrunController": "d823dc1ccb3cea1633d1e3f4db673d97c1a7f8ad",
+    "malformedControllerAttempts": 0
+  },
+  "interpretation": "Only Swift5 parse syntax for the final changed producer and new seven-control source. No imports/typecheck/link/test/native/current-App/Apple conditional or runtime authority acceptance. Frozen C20 semantic graph unchanged; old five/thirteen sources were not replayed unchanged.",
+  "resourcePolicyUnchanged": true
+}

@@ -1,0 +1,354 @@
+{
+  "schema": "pinkha-explicit-ordinary14-source-publication-readback-v1",
+  "status": "PASS_SOURCE_PUBLICATION_AND_EXACT_SYNTAX_ONLY",
+  "repository": "davidpovarsky/anytype-swift",
+  "branch": "refs/heads/codex/chatgpt-wave15-w1-direct-capture-producer-20261128",
+  "sourceCommit": "d9855b4b7e3b292e833ffa4576ee449b9c9d7159",
+  "parentCommit": "c85f8950c3b7b5d2234edaf992b185688ff9fad1",
+  "parentTree": "43c470a8d1cc53f1b19aa6b36d686196f35e8304",
+  "sourceTree": "b72325c54d4aa0d46d6ffd28f598737ba7948246",
+  "actualRefReadback": {
+    "sha": "d9855b4b7e3b292e833ffa4576ee449b9c9d7159",
+    "type": "commit",
+    "url": "https://api.github.com/repos/davidpovarsky/anytype-swift/git/commits/d9855b4b7e3b292e833ffa4576ee449b9c9d7159"
+  },
+  "sourceCommitReadback": {
+    "sha": "d9855b4b7e3b292e833ffa4576ee449b9c9d7159",
+    "parents": [
+      "c85f8950c3b7b5d2234edaf992b185688ff9fad1"
+    ],
+    "tree": "b72325c54d4aa0d46d6ffd28f598737ba7948246"
+  },
+  "fileCount": 29,
+  "fileBytes": 750963,
+  "activeChanges": [
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+      "blob": "63b61c3adc6b7f8eb9f4c5914bab3c1945ca47d0",
+      "bytes": 34082,
+      "sha256": "8f20637c4f856f00f8e1b05f45195cb6f65d3dff659e72c64e73a0380fb12404",
+      "kind": "production",
+      "mode": "100644"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryMigrationProducerTests.swift",
+      "blob": "b576c085c8dfd5f02a8643073ce3be866fa16e16",
+      "bytes": 13899,
+      "sha256": "7fad6aac645aca2e37c3c1dcfa5a30f7d0357881dc87a2e56132f84922d8ce3b",
+      "kind": "new-seven-method-tests",
+      "mode": "100644"
+    }
+  ],
+  "newEvidenceCount": 27,
+  "manifest": {
+    "blob": "09c1cb2cfe7ceff274e9f5c8e505c14046249792",
+    "bytes": 11353,
+    "sha256": "f8393ca18af0c52a082a828b44130e8da333404f7e0e2b8a10cec827c3e965bb"
+  },
+  "beforeimageAdmission": {
+    "parent": "c85f8950c3b7b5d2234edaf992b185688ff9fad1",
+    "tree": "43c470a8d1cc53f1b19aa6b36d686196f35e8304",
+    "producer": {
+      "path": "Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "19892c31e9c027395f0e89fcc59edefcabe9f4ab",
+      "size": 17059,
+      "url": "https://api.github.com/repos/davidpovarsky/anytype-swift/git/blobs/19892c31e9c027395f0e89fcc59edefcabe9f4ab"
+    },
+    "newTestAbsent": true,
+    "evidencePrefixAbsent": true
+  },
+  "wholeReadbacks": [
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+      "blob": "63b61c3adc6b7f8eb9f4c5914bab3c1945ca47d0",
+      "bytes": 34082,
+      "sha256": "8f20637c4f856f00f8e1b05f45195cb6f65d3dff659e72c64e73a0380fb12404",
+      "wholeReadback": true
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryMigrationProducerTests.swift",
+      "blob": "b576c085c8dfd5f02a8643073ce3be866fa16e16",
+      "bytes": 13899,
+      "sha256": "7fad6aac645aca2e37c3c1dcfa5a30f7d0357881dc87a2e56132f84922d8ce3b",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/before/AnyHeartNativeMigrationProducer.swift",
+      "blob": "19892c31e9c027395f0e89fcc59edefcabe9f4ab",
+      "bytes": 17059,
+      "sha256": "3d69a030340e8718bd082726e69abebb32cc8428cd9201c1a00afa7803055e01",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/CONTRACT.json",
+      "blob": "8b24944e3e9b49de7badececac5b9c1a859ce2b7",
+      "bytes": 6919,
+      "sha256": "1047a4e106c317b219de8b41e0d5ce5d6493050bcee675991db973c9005e88f2",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/FILES.json",
+      "blob": "09c1cb2cfe7ceff274e9f5c8e505c14046249792",
+      "bytes": 11353,
+      "sha256": "f8393ca18af0c52a082a828b44130e8da333404f7e0e2b8a10cec827c3e965bb",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/inverse/graph-count-label.json",
+      "blob": "5eb8753d4cc13cb3bb21abe3bbe3c5e5a2e78875",
+      "bytes": 1255,
+      "sha256": "566cd1d7383e0a15b9d784293bf85b07eaea64df6fcbecb2558ad80d84173e48",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/inverse/initial-five-insertions.json",
+      "blob": "f8b77b6395f28615095cb7ac9525cb275bdbd3bf",
+      "bytes": 19264,
+      "sha256": "1242df803deb254eeb13b3684a4331a07b7bc0033d25b3343e4a89f984dd91c3",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/inverse/one-run-and-final-delivery.json",
+      "blob": "f0b63f50657b50b10e64ac666e1846228407f516",
+      "bytes": 6728,
+      "sha256": "d7d4cbc13027cdc00435113349849fdd4b12d9f33ec27a14420e1e6436d2f9c9",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/inverse/preserve-canonical-directory.json",
+      "blob": "ef9853abc600d2ac2ed761cbc4e57192f6ceaa3a",
+      "bytes": 2003,
+      "sha256": "84382f50ff5ba9e90b6a0f44fc56f7bdb8c306594b5cac4466c1024152e97dba",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/inverse/pure-comparison-extraction.json",
+      "blob": "b1294ef710ebfe1a225d714f4dbf4c59cba10d14",
+      "bytes": 5487,
+      "sha256": "5a2410984a49da235dcc0300b68bb81a6cc8c24bf2fe66f0b4a67468e3531980",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/peers/cutover-operation-lifetime.json",
+      "blob": "5db532a10339d041f9c780f0b05962825611195d",
+      "bytes": 10734,
+      "sha256": "b4044a816e2cdaf6df5e98cc9e568379bd0ab09eab0cc3051b3ce97becf599fa",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/peers/network-seven-control-constructors.json",
+      "blob": "ef9df20aadcff963c6b3ccb532a7f55ba6e26ecc",
+      "bytes": 7271,
+      "sha256": "dda2b3ede98d3b0b5e05cb49d91a66a2548b29b0ce6feeb69b76984c31804b9d",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/peers/network-two-body-syntax-controller.json",
+      "blob": "b7dab1557ddbc6e1d1fb067c37b958c4ace35822",
+      "bytes": 4274,
+      "sha256": "be98193231c81668f8531b637e7daef9ace5df49d0b9561bf0432894db34237d",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/peers/root-source-and-graph.json",
+      "blob": "29e5ca43f8e8102d867bf0798b03a5538b7ba9cc",
+      "bytes": 8758,
+      "sha256": "c34049db706954a980005387b71b477e7131116b0cb18561584f840e813e2084",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/qualification/SOURCE_GRAPH.json",
+      "blob": "8eadb6f69ffc283218dba7e090eff7204adfd3dd",
+      "bytes": 105293,
+      "sha256": "642129c377e9881cbeeabb466efe015001ccc5c03305da167bba77d423331197",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/README.md",
+      "blob": "4e78a948f06c6c2c5ecd45a745a6538fc1ba9c14",
+      "bytes": 8530,
+      "sha256": "b756c61ffb2d9daee826678402eea6981dae621d12f75710308ebafbd7d408ab",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/superseded/CONTRACT-before-actual-syntax.json",
+      "blob": "f5500b66db180dfb554d6958f44b8c1882aae0e7",
+      "bytes": 4973,
+      "sha256": "db70515498790be214783c92930f21e4b6fc2deee5476f4e0dfa649036ebf3e2",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/superseded/parse_two_sources_malformed_not_run.py",
+      "blob": "d823dc1ccb3cea1633d1e3f4db673d97c1a7f8ad",
+      "bytes": 78996,
+      "sha256": "2733d574df86301f5651210829d8471d3b43ceea92085908b86c707d9f370f77",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/superseded/parser-initial-preparation.json",
+      "blob": "e913c836d75a4a6cf9a76ae41cb7e07b329b641e",
+      "bytes": 1603,
+      "sha256": "e0a7c70f7cf772b48afd372bd9886507b5bcf360a806acba99fd92a58475b96c",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/superseded/producer-before-canonical-directory.swift",
+      "blob": "e47d35291a15dbddfce2659cd1b5dc647781097f",
+      "bytes": 33613,
+      "sha256": "0a9899d7abcb4c08b113ce7cadd83841ee9063f43bea5f2d4138549de79b5193",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/superseded/producer-before-pure-extraction.swift",
+      "blob": "407179ac31b83760adffa1f9b535e5e760466f0e",
+      "bytes": 32689,
+      "sha256": "ffbf15632e7b9971781e0dfaf42fcc15423ce68faac9ec8a7273f4aecc260c30",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/superseded/producer-before-shared-run-and-final-fence.swift",
+      "blob": "4681ba9377cd555151815793c813da45603d1d46",
+      "bytes": 32195,
+      "sha256": "aee89b0a250aead61ebb42dd75daa81d8cb9f71a3c389b8d6a81a091270e0238",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/superseded/README-before-actual-syntax.md",
+      "blob": "a911f4650014fc43f0cbb51f192fec1577647b57",
+      "bytes": 6927,
+      "sha256": "e6e3f1250cdfaee3cebb39ce60ee998b7637837cb05f3e594ff76d661497bcc1",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/superseded/source-graph-before-canonical-directory.json",
+      "blob": "a15e74a5e51bf9f29bb3b30c8eb80ac9e3eed247",
+      "bytes": 104728,
+      "sha256": "8e8a9f4743aab65a3b909d7d3dff689f3f20094503d660795881c70af88022ad",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/superseded/source-graph-before-count-label-correction.json",
+      "blob": "615a4a07d13eeb62a05c9cecb4b90580ad81403f",
+      "bytes": 105186,
+      "sha256": "7b97a5a2dd6bad3732e6dd0d414cad76aa5a842cc9c5d5a711ab98565e31bdb2",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/syntax/actual-metadata.json",
+      "blob": "a3c6c7f5026712a971115e5504981612621b54bc",
+      "bytes": 2373,
+      "sha256": "0390137ecd496999823927ca9e34fd0c77085614a8decdab0deb74dce924530e",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/syntax/actual-raw.json",
+      "blob": "ef368a0382bc13af42f63a39c831f1cd2d15ca93",
+      "bytes": 3596,
+      "sha256": "197e1cfc5f1850d25482a53d8d71021b2a2ffa1b27f245c4c0ca8d5c61705244",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/syntax/controller-derivation.json",
+      "blob": "24d7c10372f7ab6d268c88eea702b8c6964b430e",
+      "bytes": 2180,
+      "sha256": "2f1fd7835319b8e5a7a4d6725f4fb78ae9c1525e33ca44a44045ea4583cdff89",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/ordinary14_producer_20261128/syntax/parse_two_exact_sources.py",
+      "blob": "816b84311b16e527642d55d6fd00af88a8e8dd3d",
+      "bytes": 78995,
+      "sha256": "bbbb30f7bfc80bbffc9c5afec66f5bf0e8721e72f6626af72e77a5c4af5619da",
+      "wholeReadback": true
+    }
+  ],
+  "treeVerification": {
+    "root": {
+      "before": "43c470a8d1cc53f1b19aa6b36d686196f35e8304",
+      "after": "b72325c54d4aa0d46d6ffd28f598737ba7948246",
+      "unchangedExcept": [
+        "Modules",
+        "Tools"
+      ]
+    },
+    "modules": {
+      "before": "e3f5b814bea65bb559caa794cef8e9a8bdd5416c",
+      "after": "71a982e0df4ea5a82f5bf9b81c862f886b234cd5",
+      "unchangedExcept": [
+        "PinkhaAnyHost"
+      ]
+    },
+    "host": {
+      "before": "161e22219e15d00df880acae96ec1a1898a87a05",
+      "after": "5fac0267be99c7d32192c29195ca26618c8118d1",
+      "recursiveBefore": 178,
+      "recursiveAfter": 179,
+      "onlyChangedLeaves": [
+        "Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+        "Tests/PinkhaAnyHostTests/NativeOrdinaryMigrationProducerTests.swift"
+      ],
+      "allOtherModeTypeGitSizeRowsExact": true
+    },
+    "tools": {
+      "before": "3cf76b0b3510727b4f6ab7bf73b7d343d1695b1c",
+      "after": "6e65a00a88f6849a3bbe1d084e6d837c8476cd78",
+      "unchangedExcept": [
+        "AnyEngineValidation"
+      ]
+    },
+    "validation": {
+      "before": "701255735fb548d56f209669d873849f6fa9edf1",
+      "after": "9500aaf24e4e768396cd277f5c6c626a704ee6c8",
+      "onlyAdded": "ordinary14_producer_20261128",
+      "everyPriorChildExact": true
+    },
+    "evidence": {
+      "tree": "97a40056a1342d0b851b379646ea0e13e8679f64",
+      "exactCompleteFileCount": 27,
+      "noUndeclaredFiles": true
+    },
+    "allTreesNotTruncated": true,
+    "allUndeclaredParentObjectsAndModesUnchanged": true,
+    "frozen131GraphUnchanged": true
+  },
+  "actualSyntax": {
+    "raw": {
+      "blob": "ef368a0382bc13af42f63a39c831f1cd2d15ca93",
+      "bytes": 3596,
+      "sha256": "197e1cfc5f1850d25482a53d8d71021b2a2ffa1b27f245c4c0ca8d5c61705244"
+    },
+    "metadata": {
+      "blob": "a3c6c7f5026712a971115e5504981612621b54bc",
+      "bytes": 2373,
+      "sha256": "0390137ecd496999823927ca9e34fd0c77085614a8decdab0deb74dce924530e"
+    },
+    "job": "ab2ed5ca88134e578672dbc6210dec5e",
+    "exactSources": 2,
+    "normalClosedGroups": 2,
+    "diagnostics": 0,
+    "languageMode": 5,
+    "parseOnly": true
+  },
+  "interpretation": {
+    "newPublicAPI": "executeWithOrdinaryProperties(_:inDestination:)",
+    "oldExecuteBodyUnchanged": true,
+    "componentGraph": {
+      "files": 128,
+      "production": 127,
+      "testFiles": 1,
+      "selected": 7,
+      "executed": 0
+    },
+    "currentNativeExecutionAccepted": false,
+    "realMigrationCompletionAsserted": false,
+    "semanticTypecheckOrAppBuild": false,
+    "AppUIOrFinalIntegrationRefChanged": false,
+    "oneDestinationRunRetainedAcrossBothStagesBySource": true,
+    "actualAppSelectionNamespaceOwnershipAndPersistenceStillRequired": true,
+    "resourceGatesUnchanged": true,
+    "historicalUnrunSourceAndParserFindingsPreserved": true
+  },
+  "thisEvidenceAddition": "This record is added as one normal child after the independently read-back source commit; it is excluded from that source commit's 29-file set."
+}

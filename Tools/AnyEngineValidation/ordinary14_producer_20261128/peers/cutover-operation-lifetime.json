@@ -1,0 +1,217 @@
+{
+  "schema": "pinkha-e-ordinary14-full-operation-lifetime-source-peer-v1",
+  "status": "SOURCE_ONLY_CLEAR_IN_SCOPED_OPERATION_LIFETIME_REVIEW",
+  "reviewer": "E /root/cutover",
+  "repository": "davidpovarsky/anytype-swift",
+  "target": {
+    "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+    "gitBlobSHA": "63b61c3adc6b7f8eb9f4c5914bab3c1945ca47d0",
+    "bytes": 34082,
+    "sha256": "8f20637c4f856f00f8e1b05f45195cb6f65d3dff659e72c64e73a0380fb12404"
+  },
+  "scope": "Retained destination run, complete presentation-owned invocation, callback admission lifetime, local final checks, cancellation/drain wait graph. Root separately owns semantic namespace/native functional joins; N separately owns new pure test constructor/refusal checks.",
+  "sources": [
+    {
+      "role": "Prior accepted foundation",
+      "gitBlobSHA": "19892c31e9c027395f0e89fcc59edefcabe9f4ab",
+      "bytes": 17059,
+      "sha256": "3d69a030340e8718bd082726e69abebb32cc8428cd9201c1a00afa7803055e01"
+    },
+    {
+      "gitBlobSHA": "4681ba9377cd555151815793c813da45603d1d46",
+      "bytes": 32195,
+      "sha256": "aee89b0a250aead61ebb42dd75daa81d8cb9f71a3c389b8d6a81a091270e0238"
+    },
+    {
+      "gitBlobSHA": "407179ac31b83760adffa1f9b535e5e760466f0e",
+      "bytes": 32689,
+      "sha256": "ffbf15632e7b9971781e0dfaf42fcc15423ce68faac9ec8a7273f4aecc260c30"
+    },
+    {
+      "gitBlobSHA": "e47d35291a15dbddfce2659cd1b5dc647781097f",
+      "bytes": 33613,
+      "sha256": "0a9899d7abcb4c08b113ce7cadd83841ee9063f43bea5f2d4138549de79b5193"
+    },
+    {
+      "gitBlobSHA": "f8b77b6395f28615095cb7ac9525cb275bdbd3bf",
+      "bytes": 19264,
+      "sha256": "1242df803deb254eeb13b3684a4331a07b7bc0033d25b3343e4a89f984dd91c3"
+    },
+    {
+      "gitBlobSHA": "f0b63f50657b50b10e64ac666e1846228407f516",
+      "bytes": 6728,
+      "sha256": "d7d4cbc13027cdc00435113349849fdd4b12d9f33ec27a14420e1e6436d2f9c9"
+    },
+    {
+      "gitBlobSHA": "b1294ef710ebfe1a225d714f4dbf4c59cba10d14",
+      "bytes": 5487,
+      "sha256": "5a2410984a49da235dcc0300b68bb81a6cc8c24bf2fe66f0b4a67468e3531980"
+    },
+    {
+      "gitBlobSHA": "ef9853abc600d2ac2ed761cbc4e57192f6ceaa3a",
+      "bytes": 2003,
+      "sha256": "84382f50ff5ba9e90b6a0f44fc56f7bdb8c306594b5cac4466c1024152e97dba"
+    }
+  ],
+  "completeTargetBodyRead": true,
+  "independentLiteralComparison": {
+    "schema": "pinkha-e-ordinary14-full-operation-source-comparison-v1",
+    "status": "PASS_LITERAL_SOURCE_COMPARISONS_ONLY",
+    "base": {
+      "blob": "19892c31e9c027395f0e89fcc59edefcabe9f4ab",
+      "bytes": 17059,
+      "sha256": "3d69a030340e8718bd082726e69abebb32cc8428cd9201c1a00afa7803055e01"
+    },
+    "final": {
+      "blob": "63b61c3adc6b7f8eb9f4c5914bab3c1945ca47d0",
+      "bytes": 34082,
+      "sha256": "8f20637c4f856f00f8e1b05f45195cb6f65d3dff659e72c64e73a0380fb12404"
+    },
+    "stages": [
+      {
+        "name": "19892 to4681 five insertions",
+        "edits": 5,
+        "forward": true,
+        "inverse": true,
+        "before": {
+          "bytes": 17059,
+          "sha256": "3d69a030340e8718bd082726e69abebb32cc8428cd9201c1a00afa7803055e01"
+        },
+        "after": {
+          "bytes": 32195,
+          "sha256": "aee89b0a250aead61ebb42dd75daa81d8cb9f71a3c389b8d6a81a091270e0238"
+        }
+      },
+      {
+        "proof": "f0b63f50657b50b10e64ac666e1846228407f516",
+        "edits": 6,
+        "forward": true,
+        "inverse": true,
+        "before": {
+          "bytes": 32195,
+          "sha256": "aee89b0a250aead61ebb42dd75daa81d8cb9f71a3c389b8d6a81a091270e0238"
+        },
+        "after": {
+          "bytes": 32689,
+          "sha256": "ffbf15632e7b9971781e0dfaf42fcc15423ce68faac9ec8a7273f4aecc260c30"
+        }
+      },
+      {
+        "proof": "b1294ef710ebfe1a225d714f4dbf4c59cba10d14",
+        "edits": 1,
+        "forward": true,
+        "inverse": true,
+        "before": {
+          "bytes": 32689,
+          "sha256": "ffbf15632e7b9971781e0dfaf42fcc15423ce68faac9ec8a7273f4aecc260c30"
+        },
+        "after": {
+          "bytes": 33613,
+          "sha256": "0a9899d7abcb4c08b113ce7cadd83841ee9063f43bea5f2d4138549de79b5193"
+        }
+      },
+      {
+        "proof": "ef9853abc600d2ac2ed761cbc4e57192f6ceaa3a",
+        "edits": 1,
+        "forward": true,
+        "inverse": true,
+        "before": {
+          "bytes": 33613,
+          "sha256": "0a9899d7abcb4c08b113ce7cadd83841ee9063f43bea5f2d4138549de79b5193"
+        },
+        "after": {
+          "bytes": 34082,
+          "sha256": "8f20637c4f856f00f8e1b05f45195cb6f65d3dff659e72c64e73a0380fb12404"
+        }
+      }
+    ],
+    "unchangedCore": [
+      {
+        "name": "original invalidate and wrappers",
+        "bytes": 1142,
+        "sha256": "570ad2c28c0cb278c14e2cc0b6a7b03aef873a0a5fd36439cefd637281ceee5b",
+        "exact": true
+      },
+      {
+        "name": "withOwnedOperation",
+        "bytes": 1238,
+        "sha256": "0b52f6315ed4ae0d8c7dfaf9a76fd0e355b62bd2407bcb39e03f24e2561b83e7",
+        "exact": true
+      },
+      {
+        "name": "requireActive and verifySource",
+        "bytes": 474,
+        "sha256": "e00ea868402161cb2a1c2e47f50f34e7d65b24435b40e186ac20583aca6897e5",
+        "exact": true
+      },
+      {
+        "name": "original ticket and checkpoint checks",
+        "bytes": 1121,
+        "sha256": "9c02eb68e97feba3dae22c9d4403c75eaa068b6e502d80647d393badfb09f61d",
+        "exact": true
+      },
+      {
+        "name": "destination run admission",
+        "bytes": 1276,
+        "sha256": "085fce46dad38ad74d77a8f21ac02821c23145c32f7c347f350a43fde65f209e",
+        "exact": true
+      },
+      {
+        "name": "old public execute entire body and spacing",
+        "bytes": 446,
+        "sha256": "bedc5c06eee290c302c58708895cd49fc2e85a5916536aa352829a57809b895c",
+        "exact": true
+      }
+    ],
+    "operations": {
+      "finishHasNoAwaitInBody": true,
+      "callerStillHasActorHopAwait": true,
+      "sourceAndNativeFinalObservationsRemainInsideDestinationCallback": true,
+      "wholeDestinationInvocationInsideRegisteredTask": true,
+      "originalLifetimeCoreIdentical": true
+    },
+    "swiftParsing": false,
+    "compilation": false,
+    "tests": false,
+    "nativeCalls": 0,
+    "oracleCalls": 0
+  },
+  "findings": [
+    "The new public ordinary method calls the existing withOwnedOperation around the entire inDestination invocation, then the actor-isolated local finalizer. The registered task is not limited to the callback body.",
+    "ordinaryPending is reserved before the first callback suspension and blocks another entry even before prepared data exists. It holds the actual prepared completion and both private storage admissions through presentation validation and return.",
+    "produceOrdinary captures one actual AnyNativeAccountRunBinding before either stage, passes it through the private optional hook to produce, and uses that same immutable run for every supplemental destination admission. Old execute omits the hook and retains its original run acquisition.",
+    "Every supplemental source binding must exactly match the expected subset before translation to the original complete source binding. verifySource remains unchanged and checks the registered ticket and cancellation on both sides of original source.revalidate.",
+    "Both storage scopes and current ticket bracket native authorization. The original executor/verifier retain their source/destination checks; this peer does not infer atomic remote source/destination authority.",
+    "After the actual E operation returns, finishOrdinary performs local storage and two completed-journal/reference comparisons, checks the active ticket/cancellation, clears pending and returns the retained completion. It neither revalidates source remotely nor starts a new native operation.",
+    "finishOrdinary has a synchronous body, but its caller still uses await to enter the producer actor. The result is not an atomic continuation of the presentation's final MainActor gate. Actual App persistence must validate its current owner/selection, as the existing contract requires.",
+    "On error, discardOrdinary clears only the matching pending ticket and runs after the inDestination invocation returned or threw. Journals and partial effects are retained; no rollback or successful completion is synthesized.",
+    "Original invalidation latches inactive and cancels before suspension, starts original source cleanup independently, joins the registered task even if native close fails, and preserves retryable cleanup behavior. verifySource never awaits the producer cleanup task, so the new ordinary path adds no source-cleanup/producer join cycle."
+  ],
+  "waitGraph": [
+    "Registered producer task -> actual presentation operation -> original session.perform -> produceOrdinary and its executor/source/native awaits.",
+    "Source revalidation failure -> original source account invalidation only, never producer join.",
+    "External producer invalidation -> independent original native cleanup, then registered producer task terminal, then rethrow native cleanup result if needed.",
+    "Presentation invocation terminal -> actor entry to synchronous two-journal finalizer -> original withOwnedOperation final ticket/cancellation check."
+  ],
+  "limits": [
+    "No Swift parsing, typechecking, compilation, test execution, Oracle call or native/account action occurred in this peer.",
+    "Cooperative cancellation and the actual presentation adapter must await all callback-owned work. An arbitrary adapter that starts unjoined tasks is outside this contract.",
+    "The private storage scope checks paths and retained descriptors; the real App namespace owner must keep names stable through operation drain. No OS rename lock is inferred.",
+    "The current source/native READ/Writer authorities remain those of the original runtime and executor. Locators, routing directories and historical checkpoints confer none.",
+    "The new seven pure tests and their constructor/schema assertions are not cleared by this lifetime peer.",
+    "The old4681 draft's two Root findings are preserved: independent run selection between stages and extra source await after E return. This clearance applies only to the corrected final63b61c body.",
+    "The separate131-file semantic graph is unchanged and excludes this new Ordinary14 producer."
+  ],
+  "priorAcceptedLifetimePeer": {
+    "gitBlobSHA": "50a9780180a2367794111b1f353c7ea8750417b4",
+    "role": "Prior E source ownership peer; its dependency findings are reused only for blocks independently proved unchanged here."
+  },
+  "execution": {
+    "swiftParser": 0,
+    "compiler": 0,
+    "tests": 0,
+    "native": 0,
+    "oracle": 0,
+    "sourceEdits": 0
+  }
+}

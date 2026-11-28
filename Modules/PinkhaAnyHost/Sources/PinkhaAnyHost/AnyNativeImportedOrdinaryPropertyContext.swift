@@ -16,6 +16,7 @@ public enum AnyNativeImportedOrdinaryPropertyContextError: Error, Equatable, Sen
 public struct AnyNativeImportedOrdinaryPropertyReference: Codable, Sendable {
     public static let version = "pinkha-native-imported-ordinary14-context-v1"
     public static let maximumBytes = 4096
+    public static let partitionVersion = "pinkha-native-imported-ordinary14-partition-context-v2"
     public let contract: String
     public let checkpointScope: String
     public let preservationReferenceSHA256: String
@@ -26,6 +27,8 @@ public struct AnyNativeImportedOrdinaryPropertyReference: Codable, Sendable {
     public let namespaceIntentID: String
     public let namespaceSHA256: String
     public let mappingsSHA256: String
+    public private(set) var partition: AnyHeartNativeOrdinaryPropertyPartition? = nil
+    public var hasSupplementalCheckpoint: Bool { partition?.newSourceObjectIDs.isEmpty != true }
     public var grantsNativeAuthority: Bool { false }
 
     /// Routing correspondence only. The plan and original mappings must come
@@ -52,11 +55,63 @@ public struct AnyNativeImportedOrdinaryPropertyReference: Codable, Sendable {
         try validate(); try Task.checkCancellation()
     }
 
+    /// A partial overlap has a real missing-only checkpoint. An all-present
+    /// partition binds the original checkpoint and has no second completion.
+    /// All-new input delegates to the exact legacy v1 constructor.
+    public init(preservationReference: AnyNativeImportedContextReference,
+                bundle: AnyHeartNativeSpaceBundle,
+                preservationCheckpoint: AnyDestinationSavedCheckpoint,
+                supplementalCheckpoint: AnyDestinationSavedCheckpoint?) throws {
+        let completion = try Self.completion(preservationReference: preservationReference,
+            bundle: bundle, checkpoint: preservationCheckpoint)
+        if completion.partition.reusedSourceObjectIDs.isEmpty {
+            guard let supplementalCheckpoint else {
+                throw AnyNativeImportedOrdinaryPropertyContextError.missingCheckpoint
+            }
+            self = try Self(preservationReference: preservationReference, bundle: bundle,
+                completedPreservationPlan: preservationCheckpoint.plan,
+                completedPreservationMappings: preservationCheckpoint.mappings,
+                checkpoint: supplementalCheckpoint)
+            return
+        }
+        let checkpoint: AnyDestinationSavedCheckpoint
+        if completion.missingPlan != nil {
+            guard let supplementalCheckpoint else {
+                throw AnyNativeImportedOrdinaryPropertyContextError.missingCheckpoint
+            }
+            try completion.requireCheckpoint(supplementalCheckpoint)
+            checkpoint = supplementalCheckpoint
+            checkpointScope = "completed-missing-ordinary14-on-preservation"
+        } else {
+            guard supplementalCheckpoint == nil else {
+                throw AnyNativeImportedOrdinaryPropertyContextError.changedCheckpoint
+            }
+            checkpoint = preservationCheckpoint
+            checkpointScope = "ordinary14-already-imported-in-preservation"
+        }
+        contract = Self.partitionVersion
+        partition = completion.partition
+        preservationReferenceSHA256 = AnyContentDigest.sha256(try preservationReference.encoded())
+        supplementPlanID = checkpoint.plan.binding.planID
+        supplementPlanSHA256 = checkpoint.plan.binding.planSHA256
+        supplementCheckpointSHA256 = checkpoint.checkpointSHA256
+        namespaceOwnerID = completion.namespace.ownerID
+        namespaceIntentID = completion.namespace.intent.intentID
+        namespaceSHA256 = AnyContentDigest.sha256(
+            try AnyDestinationMigrationJournal.encoded(completion.namespace))
+        mappingsSHA256 = AnyContentDigest.sha256(
+            try AnyDestinationMigrationJournal.encoded(checkpoint.mappings))
+        try validate(); try Task.checkCancellation()
+    }
+
     public func binding(preservation: AnyNativeImportedContextReference) throws
         -> AnyPreparedMigrationPlanBinding {
         try validate()
         guard AnyContentDigest.sha256(try preservation.encoded()) == preservationReferenceSHA256,
-              supplementPlanID != preservation.planID else {
+              hasSupplementalCheckpoint ? supplementPlanID != preservation.planID :
+                (supplementPlanID == preservation.planID &&
+                 supplementPlanSHA256 == preservation.planSHA256 &&
+                 supplementCheckpointSHA256 == preservation.checkpointSHA256) else {
             throw AnyNativeImportedOrdinaryPropertyContextError.invalidReference
         }
         return try .init(workspace: preservation.binding.workspace, storeID: preservation.storeID,
@@ -79,9 +134,25 @@ public struct AnyNativeImportedOrdinaryPropertyReference: Codable, Sendable {
     }
 
     private func validate() throws {
-        guard Self.same(contract, Self.version),
-              Self.same(checkpointScope, "completed-ordinary14-on-preservation"),
-              AnyEditorBlock.validID(namespaceOwnerID),
+        if Self.same(contract, Self.version) {
+            guard partition == nil,
+                  Self.same(checkpointScope, "completed-ordinary14-on-preservation") else {
+                throw AnyNativeImportedOrdinaryPropertyContextError.invalidReference
+            }
+        } else {
+            guard Self.same(contract, Self.partitionVersion), let partition,
+                  !partition.reusedSourceObjectIDs.isEmpty else {
+                throw AnyNativeImportedOrdinaryPropertyContextError.invalidReference
+            }
+            try partition.validate()
+            let expected = partition.newSourceObjectIDs.isEmpty
+                ? "ordinary14-already-imported-in-preservation"
+                : "completed-missing-ordinary14-on-preservation"
+            guard Self.same(checkpointScope, expected) else {
+                throw AnyNativeImportedOrdinaryPropertyContextError.invalidReference
+            }
+        }
+        guard AnyEditorBlock.validID(namespaceOwnerID),
               [preservationReferenceSHA256, supplementPlanID, supplementPlanSHA256,
                supplementCheckpointSHA256, namespaceIntentID, namespaceSHA256, mappingsSHA256]
                 .allSatisfy(AnyDestinationPlanChecks.digest) else {
@@ -92,16 +163,19 @@ public struct AnyNativeImportedOrdinaryPropertyReference: Codable, Sendable {
     private enum CodingKeys: String, CodingKey, CaseIterable {
         case contract, checkpointScope, preservationReferenceSHA256
         case supplementPlanID, supplementPlanSHA256, supplementCheckpointSHA256
-        case namespaceOwnerID, namespaceIntentID, namespaceSHA256, mappingsSHA256
+        case namespaceOwnerID, namespaceIntentID, namespaceSHA256, mappingsSHA256, partition
     }
 
     public init(from decoder: any Decoder) throws {
         let all = try decoder.container(keyedBy: AnyImportedOrdinaryPropertyCodingKey.self)
-        guard Set(all.allKeys.map(\.stringValue)) == Set(CodingKeys.allCases.map(\.rawValue)) else {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        let contract = try c.decode(String.self, forKey: .contract)
+        let keys = Set(CodingKeys.allCases.map(\.rawValue))
+        let expectedKeys = Self.same(contract, Self.version) ? keys.subtracting(["partition"]) : keys
+        guard Set(all.allKeys.map(\.stringValue)) == expectedKeys else {
             throw AnyNativeImportedOrdinaryPropertyContextError.invalidReference
         }
-        let c = try decoder.container(keyedBy: CodingKeys.self)
-        contract = try c.decode(String.self, forKey: .contract)
+        self.contract = contract
         checkpointScope = try c.decode(String.self, forKey: .checkpointScope)
         preservationReferenceSHA256 = try c.decode(String.self, forKey: .preservationReferenceSHA256)
         supplementPlanID = try c.decode(String.self, forKey: .supplementPlanID)
@@ -111,7 +185,29 @@ public struct AnyNativeImportedOrdinaryPropertyReference: Codable, Sendable {
         namespaceIntentID = try c.decode(String.self, forKey: .namespaceIntentID)
         namespaceSHA256 = try c.decode(String.self, forKey: .namespaceSHA256)
         mappingsSHA256 = try c.decode(String.self, forKey: .mappingsSHA256)
+        if !Self.same(contract, Self.version) {
+            partition = try c.decode(AnyHeartNativeOrdinaryPropertyPartition.self, forKey: .partition)
+        }
         try validate()
+    }
+
+    static func completion(preservationReference: AnyNativeImportedContextReference,
+                           bundle: AnyHeartNativeSpaceBundle,
+                           checkpoint: AnyDestinationSavedCheckpoint) throws
+        -> AnyHeartNativeOrdinaryPropertyCompletionPlan {
+        let plan = checkpoint.plan, source = plan.source
+        guard AnyNativeImportedContextReference.sameBinding(plan.binding, preservationReference.binding),
+              checkpoint.checkpointSHA256 == preservationReference.checkpointSHA256,
+              try AnyDestinationSavedCheckpoint.fingerprint(plan: plan, mappings: checkpoint.mappings) ==
+                preservationReference.checkpointSHA256,
+              Self.same(source.accountID, preservationReference.sourceAccountID),
+              Self.same(source.spaceID, preservationReference.sourceSpaceID),
+              source.captureManifestSHA256 == preservationReference.captureManifestSHA256,
+              source.witnessSHA256 == preservationReference.sourceWitnessSHA256 else {
+            throw AnyNativeImportedOrdinaryPropertyContextError.invalidReference
+        }
+        return try AnyHeartNativeOrdinaryPropertyCompletionPlan(bundle: bundle, preservation: checkpoint,
+            supplementalCanonicalDefinitions: preservationReference.supplementalCanonicalDefinitions)
     }
 
     static func supplement(preservationReference: AnyNativeImportedContextReference,
@@ -179,8 +275,8 @@ public struct AnyNativeImportedOrdinaryPropertyReference: Codable, Sendable {
     static func same(_ a: String, _ b: String) -> Bool { Data(a.utf8) == Data(b.utf8) }
 }
 
-/// Historical routing for the exact fourteen committed definitions. It keeps
-/// their own plan/intent bindings distinct from the original182 checkpoint.
+/// Historical routing for the exact fourteen committed definitions. New rows
+/// retain their supplemental binding; reused rows retain the original binding.
 /// Current namespace, definition and lease observations happen on every use.
 public struct AnyNativeImportedOrdinaryPropertyContext: Sendable {
     public let reference: AnyNativeImportedOrdinaryPropertyReference
@@ -191,7 +287,7 @@ public struct AnyNativeImportedOrdinaryPropertyContext: Sendable {
     public var provesCurrentNativeState: Bool { false }
     public var permitsMigrationReplay: Bool { false }
     public var permitsSourceAdmission: Bool { false }
-    private let propertyDirectory: AnyNativeImportedDefinitionDirectory
+    private let propertyDirectory: AnyNativeImportedDefinitionDirectory?
     private let intents: [AnyDestinationNativeIntent]
 
     init(reference: AnyNativeImportedOrdinaryPropertyReference,
@@ -199,23 +295,75 @@ public struct AnyNativeImportedOrdinaryPropertyContext: Sendable {
          bundle: AnyHeartNativeSpaceBundle,
          completedPreservationPlan: AnyDestinationMigrationPlan,
          completedPreservationMappings: [AnyDestinationMigrationMapping],
-         checkpoint: AnyDestinationSavedCheckpoint) throws {
-        let expected = try AnyNativeImportedOrdinaryPropertyReference(
-            preservationReference: preservationReference, bundle: bundle,
-            completedPreservationPlan: completedPreservationPlan,
-            completedPreservationMappings: completedPreservationMappings, checkpoint: checkpoint)
-        guard try reference.encoded() == expected.encoded() else {
-            throw AnyNativeImportedOrdinaryPropertyContextError.changedCheckpoint
+         checkpoint: AnyDestinationSavedCheckpoint,
+         preservationCheckpoint: AnyDestinationSavedCheckpoint? = nil) throws {
+        if reference.partition != nil {
+            guard let preservationCheckpoint,
+                  try AnyDestinationMigrationJournal.encoded(preservationCheckpoint.plan) ==
+                    AnyDestinationMigrationJournal.encoded(completedPreservationPlan),
+                  try AnyDestinationMigrationJournal.encoded(preservationCheckpoint.mappings) ==
+                    AnyDestinationMigrationJournal.encoded(completedPreservationMappings) else {
+                throw AnyNativeImportedOrdinaryPropertyContextError.changedCheckpoint
+            }
+            let completion = try AnyNativeImportedOrdinaryPropertyReference.completion(
+                preservationReference: preservationReference, bundle: bundle,
+                checkpoint: preservationCheckpoint)
+            let additional = reference.hasSupplementalCheckpoint ? checkpoint : nil
+            let expected = try AnyNativeImportedOrdinaryPropertyReference(
+                preservationReference: preservationReference, bundle: bundle,
+                preservationCheckpoint: preservationCheckpoint, supplementalCheckpoint: additional)
+            guard try reference.encoded() == expected.encoded() else {
+                throw AnyNativeImportedOrdinaryPropertyContextError.changedCheckpoint
+            }
+            self.reference = reference
+            namespace = completion.namespace
+            sourceObjectIDs = completion.sourceRelations.map(\.objectID)
+            if let plan = completion.missingPlan {
+                try completion.requireCheckpoint(checkpoint)
+                savedPlan = plan; mappings = checkpoint.mappings; intents = checkpoint.intents
+                propertyDirectory = try AnyNativeImportedDefinitionDirectory(
+                    plan: plan, mappings: checkpoint.mappings)
+            } else {
+                savedPlan = preservationCheckpoint.plan
+                mappings = preservationCheckpoint.mappings; intents = preservationCheckpoint.intents
+                propertyDirectory = nil
+            }
+            try requireCheckpoint(checkpoint)
+            try Task.checkCancellation()
+        } else {
+            let expected = try AnyNativeImportedOrdinaryPropertyReference(
+                preservationReference: preservationReference, bundle: bundle,
+                completedPreservationPlan: completedPreservationPlan,
+                completedPreservationMappings: completedPreservationMappings, checkpoint: checkpoint)
+            guard try reference.encoded() == expected.encoded() else {
+                throw AnyNativeImportedOrdinaryPropertyContextError.changedCheckpoint
+            }
+            let supplement = try AnyNativeImportedOrdinaryPropertyReference.supplement(
+                preservationReference: preservationReference, bundle: bundle,
+                plan: completedPreservationPlan, mappings: completedPreservationMappings)
+            self.reference = reference; savedPlan = checkpoint.plan; mappings = checkpoint.mappings
+            namespace = supplement.namespace; sourceObjectIDs = supplement.sourceRelations.map(\.objectID)
+            propertyDirectory = try AnyNativeImportedDefinitionDirectory(plan: checkpoint.plan,
+                mappings: checkpoint.mappings)
+            intents = checkpoint.intents
+            try Task.checkCancellation()
         }
-        let supplement = try AnyNativeImportedOrdinaryPropertyReference.supplement(
-            preservationReference: preservationReference, bundle: bundle,
-            plan: completedPreservationPlan, mappings: completedPreservationMappings)
-        self.reference = reference; savedPlan = checkpoint.plan; mappings = checkpoint.mappings
-        namespace = supplement.namespace; sourceObjectIDs = supplement.sourceRelations.map(\.objectID)
-        propertyDirectory = try AnyNativeImportedDefinitionDirectory(plan: checkpoint.plan,
-            mappings: checkpoint.mappings)
-        intents = checkpoint.intents
-        try Task.checkCancellation()
+    }
+
+    var expectedSupplementalBinding: AnyPreparedMigrationPlanBinding? {
+        reference.hasSupplementalCheckpoint ? savedPlan.binding : nil
+    }
+
+    func expectedCreationBinding(sourceObjectID: String) throws -> AnyPreparedMigrationPlanBinding {
+        guard sourceObjectIDs.contains(where: { Data($0.utf8) == Data(sourceObjectID.utf8) }) else {
+            throw AnyNativeImportedOrdinaryPropertyContextError.changedDefinition(sourceObjectID)
+        }
+        if reference.partition?.reusedSourceObjectIDs.contains(where: {
+            Data($0.utf8) == Data(sourceObjectID.utf8)
+        }) == true {
+            return namespace.binding
+        }
+        return savedPlan.binding
     }
 
     func merging(into preservation: AnyNativeImportedDefinitionDirectory) throws
@@ -225,6 +373,7 @@ public struct AnyNativeImportedOrdinaryPropertyContext: Sendable {
                 AnyDestinationMigrationJournal.encoded(namespace.source) else {
             throw AnyNativeImportedOrdinaryPropertyContextError.changedCheckpoint
         }
+        guard let propertyDirectory else { return preservation }
         return try .init(preservation: preservation, propertySupplement: propertyDirectory)
     }
 

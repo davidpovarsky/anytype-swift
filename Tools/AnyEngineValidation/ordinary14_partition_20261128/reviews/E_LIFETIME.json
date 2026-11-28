@@ -1,0 +1,197 @@
+{
+  "schema": "pinkha-ordinary14-overlap-lifetime-source-peer-v1",
+  "status": "SOURCE_CLEAR_IN_REQUESTED_FULL_OPERATION_LIFETIME_SCOPE",
+  "reviewer": "E cutover",
+  "repository": "davidpovarsky/anytype-swift",
+  "inputs": {
+    "producer": {
+      "gitBlobSHA": "44f934e77ba85730a3c136a144c6eebeef63edab",
+      "bytes": 35352,
+      "sha256": "014ef0ee8268783b574b5e76ab8c945b95545f0ef6a1822ec874a1443a85bfa3"
+    },
+    "predecessor": {
+      "gitBlobSHA": "63b61c3adc6b7f8eb9f4c5914bab3c1945ca47d0",
+      "bytes": 34082,
+      "sha256": "8f20637c4f856f00f8e1b05f45195cb6f65d3dff659e72c64e73a0380fb12404"
+    },
+    "completeLiteralProof": {
+      "gitBlobSHA": "264098aba5fb6fa94151f0115fc378192cf93b65",
+      "bytes": 41946,
+      "sha256": "e48e25caa55fcc1830bf400cb13555830287d177cd2d81a7b24ef49bafad270d"
+    },
+    "completionHelper": {
+      "gitBlobSHA": "38ced39313dd522541a69b5e2517288059495b9f",
+      "bytes": 21252,
+      "sha256": "dc8852c773a98b8b1814222f051a4b5b0eeee0dbbb05649fb40561555df3e213",
+      "readScope": "Only observeDefinitions and directory methods plus surrounding declared interface; not an independent whole partition/helper review"
+    }
+  },
+  "scope": "Optional supplemental storage, absent-second-plan branch, retained destination run, complete presentation operation ownership, current ticket checks, final synchronous body and cancellation/drain. Root owns strict descriptor/provenance/partition and cold-reference correctness.",
+  "performed": {
+    "fullProducerRead": true,
+    "wholeLiteralForwardInverse": true,
+    "literalEdits": [
+      {
+        "index": 0,
+        "occurrences": 1
+      },
+      {
+        "index": 1,
+        "occurrences": 1
+      },
+      {
+        "index": 2,
+        "occurrences": 1
+      },
+      {
+        "index": 3,
+        "occurrences": 1
+      },
+      {
+        "index": 4,
+        "occurrences": 1
+      },
+      {
+        "index": 5,
+        "occurrences": 1
+      },
+      {
+        "index": 6,
+        "occurrences": 2
+      },
+      {
+        "index": 7,
+        "occurrences": 1
+      },
+      {
+        "index": 8,
+        "occurrences": 1
+      },
+      {
+        "index": 9,
+        "occurrences": 1
+      },
+      {
+        "index": 10,
+        "occurrences": 1
+      },
+      {
+        "index": 11,
+        "occurrences": 1
+      }
+    ],
+    "unchangedCompleteTextBlocks": [
+      {
+        "name": "execute",
+        "bytes": 446,
+        "sha256": "bedc5c06eee290c302c58708895cd49fc2e85a5916536aa352829a57809b895c",
+        "wholeTextUnchanged": true
+      },
+      {
+        "name": "executeWithOrdinaryProperties",
+        "bytes": 943,
+        "sha256": "19d1ecd801a940fb721026e96b952e0e4e47c0cbbec5f1f47478201ce13a37f8",
+        "wholeTextUnchanged": true
+      },
+      {
+        "name": "invalidate",
+        "bytes": 971,
+        "sha256": "1a3f5f7b9d0f79381363156458a11bfcfb544846d1ecaea8d8933d29ef592e1a",
+        "wholeTextUnchanged": true
+      },
+      {
+        "name": "cancelAndRelease",
+        "bytes": 171,
+        "sha256": "664fd966da0a7e7597863b6b86d605a94a038494a8ca8c5c1831fdc42a389300",
+        "wholeTextUnchanged": true
+      },
+      {
+        "name": "withOwnedOperation",
+        "bytes": 1238,
+        "sha256": "0b52f6315ed4ae0d8c7dfaf9a76fd0e355b62bd2407bcb39e03f24e2561b83e7",
+        "wholeTextUnchanged": true
+      },
+      {
+        "name": "requireActive",
+        "bytes": 173,
+        "sha256": "8c48e6583f1a854816f6a63268b3f0cdd3005f0708635a07af79ceedcf2e7aa9",
+        "wholeTextUnchanged": true
+      },
+      {
+        "name": "verifySource",
+        "bytes": 301,
+        "sha256": "317128d7e23f3852d68f19ce726b49d312ddf87808c8cad5a383050382fc37aa",
+        "wholeTextUnchanged": true
+      },
+      {
+        "name": "produce",
+        "bytes": 6130,
+        "sha256": "1f95171d65fce3f7736e90eaec228554bf74fd9ccc2e408104dae0b04e139f0b",
+        "wholeTextUnchanged": true
+      },
+      {
+        "name": "discardAndCurrentTicket",
+        "bytes": 260,
+        "sha256": "bb903c5f958072e32fb4a7f7111b9b6956da2ff3a0e6cfd6fab7097d6ffd89fc",
+        "wholeTextUnchanged": true
+      },
+      {
+        "name": "destinationAdmission",
+        "bytes": 1276,
+        "sha256": "085fce46dad38ad74d77a8f21ac02821c23145c32f7c347f350a43fde65f209e",
+        "wholeTextUnchanged": true
+      }
+    ],
+    "pythonOrSwiftParserInvoked": false,
+    "compilerInvoked": false,
+    "testsExecuted": 0,
+    "nativeInvoked": false,
+    "accountOrFixturePayloadRead": false,
+    "oracleOperation": false
+  },
+  "findings": [
+    {
+      "topic": "Entire destination operation remains owned",
+      "evidence": "executeWithOrdinaryProperties and withOwnedOperation are whole-text unchanged. The registered typed task surrounds the actual inDestination invocation, its final destination session/presentation validation, the actor entry into finishOrdinary and the outer ticket/cancellation checks. There is no producer task inserted into the original source account's cleanup join.",
+      "implication": "The existing late destination-result and external invalidation ownership boundary is retained."
+    },
+    {
+      "topic": "One retained native run",
+      "evidence": "produceOrdinary acquires one run before either stage, builds destination admission from it, and passes that same run to unchanged produce(requiredDestinationRun:). All subsequent authorizations use that retained destination admission.",
+      "implication": "The overlap branch does not reacquire or silently switch destination run between stages."
+    },
+    {
+      "topic": "Only an actual missing plan owns supplemental effects",
+      "evidence": "ordinaryStorage is optional and constructed only under if let plan = stage.completion.missingPlan. The second executor, verifier and completed-checkpoint read are in that same conditional branch. In the absent-plan branch, checkpoint and verification are explicitly nil.",
+      "implication": "All-present input creates no empty plan, second executor/verifier invocation, new supplemental journal, or invented second native completion."
+    },
+    {
+      "topic": "Original admission remains retained in either branch",
+      "evidence": "preservationStorage is always created from the actual preservation binding and held in OrdinaryPrepared through the full E invocation. Each authorize checks the current ticket, original and optional storage, retained destination admission, storage again and current ticket. The pending callback latch is installed before first suspension.",
+      "implication": "Making the supplemental storage optional does not drop original scope admission or permit a second callback to enter."
+    },
+    {
+      "topic": "Current observations stay within the destination callback",
+      "evidence": "Reused definitions are observed before new supplemental effects, and all selected definitions are observed before callback completion. The read method invokes the passed authorize before/after bounded current definition reads and namespace observations. Source revalidation and destination authorizations finish before produceOrdinary returns.",
+      "implication": "This is sequential current observation under the existing lease/run checks, not an atomic global schema snapshot. Exact descriptor/reuse semantics are for the separate Root peer."
+    },
+    {
+      "topic": "Final completion preserves optionality and returns retained values",
+      "evidence": "finishOrdinary checks the supplied references/checkpoint digests against its retained OrdinaryPrepared value, revalidates original and optional storage, rereads the original checkpoint, conditionally rereads only a real supplemental checkpoint, and rebuilds/compares the reference. It checks the ticket again, clears only its pending result and returns the retained expected completion.",
+      "implication": "An adapter cannot substitute a verification/directory result merely by returning matching reference bytes. All-present mode keeps the second checkpoint absent through final delivery."
+    },
+    {
+      "topic": "No new final source/native await or cleanup cycle",
+      "evidence": "finishOrdinary has a synchronous actor-isolated body with no source/native await. Calling it still requires the existing actor hop after E returns; the final App persistence boundary remains separately owned. executeWithOrdinaryProperties catches errors, discards only the matching pending ticket and rethrows. External invalidate, source revalidate and withOwnedOperation bodies are byte-identical.",
+      "implication": "No new wait edge or second-scope drain was introduced by this delta. Cooperative cancellation and existing source-close retry obligations remain."
+    }
+  ],
+  "limitations": [
+    "No parser, semantic typecheck, component test, native account, or Apple application proof is established by this source review.",
+    "The new partition helper, Context/Owner cold routing and exact descriptor/provenance enforcement require the separate Root functional peer.",
+    "The final actor hop and App post-return persistence are not an atomic remote transaction or a lasting native authority grant.",
+    "Callbacks must await their owned work and cooperate with cancellation; no new cleanup timeout or forced task termination is introduced.",
+    "New branch controls are still in preparation. No existing method pass is replayed or relabeled.",
+    "The frozen semantic131 graph and its original20 method selection are unchanged and do not include this later proposal."
+  ]
+}

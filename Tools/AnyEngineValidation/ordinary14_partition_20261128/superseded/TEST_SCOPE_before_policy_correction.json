@@ -1,0 +1,396 @@
+{
+  "schema": "pinkha.ordinary14.partition-controls.v1",
+  "status": "SOURCE_ONLY_NOT_PARSED_TYPECHECKED_OR_RUN",
+  "test": {
+    "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryPropertyPartitionTests.swift",
+    "blob": "bcec972ee80374440061f84b470efbe5adce280c",
+    "bytes": 34534,
+    "sha256": "80cf96ad5403db7bec9070bf6982685b72c5d768179e7cd464e171d085ac7380"
+  },
+  "selectedMethods": [
+    "testAllNewKeepsExactLegacyPlanAndClosedV1ReferenceBytes",
+    "testPartialOverlapImportsOnlyMissingAndPreservesOriginalCreationBindings",
+    "testAllPresentKeepsOriginalCheckpointAndHasNoSecondPlanOrCompletion",
+    "testReusedMappingIntentAndExactDescriptorProvenanceCannotBeSubstituted",
+    "testColdPartialReferenceReconstructsBothExactBindingsAndRejectsChangedPartition",
+    "testColdAllPresentUsesOnlyOriginalCheckpointAndRejectsForeignBinding",
+    "testPartitionCodecRefusesDuplicatesUnknownFieldsAndLegacyFieldInjection",
+    "testCancellationRefusesPartitionBeforeReturningHistoricalCorrespondence"
+  ],
+  "selectedCount": 8,
+  "scope": "Actual immutable14 source descriptors from two exact retained original inputs; explicitly synthetic destination plans/mappings/native intent observations and closed locators. No journal/executor/producer/client/native/old182 operation runs.",
+  "fixtureInputs": {
+    "count": 2,
+    "totalBytes": 3458499,
+    "actualInputAdmissionProof": {
+      "blob": "a454802f6b3afaf6e9a74b3855f38554c4db859a",
+      "bytes": 3809,
+      "sha256": "8fb7eb0e6ac3e57c81943050f3337c61cdc6d8ec084fb7f11ad1c3fec505cd9f"
+    },
+    "originalResult": {
+      "path": "/var/lib/pinkha-c-native-preservation-20261126/linux-resume-attempt1/result.json",
+      "bytes": 7510,
+      "sha256": "f7f4a5b34465907c3285229a266a488229a92eb1c3a7c04c5b4cdd162ed1b32b"
+    },
+    "files": [
+      {
+        "role": "retained-v1-archive",
+        "path": "/var/lib/pinkha-c-native-preservation-20261126/linux-resume-attempt1/private-work/original-source.pinkha-heart-source",
+        "bytes": 1634696,
+        "sha256": "5d72e36849884da3da3fe9ddde0a01f49a03cde3b417f49456e3558bea8db463",
+        "environment": "PINKHA_CAPTURE_PRODUCER_RETAINED_V1_ARCHIVE"
+      },
+      {
+        "role": "retained-accepted-plan",
+        "path": "/var/lib/pinkha-c-native-preservation-20261126/linux-resume-attempt1/private-work/source-preservation-plan.json",
+        "bytes": 1823803,
+        "sha256": "4a61914d5dbd3ccb4874f81444e4d0770c9e7e2dfe4259b8b93f15796accb930",
+        "environment": "PINKHA_CAPTURE_PRODUCER_RETAINED_V1_PLAN"
+      }
+    ],
+    "futureQualificationPolicy": "The controller must O_NOATIME/O_NOFOLLOW-admit exact original bytes and stable full metadata, create only its owned immutable input copies, bind environment to those copies, and recheck originals/copies before final success. No private input bytes are published. Both original/synthetic methods are mandatory if this twenty-method selection is run; any skip is failure.",
+    "noOriginalOperationsExecuted": true,
+    "noLooseOriginal156PayloadCopies": true,
+    "syntheticDerivative": "No capture derivative is constructed. All14 selected relations come from the original restored bundle.objects; only destination coverage carriers/plans/mappings/intents/locators are synthetic.",
+    "earlierUnavailableLocator": {
+      "proofBlob": "d8cb35d5a4c0ed6678d4635321ac2a888c8e6d5c",
+      "status": "PRESERVED_FAILED_PATH_OBSERVATION_NOT_RETRIED"
+    }
+  },
+  "helper": {
+    "source": "a52f10dfc99e00cb3df1a4bb3329862caf7ec99b",
+    "selection": "Retained struct, retained(), requireRetainedInputsUnchanged(), fixedInput(), sameFile() only; all original8 methods excluded",
+    "bytes": 5780,
+    "sha256": "a03d4bc206fac9397172e1b76dbf71a752b68ad47ca4611369cef20e03173e0c",
+    "wholeHelperIdentical": true
+  },
+  "productionProof": {
+    "blob": "264098aba5fb6fa94151f0115fc378192cf93b65",
+    "bytes": 41946,
+    "sha256": "e48e25caa55fcc1830bf400cb13555830287d177cd2d81a7b24ef49bafad270d"
+  },
+  "controls": [
+    "All-new exact legacy plan and v1 wire",
+    "Partial overlap disjoint/exhaustive mapping and original/new intent binding",
+    "All-present nil new plan/checkpoint; original actual-input-derived provenance, no second completion",
+    "Changed recorded intent, mapping identity, descriptor and source provenance refusal",
+    "Cold partial v2 roundtrip, two bindings, partition substitution refusal",
+    "Cold all-present original binding and foreign locator refusal",
+    "Closed partition keys, duplicate IDs and legacy field injection",
+    "Cancellation before historical correspondence delivery"
+  ],
+  "limitations": [
+    "Source review only",
+    "Synthetic checkpoint carriers are not real preservation/native completion",
+    "No current-native-status injection or actual native authority qualification",
+    "No old method replay",
+    "Future selected skip must fail the cohort",
+    "Two private inputs must be admitted/copied/rechecked by an independently reviewed controller; no current runtime grant"
+  ],
+  "productionSourceIDCorrection": {
+    "blob": "290c94bfbbc9472f8ac80145fc98fb725568def9",
+    "bytes": 3218,
+    "sha256": "84487e2e725e8a2a7f575049a8ff9d9bf5c4389bf434588402e78d19e39edd6d"
+  },
+  "metadataCorrection": {
+    "superseded": {
+      "blob": "080a7d6a0766521469da3a76f9e29ea86abe9d72",
+      "bytes": 5064,
+      "sha256": "536cb0b18fe5524dfe06445cac78139b85ac48220169ee59840d08f18054e351"
+    },
+    "finding": "Inherited C20 syntheticDerivative metadata described a different archive-format test; no such transformation occurs in this test fixture.",
+    "sourceBodyChangedByThisMetadataCorrection": false
+  },
+  "selectedCapturedDefinitions": {
+    "sourceSelection": {
+      "blob": "241823f262c9b874796723db6969320865c23fb8",
+      "bytes": 20344,
+      "sha256": "4c9764a07eb42e43430cd062376432aa41beda293a6cd26700bd3514d66289cc"
+    },
+    "originalInventory": {
+      "bytes": 111754,
+      "sha256": "e21fa90e257ef05500aab96e33682fca3342d6bb47c9e08f215d7a8270515906",
+      "parsedProjection": {
+        "blob": "9f3629c3b7487bb321a9ae529feabbb3d302913b",
+        "bytes": 95335,
+        "sha256": "66debcb1d5667dae42e56dda9a6d87a2a794945f031e81bb47d286eb339a6d33"
+      }
+    },
+    "catalogPrimary": {
+      "blob": "5977b6d5ed7ad32bb66aea734e7598f172d800ce",
+      "bytes": 23399,
+      "sha256": "437131d2f7095af0a450e7c695aa9c9bed13ea290f576d49870c5224b60a3965",
+      "route": "init(bundle:) → snapshots:bundle.objects → nativeType521 rows → relations; relation(key:) searches only those captured rows. compiledRelations/recovered definitions are separate and cannot satisfy this lookup."
+    },
+    "rows": [
+      {
+        "key": "aperture",
+        "sourceObjectID": "bafyreig6xayqhu2wgwclhgrsiurl5f2gcn76ssv6gfijzq6he62f4tio2m",
+        "pb": {
+          "Path": "snapshot-b99c48905541cf8a10e6ee5cc6a097e7095ab50d38d10f078caf8a14ad456d90.pb",
+          "SHA256": "926e87f0e3155455c489ef2ec5863aa9108de59b73726d004293bdc3a74900c8",
+          "Bytes": 1420
+        },
+        "json": {
+          "Path": "snapshot-b99c48905541cf8a10e6ee5cc6a097e7095ab50d38d10f078caf8a14ad456d90.json",
+          "SHA256": "a2ec95c53f47fd6ccacffda90f3041197c89fd3e793025cbf640d383ac5e020a",
+          "Bytes": 3420
+        },
+        "inputOriginalInventory": {
+          "bytes": 3420,
+          "path": "snapshot-b99c48905541cf8a10e6ee5cc6a097e7095ab50d38d10f078caf8a14ad456d90.json",
+          "sha256": "a2ec95c53f47fd6ccacffda90f3041197c89fd3e793025cbf640d383ac5e020a"
+        }
+      },
+      {
+        "key": "artist",
+        "sourceObjectID": "bafyreihbaceodfvuq65kqnpnxmuvgf4myxwotsdu5valnnc3mtv53ubki4",
+        "pb": {
+          "Path": "snapshot-87670e812ffdbfda0694032699034970c56b91d142c0bb6a2fe6ff2926d20781.pb",
+          "SHA256": "c8c56670f568de6864856f612adea34b34dd6e3727f7c43f322397615f3e6e0f",
+          "Bytes": 1417
+        },
+        "json": {
+          "Path": "snapshot-87670e812ffdbfda0694032699034970c56b91d142c0bb6a2fe6ff2926d20781.json",
+          "SHA256": "32ffa39b437771d06a118b1d7b057f722bc188aab985781c047b7b29d7efb396",
+          "Bytes": 3415
+        },
+        "inputOriginalInventory": {
+          "bytes": 3415,
+          "path": "snapshot-87670e812ffdbfda0694032699034970c56b91d142c0bb6a2fe6ff2926d20781.json",
+          "sha256": "32ffa39b437771d06a118b1d7b057f722bc188aab985781c047b7b29d7efb396"
+        }
+      },
+      {
+        "key": "audioAlbum",
+        "sourceObjectID": "bafyreie7h74tvpnqz7txr5n2cbhq7aioil7ix2jcpvobiv2l5oeom3eghm",
+        "pb": {
+          "Path": "snapshot-953b98ff22c00a47d35f7f2c343ead035a3b1aaf29b603e776479101bd8d8216.pb",
+          "SHA256": "00506553f40ee5f654a68ef2679a5ff6166c4c3739a9d892690cd1805e0147e7",
+          "Bytes": 1444
+        },
+        "json": {
+          "Path": "snapshot-953b98ff22c00a47d35f7f2c343ead035a3b1aaf29b603e776479101bd8d8216.json",
+          "SHA256": "0ad389d22515e3a18786e91471811ca8528ab547c44bcee779f66b2027e21a2d",
+          "Bytes": 3446
+        },
+        "inputOriginalInventory": {
+          "bytes": 3446,
+          "path": "snapshot-953b98ff22c00a47d35f7f2c343ead035a3b1aaf29b603e776479101bd8d8216.json",
+          "sha256": "0ad389d22515e3a18786e91471811ca8528ab547c44bcee779f66b2027e21a2d"
+        }
+      },
+      {
+        "key": "audioAlbumTrackNumber",
+        "sourceObjectID": "bafyreihe6yewvxs7e2yboiblazubelqt5pzeigoucnjyyiikmsqwbxzjau",
+        "pb": {
+          "Path": "snapshot-ba601f0fabd578b6c15c6ef2ec89578626baf39f46ac6b6ef4e81df0b51bc058.pb",
+          "SHA256": "b183d4bd0a822854e867e302b53a3c60b371e18ec18a97677c7485a05c44f8c2",
+          "Bytes": 1493
+        },
+        "json": {
+          "Path": "snapshot-ba601f0fabd578b6c15c6ef2ec89578626baf39f46ac6b6ef4e81df0b51bc058.json",
+          "SHA256": "cd6783186e1a1faeec762350c37636d5153c0804d2704e147ef9a82e4c90cc77",
+          "Bytes": 3506
+        },
+        "inputOriginalInventory": {
+          "bytes": 3506,
+          "path": "snapshot-ba601f0fabd578b6c15c6ef2ec89578626baf39f46ac6b6ef4e81df0b51bc058.json",
+          "sha256": "cd6783186e1a1faeec762350c37636d5153c0804d2704e147ef9a82e4c90cc77"
+        }
+      },
+      {
+        "key": "audioGenre",
+        "sourceObjectID": "bafyreigrxlc45gkhxssfmym4r252cbz57z2onvrpfsmgirkij5obk2ducm",
+        "pb": {
+          "Path": "snapshot-e015073e831acfc0cd459b6b02013584c024c0ce3bc242f67024df936eee9ec8.pb",
+          "SHA256": "2a2432344829aa5dd33246ca69eea167e381200eb7cc9b4b3bffc984ff716cf8",
+          "Bytes": 1450
+        },
+        "json": {
+          "Path": "snapshot-e015073e831acfc0cd459b6b02013584c024c0ce3bc242f67024df936eee9ec8.json",
+          "SHA256": "b4a0011067e6dd022974658bd77f4d43bc690b13c528fc77731a6790a8b5282e",
+          "Bytes": 3452
+        },
+        "inputOriginalInventory": {
+          "bytes": 3452,
+          "path": "snapshot-e015073e831acfc0cd459b6b02013584c024c0ce3bc242f67024df936eee9ec8.json",
+          "sha256": "b4a0011067e6dd022974658bd77f4d43bc690b13c528fc77731a6790a8b5282e"
+        }
+      },
+      {
+        "key": "audioLyrics",
+        "sourceObjectID": "bafyreid72dsz74h3eseu5t3uokmkcnuugf2flglkeehdbq7l2e4xxsndcm",
+        "pb": {
+          "Path": "snapshot-f5c91d0c3cc7dc052506ff51e923a8d326cdfda5144e7d1d3e49e029f3d168cd.pb",
+          "SHA256": "30b92ab6c1a16ebc34b36c36e04ea03eecfde5dac97cadfa372ff2bc57b4493e",
+          "Bytes": 1459
+        },
+        "json": {
+          "Path": "snapshot-f5c91d0c3cc7dc052506ff51e923a8d326cdfda5144e7d1d3e49e029f3d168cd.json",
+          "SHA256": "2f1687ab8e5d1922867532b59246734f90ab4217028c47bdff8740c4ecc39c3f",
+          "Bytes": 3462
+        },
+        "inputOriginalInventory": {
+          "bytes": 3462,
+          "path": "snapshot-f5c91d0c3cc7dc052506ff51e923a8d326cdfda5144e7d1d3e49e029f3d168cd.json",
+          "sha256": "2f1687ab8e5d1922867532b59246734f90ab4217028c47bdff8740c4ecc39c3f"
+        }
+      },
+      {
+        "key": "camera",
+        "sourceObjectID": "bafyreiaix45ka5o22dxnza56bjf4truvxons4fydp3ojydgr3vpemy63ly",
+        "pb": {
+          "Path": "snapshot-8396eac93e57b8bd3e3cf5ff4d1d54553f66d6273790f316ba888547b3bdcf14.pb",
+          "SHA256": "1f5c2f414e0d8ef244c687fd1456c227e281a0f347985ccda74b571ddf439bb9",
+          "Bytes": 1440
+        },
+        "json": {
+          "Path": "snapshot-8396eac93e57b8bd3e3cf5ff4d1d54553f66d6273790f316ba888547b3bdcf14.json",
+          "SHA256": "97de5124e9ef6b841d4bc5af5070d72a7d54ddc745546fbff1eba142c598cb05",
+          "Bytes": 3438
+        },
+        "inputOriginalInventory": {
+          "bytes": 3438,
+          "path": "snapshot-8396eac93e57b8bd3e3cf5ff4d1d54553f66d6273790f316ba888547b3bdcf14.json",
+          "sha256": "97de5124e9ef6b841d4bc5af5070d72a7d54ddc745546fbff1eba142c598cb05"
+        }
+      },
+      {
+        "key": "cameraIso",
+        "sourceObjectID": "bafyreie3vywzeae7f5brvkbrpexxpzuf3c5vuexgehbthriyc4znha4zaa",
+        "pb": {
+          "Path": "snapshot-6ac751d343cab1359f8c1d83f1011501a5ef8ce3e36b5244632f21b61b68d454.pb",
+          "SHA256": "d78d67589978d341bd7babfd8470b9923e617d638a36fdbddad33f64f77476b7",
+          "Bytes": 1413
+        },
+        "json": {
+          "Path": "snapshot-6ac751d343cab1359f8c1d83f1011501a5ef8ce3e36b5244632f21b61b68d454.json",
+          "SHA256": "dc3ebb202de68ecdccaaed53dc83b8ce174fb563ae4fbd887736282cbf2a13f0",
+          "Bytes": 3414
+        },
+        "inputOriginalInventory": {
+          "bytes": 3414,
+          "path": "snapshot-6ac751d343cab1359f8c1d83f1011501a5ef8ce3e36b5244632f21b61b68d454.json",
+          "sha256": "dc3ebb202de68ecdccaaed53dc83b8ce174fb563ae4fbd887736282cbf2a13f0"
+        }
+      },
+      {
+        "key": "done",
+        "sourceObjectID": "bafyreic5gxuwhpmjvpkis6qbfn4t4apyv3vqih7zwiehmf2gc6ympnyany",
+        "pb": {
+          "Path": "snapshot-37a87e2c5a433834a29b3d2f5b6873758c36d6cea742daa260b6719e10573e9b.pb",
+          "SHA256": "68060837b12286bee4652c659b48883b07e954e7d273cf8fb95cba6d64ea558c",
+          "Bytes": 1437
+        },
+        "json": {
+          "Path": "snapshot-37a87e2c5a433834a29b3d2f5b6873758c36d6cea742daa260b6719e10573e9b.json",
+          "SHA256": "43371ece9ce8ad750c8aed069fb01b7f0a030d510691a3ef5f065a8f25ea145a",
+          "Bytes": 3433
+        },
+        "inputOriginalInventory": {
+          "bytes": 3433,
+          "path": "snapshot-37a87e2c5a433834a29b3d2f5b6873758c36d6cea742daa260b6719e10573e9b.json",
+          "sha256": "43371ece9ce8ad750c8aed069fb01b7f0a030d510691a3ef5f065a8f25ea145a"
+        }
+      },
+      {
+        "key": "exposure",
+        "sourceObjectID": "bafyreiayf2x4mgua7xeeafhlswiztwsfakqwswrsi6myf43mfxddeftkly",
+        "pb": {
+          "Path": "snapshot-f9e5a58df46d3aaec8bd7243b87d9f98d6f9368873be79dfdfc185a9e38ed17f.pb",
+          "SHA256": "c630669d87a71430ee4be544abc4274a9f4752159f4fec90d84a39b303423566",
+          "Bytes": 1420
+        },
+        "json": {
+          "Path": "snapshot-f9e5a58df46d3aaec8bd7243b87d9f98d6f9368873be79dfdfc185a9e38ed17f.json",
+          "SHA256": "93fbef302624d5ef9d3d29f5c1a1506e929d86b003f0f79dff5bab4c053de91d",
+          "Bytes": 3420
+        },
+        "inputOriginalInventory": {
+          "bytes": 3420,
+          "path": "snapshot-f9e5a58df46d3aaec8bd7243b87d9f98d6f9368873be79dfdfc185a9e38ed17f.json",
+          "sha256": "93fbef302624d5ef9d3d29f5c1a1506e929d86b003f0f79dff5bab4c053de91d"
+        }
+      },
+      {
+        "key": "focalRatio",
+        "sourceObjectID": "bafyreiaisnrs3wsicgoanepp2772o6my6z5haexkprilpgvtlfmbve26n4",
+        "pb": {
+          "Path": "snapshot-c4f8f5f614cd6f7443028628566f302d3717fbebc5f77655f876a356cb4a8b86.pb",
+          "SHA256": "f7ff2b8359b100cfc46eaea7c99c67a1dba9b9daa420c6c3319fd420b9a0f536",
+          "Bytes": 1425
+        },
+        "json": {
+          "Path": "snapshot-c4f8f5f614cd6f7443028628566f302d3717fbebc5f77655f876a356cb4a8b86.json",
+          "SHA256": "f8ede7194772400af9077f47cb197ac48e986e216d163ff2f8cb5011ea8f3c07",
+          "Bytes": 3427
+        },
+        "inputOriginalInventory": {
+          "bytes": 3427,
+          "path": "snapshot-c4f8f5f614cd6f7443028628566f302d3717fbebc5f77655f876a356cb4a8b86.json",
+          "sha256": "f8ede7194772400af9077f47cb197ac48e986e216d163ff2f8cb5011ea8f3c07"
+        }
+      },
+      {
+        "key": "releasedYear",
+        "sourceObjectID": "bafyreidbxcjg6zlxz4cvcjny6exawmdotai3plcoo5qdiyls4znaepfode",
+        "pb": {
+          "Path": "snapshot-6e59525c7c2fad097de74bc5fe9b1d63b9106a7add7e1871b8f4d70a2df72f08.pb",
+          "SHA256": "06a5e57dd4d619e53ebcce5020ca28faf8fd08cba390787c3a63c1896332f1f6",
+          "Bytes": 1470
+        },
+        "json": {
+          "Path": "snapshot-6e59525c7c2fad097de74bc5fe9b1d63b9106a7add7e1871b8f4d70a2df72f08.json",
+          "SHA256": "0005a985994e124eda05d1bbc1bab6f21a6b3a69ef746d10d8b9137eae44cdd3",
+          "Bytes": 3474
+        },
+        "inputOriginalInventory": {
+          "bytes": 3474,
+          "path": "snapshot-6e59525c7c2fad097de74bc5fe9b1d63b9106a7add7e1871b8f4d70a2df72f08.json",
+          "sha256": "0005a985994e124eda05d1bbc1bab6f21a6b3a69ef746d10d8b9137eae44cdd3"
+        }
+      },
+      {
+        "key": "source",
+        "sourceObjectID": "bafyreicdtrp2ypiw3jqjxhmixz5usmjydhfxec3zbm4jdh5emtgqodzxfq",
+        "pb": {
+          "Path": "snapshot-53744bc2e8530091ddaaeef25b319a98fa78747c0563f9c91e32f91f837d6493.pb",
+          "SHA256": "54b004accccd0a9a51765727eb22fcf6a56c8446833d4f12295e3859c8d3c17b",
+          "Bytes": 1403
+        },
+        "json": {
+          "Path": "snapshot-53744bc2e8530091ddaaeef25b319a98fa78747c0563f9c91e32f91f837d6493.json",
+          "SHA256": "45e92775c8efe989eed1e695a1d307e9341cc9d626f4e581d58da6e35990f08a",
+          "Bytes": 3401
+        },
+        "inputOriginalInventory": {
+          "bytes": 3401,
+          "path": "snapshot-53744bc2e8530091ddaaeef25b319a98fa78747c0563f9c91e32f91f837d6493.json",
+          "sha256": "45e92775c8efe989eed1e695a1d307e9341cc9d626f4e581d58da6e35990f08a"
+        }
+      },
+      {
+        "key": "tag",
+        "sourceObjectID": "bafyreicwkb6fl66jbyxv5xyhj2ifgs2bseirxbnknr2vwpnc2fp47rcrj4",
+        "pb": {
+          "Path": "snapshot-77b01033e05a2c8d7deeea4da60171032ca9d0e7df4198bbf5a0382d1f74ca1b.pb",
+          "SHA256": "56e80a9b0a1fd76ae4672a78243d7a9c92ce74e26a5617afeec99a139ea512fe",
+          "Bytes": 1388
+        },
+        "json": {
+          "Path": "snapshot-77b01033e05a2c8d7deeea4da60171032ca9d0e7df4198bbf5a0382d1f74ca1b.json",
+          "SHA256": "71dd2e4b5f98961f8557fab0115f840ffb7a2c07be2af390aad0f98bbc428059",
+          "Bytes": 3384
+        },
+        "inputOriginalInventory": {
+          "bytes": 3384,
+          "path": "snapshot-77b01033e05a2c8d7deeea4da60171032ca9d0e7df4198bbf5a0382d1f74ca1b.json",
+          "sha256": "71dd2e4b5f98961f8557fab0115f840ffb7a2c07be2af390aad0f98bbc428059"
+        }
+      }
+    ],
+    "all14SnapshotAndJSONPinsMatch": true,
+    "privatePayloadReread": false
+  }
+}

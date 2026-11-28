@@ -1,0 +1,28 @@
+{
+  "schema": "pinkha-ordinary14-producer-canonical-directory-preservation-v1",
+  "status": "SOURCE_ONLY_NOT_PARSED_NOT_RUN",
+  "before": {
+    "blob": "e47d35291a15dbddfce2659cd1b5dc647781097f",
+    "bytes": 33613,
+    "sha256": "0a9899d7abcb4c08b113ce7cadd83841ee9063f43bea5f2d4138549de79b5193"
+  },
+  "after": {
+    "bytes": 34082,
+    "sha256": "8f20637c4f856f00f8e1b05f45195cb6f65d3dff659e72c64e73a0380fb12404"
+  },
+  "edits": [
+    {
+      "oldText": "        let directory = try stage.supplement.directory(mappings: checkpoint.mappings)",
+      "newText": "        let preservationDirectory = try AnyNativeImportedDefinitionDirectory(\n            plan: preservation.checkpoint.plan, mappings: preservation.checkpoint.mappings,\n            supplementalCanonicalDefinitions: preservation.preservationReference.supplementalCanonicalDefinitions)\n        let ordinaryDirectory = try AnyNativeImportedDefinitionDirectory(plan: plan, mappings: checkpoint.mappings)\n        let directory = try AnyNativeImportedDefinitionDirectory(\n            preservation: preservationDirectory, propertySupplement: ordinaryDirectory)"
+    }
+  ],
+  "wholeInverse": true,
+  "reason": "The supplement's convenience directory starts from the original plan without the request's extra canonical bindings. Preserve the actual completed preservation reference's supplementalCanonicalDefinitions in the returned routing directory, exactly as the cold owner does.",
+  "unchanged": [
+    "Original strict directory constructor and merge validate every source/intent/namespace/account/Space/store/duplicate address.",
+    "Single run, source translation, native executor/verifier, both journal/final storage checks and all callbacks.",
+    "Public old execute behavior and the two pure comparison guards.",
+    "All seven synthetic test bodies."
+  ],
+  "authority": "A routing directory grants no current source/lease/native authority; actual use still requires the original current imported-definition/property readers."
+}

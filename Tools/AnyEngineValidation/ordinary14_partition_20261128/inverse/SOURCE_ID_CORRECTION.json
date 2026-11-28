@@ -1,0 +1,48 @@
+{
+  "schema": "pinkha.ordinary14.partition-source-id-correction.v1",
+  "status": "SOURCE_ONLY_NOT_PARSED_OR_EXECUTED",
+  "reason": "Reuse the exact original source-binding predicate for source IDs; do not substitute the stricter native namespace-owner predicate.",
+  "primary": {
+    "source": "AnyDestinationMigrationPlan.swift878a",
+    "exactPredicate": "AnyDestinationPlanChecks.identity → AnyPreparedMigrationPlanBinding.validOpaque(value, maximum:4096)"
+  },
+  "builder": {
+    "before": {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeOrdinaryPropertyCompletionPlan.swift",
+      "blob": "38ced39313dd522541a69b5e2517288059495b9f",
+      "bytes": 21252,
+      "sha256": "dc8852c773a98b8b1814222f051a4b5b0eeee0dbbb05649fb40561555df3e213"
+    },
+    "after": {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeOrdinaryPropertyCompletionPlan.swift",
+      "blob": "c238cb671f83ddcc81d9b150175b3a160ec181f6",
+      "bytes": 21263,
+      "sha256": "13ba01cc3beaa236495ab72496b3f91c9529070aae416c65a5b15ad1ae440858"
+    },
+    "edit": {
+      "before": "all.count == 14, all.allSatisfy(AnyEditorBlock.validID),",
+      "after": "all.count == 14, all.allSatisfy(AnyDestinationPlanChecks.identity),"
+    }
+  },
+  "tests": {
+    "before": {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryPropertyPartitionTests.swift",
+      "blob": "6d68d304e2b68b519ff7b4c25853b7196ecc9f38",
+      "bytes": 33485,
+      "sha256": "240d737648aa4624e32e405fc805f5a53a514a70c28c6277772c51dbd67dc38f"
+    },
+    "after": {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryPropertyPartitionTests.swift",
+      "blob": "bcec972ee80374440061f84b470efbe5adce280c",
+      "bytes": 34534,
+      "sha256": "80cf96ad5403db7bec9070bf6982685b72c5d768179e7cd464e171d085ac7380"
+    },
+    "edit": {
+      "before": "        XCTAssertEqual(decoded.newSourceObjectIDs, new)\n",
+      "after": "        XCTAssertEqual(decoded.newSourceObjectIDs, new)\n        // Source IDs follow the existing source-binding identity predicate;\n        // UTF-8-distinct Unicode spellings remain distinct source identities.\n        let unicode = [\"source-\\u{00e9}\", \"source-\\u{0065}\\u{0301}\"]\n        let originalIdentity = try AnyDestinationSourceBinding(accountID: \"fixture-source-account\",\n            spaceID: \"fixture-source-space\", witnessSHA256: hash(\"witness\"),\n            captureManifestSHA256: hash(\"capture\"), semanticPlanSHA256: hash(\"semantic\"),\n            sourceObjectIDs: unicode + new)\n        let exact = try AnyHeartNativeOrdinaryPropertyPartition(reused: unicode, new: new)\n        let roundTrip = try JSONDecoder().decode(AnyHeartNativeOrdinaryPropertyPartition.self,\n            from: AnyDestinationMigrationJournal.encoded(exact))\n        XCTAssertEqual((roundTrip.reusedSourceObjectIDs + roundTrip.newSourceObjectIDs).map { Data($0.utf8) },\n                       originalIdentity.sourceObjectIDs.map { Data($0.utf8) })\n        XCTAssertNotEqual(Data(unicode[0].utf8), Data(unicode[1].utf8))\n"
+    },
+    "sameEightMethods": true
+  },
+  "namespaceOwnerGuardUnchanged": true,
+  "fullForwardInverse": true
+}
