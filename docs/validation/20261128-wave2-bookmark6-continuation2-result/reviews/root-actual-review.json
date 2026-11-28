@@ -1,0 +1,129 @@
+{
+  "schema": "pinkha-wave2-continuation2-root-review/v1",
+  "status": "PASS_EXACT_TWO_METHOD_RUNTIME_AND_CUSTODY_REVIEW",
+  "reviewer": "Wave2 Root",
+  "sourceCommit": "8e6fe6d8f47c0229853e8948edbd58ca01dd1a9e",
+  "productCommit": "3d2abbf8b1017204e2b93b53ea83ff6f053e67b3",
+  "controllerSHA256": "d7b0eb74a542290f67d1d6a68c7dc3f0ee87773ca9c7f82cfb109666a4edce54",
+  "originalReceipt": {
+    "path": "original-continuation2/receipt.json",
+    "bytes": 5364,
+    "sha256": "1ff12f98bf84222f7f8214087aeeaa66c734fbc0ed4ee25f7224fe02a98be544",
+    "status": "PASS_MISSING_TWO_SWIFT_TESTING_METHODS_ONLY"
+  },
+  "originalJob": {
+    "id": "job_0c6933032622",
+    "startedAtUTC": "2026-11-28T00:55:04.334801+00:00",
+    "finishedAtUTC": "2026-11-28T00:55:08.311444+00:00",
+    "seconds": 3.98,
+    "exit": 0,
+    "timeoutSeconds": 360,
+    "outputTruncated": false,
+    "body": {
+      "path": "custody/actual-completed-job.original.json",
+      "bytes": 967,
+      "sha256": "52222f5f01ceea7a007171f4064ee1dfc804e1d83d0402c97d929a6601dd6b9f"
+    }
+  },
+  "execution": {
+    "methods": [
+      "creationOverrideRejectsAnotherWorkspaceBeforeDispatch",
+      "creationOverrideAndDefaultCreatorShareTheExistingMutationQueue"
+    ],
+    "actualMethods": 2,
+    "actualCases": 2,
+    "framework": "Swift Testing 6.4.3",
+    "suite": "AnyHierarchyTests",
+    "suiteSeconds": 0.018,
+    "totalSeconds": 0.019,
+    "controllerSeconds": 1.46,
+    "stdoutBytes": 0,
+    "stderrBytes": 951,
+    "processExit": 0,
+    "errors": [],
+    "automaticRetry": false
+  },
+  "originalCommandMatchesStandaloneFile": true,
+  "runtimeProducts": {
+    "runner": {
+      "bytes": 10805344,
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner",
+      "sha256": "c5334175861cc165de9751240d4532e2eea73d4ac850756074f7ffb150d91b34"
+    },
+    "library": {
+      "bytes": 21171736,
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegrationTests.so",
+      "sha256": "5eac396345bc469d9712ec7a776e10671652cc1366aa6f08b4269ff49f8f70ab"
+    },
+    "completionSHA256": "ac38377da08aac68629d2ae04f8d4878a52eb8b28ee3e1009700c810902302d7"
+  },
+  "originalClosure": {
+    "processGroup": 2990043,
+    "status": "PASS_OWNED_GROUP_ABSENT",
+    "atUTC": "2026-11-28T00:55:07.458317+00:00",
+    "absenceStatus": "ABSENT_ESRCH",
+    "historicalGroupReprobed": false,
+    "permanentlyClosed": true,
+    "newProcessQueryByReview": false
+  },
+  "resources": {
+    "sampleCount": 4,
+    "minimumMemoryAvailableBytes": 4226297856,
+    "minimumRootFreeBytes": 2276786176,
+    "minimumDevelopmentFreeBytes": 1866141696,
+    "maximumOwnedAllocatedBytes": 218128384,
+    "unchangedBudget": {
+      "admissionMarginBytes": 33554432,
+      "commandSeconds": 300,
+      "developmentFloorBytes": 536870912,
+      "finalEvidenceReserveWithinCapBytes": 1048576,
+      "memoryFloorBytes": 536870912,
+      "ownedAllocationCapBytes": 268435456,
+      "rootFloorBytes": 2147483648
+    },
+    "allOriginalAdmissionLiveMemoryAndCapPredicatesPass": true
+  },
+  "retention": {
+    "originalFiles": 9,
+    "originalBytes": 506150,
+    "threeWitnessBodiesByteIdentical": true,
+    "witnessSHA256": "0aa487dbec19529488c52f0e5de31e8006e88cc3e1a680feff310ac5032405a2",
+    "immutablePathCount": 447,
+    "priorContinuationOriginalFiles": 9,
+    "priorContinuationOriginalBytes": 495425,
+    "rootBodyVerification": "All exact exported UTF-8 bodies independently SHA256 and Git-blob rehashed in V8. Stable physical identity and byte comparisons to the original nine were performed by the pinned data stage. Full447-to-prior438/compiler join is separately qualified by the independent Interfaces review; this root review does not substitute JavaScript rounded numeric timestamps for the exact Python physical-identity comparisons.",
+    "stageReceiptSHA256": "b1f77abe18f4e3d1d499ac368bb323666448052333eae28368dbb545f3798ca1",
+    "compressedTransportSHA256": "6da55ee22dd25cefd861eca3fbc8765eeaf0c4124620c645dd2d2af565c05cbc",
+    "rawTransportSHA256": "5f37b8703eaaabf50cb31004f7955aabac9a43060fd637e5c8bc70eb110e22b4",
+    "atimePreservationClaim": false
+  },
+  "unchangedHistoricalFailures": [
+    {
+      "receiptSHA256": "4441afb94ce64ef8656dd001ec040bee2cb69201eaddba16d2fc8e7a3d4fb556",
+      "status": "FAIL",
+      "positiveEvents": "Four original XCTest methods remain valid component evidence; no rerun."
+    },
+    {
+      "receiptSHA256": "fe4dcf305e035f38b237b198e9db956aff63aa8bd8e4f34a6ff539f2b9d5bb64",
+      "status": "FAIL",
+      "positiveEvents": "Zero tests; original exit69 retained."
+    }
+  ],
+  "limits": {
+    "combinedSixMethodAcceptanceByThisReceipt": false,
+    "compilerInvocations": 0,
+    "SwiftPMInvocations": 0,
+    "nativeCalls": 0,
+    "AppleCalls": 0,
+    "sourceBodiesModified": 0,
+    "originalFourXCTestMethodsReplayed": 0,
+    "old27IntegrationMethodsExecuted": 0,
+    "UIAcceptance": false,
+    "visualAcceptance": false,
+    "physicalDeviceAcceptance": false,
+    "fullFeatureAcceptance": false,
+    "fullAmbientEnvironmentEqualityClaim": false
+  },
+  "coordination": "Original independent owner decision preserved; later-observed compatible pre-existing Wave1 grant is recorded only in coordination/supplemental-window-grant.json. Finite phase and runtime reservation released.",
+  "localEnvironment": "Local scratch executor became unavailable after exact originals were collected and decoded. Supported SentinelX/API fallback preserves original Oracle files, exact compressed/raw collection and a fresh result namespace; no local executor retry is represented."
+}
