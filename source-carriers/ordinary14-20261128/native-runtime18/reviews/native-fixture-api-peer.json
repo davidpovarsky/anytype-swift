@@ -1,0 +1,141 @@
+{
+  "currentAPIs": {
+    "canonicalFixture": {
+      "blob": "c178041c0215c71fa5eb6a83e52f447ad0e31c4e",
+      "bytes": 10755,
+      "commit": "d1b04526825ad10b07c59313727629cec35f9559",
+      "repository": "davidpovarsky/anytype-swift",
+      "sha256": "e8a40030d0cca49e7978869e487ba1422bc135e65f88469ba61ee852a73b7319"
+    },
+    "currentDirectory": {
+      "blob": "6cd38819232f457f04f9eab1b93c538670403e05",
+      "bytes": 22948,
+      "repository": "davidpovarsky/anytype-swift",
+      "sha256": "f8706b054757b2601a1e094558989c2a66d44b7a9ddcaee94a543563db38ff27"
+    },
+    "currentExecutor": {
+      "bytes": 25038,
+      "path": "/mnt/development/projects/evidence/pinkha-c-ordinary14-namespace-preparation-20261128-draft1/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationExecutor.swift",
+      "sha256": "37a827abab7f8458ff0274bc0cc99a65ba62ea6068e7498d025be7fee1fee8dd"
+    },
+    "currentNativeDriver": {
+      "bytes": 24363,
+      "path": "/mnt/development/projects/evidence/pinkha-c-ordinary14-namespace-preparation-20261128-draft1/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationNativeMigration.swift",
+      "sha256": "b47533f131f3919336c9667d80be1911aedcd131544b5e73ee8910f100d18850"
+    },
+    "currentPlan": {
+      "bytes": 41312,
+      "path": "/mnt/development/projects/evidence/pinkha-c-ordinary14-namespace-preparation-20261128-draft1/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationPlan.swift",
+      "sha256": "878a1d994dbbfd98de0f4b1a6ac4fbd9cfd3ea369b66d659e5e0b6667ba8d59e"
+    },
+    "currentSupplement": {
+      "blob": "21f6afa06a05eb694e289a14c488a666efc2dfe3",
+      "bytes": 9026,
+      "repository": "davidpovarsky/anytype-swift",
+      "sha256": "8023022c6740bc88fb9502e1e572bfdf4299e0b8e1b9a24e03217e2c790e72dd"
+    },
+    "currentVerifier": {
+      "blob": "b83d7cbd0fc8eca43a08fb0085544f621cee3ece",
+      "bytes": 38447,
+      "repository": "davidpovarsky/anytype-swift",
+      "sha256": "e258557056b1cc699026c08ace93250248dfc626cc29c853ce39eb3cbf4576a9"
+    },
+    "definitionStore": {
+      "bytes": 10792,
+      "commit": "d1b04526825ad10b07c59313727629cec35f9559",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedDefinitionStore.swift",
+      "repository": "davidpovarsky/anytype-swift",
+      "sha256": "e209c44b174e3ec6a0a1c967135e5d8313a49600ac58161e08dd98969fd9c9c2"
+    },
+    "propertyStore": {
+      "bytes": 43999,
+      "commit": "d1b04526825ad10b07c59313727629cec35f9559",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "repository": "davidpovarsky/anytype-swift",
+      "sha256": "bd78d4bed9ff005d05317a0f6eff1f40bc6b9bbe3495608ed1e4edd830b11a0c"
+    },
+    "session": {
+      "bytes": 5633,
+      "commit": "d1b04526825ad10b07c59313727629cec35f9559",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+      "repository": "davidpovarsky/anytype-swift",
+      "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd"
+    },
+    "sourceFacts": {
+      "blob": "50199d21a7e007b030bf633ad66cd41a2ef1ed9e",
+      "bytes": 21281,
+      "commit": "d1b04526825ad10b07c59313727629cec35f9559",
+      "repository": "davidpovarsky/anytype-swift",
+      "sha256": "7db9678676b2d691388befbc6955ed4863694adab9ade6870dba336671cf078f"
+    },
+    "sourceOnlyBackendCorrespondence": {
+      "blob": "4cd1800a00f0d397b90b35efaa944037a877b829",
+      "bytes": 12094,
+      "repository": "davidpovarsky/anytype-swift",
+      "sha256": "60e12183d8bae793f6777b2de950c2a8cac7591f3a360cae9cba4aae118f8309"
+    }
+  },
+  "findings": [
+    {
+      "result": "The current C14 verifier e258 and directory f870 are required inputs. The d1b verifier9ac0/directorybc0a are only beforeimages, not the future native graph. C confirmed the unchanged e209 definition store, bd78 property store and ff748 session pins.",
+      "scope": "Published API version"
+    },
+    {
+      "result": "The fixture schedules execute only with supplement.plan. The original182 plan/mappings are decoded, pinned and used for routing/source/namespace prerequisites. The reopen phase calls the static readCompletedCheckpoint reader and constructs historical progress; it does not call execute, prepare or commit for the original plan or namespace.",
+      "scope": "No old182 execution"
+    },
+    {
+      "result": "8023 requires the exact14 descriptors and positively fixes kind/format/cardinality. Its four numeric keys match integer/number fixtures; done matches boolean, source matches URL string, tag matches an explicit array with no original options, and the remainder are longtext. All property keys are returned by current native definitions, then admitted by prepareSetValue; the Unicode spelling is a value, never a native ID.",
+      "scope": "Fourteen operation/value joins"
+    },
+    {
+      "result": "e258 loads the original collection under the namespace prerequisite, compares the14 new property rows by signed mapping IDs and source projections, retains the full observed list for final stability, then re-observes the namespace. Its stable verification output contains source/binding/semantic observations, not a per-run generation or timestamp that would falsely break the cold comparison.",
+      "scope": "External owner verifier"
+    },
+    {
+      "result": "The historical checkpoint remains explicitly non-authoritative. Both phases call the real definition/property/source-facts stores with the newly connected session lease. The definition reader rechecks current immutable receipt and ordinary descriptor; properties recheck current catalog, membership, conditional fence and target policy; source facts recheck current read membership, native receipt, immutable row and signed creation.",
+      "scope": "Current readers after cold checkpoint"
+    },
+    {
+      "result": "The foreign-workspace readers reach exact AnyHostError.wrongWorkspace guards. After session.revokeAndDrain, the same-workspace definitions/properties first invoke the retained lease and reach AnyHostError.sessionClosed. The trailing assertion throws are not swallowed by those typed catches.",
+      "scope": "Typed refusal assertions"
+    },
+    {
+      "result": "The checkpoint's plan/mappings/intents, progress memberwise construction, prepareSetValue/apply receipt fields, SourceFacts entry/snapshot fields and session API match the exact current declarations. Internal checkpoint/progress members are accessed through the fixture's @testable PinkhaAnyHost import.",
+      "scope": "API signatures and internal visibility"
+    },
+    {
+      "result": "The fixture records the two original objects' schema-known synced values before new definitions, excludes only the14 new keys from subsequent business-value comparison, checks source facts before/after, and pins all execute phase files by caller-provided byte/hash rows before cold reads.",
+      "scope": "Preservation comparisons"
+    }
+  ],
+  "fixture": {
+    "blob": "5c0fad045d101f99e37442b32098dcf022d2201b",
+    "bytes": 35277,
+    "repository": "davidpovarsky/anytype-swift",
+    "sha256": "a7f0f24e18d5d45db5d7d7916fa6480e8e8bbc05768ae2d1cd6c56897c2ed41d"
+  },
+  "graphConfirmationFromC": {
+    "definitionStore": "e209c44b174e3ec6a0a1c967135e5d8313a49600ac58161e08dd98969fd9c9c2",
+    "nativeGraphNotYetFrozen": true,
+    "propertyStore": "bd78d4bed9ff005d05317a0f6eff1f40bc6b9bbe3495608ed1e4edd830b11a0c",
+    "session": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd"
+  },
+  "protocol": "pinkha-e-native-ordinary14-fixture-api-review-v1",
+  "reviewedWholeFixture": true,
+  "reviewer": "/root/cutover",
+  "scopesNotPromoted": [
+    "No Swift compile, source graph admission, native process, account/fixture payload read, write, or test execution was performed by this review.",
+    "The native fixture has not yet been inserted into a frozen compiled native graph. The exact seven C14 overlays and unchanged API inputs must be pinned there; component111/8 alone is not native acceptance.",
+    "The future controller must select this one method separately in execute and reopen, reject skips, bind the actual84a/f832/3552 product/source tuple, own a fresh accepted-account copy and prove OS denial/positive closure. The fixture's supplied runtime JSON is not itself that evidence.",
+    "The fresh14 property values are test data, not original migrated values. The fixture explicitly refuses to claim all129 definitions, all19 families, greater-than-one cardinality, nonempty options, native ACL revocation, encrypted-history reconstruction or mutation of original accounts.",
+    "Root retains the independent functional/current-native-product and runtime-resource review. This peer is not a substitute for actual conditional write/readback, durable cold reopen or backend acceptance."
+  ],
+  "sourceReads": {
+    "execution": false,
+    "githubOnly": true,
+    "oracle": false,
+    "privatePayloads": false
+  },
+  "status": "CLEAR_BOUNDED_SOURCE_API_AND_TYPED_ASSERTION_SCOPE_NOT_COMPILED_OR_RUN"
+}

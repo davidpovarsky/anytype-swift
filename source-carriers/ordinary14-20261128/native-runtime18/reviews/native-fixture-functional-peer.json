@@ -1,0 +1,208 @@
+{
+  "backendMapJoin": {
+    "all13": true,
+    "completePublicBlobsReadAndGitSHA1SHA256Checked": 13,
+    "fileCount": 1638,
+    "fullSourceMap": "Exact retained Runtime18 source3552, not a fresh physical source observation.",
+    "modeCount": 1638,
+    "primarySources": [
+      {
+        "bytes": 6981,
+        "gitBlobSHA": "0398722fa309e40171366e0696e286aefb5aa1fd",
+        "mode": 384,
+        "path": "docs/pinkha-prepared-definitions.md",
+        "sha256": "c1e698a2950c49a59918e85dc5990a683281edcb9d1825f8ec16c41d78efd214"
+      },
+      {
+        "bytes": 13488,
+        "gitBlobSHA": "9341bc4a8bc3449350e601effb3ef763ed38d458",
+        "mode": 384,
+        "path": ".runtime-artifacts/sdk-source/internal/spaceimpl/migration_definition.go",
+        "sha256": "5d0a6ff98e91ad025ca4c998d47ada9b497e2031373f220324ba1cdd87236d12"
+      },
+      {
+        "bytes": 4303,
+        "gitBlobSHA": "53192aba4b9d4d1abc4941c41dc9851511c205c9",
+        "mode": 384,
+        "path": ".runtime-artifacts/sdk-source/internal/spaceobjects/migration_definition.go",
+        "sha256": "bb65b6fa337e4fe22a00bd600ff215006a7fa1fb342862e839df6895d71a1e64"
+      },
+      {
+        "bytes": 1545,
+        "gitBlobSHA": "43920c2dc659eb6b76c9dcdbd042c32c16fdeeb3",
+        "mode": 384,
+        "path": ".runtime-artifacts/sdk-source/internal/commitguard/prepared_definition.go",
+        "sha256": "e8ef3500fb9c1be27785f51915fe2b8345f8047fa1c8e32433985e95006b2ba0"
+      },
+      {
+        "bytes": 2022,
+        "gitBlobSHA": "f8f11922352aed67dbb331e437ff9de94f49f66f",
+        "mode": 384,
+        "path": ".runtime-artifacts/sdk-source/space/migration_definition.go",
+        "sha256": "3ebfba3323ba710618709b9bdc75be857dca472b91bde0e1fd50807785b6d539"
+      },
+      {
+        "bytes": 8401,
+        "gitBlobSHA": "524f62139b0864a700c73701cc5a8ef6d5ecf6ca",
+        "mode": 384,
+        "path": "internal/server/handlers_pinkha_migration_definition.go",
+        "sha256": "567503a5599beadf66f721872e5cc87fea8cddb6521efa747e90114461e2cf98"
+      },
+      {
+        "bytes": 1997,
+        "gitBlobSHA": "b56535aa137d8c35c22216b09592b1df3a1def89",
+        "mode": 384,
+        "path": ".runtime-artifacts/sdk-source/internal/object/migration_definition.go",
+        "sha256": "c10e1859934ef6cbaed816a8a0fa3f3ef18df4efa33522948bdd7cc4e5b8d9d0"
+      },
+      {
+        "bytes": 3033,
+        "gitBlobSHA": "557203df5fb2aa431fb11cc158281e13097b3328",
+        "mode": 384,
+        "path": ".runtime-artifacts/sdk-source/internal/spaceobjects/native_definition_policy.go",
+        "sha256": "fb5e3b50d9ecd7286d1f91e590cd5da6446e2ae25d8363fca0b5143efed6af7c"
+      },
+      {
+        "bytes": 6093,
+        "gitBlobSHA": "46fd034651a7a120dd19eb03cd32810777b4af37",
+        "mode": 384,
+        "path": ".runtime-artifacts/sdk-source/internal/migrationintent/definition.go",
+        "sha256": "87112c1c3371466acdcb525b341e78237a337a37c0a199a6d82dcc026faa41fb"
+      },
+      {
+        "bytes": 12100,
+        "gitBlobSHA": "20148102eb7ce6e1b0e240cfe6ad8ab8f708e242",
+        "mode": 384,
+        "path": "internal/pinkha/migrationnative/definition_test.go",
+        "sha256": "6cb975b253e705e8942154b0465ad0cf29bc3934386281be7ab7c664f124c144"
+      },
+      {
+        "bytes": 13288,
+        "gitBlobSHA": "5d50dbde0db99bc01cf1bf340ae18b2d618cd0a6",
+        "mode": 384,
+        "path": ".runtime-artifacts/sdk-source/internal/object/migration_prepared.go",
+        "sha256": "baa68164c5d25b0795d5d9d5fe9313c409cf8b9979853dabae7d7e5c0e9d0f5a"
+      },
+      {
+        "bytes": 14014,
+        "gitBlobSHA": "06ac9ddc614311023c0cef882788cb200c27d0f9",
+        "mode": 384,
+        "path": ".runtime-artifacts/sdk-source/internal/migrationintent/store.go",
+        "sha256": "5bfecfd33940b932907f6208398009bfd1ba90e597402c84467187384e4dda15"
+      },
+      {
+        "bytes": 50727,
+        "gitBlobSHA": "52964af72643481d2914a4a6f4d31cef820e265e",
+        "mode": 384,
+        "path": ".runtime-artifacts/sdk-source/internal/object/object.go",
+        "sha256": "eef8857406a3bff8d16f08050e6f1fba42123386ba116113ae8b37db369700df"
+      }
+    ],
+    "sha256": "3552d6f65350c1eba2e9763c7f9a9daa64ada0335f64020ad585fff4a0e286e4",
+    "totalBytes": 137992
+  },
+  "counts": {
+    "compilerInvocations": 0,
+    "nativeInvocations": 0,
+    "original182Replay": 0,
+    "privatePayloadsRead": 0,
+    "testInvocations": 0
+  },
+  "findings": [
+    {
+      "result": "The exact prepared-definition HTTP route and SDK service accept the explicit existing owner ID, resolve its current Type/Collection, and bind the new account/Space/store/plan/intent. The property-stage journal matches OwnerObjectID to the actual object; only bootstrap joins its paired root's plan. The current signed same-Space nonderived root, custom type/collection kind, schema preflight, current Writer, prepared payload and dependency-head guards remain intact. No backend owner-sharing change is needed for this source shape.",
+      "scope": "Existing namespace, new property plan"
+    },
+    {
+      "result": "The fixture encodes the complete supplement plan and checks its4MiB cap before the first native request. Durable preparation belongs to the existing journal/executor, whose native ReserveDefinition/EnsureDurable and prepared commit path are retained. This peer does not call the early size check an already-persisted plan.",
+      "scope": "Immutable plan and durability"
+    },
+    {
+      "result": "The original182 plan and mappings are only read for exact source, namespace and actual document routing. Only supplement.plan is passed to execute. Reopen uses readCompletedCheckpoint, explicitly checks nativeOperationsPerformed0/provesCurrentNativeStatefalse, then performs current verifier/definition/property/source-fact reads.",
+      "scope": "No original operation replay"
+    },
+    {
+      "result": "Fourteen descriptor keys are exact. The actual destination owner and property IDs come from current definition reads. Fourteen fresh values are conditionally written/read back on one copied original Page; all14 remain absent on the second. False and an empty tag array are explicit positive fixture values. Original snapshots contain no values for these keys, so this is new usability coverage, not original populated-value preservation.",
+      "scope": "Functional property coverage"
+    },
+    {
+      "result": "Execute retains canonical original schema-known synced values, immutable source-fact observations, descriptors, all new values and verifier output. Reopen pins all five prior phase files by bytes/hash and compares complete canonical comparison bytes. Both phases use fresh session leases; historical checkpoint data is not promoted to current authority.",
+      "scope": "Cold comparison and identity"
+    },
+    {
+      "result": "The preservation comparison includes all rows returned by the current schema reader with scope synced, excluding only the14 new keys after their creation. Its proof field deliberately says schema-known synced values. It does not prove unknown/unreadable fields or all source behaviors.",
+      "scope": "Original-value comparison boundary"
+    },
+    {
+      "result": "Foreign workspace reads require typed wrongWorkspace; after revokeAndDrain, definition/property readers require typed sessionClosed. Those checks do not establish native ACL removal. Session cleanup runs on the success and thrown-error paths after connect.",
+      "scope": "Authority and lifetime"
+    },
+    {
+      "result": "The source demands the84a/f832/3552 tuple, loopback URL, owned copy and OS-offline metadata, but those input declarations are not independent evidence. A future controller must qualify actual product/source/runner/ledger, the fresh copied account, OS denial, request/write counts, bounded process ownership and closure, and final original-account integrity.",
+      "scope": "Controller evidence boundary"
+    }
+  ],
+  "futureSelection": {
+    "actualPassEvents": 0,
+    "execute": {
+      "definitions": 14,
+      "freshPropertyEdits": 14,
+      "original182Replay": 0,
+      "originalNamespaceReplay": 0
+    },
+    "expectedFuturePassEvents": 2,
+    "method": "NativeOrdinaryPropertySupplementReadReopenTests.testFourteenOriginalDefinitionsCurrentValuesAndLeaseReadsSurviveNativeColdReopen",
+    "phases": [
+      "execute",
+      "reopen"
+    ],
+    "reopen": {
+      "definitions": 0,
+      "freshPropertyEdits": 0,
+      "original182Replay": 0,
+      "originalNamespaceReplay": 0
+    },
+    "uniqueMethods": 1
+  },
+  "graphBoundary": "This review does not admit a physical compiler graph. Original111/8 and the separately proposed112 graph/target-metadata correction remain unconsumed source specifications; native fixture selection must remain separate from the component eight.",
+  "inputs": {
+    "backendSourceJoin": {
+      "bytes": 12094,
+      "gitBlob": "4cd1800a00f0d397b90b35efaa944037a877b829",
+      "sha256": "60e12183d8bae793f6777b2de950c2a8cac7591f3a360cae9cba4aae118f8309"
+    },
+    "contract": {
+      "bytes": 21269,
+      "gitBlob": "75fea604ce60e92c54cc69b5459d7230d9bc0987",
+      "sha256": "4469a3545902d05649797a68d4539400d3334df929870bb6c76d2d420e1f6794"
+    },
+    "fixture": {
+      "bytes": 35277,
+      "gitBlob": "5c0fad045d101f99e37442b32098dcf022d2201b",
+      "sha256": "a7f0f24e18d5d45db5d7d7916fa6480e8e8bbc05768ae2d1cd6c56897c2ed41d"
+    },
+    "separateAPIPeer": {
+      "bytes": 9102,
+      "gitBlob": "6d1dce1593d0ce69fb2f1118c84de8d1c15f2527",
+      "sha256": "8489b4bb80f78675be0df93a482994392d4f597aba3bbcc6a5baf4d252653e40"
+    }
+  },
+  "limitations": [
+    "No Swift parser/compiler/test/native/account/fixture-payload/Oracle source action was performed by this peer.",
+    "No greater-than-one cardinality, nonempty tag vocabulary, all129 definitions, all19 Type families, original encrypted history, full C6/N24 owner, App wiring or cloud behavior is qualified.",
+    "No runtime admission, new storage credit or reduction of ownership/resource/final-audit requirements follows."
+  ],
+  "producerScope": {
+    "binaryBytes": 78294169,
+    "binarySHA256": "84a4432a0f6b330444dc35f1cf024d95fe9eea1e4e8eb3e2dfb1b99dcb24e974",
+    "explicitChangeFromOld1dc": true,
+    "freshPhysicalProductObservationByThisPeer": false,
+    "old1dcEquivalenceClaim": false,
+    "producerReceiptSHA256": "f832753c0d365e984ed7f53ad6f4e3b20b125562b1871e0d7c5d5c54794fdfe2",
+    "sourceSHA256": "3552d6f65350c1eba2e9763c7f9a9daa64ada0335f64020ad585fff4a0e286e4"
+  },
+  "protocol": "PINKHA_W1_ORDINARY14_NATIVE_FIXTURE_FUNCTIONAL_SOURCE_PEER_V1",
+  "reviewedAtUTC": "2026-11-28 08:44:48 UTC",
+  "reviewer": "/root",
+  "status": "CLEAR_SOURCE_FUNCTIONAL_SCOPE_NOT_COMPILED_NOT_RUN"
+}
