@@ -1,0 +1,45 @@
+{
+  "schema": "pinkha.ordinary14.native-id-fixture-source-correction.v1",
+  "status": "SOURCE_ONLY_NOT_COMPILED_NOT_RUN",
+  "publishedPredecessor": {
+    "commit": "242f603b4d0c7f17c26a08e2ab707160425511b1",
+    "test": {
+      "bytes": 36969,
+      "sha256": "7fc2c543d4785bc2876a221088f16384146f861065a79bb617312b3515c68b32"
+    }
+  },
+  "source": {
+    "bytes": 38303,
+    "sha256": "7adad542d518dca925ee4bd59bce3bc20b699de3a1f8d7ba9805245f42059e73"
+  },
+  "patch": {
+    "bytes": 4339,
+    "sha256": "9d641345940e543ada2b623c22659aefaed2c147db6b2111862fafc48b1cb966"
+  },
+  "primary": {
+    "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorSnapshot.swift",
+    "ref": "d1b04526825ad10b07c59313727629cec35f9559",
+    "bytes": 8318,
+    "sha256": "d2956d5e698631a7ab90c039b2647ac518da2dea224f4e01c59dd4ca0cf9ea9f",
+    "blobSHA": "566b6ece7bb01570b1f2f0278becbeebb43dbd53",
+    "predicate": "Nonempty; at most 1024 UTF-8 bytes; every byte between 0x21 and 0x7e inclusive"
+  },
+  "changedMethod": "testNamespaceReceiptUsesOriginalIntentAndExactUTF8Identity",
+  "exactInverseToOriginal": true,
+  "otherSevenMethodsUnchanged": true,
+  "methods": [
+    "testOriginal182CanonicalPlanAndNilEncodingStayByteIdentical",
+    "testFourteenOriginalDefinitionsRetainExactShapesAndOutsideBlockers",
+    "testExternalNamespaceRefusesForeignScopeAndArbitraryOwnerInjection",
+    "testNamespaceReceiptUsesOriginalIntentAndExactUTF8Identity",
+    "testMissingObsoleteOrForeignNamespaceRefusesBeforeJournalOrNewWrites",
+    "testNamespaceObservationRefusesRootOrReceiptDriftBetweenReads",
+    "testCurrentAuthorizationRevocationStopsBeforeTheNextDurableEffect",
+    "testLostAcknowledgementResumesOnlyFourteenIntentsAndMergesTheirReceiptBindings"
+  ],
+  "productionFilesChanged": 0,
+  "compilerInvocations": 0,
+  "testInvocations": 0,
+  "oracleCalls": 0,
+  "reason": "Old precomposed Unicode positive was invalid under the original native-ID parser and would throw before its intended receipt/root assertion."
+}

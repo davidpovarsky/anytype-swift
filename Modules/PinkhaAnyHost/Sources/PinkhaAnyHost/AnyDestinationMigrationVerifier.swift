@@ -67,6 +67,9 @@ public struct AnyDestinationMigrationVerifier: Sendable {
         // Reopen the exact advertised contracts/store, including canonical
         // property admission. A new process cannot silently substitute a store.
         let driver = try await AnyDestinationNativeClients.open(client: client, plan: plan, authorize: admit)
+        if let namespace = plan.importedPropertyNamespace {
+            try await namespace.observe(using: driver, authorize: admit)
+        }
         let prefix = ["v1", "spaces", plan.binding.workspace.spaceID]
         @Sendable func read(_ suffix: [String], body: AnyJSON? = nil,
                             query: [String: String] = [:]) async throws -> AnyJSON {
@@ -124,6 +127,53 @@ public struct AnyDestinationMigrationVerifier: Sendable {
         var observations: [AnyDestinationContentObservation] = []
         var fileAvailability: [AnyDestinationFileAvailability] = []
         var observed: [Data: AnyJSON] = [:]
+
+        if let namespace = plan.importedPropertyNamespace {
+            // The original collection has other definitions already. Compare
+            // this supplement's exact new rows, retaining the whole observed
+            // list for the final stability check, without claiming it created
+            // or owns those earlier rows.
+            let ownerID = namespace.ownerID
+            roots[Data(ownerID.utf8)] = "collections"
+            let rootPath = ["collections", ownerID]
+            let root = try await read(rootPath)
+            try namespace.requireCurrentRoot(root)
+            definitionsBefore[rootPath.joined(separator: "/")] = root
+            let propertyPath = rootPath + ["properties"]
+            let response = try await read(propertyPath)
+            let rows = try Self.array(response["properties"], namespace.mapping.sourceKey, "properties")
+            guard rows.count <= 4096 else { throw AnyEngineError.readLimit }
+            var allIDs = Set<Data>()
+            for row in rows {
+                guard let id = row["id"]?.string, AnyEditorBlock.validID(id),
+                      allIDs.insert(Data(id.utf8)).inserted else {
+                    throw Self.failure(namespace.mapping.sourceKey, "unique native property IDs")
+                }
+            }
+            var createdIDs = Set<Data>(), kinds: [Data: String] = [:]
+            for (index, operation) in resolved.enumerated() {
+                let item = plan.items[index], mapping = progress.mappings[index]
+                guard case .propertyDefinition(.native(let owner), let kind, let name, let xKey,
+                                              let description, let scope, let format, let searchIndex) = operation,
+                      Data(owner.utf8) == Data(ownerID.utf8),
+                      Data(mapping.objectID.utf8) == Data(ownerID.utf8),
+                      mapping.recordIDs.count == 1,
+                      createdIDs.insert(Data(mapping.recordIDs[0].utf8)).inserted else {
+                    throw AnyDestinationContentVerificationError.invalidProgress
+                }
+                let id = mapping.recordIDs[0]
+                let actual = try Self.unique(rows, id: id, key: "id", sourceKey: item.sourceKey)
+                let expected = try AnyDestinationContentProjection.property(id: id, kind: kind,
+                    name: name, xKey: xKey, description: description, scope: scope,
+                    format: format, index: searchIndex)
+                try Self.equal(AnyDestinationContentProjection.property(actual), expected,
+                               item.sourceKey, "supplemental property definition")
+                observed[Data(item.sourceKey.utf8)] = expected
+                kinds[Data(id.utf8)] = kind
+            }
+            propertyKinds[Data(ownerID.utf8)] = kinds
+            definitionsBefore[propertyPath.joined(separator: "/")] = response
+        }
 
         // Compare whole owned definition lists, not only a found first match.
         // Extra properties/parts on a newly created definition are a mismatch.
@@ -436,6 +486,9 @@ public struct AnyDestinationMigrationVerifier: Sendable {
                                       semanticSHA256: AnyContentDigest.sha256(try Self.bytes(value))))
         }
         try await verifyReceipts()
+        if let namespace = plan.importedPropertyNamespace {
+            try await namespace.observe(using: driver, authorize: admit)
+        }
         try await admit()
         return .init(planSHA256: plan.binding.planSHA256, sourceManifestSHA256: plan.source.captureManifestSHA256,
             destinationAccountID: plan.binding.workspace.accountID, destinationSpaceID: plan.binding.workspace.spaceID,

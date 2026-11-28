@@ -85,6 +85,10 @@ public struct AnyNativeImportedDefinitionDirectory: Sendable {
     /// material is retained separately from the current native descriptor.
     public let supplementalCanonicalDefinitions: [AnyDestinationCanonicalPropertyBinding]
     public let unresolvedSourceDefinitionIDs: [String]
+    /// Separate completed property plans retain their own creation bindings.
+    /// The original preservation binding and source identity remain unchanged.
+    public let supplementalPropertyBindings: [AnyPreparedMigrationPlanBinding]
+    private let namespacePrerequisite: AnyDestinationImportedPropertyNamespace?
     public var permitsSourceAdmission: Bool { false }
     private let byID: [Data: AnyNativeImportedDefinitionEntry]
 
@@ -121,6 +125,10 @@ public struct AnyNativeImportedDefinitionDirectory: Sendable {
             }
         }
         var ownerKinds: [Data: AnyNativeImportedDefinitionOwnerKind] = [:]
+        if let namespace = plan.importedPropertyNamespace {
+            try namespace.requireSupplement(source: plan.source, binding: plan.binding, items: plan.items)
+            ownerKinds[Data(namespace.ownerID.utf8)] = .collection
+        }
         for (index, operation) in resolved.enumerated() {
             let kind: AnyNativeImportedDefinitionOwnerKind?
             switch operation {
@@ -254,11 +262,69 @@ public struct AnyNativeImportedDefinitionDirectory: Sendable {
                 intent: nil, mapping: nil, expectedProvenance: nil, expectedParentProvenance: nil, canonical: true))
         }
         self.supplementalCanonicalDefinitions = supplementalCanonicalDefinitions
+        self.supplementalPropertyBindings = []
+        self.namespacePrerequisite = plan.importedPropertyNamespace
         binding = plan.binding; source = plan.source; byID = entries
         self.entries = entries.values.sorted { Data($0.sourceObjectID.utf8).lexicographicallyPrecedes(Data($1.sourceObjectID.utf8)) }
         unresolvedSourceDefinitionIDs = plan.source.sourceObjectIDs.filter {
             guard let member = plan.source.definitionMembers[Data($0.utf8)] else { return false }
             return [528, 521, 529].contains(member.nativeType) && entries[Data($0.utf8)] == nil
+        }.sorted { Data($0.utf8).lexicographicallyPrecedes(Data($1.utf8)) }
+    }
+
+    /// Join one completed property-only supplement to the original preservation
+    /// directory. Every new entry retains its own intent; the ordinary reader
+    /// rechecks that current native receipt before returning its descriptor.
+    /// A persisted mapping alone never authorizes use or native writes.
+    public init(preservation: AnyNativeImportedDefinitionDirectory,
+                propertySupplement: AnyNativeImportedDefinitionDirectory) throws {
+        guard preservation.namespacePrerequisite == nil,
+              preservation.supplementalPropertyBindings.isEmpty,
+              propertySupplement.supplementalPropertyBindings.isEmpty,
+              propertySupplement.supplementalCanonicalDefinitions.isEmpty,
+              let namespace = propertySupplement.namespacePrerequisite,
+              Data(preservation.binding.workspace.accountID.utf8) == Data(propertySupplement.binding.workspace.accountID.utf8),
+              Data(preservation.binding.workspace.spaceID.utf8) == Data(propertySupplement.binding.workspace.spaceID.utf8),
+              Data(preservation.binding.storeID.utf8) == Data(propertySupplement.binding.storeID.utf8),
+              Data(namespace.binding.workspace.accountID.utf8) == Data(preservation.binding.workspace.accountID.utf8),
+              Data(namespace.binding.workspace.spaceID.utf8) == Data(preservation.binding.workspace.spaceID.utf8),
+              Data(namespace.binding.storeID.utf8) == Data(preservation.binding.storeID.utf8),
+              namespace.binding.planID == preservation.binding.planID,
+              namespace.binding.planSHA256 == preservation.binding.planSHA256,
+              Data(preservation.source.accountID.utf8) == Data(propertySupplement.source.accountID.utf8),
+              Data(preservation.source.spaceID.utf8) == Data(propertySupplement.source.spaceID.utf8),
+              preservation.source.captureManifestSHA256 == propertySupplement.source.captureManifestSHA256,
+              preservation.source.witnessSHA256 == propertySupplement.source.witnessSHA256,
+              preservation.source.definitionManifestBytes == propertySupplement.source.definitionManifestBytes,
+              !propertySupplement.entries.isEmpty,
+              propertySupplement.entries.count == propertySupplement.source.sourceObjectIDs.count,
+              propertySupplement.unresolvedSourceDefinitionIDs.isEmpty else {
+            throw AnyNativeImportedDefinitionError.invalidMappings
+        }
+        var merged = preservation.byID
+        var addresses = preservation.entries.map(\.address)
+        let originalIDs = Set(preservation.source.sourceObjectIDs.map { Data($0.utf8) })
+        for entry in propertySupplement.entries {
+            guard originalIDs.contains(Data(entry.sourceObjectID.utf8)),
+                  case .property(.collection, let key) = entry.address,
+                  Data(key.ownerID.utf8) == Data(namespace.ownerID.utf8),
+                  !entry.canonical, entry.intent != nil, entry.mapping != nil,
+                  !addresses.contains(entry.address),
+                  merged.updateValue(entry, forKey: Data(entry.sourceObjectID.utf8)) == nil else {
+                throw AnyNativeImportedDefinitionError.invalidOrigin(entry.sourceObjectID)
+            }
+            addresses.append(entry.address)
+        }
+        binding = preservation.binding; source = preservation.source; byID = merged
+        entries = merged.values.sorted {
+            Data($0.sourceObjectID.utf8).lexicographicallyPrecedes(Data($1.sourceObjectID.utf8))
+        }
+        supplementalCanonicalDefinitions = preservation.supplementalCanonicalDefinitions
+        supplementalPropertyBindings = [propertySupplement.binding]
+        namespacePrerequisite = nil
+        unresolvedSourceDefinitionIDs = source.sourceObjectIDs.filter {
+            guard let member = source.definitionMembers[Data($0.utf8)] else { return false }
+            return [528, 521, 529].contains(member.nativeType) && merged[Data($0.utf8)] == nil
         }.sorted { Data($0.utf8).lexicographicallyPrecedes(Data($1.utf8)) }
     }
 

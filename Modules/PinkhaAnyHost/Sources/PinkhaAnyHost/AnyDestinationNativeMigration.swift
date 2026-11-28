@@ -111,9 +111,15 @@ protocol AnyDestinationNativeDriving: Sendable {
     func applySequence(objectID: String, authorize: @escaping AnyDestinationAuthorization) async throws -> Int64
     func immutableSchema(ownerTypeID: String, dataset: String,
                          authorize: @escaping AnyDestinationAuthorization) async throws -> AnyPreparedImmutableRecordSchema
+    func importedPropertyNamespace(ownerID: String,
+        authorize: @escaping AnyDestinationAuthorization) async throws -> AnyJSON
 }
 
 extension AnyDestinationNativeDriving {
+    func importedPropertyNamespace(ownerID: String,
+        authorize: @escaping AnyDestinationAuthorization) async throws -> AnyJSON {
+        throw AnyDestinationMigrationError.unsupportedCapability("importedPropertyNamespace")
+    }
     func immutableSchema(ownerTypeID: String, dataset: String,
                          authorize: @escaping AnyDestinationAuthorization) async throws -> AnyPreparedImmutableRecordSchema {
         throw AnyDestinationMigrationError.unsupportedCapability("immutableRecord")
@@ -220,6 +226,17 @@ struct AnyDestinationNativeClients: AnyDestinationNativeDriving {
     func immutableSchema(ownerTypeID: String, dataset: String,
                          authorize: @escaping AnyDestinationAuthorization) async throws -> AnyPreparedImmutableRecordSchema {
         try await require(immutableRecords).schema(ownerTypeID: ownerTypeID, dataset: dataset, authorize: authorize)
+    }
+    func importedPropertyNamespace(ownerID: String,
+        authorize: @escaping AnyDestinationAuthorization) async throws -> AnyJSON {
+        guard AnyEditorBlock.validID(ownerID) else { throw AnyPreparedMigrationError.invalidBinding }
+        let value = try await client.requestJSON(method: "GET",
+            path: ["v1", "spaces", workspace.spaceID, "collections", ownerID],
+            maximumResponseBytes: 262_144, authorize: authorize)
+        guard value["id"]?.string.map({ Data($0.utf8) }) == Data(ownerID.utf8) else {
+            throw AnyDestinationMigrationError.changedIdentity(ownerID)
+        }
+        try await authorize(); try Task.checkCancellation(); return value
     }
     func applySequence(objectID: String, authorize: @escaping AnyDestinationAuthorization) async throws -> Int64 {
         let value = try await client.requestJSON(method: "GET", path: ["v1", "spaces", workspace.spaceID, "objects", objectID],

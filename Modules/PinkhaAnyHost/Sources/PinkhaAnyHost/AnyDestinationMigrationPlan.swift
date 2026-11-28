@@ -253,6 +253,9 @@ public struct AnyDestinationMigrationPlan: Codable, Sendable {
     public let coverage: [AnyDestinationCoverage]
     public let items: [AnyDestinationMigrationItem]
     public let canonicalBytes: Data
+    /// Omitted for every original plan. A supplemental property plan may bind
+    /// one original namespace through its immutable creation receipt.
+    public let importedPropertyNamespace: AnyDestinationImportedPropertyNamespace?
 
     private struct Target: Codable {
         let accountID: String
@@ -266,22 +269,26 @@ public struct AnyDestinationMigrationPlan: Codable, Sendable {
         let target: Target
         let coverage: [AnyDestinationCoverage]
         let items: [AnyDestinationMigrationItem]
+        let importedPropertyNamespace: AnyDestinationImportedPropertyNamespace?
     }
 
     public init(source: AnyDestinationSourceBinding, workspace: AnyTorahWorkspace,
                 storeID: String, planID: String, coverage: [AnyDestinationCoverage],
-                items: [AnyDestinationMigrationItem]) throws {
+                items: [AnyDestinationMigrationItem],
+                importedPropertyNamespace: AnyDestinationImportedPropertyNamespace? = nil) throws {
         let provisional = try AnyPreparedMigrationPlanBinding(workspace: workspace, storeID: storeID,
             planID: planID, planSHA256: String(repeating: "0", count: 64))
-        try Self.validate(source: source, coverage: coverage, items: items, provisional: provisional)
+        try Self.validate(source: source, coverage: coverage, items: items, provisional: provisional,
+                          importedPropertyNamespace: importedPropertyNamespace)
         let content = Content(version: Self.version, source: source,
             target: Target(accountID: workspace.accountID, spaceID: workspace.spaceID, storeID: storeID, planID: planID),
-            coverage: coverage, items: items)
+            coverage: coverage, items: items, importedPropertyNamespace: importedPropertyNamespace)
         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
         let bytes = try encoder.encode(content)
         guard bytes.count <= Self.maximumPlanBytes else { throw AnyDestinationMigrationError.invalidPlan("plan size") }
         try AnyTorahSourceJSONGuard.validateRoundTrip(original: bytes, encoded: bytes)
         self.source = source; self.coverage = coverage; self.items = items; self.canonicalBytes = bytes
+        self.importedPropertyNamespace = importedPropertyNamespace
         self.binding = try .init(workspace: workspace, storeID: storeID, planID: planID,
                                  planSHA256: AnyContentDigest.sha256(bytes))
     }
@@ -299,7 +306,8 @@ public struct AnyDestinationMigrationPlan: Codable, Sendable {
         let target = content.target
         try self.init(source: content.source,
             workspace: .init(accountID: target.accountID, spaceID: target.spaceID),
-            storeID: target.storeID, planID: target.planID, coverage: content.coverage, items: content.items)
+            storeID: target.storeID, planID: target.planID, coverage: content.coverage, items: content.items,
+            importedPropertyNamespace: content.importedPropertyNamespace)
         guard try c.decode(String.self, forKey: .planSHA256) == binding.planSHA256 else {
             throw AnyDestinationMigrationError.changedPlan
         }
@@ -327,7 +335,9 @@ public struct AnyDestinationMigrationPlan: Codable, Sendable {
     }
 
     private static func validate(source: AnyDestinationSourceBinding, coverage: [AnyDestinationCoverage],
-                                 items: [AnyDestinationMigrationItem], provisional: AnyPreparedMigrationPlanBinding) throws {
+                                 items: [AnyDestinationMigrationItem], provisional: AnyPreparedMigrationPlanBinding,
+                                 importedPropertyNamespace: AnyDestinationImportedPropertyNamespace?) throws {
+        try importedPropertyNamespace?.requireSupplement(source: source, binding: provisional, items: items)
         guard !items.isEmpty, items.count <= maximumItems,
               coverage.count == source.sourceObjectIDs.count else {
             throw AnyDestinationMigrationError.invalidPlan("item or coverage count")
@@ -362,9 +372,9 @@ public struct AnyDestinationMigrationPlan: Codable, Sendable {
                     }
                 }
             }
-            // Mutations may target only identities created by this plan. A
-            // literal object ID in imported JSON cannot update an unrelated
-            // existing destination object or mutate a preexisting schema.
+            // Mutations retain same-plan ownership. The sole exception below
+            // is a property-only supplement bound to the original namespace
+            // prerequisite; it cannot update arbitrary existing objects.
             func mappedOwner(_ reference: AnyDestinationReference, kinds: Set<String>) throws {
                 guard case .mapped(let key, .objectID, .rawID) = reference,
                       let owner = keys[Data(key.utf8)], kinds.contains(items[owner].operation.kind) else {
@@ -373,7 +383,14 @@ public struct AnyDestinationMigrationPlan: Codable, Sendable {
             }
             switch item.operation {
             case .propertyDefinition(let owner, _, _, _, _, _, _, _):
-                try mappedOwner(owner, kinds: ["typeDefinition", "collectionDefinition"])
+                if let namespace = importedPropertyNamespace {
+                    guard case .native(let id) = owner,
+                          Data(id.utf8) == Data(namespace.ownerID.utf8) else {
+                        throw AnyDestinationMigrationError.invalidPlan("external property namespace")
+                    }
+                } else {
+                    try mappedOwner(owner, kinds: ["typeDefinition", "collectionDefinition"])
+                }
             case .partDefinition(let owner, _):
                 try mappedOwner(owner, kinds: ["typeDefinition"])
             case .editorBlock(let owner, _, _, _, _, _, _), .file(let owner, _, _, _, _):

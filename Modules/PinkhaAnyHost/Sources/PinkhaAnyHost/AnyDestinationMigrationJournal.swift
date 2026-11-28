@@ -43,6 +43,9 @@ final class AnyDestinationMigrationJournal: @unchecked Sendable {
     private let directoryFD: Int32
     private let lockFD: Int32
     private let plan: AnyDestinationMigrationPlan
+    private let readOnly: Bool
+    private var readOnlyBytes = 0
+    private static let maximumReadOnlyBytes = 128 * 1024 * 1024
 
     private struct Envelope: Codable {
         let version: String
@@ -91,7 +94,7 @@ final class AnyDestinationMigrationJournal: @unchecked Sendable {
                 guard status == 0 else { throw AnyDestinationMigrationError.journalUnavailable }
             }
         } catch { close(lockFD); close(directoryFD); throw error }
-        self.directory = directory; self.directoryFD = directoryFD; self.lockFD = lockFD; self.plan = plan
+        self.directory = directory; self.directoryFD = directoryFD; self.lockFD = lockFD; self.plan = plan; self.readOnly = false
         do {
             try validateNames()
             if let previous = try read(name: "plan.json", maximum: AnyDestinationMigrationPlan.maximumPlanBytes) {
@@ -105,6 +108,139 @@ final class AnyDestinationMigrationJournal: @unchecked Sendable {
                           maximum: AnyDestinationMigrationPlan.maximumPlanBytes)
             }
         } catch { throw error }
+    }
+
+
+    /// Opens only an existing completed checkpoint. This acquires the same
+    /// owner.lock in shared mode and never creates or updates any journal file.
+    init(readOnlyParent parent: URL, expectedBinding: AnyPreparedMigrationPlanBinding) throws {
+        guard parent.isFileURL else { throw AnyDestinationMigrationError.journalUnavailable }
+        try Self.requireDirectory(parent, privateMode: false)
+        let root = parent.appendingPathComponent("AnyDestinationMigrationV1", isDirectory: true)
+        let scope = AnyContentDigest.sha256(AnyPreparedMigrationPlanBinding.material([
+            expectedBinding.workspace.accountID, expectedBinding.workspace.spaceID,
+            expectedBinding.storeID, expectedBinding.planID
+        ]))
+        let directory = root.appendingPathComponent(scope, isDirectory: true)
+        try Self.requireDirectory(root, privateMode: true)
+        try Self.requireDirectory(directory, privateMode: true)
+        let directoryFD = open(directory.path, O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC)
+        guard directoryFD >= 0 else { throw AnyDestinationMigrationError.journalUnavailable }
+        let lockFD = openat(directoryFD, "owner.lock", O_RDONLY | O_NOFOLLOW | O_CLOEXEC)
+        guard lockFD >= 0 else { close(directoryFD); throw AnyDestinationMigrationError.journalUnavailable }
+        let plan: AnyDestinationMigrationPlan
+        let original: Data
+        do {
+            try Self.requireDirectoryIdentity(directoryFD, path: directory)
+            try Self.requireFile(lockFD, maximum: 0)
+            guard flock(lockFD, LOCK_SH | LOCK_NB) == 0 else {
+                throw AnyDestinationMigrationError.alreadyExecuting
+            }
+            try Self.requireReadLockIdentity(lockFD, directoryFD: directoryFD)
+            guard let bytes = try Self.readExisting(directoryFD: directoryFD, directory: directory,
+                name: "plan.json", maximum: AnyDestinationMigrationPlan.maximumPlanBytes),
+                  AnyContentDigest.sha256(bytes) == expectedBinding.planSHA256 else {
+                throw AnyDestinationMigrationError.changedPlan
+            }
+            // plan.json is the existing canonical Content, not the public
+            // Codable wrapper. Wrap those exact bytes without reinterpreting it.
+            var wrapped = Data("{\"content\":".utf8)
+            wrapped.append(bytes)
+            wrapped.append(Data(",\"planSHA256\":\"\(expectedBinding.planSHA256)\"}".utf8))
+            plan = try AnyDestinationMigrationPlan.decode(wrapped)
+            guard plan.canonicalBytes == bytes,
+                  Self.sameBinding(plan.binding, expectedBinding) else {
+                throw AnyDestinationMigrationError.changedPlan
+            }
+            original = bytes
+        } catch { close(lockFD); close(directoryFD); throw error }
+        self.directory = directory; self.directoryFD = directoryFD
+        self.lockFD = lockFD; self.plan = plan; self.readOnly = true
+        self.readOnlyBytes = original.count
+        try validateNames()
+        try finishReadOnly()
+    }
+
+    var storedPlan: AnyDestinationMigrationPlan { plan }
+
+    /// Called while the shared lock is still held, after all selected entries
+    /// were parsed. A changed plan or replaced lock path cannot be delivered.
+    func finishReadOnly() throws {
+        guard readOnly else { throw AnyDestinationMigrationError.journalUnavailable }
+        try Self.requireReadLockIdentity(lockFD, directoryFD: directoryFD)
+        guard try read(name: "plan.json", maximum: AnyDestinationMigrationPlan.maximumPlanBytes) ==
+            plan.canonicalBytes else { throw AnyDestinationMigrationError.changedPlan }
+        try validateNames()
+        try Self.requireDirectoryIdentity(directoryFD, path: directory)
+        try Self.requireReadLockIdentity(lockFD, directoryFD: directoryFD)
+    }
+
+    private static func sameBinding(_ a: AnyPreparedMigrationPlanBinding,
+                                    _ b: AnyPreparedMigrationPlanBinding) -> Bool {
+        Data(a.workspace.accountID.utf8) == Data(b.workspace.accountID.utf8) &&
+        Data(a.workspace.spaceID.utf8) == Data(b.workspace.spaceID.utf8) &&
+        Data(a.storeID.utf8) == Data(b.storeID.utf8) &&
+        Data(a.planID.utf8) == Data(b.planID.utf8) && a.planSHA256 == b.planSHA256
+    }
+
+    private static func requireReadLockIdentity(_ fd: Int32, directoryFD: Int32) throws {
+        _ = try requireFile(fd, maximum: 0)
+        var descriptor = stat(), current = stat()
+        guard fstat(fd, &descriptor) == 0,
+              fstatat(directoryFD, "owner.lock", &current, AT_SYMLINK_NOFOLLOW) == 0,
+              sameReadIdentity(descriptor, current) else {
+            throw AnyDestinationMigrationError.journalCorrupt
+        }
+    }
+
+    private static func sameReadIdentity(_ a: stat, _ b: stat) -> Bool {
+        guard a.st_dev == b.st_dev, a.st_ino == b.st_ino,
+              a.st_mode == b.st_mode, a.st_nlink == b.st_nlink,
+              a.st_uid == b.st_uid, a.st_gid == b.st_gid, a.st_size == b.st_size else { return false }
+        #if canImport(Darwin)
+        return a.st_mtimespec.tv_sec == b.st_mtimespec.tv_sec &&
+            a.st_mtimespec.tv_nsec == b.st_mtimespec.tv_nsec &&
+            a.st_ctimespec.tv_sec == b.st_ctimespec.tv_sec &&
+            a.st_ctimespec.tv_nsec == b.st_ctimespec.tv_nsec
+        #else
+        return a.st_mtim.tv_sec == b.st_mtim.tv_sec && a.st_mtim.tv_nsec == b.st_mtim.tv_nsec &&
+            a.st_ctim.tv_sec == b.st_ctim.tv_sec && a.st_ctim.tv_nsec == b.st_ctim.tv_nsec
+        #endif
+    }
+
+    private static func readExisting(directoryFD: Int32, directory: URL,
+                                     name: String, maximum: Int) throws -> Data? {
+        try Task.checkCancellation()
+        try requireDirectoryIdentity(directoryFD, path: directory)
+        guard !name.isEmpty, !name.contains("/"), !name.contains("\\") else {
+            throw AnyDestinationMigrationError.journalCorrupt
+        }
+        let fd = openat(directoryFD, name, O_RDONLY | O_NOFOLLOW | O_CLOEXEC)
+        if fd < 0 {
+            if errno == ENOENT { return nil }
+            throw AnyDestinationMigrationError.journalCorrupt
+        }
+        let handle = FileHandle(fileDescriptor: fd, closeOnDealloc: true)
+        defer { try? handle.close() }
+        let expected = try requireFile(fd, maximum: maximum)
+        var before = stat(), after = stat(), named = stat()
+        guard fstat(fd, &before) == 0,
+              fstatat(directoryFD, name, &named, AT_SYMLINK_NOFOLLOW) == 0,
+              sameReadIdentity(before, named) else { throw AnyDestinationMigrationError.journalCorrupt }
+        var data = Data()
+        while data.count <= maximum {
+            try Task.checkCancellation()
+            let part = try handle.read(upToCount: min(1_048_576, maximum + 1 - data.count)) ?? Data()
+            if part.isEmpty { break }
+            data.append(part)
+        }
+        guard data.count == expected, data.count <= maximum,
+              try requireFile(fd, maximum: maximum) == expected,
+              fstat(fd, &after) == 0, sameReadIdentity(before, after),
+              fstatat(directoryFD, name, &named, AT_SYMLINK_NOFOLLOW) == 0,
+              sameReadIdentity(after, named) else { throw AnyDestinationMigrationError.journalCorrupt }
+        try requireDirectoryIdentity(directoryFD, path: directory)
+        return data
     }
 
     deinit { _ = flock(lockFD, LOCK_UN); close(lockFD); close(directoryFD) }
@@ -133,6 +269,7 @@ final class AnyDestinationMigrationJournal: @unchecked Sendable {
     }
 
     func save(_ entry: AnyDestinationJournalEntry) throws {
+        guard !readOnly else { throw AnyDestinationMigrationError.journalUnavailable }
         guard entry.index >= 0, entry.index < plan.items.count,
               Data(entry.sourceKey.utf8) == Data(plan.items[entry.index].sourceKey.utf8) else {
             throw AnyDestinationMigrationError.journalCorrupt
@@ -170,6 +307,15 @@ final class AnyDestinationMigrationJournal: @unchecked Sendable {
     }
 
     private func read(name: String, maximum: Int) throws -> Data? {
+        if readOnly {
+            let data = try Self.readExisting(directoryFD: directoryFD, directory: directory,
+                                              name: name, maximum: maximum)
+            guard (data?.count ?? 0) <= Self.maximumReadOnlyBytes - readOnlyBytes else {
+                throw AnyEngineError.readLimit
+            }
+            readOnlyBytes += data?.count ?? 0
+            return data
+        }
         try Self.requireDirectoryIdentity(directoryFD, path: directory)
         let fd = openat(directoryFD, name, O_RDONLY | O_NOFOLLOW | O_CLOEXEC)
         if fd < 0 {
@@ -193,6 +339,7 @@ final class AnyDestinationMigrationJournal: @unchecked Sendable {
     }
 
     private func write(name: String, bytes: Data, maximum: Int) throws {
+        guard !readOnly else { throw AnyDestinationMigrationError.journalUnavailable }
         try Self.requireDirectoryIdentity(directoryFD, path: directory)
         guard !bytes.isEmpty, bytes.count <= maximum, !name.contains("/"), !name.contains("\\") else {
             throw AnyDestinationMigrationError.journalUnavailable

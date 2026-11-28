@@ -34,6 +34,32 @@ public struct AnyDestinationMigrationProgress: Sendable {
     let verificationIntents: [AnyDestinationNativeIntent]
 }
 
+
+/// Historical checkpoint identities read from the existing private journal.
+/// These routing facts do not assert current native content or authorization.
+public struct AnyDestinationSavedCheckpoint: Sendable {
+    public let plan: AnyDestinationMigrationPlan
+    public let mappings: [AnyDestinationMigrationMapping]
+    public let checkpointSHA256: String
+    public var nativeOperationsPerformed: Int { 0 }
+    public var provesCurrentNativeState: Bool { false }
+    let intents: [AnyDestinationNativeIntent]
+
+    static func fingerprint(plan: AnyDestinationMigrationPlan,
+                            mappings: [AnyDestinationMigrationMapping]) throws -> String {
+        struct Material: Encodable {
+            let contract: String
+            let planSHA256: String
+            let mappings: [AnyDestinationMigrationMapping]
+        }
+        let bytes = try AnyDestinationMigrationJournal.encoded(Material(
+            contract: "pinkha-destination-saved-checkpoint-v1",
+            planSHA256: plan.binding.planSHA256, mappings: mappings))
+        guard bytes.count <= 32 * 1024 * 1024 else { throw AnyEngineError.readLimit }
+        return AnyContentDigest.sha256(bytes)
+    }
+}
+
 public actor AnyDestinationMigrationExecutor {
     private typealias Factory = @Sendable (AnyDestinationMigrationPlan, @escaping AnyDestinationAuthorization) async throws -> any AnyDestinationNativeDriving
     private let journalDirectory: URL
@@ -76,15 +102,31 @@ public actor AnyDestinationMigrationExecutor {
         // Both the OS lock and in-actor guard remain held across suspension.
         // The OS closes the lock on process death; no timestamp lease expires
         // while an older process could still mutate the destination.
+        let prerequisiteDriver: (any AnyDestinationNativeDriving)?
+        if let namespace = plan.importedPropertyNamespace {
+            let candidate = try await factory(plan, admit)
+            // A missing, obsolete or foreign original namespace refuses before
+            // the supplemental journal is created or any new intent prepared.
+            try await namespace.observe(using: candidate, authorize: admit)
+            prerequisiteDriver = candidate
+        } else { prerequisiteDriver = nil }
         let journal = try AnyDestinationMigrationJournal(parent: journalDirectory, plan: plan)
-        let driver = try await factory(plan, admit)
+        let driver: any AnyDestinationNativeDriving
+        if let prerequisiteDriver { driver = prerequisiteDriver }
+        else { driver = try await factory(plan, admit) }
+        let operationAdmit: AnyDestinationAuthorization
+        if let namespace = plan.importedPropertyNamespace {
+            operationAdmit = {
+                try await namespace.observe(using: driver, authorize: admit)
+            }
+        } else { operationAdmit = admit }
         var mappings: [Data: AnyDestinationMigrationMapping] = [:]
         var ordered: [AnyDestinationMigrationMapping] = []
         var entries: [AnyDestinationJournalEntry] = []
         var propertyGroups = Set<Data>()
         var creationProperties: [Data: AnyJSON] = [:]
         for (index, item) in plan.items.enumerated() {
-            try await admit()
+            try await operationAdmit()
             let resolved = try item.operation.resolved(destinationSpaceID: plan.binding.workspace.spaceID) {
                 try Self.resolve($0, mappings: mappings, destinationSpaceID: plan.binding.workspace.spaceID)
             }
@@ -104,7 +146,7 @@ public actor AnyDestinationMigrationExecutor {
             } else {
                 let sequence: Int64?
                 if case .propertyUpdate(.native(let object), _, _) = resolved {
-                    sequence = try await driver.applySequence(objectID: object, authorize: admit)
+                    sequence = try await driver.applySequence(objectID: object, authorize: operationAdmit)
                 } else { sequence = nil }
                 let content: Data?
                 if case .file(_, _, _, let size, let digest) = resolved, size < 4096 {
@@ -114,7 +156,7 @@ public actor AnyDestinationMigrationExecutor {
                 let immutableSchema: AnyPreparedImmutableRecordSchema?
                 if case .immutableRecord(_, .native(let owner), let key, _) = resolved {
                     immutableSchema = try await driver.immutableSchema(ownerTypeID: owner,
-                        dataset: AnyPreparedImmutableRecordIntent.ownedDataset(ownerTypeID: owner, key: key), authorize: admit)
+                        dataset: AnyPreparedImmutableRecordIntent.ownedDataset(ownerTypeID: owner, key: key), authorize: operationAdmit)
                 } else { immutableSchema = nil }
                 let intent = try AnyDestinationNativeIntent.make(resolved, binding: plan.binding,
                     sourceKey: item.sourceKey, sequence: sequence, inlineContent: content, immutableSchema: immutableSchema)
@@ -132,13 +174,13 @@ public actor AnyDestinationMigrationExecutor {
             if let previous = entry.receipts.last { try Self.requireNonterminal(previous, sourceKey: item.sourceKey) }
             let prepared: AnyJSON
             do {
-                prepared = try await driver.status(intent, authorize: admit)
+                prepared = try await driver.status(intent, authorize: operationAdmit)
             } catch AnyEngineError.http(let status, _) where status == 404 && entry.receipts.isEmpty {
                 // Only a native 404 with no prior native receipt permits initial
                 // preparation. Network/auth/corruption errors are never absence.
                 let payload: URL?
                 if case .file = intent { payload = try await payloads(item.sourceKey) } else { payload = nil }
-                prepared = try await driver.prepare(intent, payload: payload, authorize: admit)
+                prepared = try await driver.prepare(intent, payload: payload, authorize: operationAdmit)
             }
             try Self.record(prepared, in: &entry, intent: intent, journal: journal)
             try Self.requireNonterminal(prepared, sourceKey: item.sourceKey)
@@ -148,7 +190,7 @@ public actor AnyDestinationMigrationExecutor {
             } else {
                 // A lost reply escapes immediately. Resuming reconciles this
                 // same intent; there is no uncertain-write loop in this call.
-                completed = try await driver.commit(intent, receipt: prepared, authorize: admit)
+                completed = try await driver.commit(intent, receipt: prepared, authorize: operationAdmit)
                 try Self.record(completed, in: &entry, intent: intent, journal: journal)
                 try Self.requireNonterminal(completed, sourceKey: item.sourceKey)
             }
@@ -165,17 +207,70 @@ public actor AnyDestinationMigrationExecutor {
         for index in entries.indices {
             var entry = entries[index]
             let intent = try Self.intent(entry, plan: plan)
-            let current = try await driver.status(intent, authorize: admit)
+            let current = try await driver.status(intent, authorize: operationAdmit)
             try Self.record(current, in: &entry, intent: intent, journal: journal)
             try Self.requireNonterminal(current, sourceKey: entry.sourceKey)
             guard Self.isComplete(current) else { throw AnyPreparedMigrationError.incompleteCommit }
             ordered[index] = try Self.mapping(plan.items[index], entry: entry)
             entries[index] = entry
         }
-        try await admit()
+        try await operationAdmit()
         return .init(binding: plan.binding, source: plan.source, mappings: ordered,
                      totalItems: plan.items.count, allItemsReconciled: true,
                      verificationIntents: try entries.map { try Self.intent($0, plan: plan) })
+    }
+
+
+    /// Reads an existing completed journal under its original shared OS lock.
+    /// It cannot open a native driver, prepare/commit, repair a checkpoint or
+    /// create missing files. Current readers still revalidate native authority.
+    public nonisolated static func readCompletedCheckpoint(
+        journalDirectory: URL, binding: AnyPreparedMigrationPlanBinding
+    ) throws -> AnyDestinationSavedCheckpoint {
+        try Task.checkCancellation()
+        let journal = try AnyDestinationMigrationJournal(readOnlyParent: journalDirectory,
+                                                          expectedBinding: binding)
+        let plan = journal.storedPlan
+        try plan.requireExecutable()
+        var byKey: [Data: AnyDestinationMigrationMapping] = [:]
+        var mappings: [AnyDestinationMigrationMapping] = []
+        var intents: [AnyDestinationNativeIntent] = []
+        var propertyGroups = Set<Data>()
+        var creationProperties: [Data: AnyJSON] = [:]
+        for (index, item) in plan.items.enumerated() {
+            try Task.checkCancellation()
+            let resolved = try item.operation.resolved(destinationSpaceID: binding.workspace.spaceID) {
+                try Self.resolve($0, mappings: byKey, destinationSpaceID: binding.workspace.spaceID)
+            }
+            guard let entry = try journal.load(index: index),
+                  entry.resolvedOperation == (try AnyDestinationMigrationJournal.encoded(resolved)),
+                  !entry.receipts.isEmpty else { throw AnyDestinationMigrationError.journalCorrupt }
+            if case .propertyUpdate(let object, let owner, let patch) = resolved {
+                let group = try AnyDestinationMigrationJournal.encoded([object, owner])
+                guard propertyGroups.insert(group).inserted else {
+                    throw AnyDestinationMigrationError.invalidPlan("aliased property object/owner group")
+                }
+                try Self.requireDisjointCreationFields(object: object, owner: owner, patch: patch,
+                                                       properties: creationProperties)
+            }
+            let intent = try Self.intent(entry, plan: plan)
+            for pair in zip(entry.receipts, entry.receipts.dropFirst()) {
+                try Self.compare(pair.0, pair.1, sourceKey: item.sourceKey)
+            }
+            let mapping = try Self.mapping(item, entry: entry)
+            guard byKey.updateValue(mapping, forKey: Data(item.sourceKey.utf8)) == nil else {
+                throw AnyDestinationMigrationError.journalCorrupt
+            }
+            mappings.append(mapping); intents.append(intent)
+            if case .object(_, _, .literal(let values)) = resolved {
+                creationProperties[Data(mapping.objectID.utf8)] = values
+            }
+        }
+        let checkpointSHA256 = try AnyDestinationSavedCheckpoint.fingerprint(plan: plan, mappings: mappings)
+        try journal.finishReadOnly()
+        try Task.checkCancellation()
+        return .init(plan: plan, mappings: mappings,
+            checkpointSHA256: checkpointSHA256, intents: intents)
     }
 
     private static func intent(_ entry: AnyDestinationJournalEntry,
