@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "status": "SOURCE_ONLY_NOT_RUN",
+  "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyLibrarySearchPublicationTests.swift",
+  "predecessor": {
+    "bytes": 45448,
+    "sha256": "5cf5c54b91b6e69db304663c769cd1a8c36022ab8b7daccf334478a8363d0a0c",
+    "gitBlob": "b1f9b270924b781db2f0c985dd0a3201ce8f2f49"
+  },
+  "successor": {
+    "bytes": 45691,
+    "sha256": "e9945ab99ae82ff16e6f3e74e085ce694f38dae4eb7a1d15b129f539d417cd38",
+    "gitBlob": "868b83916c788ba0155b2df3923ebfc75bdea272"
+  },
+  "predecessorSuffix": {
+    "bytes": 31588,
+    "sha256": "fd352f8648fb444694c099f571c73c52072792a715881d26f7c48d21231df01e",
+    "gitBlob": "3cb739efb9888e4a647643e392fccaad5f0cee85"
+  },
+  "successorSuffix": {
+    "bytes": 31831,
+    "sha256": "1b0ce26656f67f88235c870d3e31cce93cd21c086c6de7f529a19c7e69f4b308",
+    "gitBlob": "5d1fc7e8c7011575f8a0f398ba6d25cb313c5ab2"
+  },
+  "replacements": [
+    {
+      "finding": "HOME-TEST-MODEL-RETENTION-01",
+      "label": "outer strong model owner",
+      "before": "        var lifetime: AnyUIPresentationLifetime?\n        var firstFailure: (any Error)?",
+      "after": "        var lifetime: AnyUIPresentationLifetime?\n        var retainedSubject: AnyLibraryPresentation?\n        var firstFailure: (any Error)?"
+    },
+    {
+      "finding": "HOME-TEST-MODEL-RETENTION-01",
+      "label": "retain actual model before callbacks and open",
+      "before": "                recovery: .init(workspace: workspace), personalNavigation: navigation)\n            var openedIDs: [String] = []",
+      "after": "                recovery: .init(workspace: workspace), personalNavigation: navigation)\n            retainedSubject = subject\n            var openedIDs: [String] = []"
+    },
+    {
+      "finding": "HOME-READINESS-PUBLICATION-01",
+      "label": "wait for actual published rows as well as observer entry",
+      "before": "            try await waitForLibraryHome(server) { server.initialObservationReachedConsumer }",
+      "after": "            try await waitForLibraryHome(server) {\n                server.initialObservationReachedConsumer\n                    && subject.allDocuments.map(\\.id) == [server.objectID]\n            }"
+    },
+    {
+      "finding": "HOME-TEST-MODEL-RETENTION-01",
+      "label": "keep owner alive through actual await drain",
+      "before": "        await lifetime?.drain()\n        await session?.revokeAndDrain()",
+      "after": "        await lifetime?.drain()\n        withExtendedLifetime(retainedSubject) {}\n        await session?.revokeAndDrain()"
+    }
+  ],
+  "inverse": "Reverse exactly these four unique after literals in reverse order. Require complete predecessor bytes/SHA/Git afterward.",
+  "inverseVerified": true,
+  "original13860BytePrefixExact": true,
+  "unchanged": {
+    "entireHTTPFixture": true,
+    "routes": true,
+    "bounds": true,
+    "methodCount": 1,
+    "caseCount": 2,
+    "production": true,
+    "PackagePBXControllers": true
+  },
+  "runtimeFailureObserved": false
+}

@@ -1,0 +1,101 @@
+{
+  "schema": "pinkha.library-home.editor-final-delta-review.v1",
+  "reviewer": "W2 editor independent peer",
+  "status": "PASS_SOURCE_REVIEW_ONLY_NOT_COMPILED_NOT_RUN",
+  "baseCommit": "9a4fcf22949385771bb98faac9e4a05c9be65066",
+  "sourcePath": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyLibrarySearchPublicationTests.swift",
+  "candidate": {
+    "bytes": 45691,
+    "sha256": "e9945ab99ae82ff16e6f3e74e085ce694f38dae4eb7a1d15b129f539d417cd38",
+    "gitBlob": "868b83916c788ba0155b2df3923ebfc75bdea272"
+  },
+  "correction": {
+    "bytes": 3012,
+    "sha256": "6eda59a692327260db58b1ef9d57e9c6a8794a7084d2791cc2dcebb1881868db",
+    "gitBlob": "6ec898d958480bf35ad17c358b865dd4a2b31ddb"
+  },
+  "manifest": {
+    "bytes": 3112,
+    "sha256": "83ee9444148b6969036ce9eff699fba027467c07264840f9cab13839c357e52d",
+    "gitBlob": "6e551b44303c644f7414734f9354cf7f6ada59c0"
+  },
+  "reviewedInputCustody": "All three complete current bodies were fetched by immutable Git blob and independently checked for UTF8 length, SHA256 and Git blob identity. This is a delta source review, not a complete publication-packet review.",
+  "retainedBlockedReview": {
+    "bytes": 5716,
+    "sha256": "845f0a960d0dce3c101de9b2288006f074bae20542e4a58cf4003bb204142aa1",
+    "gitBlob": "8946d0b13337a7bb99b8dfd47369af946b2a3e0e",
+    "unchanged": true
+  },
+  "predecessor": {
+    "bytes": 45448,
+    "sha256": "5cf5c54b91b6e69db304663c769cd1a8c36022ab8b7daccf334478a8363d0a0c",
+    "gitBlob": "b1f9b270924b781db2f0c985dd0a3201ce8f2f49"
+  },
+  "exactDelta": {
+    "literalRules": 4,
+    "uniqueSites": 4,
+    "wholeForwardExact": true,
+    "wholeInverseExact": true,
+    "originalPrefixBytes": 13860,
+    "originalPrefixSHA256": "b242b8bdbe9f2c9c10c742d26ffe88b237b797b28dfd600e07b85f4e3c2a5494",
+    "originalPrefixExact": true,
+    "entireHTTPFixtureTailExact": true,
+    "netBytes": 243,
+    "suffix": {
+      "bytes": 31831,
+      "sha256": "1b0ce26656f67f88235c870d3e31cce93cd21c086c6de7f529a19c7e69f4b308",
+      "gitBlob": "5d1fc7e8c7011575f8a0f398ba6d25cb313c5ab2"
+    }
+  },
+  "findings": [
+    {
+      "id": "HOME-TEST-MODEL-RETENTION-01",
+      "disposition": "SOURCE_CORRECTED",
+      "evidence": "An outer retainedSubject optional is assigned the actual constructed AnyLibraryPresentation before callback installation and public open. Both success and catch paths reach the existing await lifetime?.drain(), followed by withExtendedLifetime(retainedSubject). The later explicit use guarantees the model remains strongly owned across the awaited lifetime drain rather than relying on the model's task captures or the lifetime's weak callbacks.",
+      "preserved": "The original lifetime drain remains once, followed by the original session revokeAndDrain and server stop. No direct extra model drain, readiness setter, authority injection or duplicate cleanup was added. A failure before model construction has no model to retain."
+    },
+    {
+      "id": "HOME-READINESS-PUBLICATION-01",
+      "retainedReviewAlias": "HOME-TEST-READINESS-PUBLICATION-01",
+      "findingOwner": "Interfaces",
+      "disposition": "SOURCE_CORRECTED",
+      "evidence": "The same bounded wait now requires both initialObservationReachedConsumer and subject.allDocuments.map(\\.id) == [server.objectID]. Thus request receipt alone cannot advance the test before the real model publishes the expected rows. The separate later allDocuments assertion and all positive Home action/readback checks remain exact.",
+      "preserved": "The original SSE/second-query witness, five-second wait, health checks and cancellation handling are retained; no sleep substitute or forced model state is introduced."
+    }
+  ],
+  "unchangedScope": {
+    "newMethod": "AnyLibraryHomeReadinessTests.homeSetOpenAndUnsetAfterRealReadinessUsesCurrentReadAuthority(isReader:)",
+    "sourceArguments": [
+      false,
+      true
+    ],
+    "newDeclaredMethods": 1,
+    "newDeclaredCases": 2,
+    "originalMethods": 4,
+    "originalCases": 5,
+    "originalPrefixBytes": 13860,
+    "originalPrefixSHA256": "b242b8bdbe9f2c9c10c742d26ffe88b237b797b28dfd600e07b85f4e3c2a5494",
+    "entireHTTPFixture": "Byte-exact to reviewed v1, including listener/SSE/socket tracking, callback cancellation accounting, route/body/header checks and per-case state.",
+    "actionAssertions": "Synchronous isWorkingWithHome admission, bounded task completion, exact set/readback, open callback identity, unset/absent messages and exactly two settings mutations remain unchanged.",
+    "isolation": "Each argument retains its own loopback listener/ephemeral port, queue, client, session, lifetime, recovery and counters. No shared fixture/global URLProtocol or persistent recovery state is added.",
+    "bounds": {
+      "suiteMinutes": 1,
+      "fixtureSeconds": 45,
+      "startStopProgressSeconds": 5,
+      "cumulativeConnectionsAndRequests": 1024,
+      "concurrentConnections": 16,
+      "requestBytes": 32768,
+      "headerBodyResponseBytes": 16384,
+      "maximumSettingsWrites": 2
+    },
+    "productionPackagePBXControllerChanges": 0
+  },
+  "conclusion": "Both accepted source findings are corrected by the four unique literals. Whole forward and inverse reproduce the exact candidate/predecessor; the old full prefix and entire HTTP fixture remain exact. No additional concrete source blocker was found.",
+  "acceptance": {
+    "compiledEnumeration": "NOT_RUN",
+    "tests": "NOT_RUN",
+    "AppleNativeVisual": "NOT_RUN",
+    "limitation": "This is controlled real-client/public-model Home coverage prepared in source, not mounted SwiftUI, actual Native backend/account/permission, launch/cold reopen or visual acceptance. Existing tests were not replayed or requalified.",
+    "activities": "Git/V8 data reads and literal/hash verification only. No Oracle file, process, compiler, runtime, source-tree, commit or ref operation. The review itself is authorized for unreferenced Git-blob custody."
+  }
+}

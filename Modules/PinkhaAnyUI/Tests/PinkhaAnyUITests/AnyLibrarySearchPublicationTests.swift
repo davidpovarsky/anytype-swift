@@ -325,3 +325,595 @@ private final class SuspendedLibraryBinRead {
     }
 }
 #endif
+
+#if canImport(SwiftUI) && canImport(Network)
+import Network
+
+/// Uses the real public Library.open readiness chain and current Home actions.
+/// The only replacement is a bounded HTTP server. This is not native-engine,
+/// mounted SwiftUI, launch/reopen, or imported-migration acceptance.
+@MainActor
+@Suite("Native library Home through real open", .timeLimit(.minutes(1)))
+struct AnyLibraryHomeReadinessTests {
+    @Test(arguments: [false, true])
+    func homeSetOpenAndUnsetAfterRealReadinessUsesCurrentReadAuthority(isReader: Bool) async throws {
+        let server = try LibraryHomeHTTPFixture(permission: isReader ? "reader" : "owner")
+        var session: AnyApplicationSession?
+        var lifetime: AnyUIPresentationLifetime?
+        var retainedSubject: AnyLibraryPresentation?
+        var firstFailure: (any Error)?
+        do {
+            let baseURL = try await server.start()
+            let workspace = try AnyTorahWorkspace(accountID: server.accountID, spaceID: server.spaceID)
+            let client = try AnyHTTPClient(baseURL: baseURL, expectedAccountID: workspace.accountID)
+            // Public connect performs the original /auth and /health reads.
+            // No readiness setter or internal lease/marker/binding initializer is used.
+            let currentSession = try await AnyApplicationSession.connect(client: client, workspace: workspace)
+            session = currentSession
+            let binding = try await client.nativeAccountRunBinding(expectedNetworkID: server.networkID)
+            let navigation = try AnyNativePersonalNavigationStore(client: client, workspace: workspace, binding: binding)
+            let capabilities = try AnyUIFoundationCapabilities(response: await client.requestJSON(
+                method: "GET", path: ["v1", "pinkha", "capabilities"]))
+            // Reuse the original file's rejecting journal: a Home preference
+            // must not reserve/create a document, marker or schema.
+            let journal = LibrarySearchUnusedJournal(workspace: workspace)
+            let objects = try AnyNativeObjectCreator(client: client, workspace: workspace, journal: journal)
+            let blocks = try AnyNativeBlockCreator(client: client, workspace: workspace,
+                                                   journal: journal, allowedTypeIDs: ["page"])
+            let currentLifetime = AnyUIPresentationLifetime()
+            lifetime = currentLifetime
+            let subject = AnyLibraryPresentation(client: client, session: currentSession,
+                objects: objects, blocks: blocks, capabilities: capabilities, lifetime: currentLifetime,
+                recovery: .init(workspace: workspace), personalNavigation: navigation)
+            retainedSubject = subject
+            var openedIDs: [String] = []
+            var openedBlockIDs: [String?] = []
+            subject.onOpenDocument = { objectID, blockID in
+                openedIDs.append(objectID); openedBlockIDs.append(blockID)
+            }
+
+            #expect(!subject.isReady)
+            await subject.open()
+            try #require(subject.isReady)
+            try #require(!subject.requiresSetup)
+            try #require(subject.message == nil)
+            #expect(subject.canWrite == !isReader)
+            // A second original all-document read can only follow consumption
+            // of the actual initial hierarchy SSE snapshot in this fixture.
+            try await waitForLibraryHome(server) {
+                server.initialObservationReachedConsumer
+                    && subject.allDocuments.map(\.id) == [server.objectID]
+            }
+            try server.requireReadyReadClosure()
+            #expect(subject.allDocuments.map(\.id) == [server.objectID])
+            #expect(subject.bookmarkTypes.isEmpty)
+
+            subject.setHome(documentID: server.objectID)
+            try #require(subject.isWorkingWithHome)
+            try await waitForLibraryHome(server) { !subject.isWorkingWithHome }
+            try server.requireSetReadback()
+            #expect(["מסמך הבית עודכן.", "The Home document was updated."].contains(subject.message ?? ""))
+            #expect(openedIDs.isEmpty)
+
+            subject.openHome()
+            try #require(subject.isWorkingWithHome)
+            try await waitForLibraryHome(server) { !subject.isWorkingWithHome }
+            #expect(openedIDs == [server.objectID])
+            #expect(openedBlockIDs == [nil])
+
+            subject.unsetHome()
+            try #require(subject.isWorkingWithHome)
+            try await waitForLibraryHome(server) { !subject.isWorkingWithHome }
+            #expect(["בחירת מסמך הבית הוסרה.", "The Home document selection was cleared."].contains(subject.message ?? ""))
+
+            subject.openHome()
+            try #require(subject.isWorkingWithHome)
+            try await waitForLibraryHome(server) { !subject.isWorkingWithHome }
+            #expect(["עדיין לא נבחר מסמך בית.", "No Home document has been selected."].contains(subject.message ?? ""))
+            #expect(openedIDs == [server.objectID])
+            #expect(openedBlockIDs == [nil])
+            #expect(subject.canWrite == !isReader)
+            try server.requireCompletedHomeSequence()
+        } catch {
+            firstFailure = error
+        }
+
+        // Keep the server alive while the actual owner cancels and drains its
+        // Home/observation tasks; close every accepted socket afterward.
+        server.beginDrain()
+        await lifetime?.drain()
+        withExtendedLifetime(retainedSubject) {}
+        await session?.revokeAndDrain()
+        do { try await server.stop() }
+        catch {
+            if firstFailure != nil { Issue.record("Secondary Home fixture cleanup failure: \(error)") }
+            else { firstFailure = error }
+        }
+        if let firstFailure { throw firstFailure }
+    }
+}
+
+private enum LibraryHomeFixtureFailure: Error {
+    case invalid(String)
+}
+
+@MainActor
+private func waitForLibraryHome(_ server: LibraryHomeHTTPFixture,
+                                _ predicate: @MainActor () -> Bool) async throws {
+    let deadline = ContinuousClock.now + .seconds(5)
+    while !predicate() {
+        try Task.checkCancellation()
+        try server.requireHealthy()
+        guard ContinuousClock.now < deadline else {
+            throw LibraryHomeFixtureFailure.invalid("Home consumer progress deadline")
+        }
+        try await Task.sleep(for: .milliseconds(10))
+    }
+    try server.requireHealthy()
+}
+
+/// All mutable state, continuations and Network callbacks are confined to
+/// `queue`; immutable identities may be read by the MainActor test owner.
+/// No global URLProtocol registration, framework replacement or native process.
+private final class LibraryHomeHTTPFixture: @unchecked Sendable {
+    let accountID = "home-account"
+    let spaceID = "home-space"
+    let objectID = "home-document"
+    let networkID = "home-network"
+    private let notesID = "home-notes"
+    private let wikiID = "home-wiki"
+    private let parentID = "home-parent"
+    private let positionID = "home-position"
+    private let folderID = "home-folder"
+    private let startedAt = "controlled-home-start"
+    private let runID = String(repeating: "d", count: 64)
+    private let permission: String
+    private let queue = DispatchQueue(label: "pinkha.tests.library-home." + UUID().uuidString)
+    private let listener: NWListener
+    private var listenerClosed = false
+    private var started = false
+    private var draining = false
+    private var stopping = false
+    private var failures: [String] = []
+    private var requests = 0
+    private var hierarchyReads = 0
+    private var documentReads = 0
+    private var objectReads = 0
+    private var settingsWrites = 0
+    private var homeValue: String?
+    private var spaceReadsByWrite = [0, 0, 0]
+    private var heldKinds: Set<String> = []
+    private var connections: [UUID: NWConnection] = [:]
+    private var startWaiter: CheckedContinuation<URL, any Error>?
+    private var stopWaiter: CheckedContinuation<Void, any Error>?
+
+    init(permission: String) throws {
+        guard ["owner", "reader"].contains(permission) else {
+            throw LibraryHomeFixtureFailure.invalid("unsupported test permission")
+        }
+        self.permission = permission
+        let parameters = NWParameters.tcp
+        parameters.requiredLocalEndpoint = .hostPort(host: "127.0.0.1", port: .any)
+        listener = try NWListener(using: parameters, on: .any)
+        // The real session validates health/account repeatedly around reads.
+        // Keep that authority path; bound cumulative acceptance separately from
+        // the unchanged 16 simultaneous owned connections.
+        listener.newConnectionLimit = 1_024
+    }
+
+    func start() async throws -> URL {
+        try await withCheckedThrowingContinuation { continuation in
+            queue.async {
+                guard !self.started else {
+                    continuation.resume(throwing: LibraryHomeFixtureFailure.invalid("duplicate start")); return
+                }
+                self.started = true; self.startWaiter = continuation
+                self.listener.stateUpdateHandler = { [weak self] state in self?.listenerState(state) }
+                self.listener.newConnectionHandler = { [weak self] connection in
+                    guard let self else { connection.cancel(); return }
+                    self.accept(connection)
+                }
+                self.listener.start(queue: self.queue)
+                self.queue.asyncAfter(deadline: .now() + 5) { [weak self] in
+                    guard let self, self.startWaiter != nil else { return }
+                    self.fail("listener readiness deadline"); self.cancelOwnedConnections()
+                    self.finishStart(.failure(LibraryHomeFixtureFailure.invalid("listener readiness deadline")))
+                }
+                self.queue.asyncAfter(deadline: .now() + 45) { [weak self] in
+                    guard let self, !self.stopping else { return }
+                    self.fail("fixture lifetime deadline"); self.cancelOwnedConnections()
+                }
+            }
+        }
+    }
+
+    var initialObservationReachedConsumer: Bool {
+        queue.sync { heldKinds == ["hierarchy"] && documentReads >= 2 }
+    }
+
+    func requireHealthy() throws {
+        try queue.sync {
+            guard failures.isEmpty else {
+                throw LibraryHomeFixtureFailure.invalid(failures.joined(separator: "; "))
+            }
+        }
+    }
+
+    func requireReadyReadClosure() throws {
+        try queue.sync {
+            guard failures.isEmpty, hierarchyReads > 0, documentReads >= 2,
+                  heldKinds == ["hierarchy"], settingsWrites == 0, homeValue == nil else {
+                throw LibraryHomeFixtureFailure.invalid("incomplete original Library.open read closure")
+            }
+        }
+    }
+
+    func requireSetReadback() throws {
+        try queue.sync {
+            guard failures.isEmpty, settingsWrites == 1, spaceReadsByWrite[1] > 0,
+                  homeValue?.utf8.elementsEqual(expectedHome.utf8) == true else {
+                throw LibraryHomeFixtureFailure.invalid("bound Home set/readback was not completed")
+            }
+        }
+    }
+
+    func requireCompletedHomeSequence() throws {
+        try queue.sync {
+            guard failures.isEmpty, requests <= 1_024, hierarchyReads > 0,
+                  documentReads >= 2, objectReads >= 3, heldKinds == ["hierarchy"],
+                  settingsWrites == 2, homeValue == nil,
+                  spaceReadsByWrite[1] >= 2, spaceReadsByWrite[2] >= 2 else {
+                throw LibraryHomeFixtureFailure.invalid("incomplete Home set/open/unset/absent sequence")
+            }
+        }
+    }
+
+    func beginDrain() { queue.sync { draining = true } }
+
+    func stop() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            queue.async {
+                guard self.stopWaiter == nil, !self.stopping else {
+                    continuation.resume(throwing: LibraryHomeFixtureFailure.invalid("duplicate stop")); return
+                }
+                self.draining = true; self.stopping = true; self.stopWaiter = continuation
+                self.cancelOwnedConnections()
+                self.finishStopIfClosed()
+                self.queue.asyncAfter(deadline: .now() + 5) { [weak self] in
+                    guard let self, let waiter = self.stopWaiter else { return }
+                    self.stopWaiter = nil
+                    self.fail("owned listener/connection drain deadline")
+                    waiter.resume(throwing: LibraryHomeFixtureFailure.invalid("owned listener/connection drain deadline"))
+                }
+            }
+        }
+    }
+
+    private func listenerState(_ state: NWListener.State) {
+        switch state {
+        case .ready:
+            guard let port = listener.port,
+                  let url = URL(string: "http://127.0.0.1:\(port.rawValue)") else {
+                fail("missing owned listener port"); cancelOwnedConnections(); return
+            }
+            finishStart(.success(url))
+        case .failed(let error):
+            fail("listener failed: \(error)")
+            finishStart(.failure(error)); cancelOwnedConnections()
+        case .cancelled:
+            listenerClosed = true
+            finishStart(.failure(LibraryHomeFixtureFailure.invalid("listener cancelled before readiness")))
+            finishStopIfClosed()
+        default: break
+        }
+    }
+
+    private func finishStart(_ result: Result<URL, any Error>) {
+        let waiter = startWaiter; startWaiter = nil; waiter?.resume(with: result)
+    }
+
+    private func finishStopIfClosed() {
+        guard stopping, listenerClosed, connections.isEmpty, let waiter = stopWaiter else { return }
+        stopWaiter = nil
+        if failures.isEmpty { waiter.resume() }
+        else { waiter.resume(throwing: LibraryHomeFixtureFailure.invalid(failures.joined(separator: "; "))) }
+    }
+
+    private func cancelOwnedConnections() {
+        listener.cancel()
+        for connection in connections.values { connection.cancel() }
+    }
+
+    private func fail(_ message: String) {
+        if failures.count < 16 { failures.append(message) }
+    }
+
+    private func accept(_ connection: NWConnection) {
+        let reject = stopping || connections.count >= 16
+        if !stopping, connections.count >= 16 { fail("connection budget exceeded") }
+        let id = UUID()
+        connections[id] = connection
+        connection.stateUpdateHandler = { [weak self] state in
+            guard let self else { return }
+            switch state {
+            case .failed(let error):
+                if !self.draining { self.fail("connection failed: \(error)") }
+                self.connections[id]?.cancel()
+            case .cancelled:
+                self.connections.removeValue(forKey: id)
+                self.finishStopIfClosed()
+            default: break
+            }
+        }
+        connection.start(queue: queue)
+        // Even a late or over-budget accepted connection is tracked until its
+        // actual cancellation callback; cleanup never drops an owned socket.
+        if reject { connection.cancel(); return }
+        receiveRequest(connection, accumulated: Data())
+    }
+
+    private func receiveRequest(_ connection: NWConnection, accumulated: Data) {
+        connection.receive(minimumIncompleteLength: 1, maximumLength: 16_384) { [weak self] bytes, _, complete, error in
+            guard let self else { connection.cancel(); return }
+            if let error {
+                if !self.draining { self.fail("request receive failed: \(error)") }
+                connection.cancel(); return
+            }
+            var data = accumulated
+            if let bytes { data.append(bytes) }
+            do {
+                guard data.count <= 32_768 else { throw LibraryHomeFixtureFailure.invalid("request byte budget") }
+                guard let split = data.range(of: Data([13, 10, 13, 10])) else {
+                    guard !complete, data.count <= 16_384 else { throw LibraryHomeFixtureFailure.invalid("incomplete header") }
+                    self.receiveRequest(connection, accumulated: data); return
+                }
+                guard split.lowerBound <= 16_384,
+                      let header = String(data: data[..<split.lowerBound], encoding: .utf8) else {
+                    throw LibraryHomeFixtureFailure.invalid("invalid header")
+                }
+                let lines = header.components(separatedBy: "\r\n")
+                let request = lines[0].split(separator: " ", omittingEmptySubsequences: false)
+                guard request.count == 3, request[2] == "HTTP/1.1" else {
+                    throw LibraryHomeFixtureFailure.invalid("unexpected request line")
+                }
+                var headers: [String: String] = [:]
+                for line in lines.dropFirst() {
+                    guard let colon = line.firstIndex(of: ":") else { throw LibraryHomeFixtureFailure.invalid("header separator") }
+                    let key = line[..<colon].lowercased()
+                    guard headers[key] == nil else { throw LibraryHomeFixtureFailure.invalid("duplicate header") }
+                    headers[key] = line[line.index(after: colon)...].trimmingCharacters(in: .whitespaces)
+                }
+                guard headers["transfer-encoding"] == nil,
+                      let length = Int(headers["content-length"] ?? "0"), (0...16_384).contains(length),
+                      let port = self.listener.port,
+                      headers["host"] == "127.0.0.1:\(port.rawValue)" else {
+                    throw LibraryHomeFixtureFailure.invalid("request framing or host")
+                }
+                let body = data[split.upperBound...]
+                if body.count < length {
+                    guard !complete else { throw LibraryHomeFixtureFailure.invalid("incomplete body") }
+                    self.receiveRequest(connection, accumulated: data); return
+                }
+                guard body.count == length else { throw LibraryHomeFixtureFailure.invalid("pipelined or excess body") }
+                try self.route(connection, method: String(request[0]), target: String(request[1]), headers: headers, body: Data(body))
+            } catch {
+                self.fail("request rejected: \(error)"); connection.cancel()
+            }
+        }
+    }
+
+    private func route(_ connection: NWConnection, method: String, target: String,
+                       headers: [String: String], body: Data) throws {
+        requests += 1
+        guard !stopping, requests <= 1_024, target.hasPrefix("/"),
+              let url = URLComponents(string: "http://127.0.0.1" + target), url.fragment == nil else {
+            throw LibraryHomeFixtureFailure.invalid("request scope or count")
+        }
+        let parts = url.percentEncodedPath.split(separator: "/").map { String($0).removingPercentEncoding ?? "" }
+        let queryItems = url.queryItems ?? []
+        let space = ["v1", "spaces", spaceID]
+        let catalog = parts == space + ["types"] || parts == space + ["collections"]
+        guard queryItems.isEmpty || (method == "GET" && catalog && queryItems.count == 1
+            && queryItems[0].name == "includeHidden" && queryItems[0].value == "true") else {
+            throw LibraryHomeFixtureFailure.invalid("unexpected query")
+        }
+        if catalog && queryItems.isEmpty {
+            throw LibraryHomeFixtureFailure.invalid("catalog must request hidden definitions")
+        }
+        let value: AnyJSON
+        if method == "GET" {
+            guard body.isEmpty else { throw LibraryHomeFixtureFailure.invalid("GET body") }
+            switch parts {
+            case ["v1", "auth"]:
+                value = .object(["authorized": .bool(true), "accountId": .string(accountID)])
+            case ["v1", "auth", "engine-binding"]:
+                value = .object(["contract": .string("pinkha-any-http-engine-binding-v1"),
+                    "accountId": .string(accountID), "networkId": .string(networkID), "runId": .string(runID)])
+            case ["v1", "health"]:
+                value = .object(["status": .string("ok"), "account": .string(accountID), "startedAt": .string(startedAt)])
+            case ["v1", "pinkha", "capabilities"]:
+                value = capabilities
+            case space + ["members", "me"]:
+                value = .object(["identity": .string(accountID), "status": .string("active"),
+                                 "permission": .string(permission)])
+            case space + ["bundles", "system:wiki/v1"]:
+                value = .object(["bundle": .object(["id": .string("system:wiki/v1"),
+                    "rootId": .string(wikiID), "losers": .array([])])])
+            case space + ["collections", wikiID]:
+                value = wikiCollection
+            case space + ["collections", wikiID, "properties"]:
+                value = .object(["properties": .array([
+                    .object(["id": .string(parentID), "xKey": .string("parentId"), "kind": .string("string"),
+                             "scope": .string("synced"), "meta": .object(["index": .string("none")])]),
+                    .object(["id": .string(positionID), "xKey": .string("pos"), "kind": .string("string"),
+                             "scope": .string("synced"), "meta": .object(["index": .string("none")])]),
+                    .object(["id": .string(folderID), "xKey": .string("folder"), "kind": .string("boolean"),
+                             "scope": .string("synced")])
+                ])])
+            case space + ["bundles", "pinkha/note/v1"]:
+                value = .object(["bundle": .object(["id": .string("pinkha/note/v1"), "derived": .bool(true),
+                    "rootId": .string(notesID), "losers": .array([])])])
+            case space + ["collections", notesID]:
+                value = noteCollection
+            case space + ["types"]:
+                value = .object(["types": .array([.object(["id": .string("page"), "name": .string("Page"),
+                    "builtIn": .bool(true), "hidden": .bool(false)])])])
+            case space + ["collections"]:
+                value = .object(["collections": .array([wikiCollection, noteCollection])])
+            case space + ["pinkha", "document-types", "page"]:
+                value = .object(["contract": .string("pinkha-torah-native-v1"), "version": .integer(1),
+                    "policy": .string("canonical-editor-module-v1"), "spaceId": .string(spaceID),
+                    "typeId": .string("page"), "eligible": .bool(true),
+                    "canonicalEditorDataset": .string("editor_blocks"),
+                    "readiness": .object(["version": .integer(1), "state": .string("ready-local-snapshot"),
+                                         "generation": .string(String(repeating: "a", count: 64))])])
+            case space:
+                spaceReadsByWrite[settingsWrites] += 1
+                let settings: [String: AnyJSON] = homeValue.map { ["pinkhaHomeV1": .string($0)] } ?? [:]
+                value = .object(["id": .string(spaceID), "settings": .object(settings)])
+            case space + ["objects", objectID]:
+                objectReads += 1
+                value = .object(["objectId": .string(objectID), "record": document])
+            default:
+                throw LibraryHomeFixtureFailure.invalid("unexpected GET route")
+            }
+        } else if method == "POST", queryItems.isEmpty {
+            let query = try JSONDecoder().decode(AnyJSON.self, from: body)
+            if parts == space + ["objects", "query", "subscribe"] {
+                guard query == hierarchyQuery else { throw LibraryHomeFixtureFailure.invalid("hierarchy observation query") }
+                holdObservation(connection, kind: "hierarchy"); return
+            }
+            guard parts == space + ["objects", "query"] else {
+                throw LibraryHomeFixtureFailure.invalid("unexpected POST route; creation is forbidden")
+            }
+            if query == hierarchyQuery {
+                hierarchyReads += 1
+                value = .object(["records": .array([]), "total": .integer(0), "hasNext": .bool(false)])
+            } else if query == documentsQuery {
+                documentReads += 1
+                value = .object(["records": .array([document]), "total": .integer(1), "hasNext": .bool(false)])
+            } else {
+                throw LibraryHomeFixtureFailure.invalid("unexpected library query")
+            }
+        } else if method == "PATCH", queryItems.isEmpty,
+                  parts == ["v1", "pinkha", "bound", "spaces", spaceID, "settings"] {
+            guard headers["x-any-expected-account-id"]?.utf8.elementsEqual(accountID.utf8) == true,
+                  headers["x-any-expected-run-id"]?.utf8.elementsEqual(runID.utf8) == true else {
+                throw LibraryHomeFixtureFailure.invalid("missing exact native account/run binding")
+            }
+            let mutation = try JSONDecoder().decode(AnyJSON.self, from: body)
+            if settingsWrites == 0 {
+                guard mutation == .object(["set": .object(["pinkhaHomeV1": .string(expectedHome)])]),
+                      mutation["set"]?["pinkhaHomeV1"]?.string?.utf8.elementsEqual(expectedHome.utf8) == true else {
+                    throw LibraryHomeFixtureFailure.invalid("unexpected Home set body")
+                }
+                homeValue = expectedHome
+            } else if settingsWrites == 1 {
+                guard mutation == .object(["unset": .array([.string("pinkhaHomeV1")])]) else {
+                    throw LibraryHomeFixtureFailure.invalid("unexpected Home unset body")
+                }
+                homeValue = nil
+            } else {
+                throw LibraryHomeFixtureFailure.invalid("duplicate Home dispatch")
+            }
+            settingsWrites += 1
+            let response = "HTTP/1.1 204 No Content\r\nContent-Length: 0\r\n"
+                + "X-Any-Binding-Contract: pinkha-any-http-engine-binding-v1\r\n"
+                + "X-Any-Bound-Account-Id: \(accountID)\r\nX-Any-Bound-Run-Id: \(runID)\r\n"
+                + "Connection: close\r\n\r\n"
+            connection.send(content: Data(response.utf8), contentContext: .finalMessage, isComplete: true,
+                            completion: .contentProcessed { [weak self] error in
+                if let error, let self, !self.draining { self.fail("bound acknowledgment send failed: \(error)") }
+                connection.cancel()
+            })
+            return
+        } else {
+            throw LibraryHomeFixtureFailure.invalid("unexpected mutation method or unbound route")
+        }
+        let bytes = try JSONEncoder().encode(value)
+        guard bytes.count <= 16_384 else { throw LibraryHomeFixtureFailure.invalid("response byte budget") }
+        let header = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: \(bytes.count)\r\nConnection: close\r\n\r\n"
+        var response = Data(header.utf8); response.append(bytes)
+        connection.send(content: response, contentContext: .finalMessage, isComplete: true,
+                        completion: .contentProcessed { [weak self] error in
+            if let error, let self, !self.draining { self.fail("response send failed: \(error)") }
+            connection.cancel()
+        })
+    }
+
+    private func holdObservation(_ connection: NWConnection, kind: String) {
+        guard heldKinds.insert(kind).inserted else {
+            fail("duplicate observation subscription"); connection.cancel(); return
+        }
+        let response = "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nCache-Control: no-cache\r\nConnection: keep-alive\r\n\r\n"
+            + "event: ready\ndata: {}\n\nevent: snapshot\ndata: {\"records\":[],\"total\":0,\"hasNext\":false}\n\n"
+        connection.send(content: Data(response.utf8), completion: .contentProcessed { [weak self] error in
+            guard let self else { connection.cancel(); return }
+            if let error {
+                if !self.draining { self.fail("observation send failed: \(error)") }
+                connection.cancel(); return
+            }
+            connection.receive(minimumIncompleteLength: 1, maximumLength: 1) { [weak self] data, _, _, error in
+                if let self, !self.draining {
+                    self.fail("held observation ended before owner drainage: bytes=\(data?.count ?? 0), error=\(String(describing: error))")
+                }
+                connection.cancel()
+            }
+        })
+    }
+
+    private var wikiCollection: AnyJSON {
+        .object(["id": .string(wikiID), "xKey": .string("wiki"), "name": .string("Wiki")])
+    }
+
+    private var noteCollection: AnyJSON {
+        .object(["id": .string(notesID), "xKey": .string("pinkha-note-v1"), "name": .string("Notes")])
+    }
+
+    private var document: AnyJSON {
+        .object(["id": .string(objectID), "spaceId": .string(spaceID),
+            "any": .object(["name": .string("Home fixture document"), "type": .string("page"), "collections": .array([])])])
+    }
+
+    private var expectedHome: String {
+        "{\"contract\":\"pinkha-current-home-v1\",\"kind\":\"object\",\"objectId\":\"\(objectID)\"}"
+    }
+
+    private var hierarchyQuery: AnyJSON {
+        .object(["filter": .object(["$and": .array([
+            .object(["any.collections": .string(wikiID)]),
+            .object(["any.collections": .object(["$nin": .array([.string("bin"), .string("template")])])])
+        ])]), "sort": .array([.string(wikiID + "." + positionID), .string("id")]),
+        "limit": .integer(10_001), "includeTotal": .bool(true)])
+    }
+
+    private var documentsQuery: AnyJSON {
+        .object(["filter": .object(["$and": .array([
+            .object(["any.type": .object(["$in": .array([.string("page")])])]),
+            .object(["any.collections": .object(["$nin": .array([.string("bin"), .string("template")])])])
+        ])]), "limit": .integer(10_001), "includeTotal": .bool(true)])
+    }
+
+    private var capabilities: AnyJSON {
+        var value: [String: AnyJSON] = [
+            "contract": .string("pinkha-torah-native-v1"), "bundleId": .string("pinkha/torah-native/v1"),
+            "module": .string("pinkha_torah_native"), "dataset": .string("pinkha_torah_claims_v1"),
+            "dataVersion": .string("pinkha-torah-native-claims-v1"),
+            "nativeSemanticPayload": .string("canonical-associations-v2-single-record"),
+            "associationBlockDataset": .string("editor_blocks"), "documentTypePolicy": .string("canonical-editor-module-v1"),
+            "propertyPresentationCollection": .string("pinkha_presentation_v1"),
+            "propertyPresentationHiddenProperty": .string("hiddenProperties"), "allowedTargetTypes": .array([.string("page")]),
+            "nativeClaimsMaxRecords": .integer(10_000), "nativeClaimsMaxBytes": .integer(16_777_216),
+            "mobileManagedTokenGateway": .integer(0)]
+        for key in ["nativeSignedClaims", "spaceWideOperationConflictDomain", "currentACLCommitFence", "targetTreeCommitFence",
+                    "nativeDocumentProperties", "nativeIndexedSourceQuery", "nativeRelatedVersion", "conditionalBlockPatch",
+                    "conditionalPropertiesSet", "conditionalPropertiesApplySeq", "conditionalPropertiesNoop",
+                    "conditionalBlockCurrentWriterFence", "currentWriterObjectCreate", "currentWriterBlockCreate",
+                    "nativeClaimsSnapshot", "nativeClaimsWatch", "nativeObjectClaimsSnapshot", "nativeObjectClaimsWatch",
+                    "nativeDocumentTypePolicy", "nativeDocumentMembership", "conditionalMembershipSet", "nativePropertyPresentation"] {
+            value[key] = .integer(1)
+        }
+        return .object(value)
+    }
+}
+#endif

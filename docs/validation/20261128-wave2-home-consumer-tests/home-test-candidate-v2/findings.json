@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "status": "SOURCE_FINDINGS_ADDRESSED_AWAITING_DELTA_REVIEW",
+  "predecessor": {
+    "bytes": 45448,
+    "sha256": "5cf5c54b91b6e69db304663c769cd1a8c36022ab8b7daccf334478a8363d0a0c",
+    "gitBlob": "b1f9b270924b781db2f0c985dd0a3201ce8f2f49"
+  },
+  "predecessorManifest": {
+    "bytes": 2234,
+    "sha256": "413980bf2367df3b727c76862b03641c2329e484672e874719bc17b07f50e237",
+    "gitBlob": "80519956bee374707564238d42cc442e1466944d"
+  },
+  "successor": {
+    "bytes": 45691,
+    "sha256": "e9945ab99ae82ff16e6f3e74e085ce694f38dae4eb7a1d15b129f539d417cd38",
+    "gitBlob": "868b83916c788ba0155b2df3923ebfc75bdea272"
+  },
+  "findings": [
+    {
+      "id": "HOME-READINESS-PUBLICATION-01",
+      "reviewer": "Interfaces",
+      "editorReviewAlias": "HOME-TEST-READINESS-PUBLICATION-01",
+      "observed": "Source-only ordering gap; no actual execution failure claimed.",
+      "cause": "The second all-document request proves SSE refresh entry, but server receipt precedes HTTP/account/lease postflight and MainActor publication. The observer read may retire open's initial read via documentsReadEpoch.",
+      "correction": "The same bounded MainActor predicate now requires both initialObservationReachedConsumer and the exact expected subject.allDocuments IDs."
+    },
+    {
+      "id": "HOME-TEST-MODEL-RETENTION-01",
+      "reviewer": "Editor",
+      "reviewArtifact": {
+        "bytes": 5716,
+        "sha256": "845f0a960d0dce3c101de9b2288006f074bae20542e4a58cf4003bb204142aa1",
+        "gitBlob": "8946d0b13337a7bb99b8dfd47369af946b2a3e0e"
+      },
+      "observed": "Source-only ownership gap; no actual execution failure claimed.",
+      "cause": "The actual model was scoped inside do, while lifetime callbacks hold weak self and cleanup follows the scope. Incidental observation-task retention was not a test-owned guarantee through the awaited drain.",
+      "correction": "An outer optional holds the same actual model. withExtendedLifetime(retainedSubject) follows await lifetime.drain; session drainage and listener/socket closure remain original."
+    }
+  ],
+  "predecessorArtifacts": "All six original unreferenced Git blobs remain unchanged. The complete four-literal inverse restores the full original candidate.",
+  "authorizationWording": "The retained old Search/Bin cases are not selected for replay; existing user authorization is not reset.",
+  "runtimeCalls": 0,
+  "oracleWrites": 0,
+  "treesCommitsRefsChanged": 0
+}
