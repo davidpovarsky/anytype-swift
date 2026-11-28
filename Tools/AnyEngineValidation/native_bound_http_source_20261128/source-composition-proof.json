@@ -1,0 +1,56 @@
+{
+  "ECacheAdmissionSatisfied": false,
+  "all20SourceBodiesMatch": true,
+  "all9FullPreimagesMatch": true,
+  "boot7PathsDisjoint": true,
+  "bootEmbeddedPreimageMatchesCurrentRuntime18": true,
+  "capacityCensusDispatched": false,
+  "exactInverseToRuntime18": true,
+  "fullMaps": {
+    "original": {
+      "bytes": 369957,
+      "files": 1638,
+      "sdkFiles": 750,
+      "sha256": "3552d6f65350c1eba2e9763c7f9a9daa64ada0335f64020ad585fff4a0e286e4"
+    },
+    "production": {
+      "bytes": 371724,
+      "files": 1645,
+      "sdkFiles": 755,
+      "sha256": "f5cee416ebf393079a3eedc7cf9890df64548628a90291803201ed0c6fdef645"
+    },
+    "qualification": {
+      "bytes": 372692,
+      "files": 1649,
+      "sdkFiles": 756,
+      "sha256": "b757e6f81d7fadd76abfb0f6e96974896eee59c7dc62a6b984c021003bce7e47"
+    }
+  },
+  "generatedABIQualification": false,
+  "inMemoryCarrierPreparationFailures": [
+    {
+      "cause": "serialized recursive helper referenced its old outer variable name",
+      "correction": "use named recursive sortJSON function",
+      "githubWrites": 0,
+      "message": "sorted is not defined",
+      "nativeOrCompilerInvocations": 0,
+      "projectWrites": 0,
+      "stage": "first in-memory packet construction",
+      "type": "ReferenceError"
+    }
+  ],
+  "newCompilerOrTestInvocations": 0,
+  "newNativeOrAccountInvocations": 0,
+  "originalFormatterFailureRetained": {
+    "sha256": "951117a4418837555785a11dda9470bee427ac78b18bdd4872f9d2beef3227cd",
+    "status": "FAIL_SOURCE_FORMAT18_OUTPUTS_RETAINED"
+  },
+  "payloadRecovery": "Fixed public source paths were read NOATIME with complete expected byte/hash and stable full-nanosecond identity checks; no project files were written.",
+  "protocol": "pinkha-n24-source-carrier-byte-composition-review-v1",
+  "selectedParentsAllDeclaredInExactTestFiles": true,
+  "status": "PASS_IN_MEMORY_BYTE_AND_MAP_COMPOSITION_ONLY",
+  "subsequentFormattingOnlyReceipts": [
+    "d1df7f9d05156256bfd75a331dc2a04a1a58d9646b97d267e5167bac6404fbcd",
+    "d4669b849169f0e802bc02d5cfccc72ea5abed51d8401d7eed0bac93b3f52d14"
+  ]
+}

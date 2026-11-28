@@ -1,0 +1,110 @@
+{
+  "combinedSourceMapProducedHere": false,
+  "commit": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+  "compositionOwner": "W3",
+  "files": [
+    {
+      "absentFromRuntime18": false,
+      "bytes": 15885,
+      "originalRuntime18PreimageJoined": true,
+      "overlapsN24": false,
+      "preimage": {
+        "bytes": 15460,
+        "sha256": "a1b52dda8a4232d544242f27bf13bc8a6f4b4832be5d90be2baf0ffa222c2088"
+      },
+      "repositoryPath": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay/any/internal/embedded/embedded.go",
+      "sha256": "3b734dd4b3d05c51c4afec4e914d3c637d41e34c9545fd7749bc1aba8b09ae82",
+      "sourceRelativePath": "internal/embedded/embedded.go"
+    },
+    {
+      "absentFromRuntime18": true,
+      "bytes": 2162,
+      "originalRuntime18PreimageJoined": false,
+      "overlapsN24": false,
+      "preimage": null,
+      "repositoryPath": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay/any/internal/embedded/network_binding.go",
+      "sha256": "df3e4bdd15dfedbda827cf53f6b65c1179a6b63a3c74617302b8ae91432992a6",
+      "sourceRelativePath": "internal/embedded/network_binding.go"
+    },
+    {
+      "absentFromRuntime18": true,
+      "bytes": 6426,
+      "originalRuntime18PreimageJoined": false,
+      "overlapsN24": false,
+      "preimage": null,
+      "repositoryPath": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay/any/internal/embedded/network_binding_test.go",
+      "sha256": "9346d49093706e152fd0da02b571fd037974c9ecbbc41871c2193df50c425740",
+      "sourceRelativePath": "internal/embedded/network_binding_test.go"
+    },
+    {
+      "absentFromRuntime18": true,
+      "bytes": 1137,
+      "originalRuntime18PreimageJoined": false,
+      "overlapsN24": false,
+      "preimage": null,
+      "repositoryPath": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay/any/mobile/android/network_binding.go",
+      "sha256": "6850eb04ff0ae46c7a14da7495047d1f58aa399964d8baf97aa74ec4ef7c3e21",
+      "sourceRelativePath": "mobile/android/network_binding.go"
+    },
+    {
+      "absentFromRuntime18": true,
+      "bytes": 1106,
+      "originalRuntime18PreimageJoined": false,
+      "overlapsN24": false,
+      "preimage": null,
+      "repositoryPath": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay/any/mobile/android/network_binding_test.go",
+      "sha256": "3eee3e3661d30c483f5952036ab9737e81186da8862d4a7eb896b5ce564117e5",
+      "sourceRelativePath": "mobile/android/network_binding_test.go"
+    },
+    {
+      "absentFromRuntime18": true,
+      "bytes": 1966,
+      "originalRuntime18PreimageJoined": false,
+      "overlapsN24": false,
+      "preimage": null,
+      "repositoryPath": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay/any/mobile/ios/anylib_binding.go",
+      "sha256": "9ec543d57dfd550aedff75c561f55e1297d37d4d43f8a177a6e12e53d3442ec5",
+      "sourceRelativePath": "mobile/ios/anylib_binding.go"
+    },
+    {
+      "absentFromRuntime18": true,
+      "bytes": 1007,
+      "originalRuntime18PreimageJoined": false,
+      "overlapsN24": false,
+      "preimage": null,
+      "repositoryPath": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay/any/mobile/ios/anylib_binding_test.go",
+      "sha256": "ce1c00f8bcd2746c6d5f13775004fa9352a6340c7d3e69880d7a00924a301b21",
+      "sourceRelativePath": "mobile/ios/anylib_binding_test.go"
+    }
+  ],
+  "manifest": {
+    "bytes": 5539,
+    "sha256": "d6ac476eb29d6fcf2121c24e186c5688a74f03ca0b0899bbd0a5011212071b18"
+  },
+  "manifestPath": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/overlay-manifest.json",
+  "n24ChangesCABI": false,
+  "old8acBinaryOrQualificationReused": false,
+  "protocol": "pinkha-n24-external-boot-source-reference-v1",
+  "readyABIInput": {
+    "acceptance": "SOURCE_DECLARATION_ONLY",
+    "bytes": 1966,
+    "compiledLibrary": null,
+    "export": "AnyLibStartBoundWithMode",
+    "generatedHeader": null,
+    "sha256": "9ec543d57dfd550aedff75c561f55e1297d37d4d43f8a177a6e12e53d3442ec5",
+    "source": "mobile/ios/anylib_binding.go",
+    "sourceCResult": "AnyLibBoundStartResult"
+  },
+  "repository": "davidpovarsky/anytype-swift",
+  "status": "SOURCE_ONLY_REFERENCE_NOT_COMPOSED_OR_COMPILED",
+  "unresolvedLifecycle": {
+    "concurrentRuntimeProof": false,
+    "currentSwiftActor": "Serializes its own normal calls; no all-export native serialization guarantee follows.",
+    "n24ClosesTheseWindows": false,
+    "requiredFollowUp": "W1 must establish or correct serialization across original and bound native Start/Stop exports; W3 must bind the resulting reviewed source and actual native product.",
+    "simultaneousStartStartBound": "Initial handle==nil check and successful listener publication are separated by an unlocked interval in the reviewed boot source.",
+    "sourceRequestStory": "1220965413226633",
+    "sourceReviewStory": "1220965191752036",
+    "stopStart": "Graceful Stop clears handle before drain without setting the stopping barrier in the reviewed boot source."
+  }
+}

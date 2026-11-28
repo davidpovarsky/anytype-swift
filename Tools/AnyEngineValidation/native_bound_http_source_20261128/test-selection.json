@@ -1,0 +1,89 @@
+{
+  "actualNewTests": 0,
+  "addedTypedACLErrorUnrunEvents": 7,
+  "children": 15,
+  "existingC13MethodsSelected": 0,
+  "existingRuntime18MethodsSelected": 0,
+  "expectedChildren": [
+    "TestBoundEngineAdmissionPreservesOriginalOutcomeAfterRetirement/No_Content",
+    "TestBoundEngineAdmissionPreservesOriginalOutcomeAfterRetirement/Conflict",
+    "TestBoundEngineHeadersFailBeforeDispatchAndBindingIsExplicit/missing",
+    "TestBoundEngineHeadersFailBeforeDispatchAndBindingIsExplicit/duplicate-account",
+    "TestBoundEngineHeadersFailBeforeDispatchAndBindingIsExplicit/duplicate-run",
+    "TestBoundEngineHeadersFailBeforeDispatchAndBindingIsExplicit/combined-run",
+    "TestBoundEngineHeadersFailBeforeDispatchAndBindingIsExplicit/upper-run",
+    "TestBoundEngineHeadersFailBeforeDispatchAndBindingIsExplicit/foreign-account",
+    "TestBoundEngineHeadersFailBeforeDispatchAndBindingIsExplicit/stale-run",
+    "TestACLConsumedRecordErrorsKeepTypedContract/missing_request",
+    "TestACLConsumedRecordErrorsKeepTypedContract/consumed_request_wrapped",
+    "TestACLConsumedRecordErrorsKeepTypedContract/missing_record",
+    "TestACLConsumedRecordErrorsKeepTypedContract/consumed_record_wrapped",
+    "TestACLConsumedRecordErrorsKeepTypedContract/cancelled_or_deadline",
+    "TestACLConsumedRecordErrorsKeepTypedContract/untyped_lookalike"
+  ],
+  "expectedRunAndPassEvents": 24,
+  "generatedABIOrAppleAcceptance": false,
+  "groups": {
+    "fresh-http": {
+      "commandSeconds": 180,
+      "cwd": "any",
+      "packages": {
+        "github.com/anyproto/any/internal/server": [
+          "TestBoundHTTPFreshOwnerSettingsAndDeclaredLocalBuiltin",
+          "TestBoundHTTPTechSpaceRefusalUsesCapturedSDK",
+          "TestBoundHTTPDrainTimeoutKeepsCapturedSDKUntilHolderLeaves"
+        ]
+      },
+      "testTimeout": "120s"
+    },
+    "fresh-sdk": {
+      "commandSeconds": 180,
+      "cwd": "sdk",
+      "packages": {
+        "github.com/anyproto/any-sync-sdk": [
+          "TestCurrentReaderLocalSettingsAndBuiltinStopAtSignedRemoval"
+        ]
+      },
+      "testTimeout": "90s"
+    },
+    "server-units": {
+      "commandSeconds": 240,
+      "cwd": "any",
+      "packages": {
+        "github.com/anyproto/any/internal/server": [
+          "TestBoundEngineGateRejectsABAAndDrainsOriginalGeneration",
+          "TestBoundEngineAdmissionPreservesOriginalOutcomeAfterRetirement",
+          "TestBoundEngineHeadersFailBeforeDispatchAndBindingIsExplicit",
+          "TestBoundEngineRequestAvoidsAuthMutexAndUsesCapturedCancellation",
+          "TestACLConsumedRecordErrorsKeepTypedContract"
+        ]
+      },
+      "testTimeout": "60s"
+    }
+  },
+  "linuxFreshFixtures": [
+    ".runtime-artifacts/sdk-source/current_reader_mutations_fresh_linux_test.go",
+    "internal/server/engine_binding_fresh_linux_test.go"
+  ],
+  "parentMethods": [
+    "TestCurrentReaderLocalSettingsAndBuiltinStopAtSignedRemoval",
+    "TestBoundHTTPFreshOwnerSettingsAndDeclaredLocalBuiltin",
+    "TestBoundHTTPTechSpaceRefusalUsesCapturedSDK",
+    "TestBoundHTTPDrainTimeoutKeepsCapturedSDKUntilHolderLeaves",
+    "TestBoundEngineGateRejectsABAAndDrainsOriginalGeneration",
+    "TestBoundEngineAdmissionPreservesOriginalOutcomeAfterRetirement",
+    "TestBoundEngineHeadersFailBeforeDispatchAndBindingIsExplicit",
+    "TestBoundEngineRequestAvoidsAuthMutexAndUsesCapturedCancellation",
+    "TestACLConsumedRecordErrorsKeepTypedContract"
+  ],
+  "parents": 9,
+  "protocol": "pinkha-bound-http-acl24-source-selection-v1",
+  "retainedOriginalUnrunEvents": 17,
+  "sourceFiles": [
+    ".runtime-artifacts/sdk-source/current_reader_mutations_fresh_linux_test.go",
+    "internal/server/engine_binding_fresh_linux_test.go",
+    "internal/server/engine_binding_test.go",
+    "internal/server/handlers_acl_consumed_request_test.go"
+  ],
+  "status": "NOT_RUN"
+}

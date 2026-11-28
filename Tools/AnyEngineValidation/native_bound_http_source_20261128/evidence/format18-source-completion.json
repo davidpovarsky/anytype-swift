@@ -1,0 +1,125 @@
+{
+  "accountInputs": 0,
+  "allFormattedOutputsAndMapsUnchanged": true,
+  "allHistoricalFormatterGroupsWerePositivelyAbsent": true,
+  "allOriginalSourceInputsUnchanged": true,
+  "allOwnedGroupsPositivelyAbsent": true,
+  "commands": [],
+  "compilerInvocations": 0,
+  "completedUTC": "2026-11-28T03:16:34Z",
+  "completionErrors": [],
+  "errors": [],
+  "expectedTestEvents": 17,
+  "finalOwnedAllocationBytes": 1515520,
+  "formatter": {
+    "bytes": 3027672,
+    "sha256": "3ca5e23c92e957338205edb7c8a19a0c4f211b2cf606e21171925f3001d12825"
+  },
+  "formatterAccessTimeObservation": {
+    "afterNS": "1795835470304640598",
+    "beforeNS": "1795835470304640598",
+    "scope": "Execution may update access time; bytes, mode, owner, inode, mtime and ctime must be unchanged"
+  },
+  "formatterBytesAndNonAccessMetadataUnchanged": true,
+  "formatterChildren": 0,
+  "formatterChildrenMaxRSSBytes": 11444224,
+  "formatterWorker": {
+    "bytes": 4859,
+    "sha256": "8428d8e123bb5122c330aaac29d88d552f0fa189ca4227530059ce5c3da276f4"
+  },
+  "freeAfter": {
+    "development": 1705246720,
+    "root": 2246213632
+  },
+  "freeBefore": {
+    "development": 1706762240,
+    "root": 2246213632
+  },
+  "historicalGroupsProbed": 0,
+  "nativeInvocations": 0,
+  "newChildInvocations": 0,
+  "newFormatterInvocations": 0,
+  "originalFailureReceipt": {
+    "bytes": 7191,
+    "path": "/mnt/development/projects/evidence/pinkha-n-bound-http-engine-formatted-20261128-draft4/result.json",
+    "sha256": "951117a4418837555785a11dda9470bee427ac78b18bdd4872f9d2beef3227cd"
+  },
+  "originalInputSourceMap": {
+    "bytes": 10191,
+    "mode": 384,
+    "path": "/mnt/development/projects/evidence/pinkha-n-bound-http-engine-formatted-20261128-draft5/ORIGINAL_INPUT_SOURCE_MAP.json",
+    "sha256": "ef398e0efd3b2ea9c84cfee8d2d1d67801c7b267b248abe465fe27c1c9a1608f"
+  },
+  "originalOverallStatus": "FAIL",
+  "originalSourceWrites": 0,
+  "productionSourceMap": {
+    "bytes": 371724,
+    "mode": 384,
+    "path": "/mnt/development/projects/evidence/pinkha-n-bound-http-engine-formatted-20261128-draft5/PRODUCTION_SOURCE_MAP.json",
+    "sha256": "be1d91807bd7b42015985949c4c93318016db1ad2e0cb21887cdbb626dc426b0"
+  },
+  "protectedInputCount": 43,
+  "protocol": "pinkha-bound-http-retained-format18-completion-v1",
+  "qualificationSourceMap": {
+    "bytes": 372452,
+    "mode": 384,
+    "path": "/mnt/development/projects/evidence/pinkha-n-bound-http-engine-formatted-20261128-draft5/QUALIFICATION_SOURCE_MAP.json",
+    "sha256": "29171d45748f1a92f2d1fe29112619543cf306518fd36815f8efe95455ffd2c5"
+  },
+  "retainedFormatterChildren": 18,
+  "reusedFormatterCommand": {
+    "absenceObservedAtSeconds": 0.23537976294755936,
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "-c",
+      "#!/usr/bin/env python3\n\"\"\"Eighteen public source inputs; pinned gofmt stdin/stdout in one owned group.\"\"\"\nimport base64\nimport hashlib\nimport json\nimport os\nfrom pathlib import Path\nimport signal\nimport stat\nimport subprocess\nimport sys\nimport time\nimport zlib\nimport resource\n\nTOOL = Path('/mnt/development/toolchains/go1.27.4/go/bin/gofmt')\nSHA = '3ca5e23c92e957338205edb7c8a19a0c4f211b2cf606e21171925f3001d12825'\n\ndef identity(info):\n    return tuple(getattr(info, key) for key in ('st_dev','st_ino','st_mode','st_nlink','st_uid','st_gid',\n                                               'st_size','st_blocks','st_atime_ns','st_mtime_ns','st_ctime_ns'))\n\ndef read_physical(path, maximum):\n    assert path.resolve() == path\n    before = path.lstat()\n    assert stat.S_ISREG(before.st_mode) and before.st_nlink == 1 and 0 < before.st_size <= maximum\n    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NOATIME | os.O_CLOEXEC)\n    with os.fdopen(fd, 'rb') as stream:\n        assert identity(os.fstat(stream.fileno())) == identity(before)\n        raw = stream.read(before.st_size+1)\n        assert identity(os.fstat(stream.fileno())) == identity(before)\n    assert identity(path.lstat()) == identity(before) and len(raw) == before.st_size\n    return raw, identity(before)\n\ndef read_tool():\n    raw, before = read_physical(TOOL, 16*1024**2)\n    assert hashlib.sha256(raw).hexdigest() == SHA\n    return {'bytes': len(raw), 'sha256': SHA, 'metadata': [str(v) for v in before]}\n\ndef child_signals():\n    for number in (signal.SIGTERM, signal.SIGINT): signal.signal(number, signal.SIG_DFL)\n    signal.pthread_sigmask(signal.SIG_UNBLOCK, {signal.SIGTERM, signal.SIGINT})\n\nassert not sys.flags.optimize and len(sys.argv) == 3\nassert os.getpid() == os.getpgid(0) == os.getsid(0)\npacket_path = Path(sys.argv[1])\npacket_raw, packet_before = read_physical(packet_path, 1024**2)\nassert len(packet_raw) < 1024**2 and hashlib.sha256(packet_raw).hexdigest() == sys.argv[2]\npacket = json.loads(packet_raw)\nassert len(packet['files']) == 18\nstarted = time.monotonic()\nresult = {'status': 'RUNNING', 'tool': read_tool(), 'rows': [], 'compilerInvocations': 0,\n          'nativeSDKInvocations': 0, 'accountInputs': 0, 'sourceFileWrites': 0}\ntry:\n    for name, item in sorted(packet['files'].items()):\n        raw = item['source'].encode('utf-8')\n        assert len(raw) == item['bytes'] and hashlib.sha256(raw).hexdigest() == item['sha256']\n        assert time.monotonic()-started < 60\n        previous = signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGTERM, signal.SIGINT})\n        try:\n            child = subprocess.Popen([str(TOOL)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,\n                                     close_fds=True, preexec_fn=child_signals,\n                                     env=dict(os.environ, GOMAXPROCS='2'))\n        finally:\n            signal.pthread_sigmask(signal.SIG_SETMASK, previous)\n        # The worker stays the unreaped group leader in qualified f9de. A\n        # timeout/error leaves all residual cleanup to that original owner.\n        assert os.getpgid(child.pid) == os.getpgid(0) and os.getsid(child.pid) == os.getsid(0)\n        formatted, error = child.communicate(raw, timeout=5)\n        # No PID operations after communicate reaps this formatter.\n        row = {'path': name, 'input': {'bytes': len(raw), 'sha256': item['sha256']},\n               'exitCode': child.returncode, 'sameOwnedGroupAtStart': True,\n               'stderr': base64.b64encode(error).decode(),\n               'output': {'bytes': len(formatted), 'sha256': hashlib.sha256(formatted).hexdigest()},\n               'source': base64.b64encode(formatted).decode()}\n        result['rows'].append(row)\n        assert child.returncode == 0 and not error and 0 < len(formatted) <= 256*1024\n        assert formatted.endswith(b'\\n')\n    result['toolFinal'] = read_tool()\n    assert len(result['rows']) == 18\n    assert result['toolFinal']['bytes'] == result['tool']['bytes'] and result['toolFinal']['sha256'] == result['tool']['sha256']\n    assert [v for i,v in enumerate(result['toolFinal']['metadata']) if i != 8] == [v for i,v in enumerate(result['tool']['metadata']) if i != 8]\n    assert read_physical(packet_path, 1024**2) == (packet_raw, packet_before)\n    result['formatterChildrenMaxRSSBytes'] = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss*1024\n    assert result['formatterChildrenMaxRSSBytes'] <= 256*1024**2\n    result['status'] = 'PASS_SOURCE_FORMATTING_REQUIRES_OUTER_CLOSURE'\nexcept BaseException as error:\n    result['status'] = 'FAIL_SOURCE_FORMATTING'\n    result['error'] = {'type': type(error).__name__, 'message': str(error)}\nfinally:\n    result['seconds'] = time.monotonic()-started\n    print(json.dumps(result, sort_keys=True), flush=True)\nraise SystemExit(0 if result['status'].startswith('PASS_') else 1)\n",
+      "/mnt/development/projects/evidence/pinkha-n-bound-http-engine-formatted-20261128-draft4/input-packet.json",
+      "b7b03e8c2d92e1d6e7644ae651ec803e5b2318198edf7eb1a48211d106258621"
+    ],
+    "cleanupErrors": [],
+    "cwd": "/mnt/development/projects/evidence/pinkha-n-bound-http-engine-formatted-20261128-draft4",
+    "exitCode": 0,
+    "forcedCleanup": false,
+    "logSHA256": "af5bec206b9f2f51762bdbd39b4bf3d27b805282647a5a4ab7bca35902c45cae",
+    "pgid": 3337781,
+    "pid": 3337781,
+    "processGroupAbsent": true,
+    "seconds": 0.23538172245025635,
+    "signals": [],
+    "stopReason": null,
+    "unreapedLeaderDuringGroupCleanup": true
+  },
+  "reusedFormatterLog": {
+    "bytes": 278005,
+    "path": "/mnt/development/projects/evidence/pinkha-n-bound-http-engine-formatted-20261128-draft4/formatter/original.log",
+    "sha256": "af5bec206b9f2f51762bdbd39b4bf3d27b805282647a5a4ab7bca35902c45cae"
+  },
+  "sdkProductionSourceMap": {
+    "bytes": 148000,
+    "mode": 384,
+    "path": "/mnt/development/projects/evidence/pinkha-n-bound-http-engine-formatted-20261128-draft5/SDK_PRODUCTION_SOURCE_MAP.json",
+    "sha256": "4a756afeda551334ae012fd9256c0f7bec83321ab83bd5595b7ee99c90ef8f40"
+  },
+  "seconds": 0.24463321827352047,
+  "sourceCounts": {
+    "fullWithNewTests": 1648,
+    "fullWithProductionChanges": 1645,
+    "newTestFiles": 3,
+    "originalFull": 1638,
+    "originalSDK": 750,
+    "productionAdditions": 7,
+    "productionChanges": 15,
+    "productionReplacements": 8,
+    "sdkWithNewTests": 756,
+    "sdkWithProductionChanges": 755
+  },
+  "sourceManifest": {
+    "bytes": 12408,
+    "mode": 384,
+    "path": "/mnt/development/projects/evidence/pinkha-n-bound-http-engine-formatted-20261128-draft5/SOURCE_MANIFEST.json",
+    "sha256": "f047329479c7333689fcb6678fa1de95ece2fa6a7b3dc80b906bd9334bc2b1fb"
+  },
+  "status": "PASS_RETAINED_FORMAT18_SOURCE_COMPOSITION_COMPLETION_ONLY",
+  "testsExecuted": 0
+}

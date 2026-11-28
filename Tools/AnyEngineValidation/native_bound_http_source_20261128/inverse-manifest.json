@@ -1,0 +1,102 @@
+{
+  "actualInMemoryCompleteInverse": {
+    "bytes": 369957,
+    "matched": true,
+    "sha256": "3552d6f65350c1eba2e9763c7f9a9daa64ada0335f64020ad585fff4a0e286e4"
+  },
+  "expectedResult": {
+    "bytes": 369957,
+    "files": 1638,
+    "path": "maps/runtime18-base-source.json",
+    "sdkFiles": 750,
+    "sha256": "3552d6f65350c1eba2e9763c7f9a9daa64ada0335f64020ad585fff4a0e286e4"
+  },
+  "filesystemMutationPerformed": false,
+  "input": {
+    "bytes": 372692,
+    "path": "maps/native-qualification-source.json",
+    "sha256": "b757e6f81d7fadd76abfb0f6e96974896eee59c7dc62a6b984c021003bce7e47"
+  },
+  "protocol": "pinkha-n24-full-source-map-inverse-v1",
+  "removeNewQualificationTests": [
+    ".runtime-artifacts/sdk-source/current_reader_mutations_fresh_linux_test.go",
+    "internal/server/engine_binding_fresh_linux_test.go",
+    "internal/server/engine_binding_test.go",
+    "internal/server/handlers_acl_consumed_request_test.go"
+  ],
+  "removeProductionAdditions": [
+    ".runtime-artifacts/sdk-source/internal/object/checked_local_write.go",
+    ".runtime-artifacts/sdk-source/internal/spaceimpl/current_reader_mutations.go",
+    ".runtime-artifacts/sdk-source/internal/techspace/settings_current_reader.go",
+    ".runtime-artifacts/sdk-source/internal/types/any/pinkha_last_opened.go",
+    ".runtime-artifacts/sdk-source/space/current_reader_mutations.go",
+    "internal/api/engine_binding.go",
+    "internal/server/engine_binding.go"
+  ],
+  "restoreAllOtherEntriesAndModesUnchanged": true,
+  "restoreProductionReplacements": [
+    {
+      "bytes": 50727,
+      "carrierPath": "Tools/AnyEngineValidation/native_bound_http_source_20261128/originals/any/.runtime-artifacts/sdk-source/internal/object/object.go",
+      "nativeMode": 384,
+      "sha256": "eef8857406a3bff8d16f08050e6f1fba42123386ba116113ae8b37db369700df",
+      "sourceRelativePath": ".runtime-artifacts/sdk-source/internal/object/object.go"
+    },
+    {
+      "bytes": 6658,
+      "carrierPath": "Tools/AnyEngineValidation/native_bound_http_source_20261128/originals/any/.runtime-artifacts/sdk-source/internal/types/any/any.go",
+      "nativeMode": 384,
+      "sha256": "61996ad1ca4a66ecd47895f088c01fb4f5e44fd23862ad584e4ee99f4e2fe654",
+      "sourceRelativePath": ".runtime-artifacts/sdk-source/internal/types/any/any.go"
+    },
+    {
+      "bytes": 28285,
+      "carrierPath": "Tools/AnyEngineValidation/native_bound_http_source_20261128/originals/any/internal/server/engine.go",
+      "nativeMode": 384,
+      "sha256": "cd9565844855978c32b72fb6e350b7645e66c093173cfd086c0d02ec254baf97",
+      "sourceRelativePath": "internal/server/engine.go"
+    },
+    {
+      "bytes": 2821,
+      "carrierPath": "Tools/AnyEngineValidation/native_bound_http_source_20261128/originals/any/internal/server/gate.go",
+      "nativeMode": 384,
+      "sha256": "56daf9b982281f7b6ee8d5aac3a1ef8c22bb587ca44b494afd1bf2d6e3a3ccee",
+      "sourceRelativePath": "internal/server/gate.go"
+    },
+    {
+      "bytes": 4823,
+      "carrierPath": "Tools/AnyEngineValidation/native_bound_http_source_20261128/originals/any/internal/server/handlers_acl_common.go",
+      "nativeMode": 384,
+      "sha256": "cdd3fdc0fe9deb8e4f4500ff12e37c260e8348861b24e43a41b0fccd292eb848",
+      "sourceRelativePath": "internal/server/handlers_acl_common.go"
+    },
+    {
+      "bytes": 23461,
+      "carrierPath": "Tools/AnyEngineValidation/native_bound_http_source_20261128/originals/any/internal/server/handlers_common.go",
+      "nativeMode": 384,
+      "sha256": "e666fc600dd92d32f99ef70c3a729c9ea9b11bf43f9cedb9d02a195f5decbdd6",
+      "sourceRelativePath": "internal/server/handlers_common.go"
+    },
+    {
+      "bytes": 14401,
+      "carrierPath": "Tools/AnyEngineValidation/native_bound_http_source_20261128/originals/any/internal/server/handlers_properties.go",
+      "nativeMode": 384,
+      "sha256": "b1279dbd52ec09c65e4e8ddb1653f938c955f25dca7f834c16ec7c7d012f74ad",
+      "sourceRelativePath": "internal/server/handlers_properties.go"
+    },
+    {
+      "bytes": 3811,
+      "carrierPath": "Tools/AnyEngineValidation/native_bound_http_source_20261128/originals/any/internal/server/handlers_settings.go",
+      "nativeMode": 384,
+      "sha256": "82c1126394ee5edb69a126d721ecc7a2e072f9aa259664797dd4f709d47b9202",
+      "sourceRelativePath": "internal/server/handlers_settings.go"
+    },
+    {
+      "bytes": 12135,
+      "carrierPath": "Tools/AnyEngineValidation/native_bound_http_source_20261128/originals/any/internal/server/routes.go",
+      "nativeMode": 384,
+      "sha256": "66d5fcae45a26c8b3fec976c993827ed546971d6b69f8dd8167f9add633a2edd",
+      "sourceRelativePath": "internal/server/routes.go"
+    }
+  ]
+}
