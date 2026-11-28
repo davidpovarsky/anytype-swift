@@ -1,0 +1,63 @@
+{
+  "schema": "pinkha.ordinary14.inverse.v1",
+  "status": "SOURCE_ONLY_NOT_APPLIED",
+  "parent": {
+    "repository": "davidpovarsky/anytype-swift",
+    "commit": "d1b04526825ad10b07c59313727629cec35f9559",
+    "tree": "b0140be8a4d53766a7e4a221e037b00e9d4c3bb2"
+  },
+  "dependencyChanges": [
+    {
+      "destination": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationExecutor.swift",
+      "before": {
+        "path": "before/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationExecutor.swift",
+        "bytes": 19745,
+        "sha256": "e1b70db384a5308d759fa763446245a2369aa7a083d5d4080032d4e51f959b63"
+      },
+      "after": {
+        "path": "dependencies/cold6/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationExecutor.swift",
+        "bytes": 24055,
+        "sha256": "53e036d4843fe368d5731b2da517cdfb3be1b996c946d432c51d53769003f41c"
+      },
+      "operation": "complete separately pinned whole-file images; original can be restored exactly"
+    },
+    {
+      "destination": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationJournal.swift",
+      "before": {
+        "path": "before/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationJournal.swift",
+        "bytes": 13471,
+        "sha256": "6a21f98fe4cbeb0208e6842dd3b6a9dbad4672ddd0c04ee6b01c38c1dc3cea52"
+      },
+      "after": {
+        "path": "dependencies/cold6/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationJournal.swift",
+        "bytes": 21624,
+        "sha256": "f0846218cf0ceb933271ff87985eca590e11edaf8fb429a3ed2381cc7b70d6db"
+      },
+      "operation": "complete separately pinned whole-file images; original can be restored exactly"
+    }
+  ],
+  "c14Transforms": "EXACT_TRANSFORMS.json",
+  "c14NewPaths": [
+    {
+      "destination": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationImportedPropertyNamespace.swift",
+      "carrierPath": "overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationImportedPropertyNamespace.swift",
+      "bytes": 13010,
+      "sha256": "3076e98bd0d7a1106f376faa8e04de9252e47756c2ff806856a4334eae2457cb",
+      "inverse": "remove only when this exact separately admitted new file is present"
+    },
+    {
+      "destination": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeOrdinaryPropertySupplement.swift",
+      "carrierPath": "overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeOrdinaryPropertySupplement.swift",
+      "bytes": 9026,
+      "sha256": "8023022c6740bc88fb9502e1e572bfdf4299e0b8e1b9a24e03217e2c790e72dd",
+      "inverse": "remove only when this exact separately admitted new file is present"
+    }
+  ],
+  "restoreOrder": [
+    "Reverse the five exact C14 transforms into their pinned before-images.",
+    "Restore the complete parent Executor and Journal images if also reversing C6.",
+    "Remove only the exact two new C14 production files and new test file in an independently admitted integration worktree."
+  ],
+  "execution": "No application or reversal of these changes occurred in this publication.",
+  "modes": "Git stores text files as 100644; original declared POSIX modes are separately recorded. Future physical qualification must admit and restore its own exact modes."
+}
