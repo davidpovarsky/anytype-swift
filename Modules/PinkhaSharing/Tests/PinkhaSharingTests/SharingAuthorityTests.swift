@@ -99,3 +99,87 @@ private actor Signal {
         for callback in callbacks { callback.resume() }
     }
 }
+
+// Per-member permissions are a source-level projection; native authorization remains final.
+extension SharingAuthorityTests {
+    func testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets() throws {
+        let legacy = try snapshot()
+        XCTAssertNil(legacy.capabilities.memberRoleOptions)
+        XCTAssertEqual(legacy.capabilities.rolesForMemberChange("writer"), legacy.capabilities.grantableRoles)
+        try PinkhaSharingMutation.changeRole(identity: "writer", role: .reader).validate(in: legacy)
+        XCTAssertTrue(legacy.capabilities.rolesForMemberChange("owner").isEmpty)
+
+        let empty = try memberRoleSnapshot(options: [:])
+        XCTAssertTrue(empty.capabilities.rolesForMemberChange("reader").isEmpty)
+        XCTAssertThrowsError(try PinkhaSharingMutation.changeRole(identity: "reader", role: .writer).validate(in: empty)) {
+            XCTAssertEqual($0 as? PinkhaSharingError, .permissionDenied)
+        }
+        let partial = try memberRoleSnapshot(options: ["reader": [.guest, .writer]])
+        try PinkhaSharingMutation.changeRole(identity: "reader", role: .guest).validate(in: partial)
+        XCTAssertTrue(partial.capabilities.rolesForMemberChange("writer").isEmpty)
+        XCTAssertThrowsError(try PinkhaSharingMutation.changeRole(identity: "writer", role: .reader).validate(in: partial)) {
+            XCTAssertEqual($0 as? PinkhaSharingError, .permissionDenied)
+        }
+    }
+
+    func testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval() throws {
+        let current = try memberRoleSnapshot(options: [
+            "reader": [.guest, .reader, .writer, .admin],
+            "writer": [.reader, .writer, .admin],
+            "admin": [.reader, .writer, .admin]
+        ])
+        try PinkhaSharingMutation.changeRole(identity: "reader", role: .guest).validate(in: current)
+        try PinkhaSharingMutation.changeRole(identity: "writer", role: .admin).validate(in: current)
+        XCTAssertThrowsError(try PinkhaSharingMutation.changeRole(identity: "writer", role: .guest).validate(in: current))
+        XCTAssertThrowsError(try PinkhaSharingMutation.changeRole(identity: "guest", role: .reader).validate(in: current))
+        XCTAssertTrue(current.capabilities.rolesForMemberChange("guest").isEmpty)
+        try PinkhaSharingMutation.remove(identity: "guest").validate(in: current)
+        XCTAssertThrowsError(try PinkhaSharingMutation.remove(identity: "owner").validate(in: current))
+        try PinkhaSharingMutation.approve(identity: "pending", requestID: "current-request", role: .admin).validate(in: current)
+        XCTAssertThrowsError(try PinkhaSharingMutation.approve(identity: "pending", requestID: "current-request", role: .guest).validate(in: current))
+        XCTAssertThrowsError(try PinkhaSharingMutation.approve(identity: "pending", requestID: "old-request", role: .reader).validate(in: current))
+
+        // The same confirmed target may no longer be a Reader at dispatch.
+        let refreshed = try memberRoleSnapshot(options: ["reader": [.reader, .writer, .admin]], readerRole: .writer)
+        XCTAssertThrowsError(try PinkhaSharingMutation.changeRole(identity: "reader", role: .guest).validate(in: refreshed)) {
+            XCTAssertEqual($0 as? PinkhaSharingError, .permissionDenied)
+        }
+    }
+
+    func testPerMemberRoleOptionsRejectMalformedEntries() throws {
+        let malformed: [(String, [String: [PinkhaSharingRole]])] = [
+            ("duplicate role", ["reader": [.writer, .writer]]),
+            ("owner grant", ["reader": [.owner]]),
+            ("none grant", ["reader": [.none]]),
+            ("foreign member", ["foreign": [.writer]]),
+            ("noneditable guest", ["guest": [.reader]]),
+            ("self member", ["owner": [.writer]])
+        ]
+        for (label, options) in malformed {
+            XCTAssertThrowsError(try memberRoleSnapshot(options: options), label) {
+                XCTAssertEqual($0 as? PinkhaSharingError, .invalidResponse, label)
+            }
+        }
+        let explicitlyClosed = try memberRoleSnapshot(options: ["reader": []])
+        XCTAssertTrue(explicitlyClosed.capabilities.rolesForMemberChange("reader").isEmpty)
+        XCTAssertThrowsError(try PinkhaSharingMutation.changeRole(identity: "reader", role: .writer).validate(in: explicitlyClosed))
+    }
+
+    private func memberRoleSnapshot(
+        options: [String: [PinkhaSharingRole]]?, readerRole: PinkhaSharingRole = .reader
+    ) throws -> PinkhaSharingSnapshot {
+        let members: [PinkhaSharingMember] = [
+            try .init(id: "owner", name: "Owner", role: .owner, status: .active),
+            try .init(id: "reader", name: "Reader", role: readerRole, status: .active),
+            try .init(id: "writer", name: "Writer", role: .writer, status: .active),
+            try .init(id: "admin", name: "Admin", role: .admin, status: .active),
+            try .init(id: "guest", name: "Guest", role: .guest, status: .active),
+            try .init(id: "pending", name: "Pending", role: .none, status: .joining, requestID: "current-request")
+        ]
+        return try .init(scope: scope(.any), currentIdentity: "owner", members: members, invitations: [],
+            capabilities: .init(canCreateInvitation: true, canRevokeInvitation: true,
+                canApproveRequests: true, grantableRoles: [.reader, .writer, .admin],
+                editableMemberIDs: ["reader", "writer", "admin"],
+                removableMemberIDs: ["reader", "writer", "admin", "guest"], memberRoleOptions: options))
+    }
+}

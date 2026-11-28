@@ -125,19 +125,38 @@ public final class AnyNativeSharingService: PinkhaSpaceSharingService {
             guard let id = raw["recordId"]?.string else { throw PinkhaSharingError.invalidResponse }
             return try .init(id: id, shareValue: raw["inviteToken"]?.string)
         }
-        let editable = Set(members.filter {
+        let capabilities = try sharingCapabilities(currentMember: me, members: members, invitations: invitations)
+        return try .init(scope: scope, currentIdentity: me.id, members: members,
+                         invitations: invitations, capabilities: capabilities)
+    }
+
+    /// A projection of the current native snapshot, never mutation authority.
+    /// Approval grants and existing-member transitions have distinct ACL rules.
+    nonisolated static func sharingCapabilities(
+        currentMember me: PinkhaSharingMember,
+        members: [PinkhaSharingMember], invitations: [PinkhaSharingInvitation]
+    ) throws -> PinkhaSharingCapabilities {
+        let moderator = me.role == .owner || me.role == .admin
+        let removable = Set(members.filter {
             $0.status == .active && $0.id != me.id && $0.role != .owner
                 && (me.role == .owner || (me.role == .admin && $0.role != .admin))
         }.map(\.id))
-        let capabilities = try PinkhaSharingCapabilities(
+        // Guest membership may be removed, but its role cannot be upgraded.
+        let editableMembers = members.filter { removable.contains($0.id) && $0.role != .guest }
+        let editable = Set(editableMembers.map(\.id))
+        let approvalRoles: [PinkhaSharingRole] = me.role == .owner ? [.reader, .writer, .admin]
+            : (me.role == .admin ? [.reader, .writer] : [])
+        var memberRoleOptions: [String: [PinkhaSharingRole]] = [:]
+        for member in editableMembers {
+            // Both Owner and Admin may convert a current Reader to Guest.
+            memberRoleOptions[member.id] = member.role == .reader ? [.guest] + approvalRoles : approvalRoles
+        }
+        return try PinkhaSharingCapabilities(
             canCreateInvitation: me.role == .owner && invitations.isEmpty,
             canRevokeInvitation: me.role == .owner,
-            canApproveRequests: moderator,
-            grantableRoles: me.role == .owner ? [.guest, .reader, .writer, .admin]
-                : (me.role == .admin ? [.reader, .writer] : []),
-            editableMemberIDs: editable, removableMemberIDs: editable)
-        return try .init(scope: scope, currentIdentity: me.id, members: members,
-                         invitations: invitations, capabilities: capabilities)
+            canApproveRequests: moderator, grantableRoles: approvalRoles,
+            editableMemberIDs: editable, removableMemberIDs: removable,
+            memberRoleOptions: memberRoleOptions)
     }
 
     private nonisolated static func decodeMember(_ value: AnyJSON) throws -> PinkhaSharingMember {
