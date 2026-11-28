@@ -1,0 +1,464 @@
+{
+  "schema": "pinkha.wave2.sharing-role3.independent-actual-review.v1",
+  "status": "PASS_BOUNDED_THREE_XCTEST_COMPONENT_QUALIFICATION",
+  "reviewer": "/root/torah_continue",
+  "root": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128",
+  "scope": "Independent read-only qualification of the one completed Shared3 Linux component run, including actual generated-source semantics and final link/resource custody. No new execution.",
+  "originalExecution": {
+    "job": "job_643f297026c2",
+    "parentReportedUTCInterval": [
+      "2026-11-28T05:42:34Z",
+      "2026-11-28T05:42:50Z"
+    ],
+    "intervalPrecision": "Parent-reported outer job timestamps are rounded to seconds; the original helper and caller retain measured durations below.",
+    "coordinationStory": "1220965335914684",
+    "publishedProductSource": "80bd7636bb53391d8350a7ef39810e0b2cd9b733",
+    "sourceParent": "6ade3661c261e66c987b7017a6181bdfcebc1d58",
+    "originalReceiptStatus": "SELECTED_THREE_PASSED_WITH_CAPTURED_COMPILER_EVIDENCE",
+    "originalComponentAcceptance": "PENDING_INDEPENDENT_COMPILER_EVIDENCE_REVIEW",
+    "originalsUnchanged": true,
+    "qualificationRelationship": "This separate review resolves the original pending independent compiler-evidence qualification for the three selected methods. It does not rewrite or replace the original receipt or compiler capture.",
+    "compilerEvidenceOriginalStatus": "CAPTURED_REQUIRES_INDEPENDENT_COMPILER_REVIEW",
+    "compilerEvidenceOriginalPendingClaims": [
+      "exact generated-source semantics",
+      "full final linker closure"
+    ],
+    "exitCode": 0,
+    "firstFailure": null,
+    "buildSeconds": 12.84,
+    "actualTestsSeconds": 0.102,
+    "ownedHelperSeconds": 15.556878461502492,
+    "callerSeconds": 15.845635401085019
+  },
+  "originals": [
+    {
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/attempt1/receipt.json",
+      "bytes": 31370,
+      "sha256": "ee8f7e472bcb111dd03948562d52b96e84c279742148d2b7bb5456b9ce01bd1a",
+      "gitBlob": "32cfe05dc01400704cf7c87e6278bde560138074"
+    },
+    {
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/attempt1/swift/result.json",
+      "bytes": 1555,
+      "sha256": "08ae893220d09f8d2d948da5b8ae5a06b189ea4fcc636ed54b46b8fb85e248e1",
+      "gitBlob": "5482fa0dcb17a2b69f8dac2976632510a22c84d9"
+    },
+    {
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/attempt1/compiler-evidence.json",
+      "bytes": 97337,
+      "sha256": "749962a81fa25f73aa88fb7ee8ee8b512a0725f8645886f8ce9e73937273a377",
+      "gitBlob": "2ef6fa86e08a5fdaf6eb902125f9d9108c896af6"
+    },
+    {
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/attempt1/swift/original.log",
+      "bytes": 73952,
+      "sha256": "f954b3856d9e8ec80618b3d03073ea1789f9209a025587049e9d46048bca2673",
+      "gitBlob": "41aba2ce49c13071b369d4bc203d9306b6594026"
+    }
+  ],
+  "sourceCustody": {
+    "immutableManifest": {
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/prepared/input-manifest.original.json",
+      "bytes": 4893,
+      "sha256": "b3d739b25605697acbf41a4ce97cd7dc0e9f125acc25e9cb774eaadab610dd66",
+      "gitBlob": "db0c04d8d5542517071ea57969ebe3d8e08ab09e"
+    },
+    "priorSourceReview": {
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/prepared/torah-independent-caller-review.json",
+      "bytes": 17653,
+      "sha256": "dce555589c476e0f1f5ec4991f5b0fa609939f7211f80b8f2bb953113132dc84",
+      "gitBlob": "58195cadddb4fd4c3c2fa1a1db9526f4579ed1c4"
+    },
+    "actualControllerSHA256": "3ec0fd8ac7ae23a4c20e7a315c1b2ec83038dbfec98fc9f46b4ffcd6b7dab80e",
+    "helperSHA256": "f9de18c0fdc879ff916ba34e9afa0da9d6b91444eebfa1e5a8d6a50d3523ca56",
+    "completePackageInputs": 8,
+    "completePackageBytes": 56729,
+    "wholeProductionSwiftFiles": 3,
+    "wholeTestSwiftFiles": 2,
+    "resourceFiles": 2,
+    "packageManifestFiles": 1,
+    "inputBeforeAfterExact": true,
+    "allEightPathSizeHashesMatchFrozenManifest": true,
+    "inputs": [
+      {
+        "path": "Package.swift",
+        "bytes": 436,
+        "sha256": "7ba971ad0048edf17e458aa9b7a32b904f9729fed36a58e745f329840f5c26aa"
+      },
+      {
+        "path": "Sources/PinkhaSharing/PinkhaSharingAccountOwner.swift",
+        "bytes": 3146,
+        "sha256": "1d6ee98ff39296e564e8440ef494acfde8a94969811230e628c814550a139e36"
+      },
+      {
+        "path": "Sources/PinkhaSharing/PinkhaSpaceMembersView.swift",
+        "bytes": 18333,
+        "sha256": "fc7d5e41a2f79dc452d269e0412a4f01330e3a8ccf7cd96d20ce14eee3eed525"
+      },
+      {
+        "path": "Sources/PinkhaSharing/PinkhaSpaceSharing.swift",
+        "bytes": 9079,
+        "sha256": "32b76990f19402c2975c751273d3aae87c579d8103339ace14a49d835a8ff028"
+      },
+      {
+        "path": "Sources/PinkhaSharing/Resources/en.lproj/Localizable.strings",
+        "bytes": 2698,
+        "sha256": "2822ac8575239de0a3c0891d32db6d6b4ca696979e05068e1fb92c160a787080"
+      },
+      {
+        "path": "Sources/PinkhaSharing/Resources/he.lproj/Localizable.strings",
+        "bytes": 3109,
+        "sha256": "a436ea24dccdf4da1ddb5a54fbc495cd2d60dab633484b41d4b88dec1a032dc9"
+      },
+      {
+        "path": "Tests/PinkhaSharingTests/SharingAuthorityTests.swift",
+        "bytes": 11211,
+        "sha256": "e11a832e3f8f39bf05f821e420a90f67b883be2164630320bf793eba43d3f336"
+      },
+      {
+        "path": "Tests/PinkhaSharingTests/SharingPresentationTests.swift",
+        "bytes": 8717,
+        "sha256": "1e69732154269558df7514e4f5996bc3e8294c1c5940a772f67e0a1d6f77fa1d"
+      }
+    ],
+    "physicalCustody": "Original receipt preserves before/after physical identities. No input body was rewritten or projected. Independent checks bind all content hashes and the unchanged raw receipt; nanosecond values remain authoritative as exact original JSON integers, not floating-point re-serialization.",
+    "productionSourceMeaning": "The original full files and real package types were compiled. No extracted declaration, fake type, Linux shim, stripped guard, copied service or test-only production implementation was substituted.",
+    "inactivePlatformBoundary": "PinkhaSpaceMembersView.swift contains Foundation/Observation presentation code outside #if canImport(SwiftUI), but the SwiftUI view bodies and their import are inactive in this Linux build. A whole-file compiler input does not establish compilation or execution of those Apple UI branches."
+  },
+  "actualSelection": {
+    "framework": "XCTest",
+    "namedMethods": [
+      "testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets",
+      "testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval",
+      "testPerMemberRoleOptionsRejectMalformedEntries"
+    ],
+    "events": [
+      {
+        "method": "SharingAuthorityTests.testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval",
+        "event": "started",
+        "suffix": " at 2026-11-28 05:42:49.515"
+      },
+      {
+        "method": "SharingAuthorityTests.testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval",
+        "event": "passed",
+        "suffix": " (0.001 seconds)"
+      },
+      {
+        "method": "SharingAuthorityTests.testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets",
+        "event": "started",
+        "suffix": " at 2026-11-28 05:42:49.517"
+      },
+      {
+        "method": "SharingAuthorityTests.testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets",
+        "event": "passed",
+        "suffix": " (0.101 seconds)"
+      },
+      {
+        "method": "SharingAuthorityTests.testPerMemberRoleOptionsRejectMalformedEntries",
+        "event": "started",
+        "suffix": " at 2026-11-28 05:42:49.617"
+      },
+      {
+        "method": "SharingAuthorityTests.testPerMemberRoleOptionsRejectMalformedEntries",
+        "event": "passed",
+        "suffix": " (0.0 seconds)"
+      }
+    ],
+    "startedMethods": 3,
+    "passedMethods": 3,
+    "XCTestCases": 3,
+    "oldMethodsExecuted": 0,
+    "failedMethods": 0,
+    "loopRowsCountedAsTestLeaves": false,
+    "rawSummaries": "Both the SharingAuthorityTests and Selected tests summaries report 3 tests, 0 failures (0 unexpected), 0.102 seconds.",
+    "discoveryCount": 12,
+    "discoveredAuthorityMethods": 7,
+    "discoveredPresentationMethods": 5,
+    "discoveryBoundary": "All 12 source-declared methods are in the generated discovery table: seven SharingAuthorityTests plus five SharingPresentationTests. Only the three new exact selected method start/pass pairs occur in the raw log. The other nine were not replayed.",
+    "argvMatchesReceiptCommandAndHelperResult": true,
+    "filter": "^PinkhaSharingTests\\.SharingAuthorityTests/(?:testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets|testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval|testPerMemberRoleOptionsRejectMalformedEntries)$",
+    "swiftTestingDisabled": true
+  },
+  "compiler": {
+    "backend": "Actual SwiftBuild backend",
+    "versionLine": "Swift version 6.4.3 (swift-6.4.3-RELEASE)",
+    "target": "aarch64-unknown-linux-gnu",
+    "executable": {
+      "requestedPath": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift",
+      "resolvedPath": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-driver",
+      "sha256": "39d41b0dc9eba623b0e37cea42c3145720168214ba4349d6fa3bd9db9b1e651a"
+    },
+    "productModules": [
+      "PinkhaSharing",
+      "PinkhaSharingTests",
+      "PinkhaSharingTests_test_runner"
+    ],
+    "rawCommandRecordsMatched": 10,
+    "commandCountPrecision": "Ten captured manifest/compiler command records include repeated representations; they are not ten distinct product modules. The package manifest module main is separate from the three product modules.",
+    "fullWholeSwiftInputs": [
+      "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package/Sources/PinkhaSharing/PinkhaSharingAccountOwner.swift",
+      "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package/Sources/PinkhaSharing/PinkhaSpaceMembersView.swift",
+      "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package/Sources/PinkhaSharing/PinkhaSpaceSharing.swift",
+      "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package/Tests/PinkhaSharingTests/SharingAuthorityTests.swift",
+      "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package/Tests/PinkhaSharingTests/SharingPresentationTests.swift"
+    ],
+    "knownEqualsObservedWholeSwiftInputs": true,
+    "swiftFileLists": 3,
+    "outputFileMaps": 3,
+    "completeListsEqualOutputMapSourceSets": true,
+    "sourceInputsAcrossLists": 8,
+    "wholeSwiftSourceInputs": 5,
+    "generatedSwiftSourceInputs": 3,
+    "allThirteenEmbeddedArtifactsRehashed": true,
+    "generated": [
+      {
+        "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/DerivedSources/test_anchor.swift",
+        "bytes": 49,
+        "sha256": "0659d3c904c37e47af39e40ce608e0debb406cae9a07cf2d08a436581adf905b"
+      },
+      {
+        "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/DerivedSources/test_entry_point.swift",
+        "bytes": 20911,
+        "sha256": "3d1ee5398719c8be57673df1cef22905be31d5a9e444c782dfcfc6137803961e"
+      },
+      {
+        "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/DerivedSources/resource_bundle_accessor.swift",
+        "bytes": 1730,
+        "sha256": "064d0776f7df7c2b422ac3d9ac46b8c81a512ce6080299ce4cddd5151d158767"
+      }
+    ],
+    "generatedSemantics": [
+      "test_anchor.swift is the exact 49-byte public empty test-anchor declaration for PinkhaSharingTests.",
+      "test_entry_point.swift is the 20,911-byte generated XCTest discovery/runner source. Its exact discovery table references the original 12 methods. Disabled experimental output observer scaffolding is guarded by false; the active runner selects XCTest for the actual invocation.",
+      "resource_bundle_accessor.swift is the 1,730-byte ordinary generated Foundation Bundle.module lookup. It introduces resource lookup, not replacement sharing logic or test assertions."
+    ],
+    "warningQualification": "The complete raw log contains one warning-prefixed verbose package-manifest compiler command. No additional source warning/error diagnostic was observed in the whole log. This is not reported as a warning-free build.",
+    "originalCompilerArtifacts": 26,
+    "embeddedOriginalTextArtifacts": 13
+  },
+  "finalLinkAndResourceClosure": {
+    "supplement": {
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/attempt1/torah-link-closure-supplement.json",
+      "bytes": 32875,
+      "sha256": "48b298f66520e60759e4b8c312d5e02d1a77d0c95aee54aa114d58c8adcd794c",
+      "gitBlob": "756d7ba52202b7d32d9e7eca172342ed8eeb98cc"
+    },
+    "supplementFullReadbackVerified": true,
+    "supplementCollection": "One authorized finite data-only Python read. O_NOFOLLOW/O_NOATIME physical reads, stable before/open/after metadata, 8 MiB per-file and 16 MiB total-read caps, 20-second internal bound; no subprocess or process query. The result was subsequently preserved through exclusive data transfer.",
+    "dataReaderSHA256": "ead78b5dd18040ed8e01f7f759f68662df3babc6d544173c0041fd4482ab8c9c",
+    "dataReaderBytes": 14659,
+    "actualReadSeconds": 0.06667352933436632,
+    "actualReadBytes": 4765782,
+    "originalFourAnchorsBeforeAfterExact": true,
+    "namedFiles": 24,
+    "fourOriginalLinkListsRehashed": true,
+    "eightOutputMappedSourceObjectsAllPresent": true,
+    "uniqueListedObjects": 12,
+    "objectBreakdown": {
+      "sourceObjects": 8,
+      "moduleWrapperObjects": 3,
+      "aggregateProductionObject": 1
+    },
+    "graph": [
+      {
+        "operation": "clang -r",
+        "input": "PinkhaSharing target link list: four source objects plus module wrapper",
+        "output": "Products/Debug-linux-aarch64/PinkhaSharing.o"
+      },
+      {
+        "operation": "llvm-ar rcs",
+        "input": "PinkhaSharing product link list: aggregate PinkhaSharing.o only",
+        "output": "Products/Debug-linux-aarch64/libPinkhaSharing.a"
+      },
+      {
+        "operation": "swiftc -emit-library",
+        "input": "Three test source objects, test module wrapper, aggregate PinkhaSharing.o and exact test autolink response",
+        "output": "Products/Debug-linux-aarch64/PinkhaSharingTests.so"
+      },
+      {
+        "operation": "swiftc -emit-executable",
+        "input": "Generated entrypoint object, runner module wrapper, exact runner autolink response and actual PinkhaSharingTests.so",
+        "output": "Products/Debug-linux-aarch64/PinkhaSharingTests-test-runner"
+      }
+    ],
+    "linkLists": [
+      {
+        "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-product-p.build/Objects-normal/aarch64/PinkhaSharing.LinkFileList",
+        "sha256": "918f5725f60e9681f154405d67437d63d3d147dc30d97f71deac8da9948a797f",
+        "members": 1
+      },
+      {
+        "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/PinkhaSharingTests.LinkFileList",
+        "sha256": "be89d9852c54c05460fec485c705c9c103217de563b2698a0f82d2894d9b02c7",
+        "members": 5
+      },
+      {
+        "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/PinkhaSharingTests-test-runner.LinkFileList",
+        "sha256": "faeb495cd2683870e1dba256842871a1f21423f42fd4cbb47b2286e0ff8d4bb5",
+        "members": 2
+      },
+      {
+        "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharing-t.build/Objects-normal/aarch64/PinkhaSharing.LinkFileList",
+        "sha256": "88359d9b5a9ac9fd675a93f05cb26d36a58cd4093e264fec6ac1e842f18bf770",
+        "members": 5
+      }
+    ],
+    "generatedLinkResponseFiles": [
+      {
+        "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-p.build/Objects-normal/aarch64/PinkhaSharingTests-swiftbuild.autolink",
+        "bytes": 281,
+        "sha256": "2779dc2b7ed5d326765d001a8f96a4266af65fe81576e2c17ddd849d2edbbedf",
+        "gitBlob": "3b3e215ccc0b18d4ff7d73212bdf0ea742c6eca7"
+      },
+      {
+        "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Intermediates.noindex/PinkhaSharing.build/Debug-linux-aarch64/PinkhaSharingTests-test-runner.build/Objects-normal/aarch64/PinkhaSharingTests_test_runner-swiftbuild.autolink",
+        "bytes": 291,
+        "sha256": "51b703480bb45a878e60d75ca654efa9b3e68b8d4dde791dc0141723404e28b0",
+        "gitBlob": "81de0cccdfc20defc2c14ce033750b3abf2b14d4"
+      }
+    ],
+    "products": [
+      {
+        "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharing.o",
+        "bytes": 753192,
+        "sha256": "71e3e32df9f5ece7b0fcbfe66fbc8fee2daeb753e7c73108054a341ce76e0b08",
+        "gitBlob": "bb726fc9c8c7042614236cd032936b56615b5139"
+      },
+      {
+        "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/libPinkhaSharing.a",
+        "bytes": 784982,
+        "sha256": "138ca4d8a5296c4d302369bb445ca083b77b862860d824de3ca43e7ace415e43",
+        "gitBlob": "d290d455c023c622888e3a97186f563202614025"
+      },
+      {
+        "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharingTests-test-runner",
+        "bytes": 148504,
+        "sha256": "ebde5fd632de897555ba9b2d70dc875a2fb9abfd55cdd2e5a4bcdb3cec954a5d",
+        "gitBlob": "16e3a107447321a6003adaa4df60be6b56b95ef8"
+      },
+      {
+        "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharingTests.so",
+        "bytes": 1032360,
+        "sha256": "f5df4aabad7cce14d01c3917dd8ea53f2f6130129f00175a19e6a3cea0cf75ca",
+        "gitBlob": "7ef3f8aa483b5eeb37e1f27c6c09ac267ff390b9"
+      }
+    ],
+    "finalRunnerAndTestLibraryMatchOriginalCompilerCapture": true,
+    "copiedEnHeResourceBytesAndHashesMatchFrozenInputs": true,
+    "resourceBundleInfo": [
+      {
+        "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharing_PinkhaSharing.bundle/Info.plist",
+        "bytes": 518,
+        "sha256": "0318267bf123b0cc2b9b7feae4997182f5f9e3f6b5e5eb57e420031d15f50c8e",
+        "gitBlob": "3813afec5f573c1732b4d38ebafa8bc9ef5c9d34",
+        "plist": {
+          "CFBundleDevelopmentRegion": "en",
+          "CFBundleIdentifier": "package.PinkhaSharing.resources",
+          "CFBundleInfoDictionaryVersion": "6.0",
+          "CFBundleName": "PinkhaSharing_PinkhaSharing",
+          "CFBundlePackageType": "BNDL"
+        }
+      }
+    ],
+    "systemDependencyBoundary": "The actual toolchain path/version, original captured import modules and named link response files are retained. Standard toolchain/system runtime libraries named by autolink were not individually rehashed as an entire operating-system dependency census. The runner links Testing as generated scaffolding; no Swift Testing case was selected or claimed."
+  },
+  "resources": {
+    "admission": {
+      "execute": true,
+      "coordination_story": "1220965335914684",
+      "expected_controller_sha256": "3ec0fd8ac7ae23a4c20e7a315c1b2ec83038dbfec98fc9f46b4ffcd6b7dab80e",
+      "root_live_floor_bytes": 2147483648,
+      "development_live_floor_bytes": 536870912,
+      "root_admission_reserve_bytes": 134217728,
+      "development_admission_reserve_bytes": 33554432,
+      "initial_memory_available_bytes": 3221225472,
+      "maximum_observation_interval_seconds": 1
+    },
+    "ownedAllocationCapBytes": 268435456,
+    "childDeadlineSeconds": 300,
+    "outerEnvelopeSeconds": 360,
+    "statistics": {
+      "count": 76,
+      "maxGapSeconds": 0.3076440477743745,
+      "minROOT": 2314567680,
+      "minDEV": 1296080896,
+      "minMemory": 3841691648,
+      "maxOwned": 55525376,
+      "allLiveROOT": true,
+      "allLiveDEV": true,
+      "allCap": true,
+      "firstROOT": true,
+      "firstDEV": true,
+      "firstMemory": true
+    },
+    "interpretation": "All 76 original observations satisfy the exact live ROOT/DEV floors and owned allocation cap. Initial ROOT and DEV also satisfy their reserves (and DEV the 256 MiB output allowance); initial memory exceeds 3 GiB. Maximum recorded observation gap is below one second. Highest sampled allocation is not an assertion of a continuously measured peak.",
+    "homePreserved": true,
+    "ownedPathsOnlyForTemporaryAndCacheEnvironment": true
+  },
+  "recordedClosure": {
+    "exitCode": 0,
+    "stopReason": null,
+    "processGroupAbsent": true,
+    "forcedCleanup": false,
+    "signals": [],
+    "cleanupErrors": [],
+    "unreapedLeaderDuringGroupCleanup": true,
+    "pid": 3731667,
+    "pgid": 3731667,
+    "absenceObservedAtSeconds": 15.556876501068473,
+    "seconds": 15.556878461502492,
+    "logSHA256": "f954b3856d9e8ec80618b3d03073ea1789f9209a025587049e9d46048bca2673",
+    "interpretation": "Only the original successful closure is used: exit 0, positive process-group absence, no signals or forced cleanup, no cleanup errors. Group 3731667 is permanently closed and was never queried or signaled during this review."
+  },
+  "retentionBoundary": {
+    "supplementContainsOnlyThreeShallowDirectoryListings": true,
+    "listedDirectories": [
+      "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime",
+      "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build",
+      "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out"
+    ],
+    "candidateMetadataOnly": [
+      "runtime/cache",
+      "runtime/manifest-module-cache",
+      "runtime/tmp",
+      "runtime/xdg-cache",
+      "runtime/build/out/CompilationCache.noindex",
+      "runtime/build/out/PCH",
+      "runtime/build/out/SDKExplicitPrecompiledModules"
+    ],
+    "noRecursiveCacheCensus": true,
+    "noPendingConsumerAbsenceClaim": true,
+    "noSubtreeAllocationOrFreeSpaceCredit": true,
+    "noRetirementAuthorization": true,
+    "noDeletion": true,
+    "protected": "Retain all original evidence, package/prepared inputs, final Products, resources, generated sources, module files, exact link lists/autolinks and named object/archive proof. Intermediates.noindex and ModuleCache.noindex contain qualified proof; they cannot be released wholesale on this review. Root/W1 own any separately reviewed bounded cache retirement."
+  },
+  "inspectionProvenance": {
+    "originalCompleteReads": "Both large originals were read in bounded exact ranges and concatenated byte-for-byte to their original full hashes: compiler lines 1-100 and 101-end; raw log lines 1-160 and 161-end. Successful complete bodies, not partial reads, support this review.",
+    "initialTransportStops": "Four exact-file/range reads returned MCP -32603 before subsequent bounded retries succeeded (receipt once, helper result twice, compiler second range once). These are reviewer transport stops, not source, compiler or test failures.",
+    "rawEventInspectionStop": {
+      "status": "REVIEWER_ONLY_INSPECTION_STOP",
+      "reason": "First independent in-memory raw-event expression accepted passed lines but omitted the timestamp suffix on started lines, so expected-six assertion stopped. Direct whole-log inspection and a timestamp-compatible expression then matched all six exact original start/pass events. No original controller/parser invocation or file/runtime mutation.",
+      "runtimeFailure": false
+    },
+    "originalRuntimeReexecutions": 0,
+    "testOrCompilerCommandsByReviewer": 0,
+    "originalControllerOrParserImports": 0,
+    "processQueries": 0,
+    "signals": 0,
+    "nativeAccountOrAppleActions": 0,
+    "sourceOrProductChanges": 0,
+    "dataActions": "One finite named-file data read; exclusive creation/readback of this review and its closure supplement only."
+  },
+  "conclusions": {
+    "accepted": "Three exact new Shared XCTest methods/cases passed in the real complete Linux PinkhaSharing package with qualified source, generated, compiler, link, product, resource and normal-closure evidence.",
+    "noConcreteRemainingComponentEvidenceBlocker": true,
+    "originalPendingFieldsPreserved": true,
+    "notAccepted": [
+      "The two new PinkhaAnyNative projector XCTest methods remain Apple-bound and NOT_RUN.",
+      "SwiftUI rendering, mixed App/OS language visuals, mounted sharing interactions, invitations, backend permission changes and real account/Space behavior were not exercised.",
+      "No broad sharing feature acceptance, old nine-method replay, Native contract acceptance, W3 App build acceptance or runtime lease is inferred.",
+      "No complete build/cache retirement, free-space credit or later consumer compatibility is inferred."
+    ]
+  }
+}

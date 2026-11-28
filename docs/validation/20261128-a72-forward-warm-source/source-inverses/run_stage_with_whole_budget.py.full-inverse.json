@@ -1,0 +1,75 @@
+{
+  "after": {
+    "bytes": 17752,
+    "path": "/mnt/development/projects/evidence/pinkha-w3-runtime18-apple-preparation-20261128-source/app-bae-forward-controller-prepared1/after/run_stage_with_whole_budget.py",
+    "sha256": "df4ec51f67631a477c8176b34e7c1d764e4750bbfff5ace096c4ea7daf009ffb"
+  },
+  "before": {
+    "bytes": 17356,
+    "path": "/mnt/development/projects/evidence/pinkha-w3-runtime18-apple-preparation-20261128-source/app-bae-forward-controller-prepared1/originals/run_stage_with_whole_budget.py",
+    "sha256": "38a7e3d50fa673558ca68f19b2188d93e298a106fa6e7d24b591ed7f0471597c"
+  },
+  "operations": [
+    {
+      "after": "CONTROL_ROOT = Path('/Users/m1/builds/pinkha-warm-forward-bae-binding-20261128-1')",
+      "before": "CONTROL_ROOT = Path('/Users/m1/builds/pinkha-warm-forward-a72-binding-20261127-1')",
+      "count": 1
+    },
+    {
+      "after": "STAGE_SHA = '38644915911ae3df8fa9d7d446a7ca1e9d1bc57fd95d5f0542dd35fd3413083a'",
+      "before": "STAGE_SHA = '62a3f182c1b920f74b2b7ca424501723c66929928c3de7beccc191c80149ef75'",
+      "count": 1
+    },
+    {
+      "after": "STAGE_BYTES = 32456",
+      "before": "STAGE_BYTES = 31457",
+      "count": 1
+    },
+    {
+      "after": "STAGE_PLAN_SHA = None\nSTAGE_PLAN_BYTES = None",
+      "before": "STAGE_PLAN_SHA = '66f8fff64e6f973241da426999875a539a417a1571c1376c6e1473f8bb2a178f'",
+      "count": 1
+    },
+    {
+      "after": "WINDOW_SHA = None\nWINDOW_BYTES = None",
+      "before": "WINDOW_SHA = '6cf1390ccce6962f2ce71b17d2ba89302c0764ad8284d9341c5f8b32689084c7'",
+      "count": 1
+    },
+    {
+      "after": "SUPPLEMENT_SHA = None\nSUPPLEMENT_BYTES = None",
+      "before": "SUPPLEMENT_SHA = 'ff4333e4976ba75d204f19a747ef741e07404b63eab9d0c6ce15141dcb391d40'",
+      "count": 1
+    },
+    {
+      "after": "SOURCE = 'bae68131a20fd7ef351c2b4034ebdf520c6d3b39'",
+      "before": "SOURCE = 'a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd'",
+      "count": 1
+    },
+    {
+      "after": "BUILD_ROOT = Path('/Users/m1/development/anytype-d-active-20261125/main16-wave3-forward-bae68131a20f')",
+      "before": "BUILD_ROOT = Path('/Users/m1/development/anytype-d-active-20261125/main16-wave3-forward-a72f2e1ee303')",
+      "count": 1
+    },
+    {
+      "after": "        require(all(isinstance(value, str) and len(value) == 64\n                    and all(character in '0123456789abcdef' for character in value)\n                    for value in (STAGE_PLAN_SHA, WINDOW_SHA, SUPPLEMENT_SHA))\n                and all(type(value) is int and 0 < value <= MIB\n                        for value in (STAGE_PLAN_BYTES, WINDOW_BYTES, SUPPLEMENT_BYTES)),\n                'This source-only wrapper requires exact root-bound plan/window/supplement literals')\n        plan_raw, plan_ref = read_exact(args.plan, args.plan_sha256)",
+      "before": "        plan_raw, plan_ref = read_exact(args.plan, args.plan_sha256)",
+      "count": 1
+    },
+    {
+      "after": "'path': str(STAGE_PLAN), 'bytes': STAGE_PLAN_BYTES, 'sha256': STAGE_PLAN_SHA",
+      "before": "'path': str(STAGE_PLAN), 'bytes': 14749, 'sha256': STAGE_PLAN_SHA",
+      "count": 1
+    },
+    {
+      "after": "'path': str(WINDOW), 'bytes': WINDOW_BYTES, 'sha256': WINDOW_SHA",
+      "before": "'path': str(WINDOW), 'bytes': 3150, 'sha256': WINDOW_SHA",
+      "count": 1
+    },
+    {
+      "after": "'path': str(SUPPLEMENT), 'bytes': SUPPLEMENT_BYTES, 'sha256': SUPPLEMENT_SHA",
+      "before": "'path': str(SUPPLEMENT), 'bytes': 2676, 'sha256': SUPPLEMENT_SHA",
+      "count": 1
+    }
+  ],
+  "wholeOriginalRestored": true
+}

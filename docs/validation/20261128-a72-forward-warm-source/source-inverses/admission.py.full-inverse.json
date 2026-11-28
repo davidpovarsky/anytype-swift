@@ -1,0 +1,80 @@
+{
+  "after": {
+    "bytes": 34734,
+    "path": "/mnt/development/projects/evidence/pinkha-w3-runtime18-apple-preparation-20261128-source/app-bae-forward-controller-prepared1/after/admission.py",
+    "sha256": "70bb822946c6c0687a3e85e9796a4131a60f561ae57a3a9644929f09c38bd951"
+  },
+  "before": {
+    "bytes": 25789,
+    "path": "/mnt/development/projects/evidence/pinkha-w3-runtime18-apple-preparation-20261128-source/app-bae-forward-controller-prepared1/originals/admission.py",
+    "sha256": "677bdeca6a9604e342ca93a9f28a8cc4aca6987ec278ee792bc626b2bd659b7b"
+  },
+  "operations": [
+    {
+      "after": "WARM_ADAPTER_SHA256 = \"181b5f3ca42943e1dc8179d16a98d63998f966212920e63c3c8a5317e98b4d75\"",
+      "before": "WARM_ADAPTER_SHA256 = \"29b524b32bd8428db62cf9119d1f7f80a5b4d6406ce1d1574dbdefef20fe3adf\"",
+      "count": 1
+    },
+    {
+      "after": "STAGER_SHA256 = \"38644915911ae3df8fa9d7d446a7ca1e9d1bc57fd95d5f0542dd35fd3413083a\"",
+      "before": "STAGER_SHA256 = \"62a3f182c1b920f74b2b7ca424501723c66929928c3de7beccc191c80149ef75\"",
+      "count": 1
+    },
+    {
+      "after": "FOREGROUND_SHA256 = \"f215726b8de42b6fa1934038ea26a8c46a27dde1d64e39afca8ac22db2dadaf4\"\nFOREGROUND_CUSTODY_SHA256 = \"e7e630f78b3abdd1a86b7c5376c39351fa4fd01d48ecb2380137aac20cecfd6d\"\nORIGINAL_NATIVE_PINS = {",
+      "before": "ORIGINAL_NATIVE_PINS = {",
+      "count": 1
+    },
+    {
+      "after": "for role, expected in ((\"originalAdapter\", ORIGINAL_ADAPTER_SHA256), (\"warmAdapter\", WARM_ADAPTER_SHA256),\n                           (\"foreground\", FOREGROUND_SHA256)):",
+      "before": "for role, expected in ((\"originalAdapter\", ORIGINAL_ADAPTER_SHA256), (\"warmAdapter\", WARM_ADAPTER_SHA256)):",
+      "count": 1
+    },
+    {
+      "after": "(\"stager\", STAGER_SHA256), (\"foregroundCustody\", FOREGROUND_CUSTODY_SHA256)):",
+      "before": "(\"stager\", STAGER_SHA256), (\"supervisor\", ORIGINAL_SUPERVISOR_SHA256)):",
+      "count": 1
+    },
+    {
+      "after": "def foreground_context(plan, root_admission, owner, gate, root, build, build_ref):\n    \"\"\"Join the actual foreground producer and both full inverses; no process probe.\"\"\"\n    launch_ref = plan[\"foregroundLaunch\"]\n    launch = gate.json_ref(launch_ref)\n    exit_ref = plan[\"producerExit\"]\n    exit_record = gate.json_ref(exit_ref)\n    output = canonical(exit_record[\"outputRoot\"], directory=True)\n    normalized = lambda value: {key: value[key] for key in (\"path\", \"sha256\")}\n    require(exit_record[\"schema\"] == \"pinkha-original-warm-build-whole-budget-receipt-v1\"\n            and exit_record[\"status\"] == \"PASS_ORIGINAL_APP_AND_STAGE1_BUILD_WITHIN_WHOLE_BUDGET_NOT_ACCEPTANCE\"\n            and exit_record[\"sourceCommit\"] == plan[\"appSourceSHA\"]\n            and exit_record[\"buildRoot\"] == str(root)\n            and normalized(exit_record[\"plan\"]) == launch_ref\n            and normalized(exit_record[\"controller\"]) == plan[\"producerControls\"][\"foreground\"]\n            and normalized(exit_record[\"custodyHelper\"]) == plan[\"producerControls\"][\"foregroundCustody\"]\n            and normalized(exit_record[\"buildAdmission\"]) == plan[\"buildAdmission\"]\n            and exit_record[\"originalExitCode\"] == 0 and exit_record[\"producerInvocationCount\"] == 1\n            and exit_record[\"firstFailure\"] is None and exit_record[\"secondaryErrors\"] == []\n            and exit_record[\"allKnownGroupsClosed\"] is True\n            and exit_record[\"allDirectProducerGroupsClosed\"] is True\n            and exit_record[\"commandCustodyBlocked\"] is False\n            and exit_record[\"workAdmissionClosed\"] is True\n            and exit_record[\"withinWholeOperationBudget\"] is True and exit_record[\"alarmFired\"] is False\n            and exit_record[\"compilerPhasesStarted\"] == [\"app\", \"ui\"]\n            and exit_record[\"nativeBuilds\"] == exit_record[\"testsExecuted\"] == 0\n            and exit_record[\"runtimeActivation\"] is False and exit_record[\"readyForRuntime\"] is False\n            and exit_record[\"historicalProcessProbes\"] == 0\n            and (exit_record[\"activeWorkBudgetSeconds\"], exit_record[\"foregroundOperationBudgetSeconds\"],\n                 exit_record[\"outerLauncherMaximumSeconds\"]) == (3000, 3300, 3600)\n            and exit_record[\"requiredAppAdmissionBytes\"] == 9126805504 and exit_record[\"jobs\"] == 4,\n            \"Actual foreground App/Stage1 terminal success and original custody are required\")\n    require(launch[\"schema\"] == \"pinkha-original-warm-build-whole-budget-launch-v1\"\n            and launch[\"readyForBuild\"] is True and launch[\"runtimeActivation\"] is False\n            and launch[\"readyForRuntime\"] is False and launch[\"sourceCommit\"] == plan[\"appSourceSHA\"]\n            and launch[\"outputRoot\"] == str(output) and Path(exit_ref[\"path\"]) == output / \"receipt.json\"\n            and output.parent == owner[\"foreground\"].CONTROL_ROOT\n            and re.fullmatch(\"whole-app-build-[a-z0-9-]+\", output.name)\n            and launch[\"maximumInvocations\"] == 1\n            and launch[\"requiredAppAdmissionBytes\"] == 9126805504\n            and (launch[\"selectedNativeSourceCount\"], launch[\"selectedUISourceCount\"]) == (62, 10)\n            and normalized(launch[\"buildAdmission\"]) == plan[\"buildAdmission\"]\n            and launch[\"originalControls\"] == exit_record[\"originalControls\"]\n            and launch[\"rootWindow\"] == exit_record[\"rootWindow\"],\n            \"Exact current foreground launch contract differs\")\n    window = gate.json_ref(normalized(launch[\"rootWindow\"]))\n    require(window[\"schema\"] == \"pinkha-root-warm-app-build-window-v1\"\n            and window[\"sourceCommit\"] == plan[\"appSourceSHA\"] and window[\"readyForBuild\"] is True\n            and window[\"runtimeActivation\"] is False and window[\"maximumInvocations\"] == 1\n            and (window[\"activeWorkBudgetSeconds\"], window[\"foregroundOperationBudgetSeconds\"],\n                 window[\"outerLauncherMaximumSeconds\"]) == (3000, 3300, 3600),\n            \"Actual finite foreground build window differs\")\n    for role, key in ((\"warmAdapter\", \"warm\"), (\"originalAdapter\", \"adapter\"), (\"originalProducer\", \"producer\")):\n        require(normalized(launch[\"originalControls\"][key]) == plan[\"producerControls\"][role],\n                \"Foreground control ancestry differs: \" + role)\n    for reference in launch[\"originalControls\"].values():\n        pinned(normalized(reference))\n    original = pinned(plan[\"producerControls\"][\"originalProducer\"], ORIGINAL_PRODUCER_SHA256)\n    expanded, inverse = owner[\"warmAdapter\"].expand(original.read_text(), root_admission,\n        Path(plan[\"buildAdmission\"][\"path\"]), plan[\"buildAdmission\"][\"sha256\"],\n        owner[\"originalAdapter\"], WARM_ADAPTER_SHA256)\n    derived, foreground_inverse = owner[\"foreground\"].project_producer(expanded, original.read_text())\n    producer = pinned(plan[\"executedProducer\"])\n    require(producer == output / \"foreground-original-producer.py\"\n            and producer.read_text() == derived and sha(producer) == build[\"controllerSHA256\"]\n            and normalized(exit_record[\"foregroundProducer\"]) == plan[\"executedProducer\"]\n            and normalized(exit_record[\"originalProducerInverse\"]) == plan[\"producerInverse\"]\n            and normalized(exit_record[\"foregroundInverse\"]) == plan[\"foregroundInverse\"]\n            and gate.json_ref(plan[\"producerInverse\"]) == inverse\n            and gate.json_ref(plan[\"foregroundInverse\"]) == foreground_inverse,\n            \"Actual foreground producer or either complete original inverse differs\")\n    expanded_ref = normalized(exit_record[\"originalExpandedProducer\"])\n    require(Path(expanded_ref[\"path\"]) == output / \"root-approved-original-producer.py\"\n            and pinned(expanded_ref).read_text() == expanded,\n            \"The complete original warm expansion differs\")\n    terminal = exit_record[\"originalTerminalEvidence\"]\n    require(normalized(terminal[\"producer\"]) == build_ref\n            and [Path(row[\"path\"]) for row in terminal[\"phases\"]]\n                == [root / \"build16\" / role / \"result.json\" for role in (\"app\", \"ui\")]\n            and [normalized(row) for row in terminal[\"compilerProofs\"]]\n                == [normalized(build[key]) for key in (\"nativeCompilationProof\", \"uiCompilationProof\")]\n            and normalized(terminal[\"completeProducts\"]) == normalized(build[\"completeProductsInventory\"]),\n            \"Actual foreground source/compiler/product evidence differs\")\n    for role, reference in zip((\"app\", \"ui\"), terminal[\"phases\"], strict=True):\n        require(gate.json_ref(normalized(reference)) == build[role],\n                \"Actual foreground phase receipt differs from original producer\")\n    for reference in terminal[\"compilerProofs\"] + [terminal[\"completeProducts\"]]:\n        gate.read_ref(normalized(reference))\n    before, after = terminal[\"sourceBefore\"], terminal[\"sourceAfter\"]\n    require(Path(before[\"path\"]) == root / \"build16/source-before.json\"\n            and Path(after[\"path\"]) == root / \"build16/source-after.json\"\n            and before[\"sha256\"] == build[\"sourceBeforeSHA256\"]\n            and after[\"sha256\"] == build[\"sourceAfterSHA256\"]\n            and gate.read_ref(normalized(before)) == gate.read_ref(normalized(after)),\n            \"Actual foreground source before/after custody differs\")\n    observations = terminal[\"originalPhaseObservations\"]\n    require(len(observations) == 2, \"Both actual original phase observations are required\")\n    phases = set()\n    for reference in observations:\n        value = gate.json_ref(normalized(reference))\n        require(value[\"status\"] == \"PASS_COMPLETE_OBSERVATION_AND_PHASE_PREDICATES\"\n                and value[\"allKnownGroupsClosed\"] is True and value[\"firstFailure\"] is None\n                and value[\"secondaryErrors\"] == [], \"A foreground phase observation is not positively closed\")\n        phases.add(value[\"phase\"])\n    require(phases == {\"build-cache-writer\", \"build-resource\"}, \"Original phase-observation scope differs\")\n    index_ref = normalized(exit_record[\"ownedCommandIndex\"])\n    require(Path(index_ref[\"path\"]) == output / \"owned-producer-command-index.json\",\n            \"Actual owned command index must belong to the foreground invocation\")\n    index = gate.json_ref(index_ref)\n    require(index[\"schema\"] == \"pinkha-warm-build-owned-command-index-v1\"\n            and index[\"allDirectProducerGroupsClosed\"] is True and index[\"firstFailure\"] is None\n            and index[\"historicalProcessProbes\"] == 0 and index[\"commands\"],\n            \"Actual foreground direct command closure is incomplete\")\n    for row in index[\"commands\"]:\n        require(type(row[\"pid\"]) is int and row[\"pid\"] > 1 and row[\"exitCode\"] == 0\n                and row[\"ownedGroup\"] == \"ABSENT_ESRCH\"\n                and row[\"status\"] in (\"PASS_COMMAND\", \"PASS_BUILD_EXIT_0\"),\n                \"An actual foreground command is not positively closed\")\n        value = gate.json_ref(normalized(row[\"result\"]))\n        gate.read_ref(normalized(row[\"processExit\"]))\n        require(value[\"pid\"] == row[\"pid\"] == value[\"pgid\"] and value[\"exitCode\"] == 0\n                and value[\"status\"] == row[\"status\"] and value[\"ownedProcessGroup\"] == \"ABSENT_ESRCH\"\n                and value[\"cleanupErrors\"] == value[\"termination\"] == []\n                and value[\"firstFailure\"] is None\n                and value[\"processExitReceiptSHA256\"] == row[\"processExit\"][\"sha256\"],\n                \"Original foreground command result/exit evidence differs\")\n    return {\"producer\": producer, \"foregroundReceipt\": exit_ref,\n            \"foregroundLaunch\": launch_ref, \"ownedCommandIndex\": index_ref,\n            \"historicalGroupsReprobed\": False}\n\n\ndef producer_context(args, plan, originals, owner):",
+      "before": "def producer_context(args, plan, originals, owner):",
+      "count": 1
+    },
+    {
+      "after": "\"Actual a72-forward source/admission lineage differs\"",
+      "before": "\"Actual f7ff/80c9 source/admission lineage differs\"",
+      "count": 1
+    },
+    {
+      "after": "    require(stage[\"priorForwardStage\"] == cache[\"priorForwardStage\"]\n            == root_admission[\"forwardWarm\"][\"priorForwardStage\"], \"Exact prior a72 stage chain differs\")\n    owner[\"warmAdapter\"].wr_prior_forward(root_admission[\"forwardWarm\"][\"priorForwardStage\"])\n    baseline_ref = root_admission[\"forwardWarm\"][\"currentBaselinePreservation\"]",
+      "before": "    baseline_ref = root_admission[\"forwardWarm\"][\"currentBaselinePreservation\"]",
+      "count": 1
+    },
+    {
+      "after": "\"Actual a72 baseline retention chain differs\"",
+      "before": "\"Original8f2 retention chain differs\"",
+      "count": 1
+    },
+    {
+      "after": "and baseline[\"sourceCommit\"] == \"a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd\"",
+      "before": "and baseline[\"sourceCommit\"] == \"8f2c11713fb8a40ae13444104723666ffef68afe\"",
+      "count": 1
+    },
+    {
+      "after": "\"The actual a72 staged checkpoint was not retained\"",
+      "before": "\"Original clean8f2 checkpoint was not retained\"",
+      "count": 1
+    },
+    {
+      "after": "    foreground = foreground_context(plan, root_admission, owner, gate, root, build, build_ref)\n    producer = foreground[\"producer\"]\n",
+      "before": "    producer = pinned(plan[\"executedProducer\"])\n    original = pinned(plan[\"producerControls\"][\"originalProducer\"], ORIGINAL_PRODUCER_SHA256)\n    expanded, inverse = owner[\"warmAdapter\"].expand(original.read_text(), root_admission, Path(root_ref[\"path\"]),\n        root_ref[\"sha256\"], owner[\"originalAdapter\"], WARM_ADAPTER_SHA256)\n    require(producer.is_relative_to(root) and producer.read_text() == expanded\n            and sha(producer) == build[\"controllerSHA256\"]\n            and gate.json_ref(plan[\"producerInverse\"]) == inverse,\n            \"Executed original204f expansion or complete byte inverse differs\")\n    exit_record = gate.json_ref(plan[\"producerExit\"])\n    require(exit_record[\"schema\"] == \"pinkha-root-supervised-dispatch-v1\"\n            and exit_record[\"status\"] == \"ADAPTER_EXIT_0\" and exit_record[\"exitCode\"] == 0\n            and exit_record[\"sourceCommit\"] == plan[\"appSourceSHA\"]\n            and exit_record[\"supervisorSHA256\"] == ORIGINAL_SUPERVISOR_SHA256\n            and exit_record[\"executedProducerMatchesReviewedPreview\"] is True\n            and {key: exit_record[\"actualProducer\"][key] for key in (\"path\", \"sha256\")} == ref(producer)\n            and {key: exit_record[\"producerReceipt\"][key] for key in (\"path\", \"sha256\")} == build_ref,\n            \"Original root supervisor has not recorded this actual producer's terminal success\")\n",
+      "count": 1
+    },
+    {
+      "after": "\"originalPackageState\": cache[\"packageState\"], \"foregroundBuild\": foreground}",
+      "before": "\"originalPackageState\": cache[\"packageState\"]}",
+      "count": 1
+    }
+  ],
+  "wholeOriginalRestored": true
+}

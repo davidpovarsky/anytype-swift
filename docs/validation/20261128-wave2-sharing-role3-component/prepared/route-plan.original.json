@@ -1,0 +1,114 @@
+{
+  "schema": "pinkha.sharing-role3.oracle-route-proposal.v1",
+  "status": "SOURCE_READY_RUNTIME_NOT_ADMITTED",
+  "inputManifest": {
+    "bytes": 4893,
+    "sha256": "b3d739b25605697acbf41a4ce97cd7dc0e9f125acc25e9cb774eaadab610dd66",
+    "packageFiles": 8,
+    "packageBytes": 56729
+  },
+  "testSource": {
+    "path": "Modules/PinkhaSharing/Tests/PinkhaSharingTests/SharingAuthorityTests.swift",
+    "bytes": 11211,
+    "sha256": "e11a832e3f8f39bf05f821e420a90f67b883be2164630320bf793eba43d3f336",
+    "original5693BytePrefixExact": true
+  },
+  "selection": {
+    "framework": "XCTest",
+    "target": "PinkhaSharingTests",
+    "class": "SharingAuthorityTests",
+    "methods": [
+      "testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets",
+      "testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval",
+      "testPerMemberRoleOptionsRejectMalformedEntries"
+    ],
+    "expectedNewMethods": 3,
+    "oldAuthorityMethodsUnselected": 4,
+    "oldPresentationMethodsUnselected": 5,
+    "sourceDeclaredPackageTotal": 12,
+    "compiledDiscovery": "PENDING_ACTUAL_COMPILER_AND_XCTEST_EVIDENCE",
+    "filter": "^PinkhaSharingTests\\.SharingAuthorityTests/(?:testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets|testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval|testPerMemberRoleOptionsRejectMalformedEntries)$"
+  },
+  "commandProposal": {
+    "argv": [
+      "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift",
+      "test",
+      "--package-path",
+      "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package",
+      "--scratch-path",
+      "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/build",
+      "--cache-path",
+      "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/cache",
+      "--jobs",
+      "2",
+      "--enable-xctest",
+      "--disable-swift-testing",
+      "--filter",
+      "^PinkhaSharingTests\\.SharingAuthorityTests/(?:testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets|testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval|testPerMemberRoleOptionsRejectMalformedEntries)$",
+      "-v"
+    ],
+    "cwd": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128",
+    "envOverrides": {
+      "PWD": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128",
+      "TMPDIR": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/tmp",
+      "XDG_CACHE_HOME": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/xdg-cache",
+      "XDG_CONFIG_HOME": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/xdg-config",
+      "XDG_DATA_HOME": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/xdg-data"
+    },
+    "rootCreated": false,
+    "globalCacheOrHOMEChange": false
+  },
+  "toolchain": {
+    "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift",
+    "version": "6.4.3",
+    "versionLogSHA256": "59360730c588801a672c1118d5d1debc93581f6b74e6a82d5d8cbda1b4a729ce",
+    "authority": "Root supplied current C159runtime3 retained metadata; no executable/version process was invoked here."
+  },
+  "ownedLifecycle": {
+    "path": "/mnt/development/projects/evidence/pinkha-original-catalog-native1-20261127/runtime-prepared3/owned_swift_commands_original.py",
+    "bytes": 9527,
+    "sha256": "f9de18c0fdc879ff916ba34e9afa0da9d6b91444eebfa1e5a8d6a50d3523ca56",
+    "fullSourceReadAndHashed": true,
+    "reuseUnchanged": true,
+    "entry": "run(folder, argv, cwd, env, timeout, observe, save, digest, ledger, statistics=None)",
+    "requiredNormalOutcome": "exitCode == 0; processGroupAbsent == true; forcedCleanup == false; no original/cleanup/retention errors; retain original combined log and result. A closed group is never queried again."
+  },
+  "resourceProposal": {
+    "childDeadlineSeconds": 300,
+    "outerEnvelopeSeconds": 360,
+    "jobs": 2,
+    "ownedAllocationCapBytes": 268435456,
+    "sourceLogicalBytesMeasured": 56729,
+    "actualBuildPeakBytes": null,
+    "actualDurationSeconds": null,
+    "capacityFloors": "Reuse the current Root/W1-approved observe callback thresholds unchanged. This source assessment adds no new floor or runtime grant.",
+    "scope": "All package/scratch/cache/XDG/tmp/log outputs remain in one new owned namespace; no reused mutable build outputs or global cache change.",
+    "qualificationCaution": "Preserve the already known SwiftPM private XDG cache alias handling if the existing observer uses a physical allocation census; do not reintroduce blanket symlink refusal."
+  },
+  "sourceFindings": [
+    "Original Package.swift has no dependencies clause, local/external packages, linker/system-library targets or conditional source target substitutions. Both original targets and Resources processing remain unchanged.",
+    "All3 production Swift bodies and both complete test files are retained, with the2 original localization resources. No declaration extraction, substitute protocol, shadow implementation or Native package build is needed.",
+    "PinkhaSpaceMembersView imports SwiftUI and defines its views only under canImport(SwiftUI); its Foundation/Observation model remains compiled on Linux. The ordinary Foundation model/account owner and complete XCTest files are platform-neutral at source level; actual Swift6.4.3 typecheck remains pending.",
+    "The3 new synchronous XCTest methods exercise the genuine Shared capabilities/snapshot/mutation validator. The separate2 NativeApplication methods and native role projection/service are outside this package route.",
+    "No real account, invitation, network provider, Native framework, Apple SDK or external package download is required by the selected methods."
+  ],
+  "requiredActualEvidence": [
+    "Full8 input hashes before and after; immutable original5,693-byte authority prefix retained.",
+    "Verbose actual compiler/link and generated resource/test-discovery/entrypoint witnesses for this complete package; no assumed old build-product layout.",
+    "Exactly the3 fully qualified new XCTest case pass events and summary3/0; reject missing, skipped, duplicate or any of the9 unselected old method executions.",
+    "Positive normal closure from the unchanged owned helper, original logs/results and actual resource observations."
+  ],
+  "remainingBeforeExecution": [
+    "Root/peer approve a finite caller binding this manifest, argv, strict result/source checks and unchanged resource observer; no caller has been authored here.",
+    "Root/W1 coordinate the actual window and fresh capacity using current thresholds; no lease or grant is claimed.",
+    "Record the exact eventual source-publication commit or explicitly retain frozen-unpublished input provenance; do not silently treat candidate bytes as original6ade."
+  ],
+  "limits": {
+    "hostProcessOrProbeCalls": 0,
+    "scriptsOrCompilerOrTestsRun": 0,
+    "hostWritesOrUploads": 0,
+    "gitOrSourceMutations": 0,
+    "nativeAccountOrPermissionAcceptance": "NOT_RUN",
+    "appleSwiftUIAccessibilityAcceptance": "NOT_RUN"
+  }
+}

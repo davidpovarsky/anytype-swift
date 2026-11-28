@@ -1,0 +1,949 @@
+{
+  "schema": "pinkha.sharing-role3.one-command-result.v1",
+  "status": "SELECTED_THREE_PASSED_WITH_CAPTURED_COMPILER_EVIDENCE",
+  "componentAcceptance": "PENDING_INDEPENDENT_COMPILER_EVIDENCE_REVIEW",
+  "coordinationStory": "1220965335914684",
+  "sourceInputManifestSHA256": "b3d739b25605697acbf41a4ce97cd7dc0e9f125acc25e9cb774eaadab610dd66",
+  "inputBefore": [
+    {
+      "path": "Package.swift",
+      "bytes": 436,
+      "sha256": "7ba971ad0048edf17e458aa9b7a32b904f9729fed36a58e745f329840f5c26aa",
+      "device": 2064,
+      "inode": 922559,
+      "mode": 420,
+      "uid": 0,
+      "gid": 1002,
+      "mtimeNs": 1795841798552434468
+    },
+    {
+      "path": "Sources/PinkhaSharing/PinkhaSharingAccountOwner.swift",
+      "bytes": 3146,
+      "sha256": "1d6ee98ff39296e564e8440ef494acfde8a94969811230e628c814550a139e36",
+      "device": 2064,
+      "inode": 922562,
+      "mode": 420,
+      "uid": 0,
+      "gid": 1002,
+      "mtimeNs": 1795841810070302081
+    },
+    {
+      "path": "Sources/PinkhaSharing/PinkhaSpaceMembersView.swift",
+      "bytes": 18333,
+      "sha256": "fc7d5e41a2f79dc452d269e0412a4f01330e3a8ccf7cd96d20ce14eee3eed525",
+      "device": 2064,
+      "inode": 922566,
+      "mode": 420,
+      "uid": 0,
+      "gid": 1002,
+      "mtimeNs": 1795841820681482445
+    },
+    {
+      "path": "Sources/PinkhaSharing/PinkhaSpaceSharing.swift",
+      "bytes": 9079,
+      "sha256": "32b76990f19402c2975c751273d3aae87c579d8103339ace14a49d835a8ff028",
+      "device": 2064,
+      "inode": 922567,
+      "mode": 420,
+      "uid": 0,
+      "gid": 1002,
+      "mtimeNs": 1795841832214398148
+    },
+    {
+      "path": "Sources/PinkhaSharing/Resources/en.lproj/Localizable.strings",
+      "bytes": 2698,
+      "sha256": "2822ac8575239de0a3c0891d32db6d6b4ca696979e05068e1fb92c160a787080",
+      "device": 2064,
+      "inode": 922580,
+      "mode": 420,
+      "uid": 0,
+      "gid": 1002,
+      "mtimeNs": 1795841913456069294
+    },
+    {
+      "path": "Sources/PinkhaSharing/Resources/he.lproj/Localizable.strings",
+      "bytes": 3109,
+      "sha256": "a436ea24dccdf4da1ddb5a54fbc495cd2d60dab633484b41d4b88dec1a032dc9",
+      "device": 2064,
+      "inode": 922582,
+      "mode": 420,
+      "uid": 0,
+      "gid": 1002,
+      "mtimeNs": 1795841923973061841
+    },
+    {
+      "path": "Tests/PinkhaSharingTests/SharingAuthorityTests.swift",
+      "bytes": 11211,
+      "sha256": "e11a832e3f8f39bf05f821e420a90f67b883be2164630320bf793eba43d3f336",
+      "device": 2064,
+      "inode": 922585,
+      "mode": 420,
+      "uid": 0,
+      "gid": 1002,
+      "mtimeNs": 1795841933519312206
+    },
+    {
+      "path": "Tests/PinkhaSharingTests/SharingPresentationTests.swift",
+      "bytes": 8717,
+      "sha256": "1e69732154269558df7514e4f5996bc3e8294c1c5940a772f67e0a1d6f77fa1d",
+      "device": 2064,
+      "inode": 922586,
+      "mode": 420,
+      "uid": 0,
+      "gid": 1002,
+      "mtimeNs": 1795841947152486801
+    }
+  ],
+  "admissionParameters": {
+    "execute": true,
+    "coordination_story": "1220965335914684",
+    "expected_controller_sha256": "3ec0fd8ac7ae23a4c20e7a315c1b2ec83038dbfec98fc9f46b4ffcd6b7dab80e",
+    "root_live_floor_bytes": 2147483648,
+    "development_live_floor_bytes": 536870912,
+    "root_admission_reserve_bytes": 134217728,
+    "development_admission_reserve_bytes": 33554432,
+    "initial_memory_available_bytes": 3221225472,
+    "maximum_observation_interval_seconds": 1.0
+  },
+  "ownedOutputCapBytes": 268435456,
+  "childDeadlineSeconds": 300,
+  "outerEnvelopeSeconds": 360,
+  "peakAllocationUnmeasuredBeforeExecution": true,
+  "commands": [
+    {
+      "argv": [
+        "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift",
+        "test",
+        "--package-path",
+        "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package",
+        "--scratch-path",
+        "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build",
+        "--cache-path",
+        "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/cache",
+        "--config-path",
+        "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/config",
+        "--security-path",
+        "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/security",
+        "--manifest-cache",
+        "local",
+        "--jobs",
+        "2",
+        "--enable-xctest",
+        "--disable-swift-testing",
+        "--filter",
+        "^PinkhaSharingTests\\.SharingAuthorityTests/(?:testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets|testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval|testPerMemberRoleOptionsRejectMalformedEntries)$",
+        "-v"
+      ],
+      "cwd": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128",
+      "exitCode": 0,
+      "stopReason": null,
+      "processGroupAbsent": true,
+      "forcedCleanup": false,
+      "signals": [],
+      "cleanupErrors": [],
+      "unreapedLeaderDuringGroupCleanup": true,
+      "pid": 3731667,
+      "pgid": 3731667,
+      "absenceObservedAtSeconds": 15.556876501068473,
+      "seconds": 15.556878461502492,
+      "logSHA256": "f954b3856d9e8ec80618b3d03073ea1789f9209a025587049e9d46048bca2673"
+    }
+  ],
+  "resourceSamples": [
+    {
+      "atUnixSeconds": 1795844554.2173164,
+      "elapsedSeconds": 2.400018274784088e-06,
+      "rootFreeBytes": 2314649600,
+      "developmentFreeBytes": 1351606272,
+      "memoryAvailableBytes": 4244631552,
+      "ownedAllocatedBytes": 4096
+    },
+    {
+      "atUnixSeconds": 1795844554.3048067,
+      "elapsedSeconds": 0.08749246317893267,
+      "rootFreeBytes": 2314649600,
+      "developmentFreeBytes": 1351561216,
+      "memoryAvailableBytes": 4219072512,
+      "ownedAllocatedBytes": 49152
+    },
+    {
+      "atUnixSeconds": 1795844554.311807,
+      "elapsedSeconds": 0.0944931423291564,
+      "rootFreeBytes": 2314649600,
+      "developmentFreeBytes": 1351557120,
+      "memoryAvailableBytes": 4219097088,
+      "ownedAllocatedBytes": 53248
+    },
+    {
+      "atUnixSeconds": 1795844554.5138183,
+      "elapsedSeconds": 0.2965039433911443,
+      "rootFreeBytes": 2314649600,
+      "developmentFreeBytes": 1351557120,
+      "memoryAvailableBytes": 4250984448,
+      "ownedAllocatedBytes": 53248
+    },
+    {
+      "atUnixSeconds": 1795844554.7145991,
+      "elapsedSeconds": 0.49728461634367704,
+      "rootFreeBytes": 2314649600,
+      "developmentFreeBytes": 1351553024,
+      "memoryAvailableBytes": 4245405696,
+      "ownedAllocatedBytes": 57344
+    },
+    {
+      "atUnixSeconds": 1795844554.9155214,
+      "elapsedSeconds": 0.6982066119089723,
+      "rootFreeBytes": 2314649600,
+      "developmentFreeBytes": 1351553024,
+      "memoryAvailableBytes": 4243218432,
+      "ownedAllocatedBytes": 57344
+    },
+    {
+      "atUnixSeconds": 1795844555.1164331,
+      "elapsedSeconds": 0.8991187261417508,
+      "rootFreeBytes": 2314645504,
+      "developmentFreeBytes": 1351536640,
+      "memoryAvailableBytes": 4232773632,
+      "ownedAllocatedBytes": 73728
+    },
+    {
+      "atUnixSeconds": 1795844555.3177676,
+      "elapsedSeconds": 1.1004528431221843,
+      "rootFreeBytes": 2314645504,
+      "developmentFreeBytes": 1351499776,
+      "memoryAvailableBytes": 4230959104,
+      "ownedAllocatedBytes": 110592
+    },
+    {
+      "atUnixSeconds": 1795844555.519368,
+      "elapsedSeconds": 1.3020530408248305,
+      "rootFreeBytes": 2314641408,
+      "developmentFreeBytes": 1351499776,
+      "memoryAvailableBytes": 4229574656,
+      "ownedAllocatedBytes": 110592
+    },
+    {
+      "atUnixSeconds": 1795844555.7214696,
+      "elapsedSeconds": 1.5041548814624548,
+      "rootFreeBytes": 2314641408,
+      "developmentFreeBytes": 1351499776,
+      "memoryAvailableBytes": 4228493312,
+      "ownedAllocatedBytes": 110592
+    },
+    {
+      "atUnixSeconds": 1795844555.9245956,
+      "elapsedSeconds": 1.7072811285033822,
+      "rootFreeBytes": 2314637312,
+      "developmentFreeBytes": 1351421952,
+      "memoryAvailableBytes": 4221796352,
+      "ownedAllocatedBytes": 188416
+    },
+    {
+      "atUnixSeconds": 1795844556.1266036,
+      "elapsedSeconds": 1.909288490191102,
+      "rootFreeBytes": 2314637312,
+      "developmentFreeBytes": 1351213056,
+      "memoryAvailableBytes": 4210655232,
+      "ownedAllocatedBytes": 397312
+    },
+    {
+      "atUnixSeconds": 1795844556.3306112,
+      "elapsedSeconds": 2.113296501338482,
+      "rootFreeBytes": 2314637312,
+      "developmentFreeBytes": 1351188480,
+      "memoryAvailableBytes": 4067098624,
+      "ownedAllocatedBytes": 421888
+    },
+    {
+      "atUnixSeconds": 1795844556.5387409,
+      "elapsedSeconds": 2.321426337584853,
+      "rootFreeBytes": 2314637312,
+      "developmentFreeBytes": 1351225344,
+      "memoryAvailableBytes": 4081287168,
+      "ownedAllocatedBytes": 409600
+    },
+    {
+      "atUnixSeconds": 1795844556.7445064,
+      "elapsedSeconds": 2.5271919202059507,
+      "rootFreeBytes": 2314637312,
+      "developmentFreeBytes": 1351188480,
+      "memoryAvailableBytes": 4071579648,
+      "ownedAllocatedBytes": 425984
+    },
+    {
+      "atUnixSeconds": 1795844556.9504204,
+      "elapsedSeconds": 2.7331056632101536,
+      "rootFreeBytes": 2314620928,
+      "developmentFreeBytes": 1351184384,
+      "memoryAvailableBytes": 4071583744,
+      "ownedAllocatedBytes": 425984
+    },
+    {
+      "atUnixSeconds": 1795844557.1522403,
+      "elapsedSeconds": 2.9349259017035365,
+      "rootFreeBytes": 2314616832,
+      "developmentFreeBytes": 1351184384,
+      "memoryAvailableBytes": 4070408192,
+      "ownedAllocatedBytes": 425984
+    },
+    {
+      "atUnixSeconds": 1795844557.3545997,
+      "elapsedSeconds": 3.137285305187106,
+      "rootFreeBytes": 2314616832,
+      "developmentFreeBytes": 1351176192,
+      "memoryAvailableBytes": 4064882688,
+      "ownedAllocatedBytes": 434176
+    },
+    {
+      "atUnixSeconds": 1795844557.5565116,
+      "elapsedSeconds": 3.339197425171733,
+      "rootFreeBytes": 2314616832,
+      "developmentFreeBytes": 1350909952,
+      "memoryAvailableBytes": 4059238400,
+      "ownedAllocatedBytes": 700416
+    },
+    {
+      "atUnixSeconds": 1795844557.760546,
+      "elapsedSeconds": 3.5432311967015266,
+      "rootFreeBytes": 2314616832,
+      "developmentFreeBytes": 1349685248,
+      "memoryAvailableBytes": 4046131200,
+      "ownedAllocatedBytes": 1925120
+    },
+    {
+      "atUnixSeconds": 1795844557.9655273,
+      "elapsedSeconds": 3.748212174512446,
+      "rootFreeBytes": 2314616832,
+      "developmentFreeBytes": 1348857856,
+      "memoryAvailableBytes": 4031049728,
+      "ownedAllocatedBytes": 2752512
+    },
+    {
+      "atUnixSeconds": 1795844558.1719391,
+      "elapsedSeconds": 3.954623960889876,
+      "rootFreeBytes": 2314616832,
+      "developmentFreeBytes": 1348857856,
+      "memoryAvailableBytes": 4032122880,
+      "ownedAllocatedBytes": 2752512
+    },
+    {
+      "atUnixSeconds": 1795844558.380253,
+      "elapsedSeconds": 4.162938318215311,
+      "rootFreeBytes": 2314616832,
+      "developmentFreeBytes": 1345482752,
+      "memoryAvailableBytes": 4008112128,
+      "ownedAllocatedBytes": 6127616
+    },
+    {
+      "atUnixSeconds": 1795844558.5849595,
+      "elapsedSeconds": 4.367645014077425,
+      "rootFreeBytes": 2314616832,
+      "developmentFreeBytes": 1345482752,
+      "memoryAvailableBytes": 4011085824,
+      "ownedAllocatedBytes": 6127616
+    },
+    {
+      "atUnixSeconds": 1795844558.7897098,
+      "elapsedSeconds": 4.572395229712129,
+      "rootFreeBytes": 2314608640,
+      "developmentFreeBytes": 1345482752,
+      "memoryAvailableBytes": 3999342592,
+      "ownedAllocatedBytes": 6127616
+    },
+    {
+      "atUnixSeconds": 1795844558.9946847,
+      "elapsedSeconds": 4.777369608171284,
+      "rootFreeBytes": 2314604544,
+      "developmentFreeBytes": 1345482752,
+      "memoryAvailableBytes": 3995119616,
+      "ownedAllocatedBytes": 6127616
+    },
+    {
+      "atUnixSeconds": 1795844559.2043931,
+      "elapsedSeconds": 4.987078772857785,
+      "rootFreeBytes": 2314604544,
+      "developmentFreeBytes": 1345482752,
+      "memoryAvailableBytes": 3995176960,
+      "ownedAllocatedBytes": 6127616
+    },
+    {
+      "atUnixSeconds": 1795844559.4090748,
+      "elapsedSeconds": 5.191759828478098,
+      "rootFreeBytes": 2314604544,
+      "developmentFreeBytes": 1345482752,
+      "memoryAvailableBytes": 3995176960,
+      "ownedAllocatedBytes": 6127616
+    },
+    {
+      "atUnixSeconds": 1795844559.61411,
+      "elapsedSeconds": 5.396794926375151,
+      "rootFreeBytes": 2314604544,
+      "developmentFreeBytes": 1334415360,
+      "memoryAvailableBytes": 4088233984,
+      "ownedAllocatedBytes": 17195008
+    },
+    {
+      "atUnixSeconds": 1795844559.8190181,
+      "elapsedSeconds": 5.601703584194183,
+      "rootFreeBytes": 2314604544,
+      "developmentFreeBytes": 1332084736,
+      "memoryAvailableBytes": 4078297088,
+      "ownedAllocatedBytes": 19525632
+    },
+    {
+      "atUnixSeconds": 1795844560.0236034,
+      "elapsedSeconds": 5.806288519874215,
+      "rootFreeBytes": 2314604544,
+      "developmentFreeBytes": 1332084736,
+      "memoryAvailableBytes": 4069445632,
+      "ownedAllocatedBytes": 19525632
+    },
+    {
+      "atUnixSeconds": 1795844560.229604,
+      "elapsedSeconds": 6.012289462611079,
+      "rootFreeBytes": 2314604544,
+      "developmentFreeBytes": 1332047872,
+      "memoryAvailableBytes": 4059779072,
+      "ownedAllocatedBytes": 19562496
+    },
+    {
+      "atUnixSeconds": 1795844560.439076,
+      "elapsedSeconds": 6.221761026419699,
+      "rootFreeBytes": 2314604544,
+      "developmentFreeBytes": 1331736576,
+      "memoryAvailableBytes": 4109475840,
+      "ownedAllocatedBytes": 19873792
+    },
+    {
+      "atUnixSeconds": 1795844560.6445968,
+      "elapsedSeconds": 6.427282286807895,
+      "rootFreeBytes": 2314600448,
+      "developmentFreeBytes": 1331736576,
+      "memoryAvailableBytes": 4089593856,
+      "ownedAllocatedBytes": 19873792
+    },
+    {
+      "atUnixSeconds": 1795844560.8534205,
+      "elapsedSeconds": 6.636105646379292,
+      "rootFreeBytes": 2314600448,
+      "developmentFreeBytes": 1331736576,
+      "memoryAvailableBytes": 4072292352,
+      "ownedAllocatedBytes": 19873792
+    },
+    {
+      "atUnixSeconds": 1795844561.0649142,
+      "elapsedSeconds": 6.84759946167469,
+      "rootFreeBytes": 2314600448,
+      "developmentFreeBytes": 1331736576,
+      "memoryAvailableBytes": 4060110848,
+      "ownedAllocatedBytes": 19873792
+    },
+    {
+      "atUnixSeconds": 1795844561.2732286,
+      "elapsedSeconds": 7.055913939140737,
+      "rootFreeBytes": 2314600448,
+      "developmentFreeBytes": 1330216960,
+      "memoryAvailableBytes": 4045971456,
+      "ownedAllocatedBytes": 21393408
+    },
+    {
+      "atUnixSeconds": 1795844561.4875162,
+      "elapsedSeconds": 7.27020145021379,
+      "rootFreeBytes": 2314600448,
+      "developmentFreeBytes": 1330003968,
+      "memoryAvailableBytes": 4040040448,
+      "ownedAllocatedBytes": 21606400
+    },
+    {
+      "atUnixSeconds": 1795844561.7046304,
+      "elapsedSeconds": 7.487315817736089,
+      "rootFreeBytes": 2314596352,
+      "developmentFreeBytes": 1329520640,
+      "memoryAvailableBytes": 4030758912,
+      "ownedAllocatedBytes": 22089728
+    },
+    {
+      "atUnixSeconds": 1795844561.911364,
+      "elapsedSeconds": 7.694049405865371,
+      "rootFreeBytes": 2314600448,
+      "developmentFreeBytes": 1329520640,
+      "memoryAvailableBytes": 4022947840,
+      "ownedAllocatedBytes": 22089728
+    },
+    {
+      "atUnixSeconds": 1795844562.1241689,
+      "elapsedSeconds": 7.9068543473258615,
+      "rootFreeBytes": 2314596352,
+      "developmentFreeBytes": 1329520640,
+      "memoryAvailableBytes": 4013805568,
+      "ownedAllocatedBytes": 22089728
+    },
+    {
+      "atUnixSeconds": 1795844562.3308551,
+      "elapsedSeconds": 8.113540335558355,
+      "rootFreeBytes": 2314596352,
+      "developmentFreeBytes": 1329520640,
+      "memoryAvailableBytes": 4013805568,
+      "ownedAllocatedBytes": 22089728
+    },
+    {
+      "atUnixSeconds": 1795844562.5376055,
+      "elapsedSeconds": 8.320291123352945,
+      "rootFreeBytes": 2314596352,
+      "developmentFreeBytes": 1329520640,
+      "memoryAvailableBytes": 3997315072,
+      "ownedAllocatedBytes": 22089728
+    },
+    {
+      "atUnixSeconds": 1795844562.7444952,
+      "elapsedSeconds": 8.527180351316929,
+      "rootFreeBytes": 2314596352,
+      "developmentFreeBytes": 1329520640,
+      "memoryAvailableBytes": 3989909504,
+      "ownedAllocatedBytes": 22089728
+    },
+    {
+      "atUnixSeconds": 1795844562.9513059,
+      "elapsedSeconds": 8.733991460874677,
+      "rootFreeBytes": 2314596352,
+      "developmentFreeBytes": 1329520640,
+      "memoryAvailableBytes": 3987099648,
+      "ownedAllocatedBytes": 22089728
+    },
+    {
+      "atUnixSeconds": 1795844563.1579738,
+      "elapsedSeconds": 8.94065904803574,
+      "rootFreeBytes": 2314596352,
+      "developmentFreeBytes": 1329520640,
+      "memoryAvailableBytes": 3987099648,
+      "ownedAllocatedBytes": 22089728
+    },
+    {
+      "atUnixSeconds": 1795844563.365132,
+      "elapsedSeconds": 9.147817357443273,
+      "rootFreeBytes": 2314596352,
+      "developmentFreeBytes": 1328762880,
+      "memoryAvailableBytes": 3986731008,
+      "ownedAllocatedBytes": 22847488
+    },
+    {
+      "atUnixSeconds": 1795844563.5849013,
+      "elapsedSeconds": 9.36758670117706,
+      "rootFreeBytes": 2314596352,
+      "developmentFreeBytes": 1328635904,
+      "memoryAvailableBytes": 3962634240,
+      "ownedAllocatedBytes": 22974464
+    },
+    {
+      "atUnixSeconds": 1795844563.8001611,
+      "elapsedSeconds": 9.582846257835627,
+      "rootFreeBytes": 2314588160,
+      "developmentFreeBytes": 1327550464,
+      "memoryAvailableBytes": 3940655104,
+      "ownedAllocatedBytes": 24346624
+    },
+    {
+      "atUnixSeconds": 1795844564.0216951,
+      "elapsedSeconds": 9.803998047485948,
+      "rootFreeBytes": 2314596352,
+      "developmentFreeBytes": 1326485504,
+      "memoryAvailableBytes": 3905490944,
+      "ownedAllocatedBytes": 25124864
+    },
+    {
+      "atUnixSeconds": 1795844564.2526,
+      "elapsedSeconds": 10.035285096615553,
+      "rootFreeBytes": 2314596352,
+      "developmentFreeBytes": 1326485504,
+      "memoryAvailableBytes": 3881025536,
+      "ownedAllocatedBytes": 25124864
+    },
+    {
+      "atUnixSeconds": 1795844564.4814482,
+      "elapsedSeconds": 10.264133291319013,
+      "rootFreeBytes": 2314596352,
+      "developmentFreeBytes": 1325670400,
+      "memoryAvailableBytes": 3866132480,
+      "ownedAllocatedBytes": 25939968
+    },
+    {
+      "atUnixSeconds": 1795844564.6980371,
+      "elapsedSeconds": 10.480722735635936,
+      "rootFreeBytes": 2314592256,
+      "developmentFreeBytes": 1322700800,
+      "memoryAvailableBytes": 3841691648,
+      "ownedAllocatedBytes": 28909568
+    },
+    {
+      "atUnixSeconds": 1795844564.912151,
+      "elapsedSeconds": 10.694836607202888,
+      "rootFreeBytes": 2314592256,
+      "developmentFreeBytes": 1322463232,
+      "memoryAvailableBytes": 3857051648,
+      "ownedAllocatedBytes": 29450240
+    },
+    {
+      "atUnixSeconds": 1795844565.1305914,
+      "elapsedSeconds": 10.913277061656117,
+      "rootFreeBytes": 2314592256,
+      "developmentFreeBytes": 1320222720,
+      "memoryAvailableBytes": 3850588160,
+      "ownedAllocatedBytes": 31682560
+    },
+    {
+      "atUnixSeconds": 1795844565.3876176,
+      "elapsedSeconds": 11.170303017832339,
+      "rootFreeBytes": 2314592256,
+      "developmentFreeBytes": 1319530496,
+      "memoryAvailableBytes": 4157861888,
+      "ownedAllocatedBytes": 32079872
+    },
+    {
+      "atUnixSeconds": 1795844565.6506114,
+      "elapsedSeconds": 11.433296688832343,
+      "rootFreeBytes": 2314592256,
+      "developmentFreeBytes": 1319440384,
+      "memoryAvailableBytes": 4121194496,
+      "ownedAllocatedBytes": 32178176
+    },
+    {
+      "atUnixSeconds": 1795844565.906977,
+      "elapsedSeconds": 11.68966244161129,
+      "rootFreeBytes": 2314592256,
+      "developmentFreeBytes": 1319325696,
+      "memoryAvailableBytes": 4105109504,
+      "ownedAllocatedBytes": 32284672
+    },
+    {
+      "atUnixSeconds": 1795844566.2146208,
+      "elapsedSeconds": 11.997306489385664,
+      "rootFreeBytes": 2314588160,
+      "developmentFreeBytes": 1316708352,
+      "memoryAvailableBytes": 4111048704,
+      "ownedAllocatedBytes": 34897920
+    },
+    {
+      "atUnixSeconds": 1795844566.4447832,
+      "elapsedSeconds": 12.227467731572688,
+      "rootFreeBytes": 2314592256,
+      "developmentFreeBytes": 1315565568,
+      "memoryAvailableBytes": 4117483520,
+      "ownedAllocatedBytes": 36204544
+    },
+    {
+      "atUnixSeconds": 1795844566.6787233,
+      "elapsedSeconds": 12.461408596485853,
+      "rootFreeBytes": 2314592256,
+      "developmentFreeBytes": 1315131392,
+      "memoryAvailableBytes": 4118953984,
+      "ownedAllocatedBytes": 36474880
+    },
+    {
+      "atUnixSeconds": 1795844566.908825,
+      "elapsedSeconds": 12.691510358825326,
+      "rootFreeBytes": 2314592256,
+      "developmentFreeBytes": 1315131392,
+      "memoryAvailableBytes": 4118953984,
+      "ownedAllocatedBytes": 36474880
+    },
+    {
+      "atUnixSeconds": 1795844567.177488,
+      "elapsedSeconds": 12.960173261351883,
+      "rootFreeBytes": 2314592256,
+      "developmentFreeBytes": 1314095104,
+      "memoryAvailableBytes": 3988160512,
+      "ownedAllocatedBytes": 37511168
+    },
+    {
+      "atUnixSeconds": 1795844567.441625,
+      "elapsedSeconds": 13.224310220219195,
+      "rootFreeBytes": 2314584064,
+      "developmentFreeBytes": 1314099200,
+      "memoryAvailableBytes": 3955449856,
+      "ownedAllocatedBytes": 37511168
+    },
+    {
+      "atUnixSeconds": 1795844567.7079356,
+      "elapsedSeconds": 13.490620669908822,
+      "rootFreeBytes": 2314571776,
+      "developmentFreeBytes": 1310720000,
+      "memoryAvailableBytes": 4097273856,
+      "ownedAllocatedBytes": 40886272
+    },
+    {
+      "atUnixSeconds": 1795844567.9370105,
+      "elapsedSeconds": 13.7196957860142,
+      "rootFreeBytes": 2314571776,
+      "developmentFreeBytes": 1310720000,
+      "memoryAvailableBytes": 4097290240,
+      "ownedAllocatedBytes": 40886272
+    },
+    {
+      "atUnixSeconds": 1795844568.168056,
+      "elapsedSeconds": 13.950741273351014,
+      "rootFreeBytes": 2314571776,
+      "developmentFreeBytes": 1310720000,
+      "memoryAvailableBytes": 4089315328,
+      "ownedAllocatedBytes": 40886272
+    },
+    {
+      "atUnixSeconds": 1795844568.4022758,
+      "elapsedSeconds": 14.184961538761854,
+      "rootFreeBytes": 2314571776,
+      "developmentFreeBytes": 1310720000,
+      "memoryAvailableBytes": 4064579584,
+      "ownedAllocatedBytes": 40886272
+    },
+    {
+      "atUnixSeconds": 1795844568.6343582,
+      "elapsedSeconds": 14.417043873108923,
+      "rootFreeBytes": 2314571776,
+      "developmentFreeBytes": 1299652608,
+      "memoryAvailableBytes": 4094283776,
+      "ownedAllocatedBytes": 51953664
+    },
+    {
+      "atUnixSeconds": 1795844568.8635755,
+      "elapsedSeconds": 14.646260789595544,
+      "rootFreeBytes": 2314571776,
+      "developmentFreeBytes": 1297321984,
+      "memoryAvailableBytes": 4091260928,
+      "ownedAllocatedBytes": 54284288
+    },
+    {
+      "atUnixSeconds": 1795844569.0961485,
+      "elapsedSeconds": 14.878833806142211,
+      "rootFreeBytes": 2314571776,
+      "developmentFreeBytes": 1297104896,
+      "memoryAvailableBytes": 4124155904,
+      "ownedAllocatedBytes": 54501376
+    },
+    {
+      "atUnixSeconds": 1795844569.332593,
+      "elapsedSeconds": 15.115278004668653,
+      "rootFreeBytes": 2314567680,
+      "developmentFreeBytes": 1296949248,
+      "memoryAvailableBytes": 4182355968,
+      "ownedAllocatedBytes": 54657024
+    },
+    {
+      "atUnixSeconds": 1795844569.5797188,
+      "elapsedSeconds": 15.362404583953321,
+      "rootFreeBytes": 2314571776,
+      "developmentFreeBytes": 1296195584,
+      "memoryAvailableBytes": 4184690688,
+      "ownedAllocatedBytes": 55410688
+    },
+    {
+      "atUnixSeconds": 1795844569.8085685,
+      "elapsedSeconds": 15.591238578781486,
+      "rootFreeBytes": 2314571776,
+      "developmentFreeBytes": 1296183296,
+      "memoryAvailableBytes": 4238848000,
+      "ownedAllocatedBytes": 55422976
+    },
+    {
+      "atUnixSeconds": 1795844569.8616765,
+      "elapsedSeconds": 15.644362803548574,
+      "rootFreeBytes": 2314571776,
+      "developmentFreeBytes": 1296183296,
+      "memoryAvailableBytes": 4238848000,
+      "ownedAllocatedBytes": 55422976
+    },
+    {
+      "atUnixSeconds": 1795844570.034038,
+      "elapsedSeconds": 15.816723194904625,
+      "rootFreeBytes": 2314571776,
+      "developmentFreeBytes": 1296080896,
+      "memoryAvailableBytes": 4224409600,
+      "ownedAllocatedBytes": 55525376
+    }
+  ],
+  "safeToReleaseRuntimeSlot": true,
+  "compilerOrTestsInvoked": true,
+  "firstFailure": null,
+  "environment": {
+    "PATH": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin:/usr/bin:/bin",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "PWD": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128",
+    "TMPDIR": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/tmp",
+    "TMP": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/tmp",
+    "TEMP": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/tmp",
+    "XDG_CACHE_HOME": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/xdg-cache",
+    "XDG_CONFIG_HOME": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/xdg-config",
+    "XDG_DATA_HOME": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/xdg-data",
+    "SWIFTPM_MODULECACHE_OVERRIDE": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/manifest-module-cache"
+  },
+  "homePreservedFromParent": true,
+  "argv": [
+    "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/package",
+    "--scratch-path",
+    "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build",
+    "--cache-path",
+    "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/cache",
+    "--config-path",
+    "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/config",
+    "--security-path",
+    "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/security",
+    "--manifest-cache",
+    "local",
+    "--jobs",
+    "2",
+    "--enable-xctest",
+    "--disable-swift-testing",
+    "--filter",
+    "^PinkhaSharingTests\\.SharingAuthorityTests/(?:testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets|testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval|testPerMemberRoleOptionsRejectMalformedEntries)$",
+    "-v"
+  ],
+  "swiftExecutable": {
+    "requestedPath": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift",
+    "resolvedPath": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-driver",
+    "sha256": "39d41b0dc9eba623b0e37cea42c3145720168214ba4349d6fa3bd9db9b1e651a"
+  },
+  "compilerEvidenceSHA256": "749962a81fa25f73aa88fb7ee8ee8b512a0725f8645886f8ce9e73937273a377",
+  "testQualification": {
+    "framework": "XCTest",
+    "selectedMethods": [
+      "testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets",
+      "testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval",
+      "testPerMemberRoleOptionsRejectMalformedEntries"
+    ],
+    "events": [
+      [
+        "SharingAuthorityTests.testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval",
+        "started"
+      ],
+      [
+        "SharingAuthorityTests.testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval",
+        "passed"
+      ],
+      [
+        "SharingAuthorityTests.testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets",
+        "started"
+      ],
+      [
+        "SharingAuthorityTests.testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets",
+        "passed"
+      ],
+      [
+        "SharingAuthorityTests.testPerMemberRoleOptionsRejectMalformedEntries",
+        "started"
+      ],
+      [
+        "SharingAuthorityTests.testPerMemberRoleOptionsRejectMalformedEntries",
+        "passed"
+      ]
+    ],
+    "summaries": [
+      [
+        "3",
+        "0",
+        "0"
+      ],
+      [
+        "3",
+        "0",
+        "0"
+      ]
+    ],
+    "passedMethods": 3,
+    "oldMethodsExecuted": 0,
+    "loopRowsAreTestLeaves": false
+  },
+  "inputAfter": [
+    {
+      "path": "Package.swift",
+      "bytes": 436,
+      "sha256": "7ba971ad0048edf17e458aa9b7a32b904f9729fed36a58e745f329840f5c26aa",
+      "device": 2064,
+      "inode": 922559,
+      "mode": 420,
+      "uid": 0,
+      "gid": 1002,
+      "mtimeNs": 1795841798552434468
+    },
+    {
+      "path": "Sources/PinkhaSharing/PinkhaSharingAccountOwner.swift",
+      "bytes": 3146,
+      "sha256": "1d6ee98ff39296e564e8440ef494acfde8a94969811230e628c814550a139e36",
+      "device": 2064,
+      "inode": 922562,
+      "mode": 420,
+      "uid": 0,
+      "gid": 1002,
+      "mtimeNs": 1795841810070302081
+    },
+    {
+      "path": "Sources/PinkhaSharing/PinkhaSpaceMembersView.swift",
+      "bytes": 18333,
+      "sha256": "fc7d5e41a2f79dc452d269e0412a4f01330e3a8ccf7cd96d20ce14eee3eed525",
+      "device": 2064,
+      "inode": 922566,
+      "mode": 420,
+      "uid": 0,
+      "gid": 1002,
+      "mtimeNs": 1795841820681482445
+    },
+    {
+      "path": "Sources/PinkhaSharing/PinkhaSpaceSharing.swift",
+      "bytes": 9079,
+      "sha256": "32b76990f19402c2975c751273d3aae87c579d8103339ace14a49d835a8ff028",
+      "device": 2064,
+      "inode": 922567,
+      "mode": 420,
+      "uid": 0,
+      "gid": 1002,
+      "mtimeNs": 1795841832214398148
+    },
+    {
+      "path": "Sources/PinkhaSharing/Resources/en.lproj/Localizable.strings",
+      "bytes": 2698,
+      "sha256": "2822ac8575239de0a3c0891d32db6d6b4ca696979e05068e1fb92c160a787080",
+      "device": 2064,
+      "inode": 922580,
+      "mode": 420,
+      "uid": 0,
+      "gid": 1002,
+      "mtimeNs": 1795841913456069294
+    },
+    {
+      "path": "Sources/PinkhaSharing/Resources/he.lproj/Localizable.strings",
+      "bytes": 3109,
+      "sha256": "a436ea24dccdf4da1ddb5a54fbc495cd2d60dab633484b41d4b88dec1a032dc9",
+      "device": 2064,
+      "inode": 922582,
+      "mode": 420,
+      "uid": 0,
+      "gid": 1002,
+      "mtimeNs": 1795841923973061841
+    },
+    {
+      "path": "Tests/PinkhaSharingTests/SharingAuthorityTests.swift",
+      "bytes": 11211,
+      "sha256": "e11a832e3f8f39bf05f821e420a90f67b883be2164630320bf793eba43d3f336",
+      "device": 2064,
+      "inode": 922585,
+      "mode": 420,
+      "uid": 0,
+      "gid": 1002,
+      "mtimeNs": 1795841933519312206
+    },
+    {
+      "path": "Tests/PinkhaSharingTests/SharingPresentationTests.swift",
+      "bytes": 8717,
+      "sha256": "1e69732154269558df7514e4f5996bc3e8294c1c5940a772f67e0a1d6f77fa1d",
+      "device": 2064,
+      "inode": 922586,
+      "mode": 420,
+      "uid": 0,
+      "gid": 1002,
+      "mtimeNs": 1795841947152486801
+    }
+  ],
+  "seconds": 15.845635401085019,
+  "ownedAllocatedBytesBeforeReceipt": 55525376
+}

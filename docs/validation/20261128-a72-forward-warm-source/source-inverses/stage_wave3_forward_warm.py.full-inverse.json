@@ -1,0 +1,100 @@
+{
+  "after": {
+    "bytes": 32456,
+    "path": "/mnt/development/projects/evidence/pinkha-w3-runtime18-apple-preparation-20261128-source/app-bae-forward-controller-prepared1/after/stage_wave3_forward_warm.py",
+    "sha256": "38644915911ae3df8fa9d7d446a7ca1e9d1bc57fd95d5f0542dd35fd3413083a"
+  },
+  "before": {
+    "bytes": 31457,
+    "path": "/mnt/development/projects/evidence/pinkha-w3-runtime18-apple-preparation-20261128-source/app-bae-forward-controller-prepared1/originals/stage_wave3_forward_warm.py",
+    "sha256": "62a3f182c1b920f74b2b7ca424501723c66929928c3de7beccc191c80149ef75"
+  },
+  "operations": [
+    {
+      "after": "Forward-stage an explicitly bound source from the actual retained a72 cache.",
+      "before": "Forward-stage an explicitly bound source on the retained clean8f2 cache.",
+      "count": 1
+    },
+    {
+      "after": "BASELINE = 'a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd'",
+      "before": "BASELINE = '8f2c11713fb8a40ae13444104723666ffef68afe'",
+      "count": 1
+    },
+    {
+      "after": "BASELINE_TREE = '2adebea229e42c5ff56e50aaf0adebbacfbc4c41'\nPRIOR_A72_ROOT = SOURCE.parent.parent / 'main16-wave3-forward-a72f2e1ee303'",
+      "before": "BASELINE_TREE = '7bcaa6e1b6eadf42eaaaebcb75aab84686aa1f9a'",
+      "count": 1
+    },
+    {
+      "after": "SDK_BEFORE = '41445d6e8ea29da6460aeb340f006b7d0eaa7f0fb5a4a805d2c369ff4ef17124'",
+      "before": "SDK_BEFORE = 'b10eb0805789a04f9f48721230961e45ba6a93ceb5d95cb90437a59c87ae9528'",
+      "count": 1
+    },
+    {
+      "after": "LOCK_BEFORE = '4065a37e9e6dd3c117bd72bec90c2039108a0985df6989f9dc66b0f47840f689'",
+      "before": "LOCK_BEFORE = 'e22368e522ac795253935b0a31e39d1b36bd9043ef2ed1014845927914527ccd'",
+      "count": 1
+    },
+    {
+      "after": "KIT_BEFORE = '26beca175d64a4d34e3567f2bbb4bf308d714478'",
+      "before": "KIT_BEFORE = '9058b489e9acc271b4f8ef69e2ed24648f93b4ed'",
+      "count": 1
+    },
+    {
+      "after": "KIT_AFTER = '414e0d3e95d53509381d233a23fcdd28ef24167a'",
+      "before": "KIT_AFTER = '26beca175d64a4d34e3567f2bbb4bf308d714478'",
+      "count": 1
+    },
+    {
+      "after": "'warmAdapter': '181b5f3ca42943e1dc8179d16a98d63998f966212920e63c3c8a5317e98b4d75'",
+      "before": "'warmAdapter': '29b524b32bd8428db62cf9119d1f7f80a5b4d6406ce1d1574dbdefef20fe3adf'",
+      "count": 1
+    },
+    {
+      "after": "require(previous['sourceCommit'] == '8f2c11713fb8a40ae13444104723666ffef68afe'\n            and previous['tree'] == '7bcaa6e1b6eadf42eaaaebcb75aab84686aa1f9a',",
+      "before": "require(previous['sourceCommit'] == BASELINE and previous['tree'] == BASELINE_TREE,",
+      "count": 1
+    },
+    {
+      "after": "'This route is scoped to the actual retained a72 physical cache'",
+      "before": "'This route is scoped to the actual retained8f2 physical cache'",
+      "count": 1
+    },
+    {
+      "after": "    require(all(not (PRIOR_A72_ROOT / name).exists() for name in\n                ('build16', 'root-dispatch1', 'control-dispatch1', 'build-admission.approved.json')),\n            'The actual a72 stage is no longer an untouched prebuild checkpoint')\n    bundle = read_ref(plan['gitBundle'])",
+      "before": "    bundle = read_ref(plan['gitBundle'])",
+      "count": 1
+    },
+    {
+      "after": "    require(template['forwardWarm']['priorForwardStage'] == plan['priorForwardStage'],\n            'The source and build plans must retain the same exact prior a72 stage')\n    require(shutil.disk_usage(SOURCE).free >= FLOOR + STAGE_GROWTH, 'Staging envelope unavailable')",
+      "before": "    require(shutil.disk_usage(SOURCE).free >= FLOOR + STAGE_GROWTH, 'Staging envelope unavailable')",
+      "count": 1
+    },
+    {
+      "after": "        report['priorRetention'] = existing_retention(plan, controls['preservation'])\n        report['priorForwardStage'] = plan['priorForwardStage']\n        report['priorForwardQualification'] = controls['warmAdapter'].wr_prior_forward(plan['priorForwardStage'])",
+      "before": "        report['priorRetention'] = existing_retention(plan, controls['preservation'])",
+      "count": 1
+    },
+    {
+      "after": "'Fresh baseline SDK/lock differs from the actual a72 stage'",
+      "before": "'Fresh baseline SDK/lock differs from the actual8f2 observation'",
+      "count": 1
+    },
+    {
+      "after": "root / 'retained-prior-sdkc0'",
+      "before": "root / 'retained-prior-sdk385'",
+      "count": 1
+    },
+    {
+      "after": "        require(controls['warmAdapter'].wr_prior_forward(plan['priorForwardStage'])\n                == report['priorForwardQualification'], 'Prior a72 evidence changed during staging')\n        commands.barrier()\n        report.update(status=",
+      "before": "        commands.barrier()\n        report.update(status=",
+      "count": 1
+    },
+    {
+      "after": "'baselineSourceSHA': BASELINE, 'stageReceiptSHA256': stage_ref['sha256'],\n                 'priorForwardStage': plan['priorForwardStage'],",
+      "before": "'baselineSourceSHA': BASELINE, 'stageReceiptSHA256': stage_ref['sha256'],",
+      "count": 1
+    }
+  ],
+  "wholeOriginalRestored": true
+}

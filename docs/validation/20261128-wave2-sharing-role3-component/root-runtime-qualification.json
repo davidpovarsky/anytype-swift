@@ -1,0 +1,353 @@
+{
+  "schema": "pinkha.sharing-role3.root-runtime-qualification.v1",
+  "status": "PASS_THREE_NEW_XCTEST_COMPONENT_METHODS",
+  "reviewer": "Wave2 Root",
+  "sourceCommit": "80bd7636bb53391d8350a7ef39810e0b2cd9b733",
+  "integrationSourceCommitAtQualification": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+  "executedAtUTC": {
+    "start": "2026-11-28T05:42:34.110264Z",
+    "finish": "2026-11-28T05:42:50.107249Z"
+  },
+  "runtimeJobID": "job_643f297026c2",
+  "evidence": {
+    "receipt": {
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/attempt1/receipt.json",
+      "bytes": 31370,
+      "sha256": "ee8f7e472bcb111dd03948562d52b96e84c279742148d2b7bb5456b9ce01bd1a",
+      "gitBlob": "32cfe05dc01400704cf7c87e6278bde560138074",
+      "truncated": false
+    },
+    "child": {
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/attempt1/swift/result.json",
+      "bytes": 1555,
+      "sha256": "08ae893220d09f8d2d948da5b8ae5a06b189ea4fcc636ed54b46b8fb85e248e1",
+      "gitBlob": "5482fa0dcb17a2b69f8dac2976632510a22c84d9",
+      "truncated": false
+    },
+    "compiler": {
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/attempt1/compiler-evidence.json",
+      "bytes": 97337,
+      "sha256": "749962a81fa25f73aa88fb7ee8ee8b512a0725f8645886f8ce9e73937273a377",
+      "gitBlob": "2ef6fa86e08a5fdaf6eb902125f9d9108c896af6",
+      "truncated": false,
+      "method": "two complete contiguous line-range reads, exact full original SHA"
+    },
+    "log": {
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/attempt1/swift/original.log",
+      "bytes": 73952,
+      "sha256": "f954b3856d9e8ec80618b3d03073ea1789f9209a025587049e9d46048bca2673",
+      "gitBlob": "41aba2ce49c13071b369d4bc203d9306b6594026",
+      "truncated": false,
+      "method": "two full contiguous line ranges, original SHA matched; initial MCP errors retained"
+    }
+  },
+  "runtimeGrantStory": "1220965335914684",
+  "actualSlotReleaseStory": "1220965181441670",
+  "frozenControls": [
+    {
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/prepared/run_shared_three_source2.py",
+      "bytes": 22367,
+      "sha256": "3ec0fd8ac7ae23a4c20e7a315c1b2ec83038dbfec98fc9f46b4ffcd6b7dab80e",
+      "gitBlob": "c6fd6ea07d2eddeb9c9e44de0c01f160fa004425"
+    },
+    {
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/prepared/launch_shared_three_source2.py",
+      "bytes": 1801,
+      "sha256": "bf446c75162e997d6b325addf0f48a5ed10402c03fcd4496ac2c55dfaa2c16b1",
+      "gitBlob": "221bc4f447615bd319c48d1077632fd7addfccb9"
+    },
+    {
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/prepared/owned_swift_commands_original.py",
+      "bytes": 9527,
+      "sha256": "f9de18c0fdc879ff916ba34e9afa0da9d6b91444eebfa1e5a8d6a50d3523ca56",
+      "gitBlob": "e2155f395e5839ba0f8ed41e1057b9a228415f2c"
+    },
+    {
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/prepared/input-manifest.original.json",
+      "bytes": 4893,
+      "sha256": "b3d739b25605697acbf41a4ce97cd7dc0e9f125acc25e9cb774eaadab610dd66",
+      "gitBlob": "db0c04d8d5542517071ea57969ebe3d8e08ab09e"
+    }
+  ],
+  "actualChecks": [
+    {
+      "name": "original four primary evidence SHA pins",
+      "pass": true,
+      "detail": "Full complete bodies, not initial truncated peeks; same exact-file read failures retained."
+    },
+    {
+      "name": "selected test event identities",
+      "pass": true,
+      "detail": "3 starts/3 passes, 0 failed/skipped/old-method events."
+    },
+    {
+      "name": "one normally closed owned process group",
+      "pass": true,
+      "detail": "PGID3731667 receipt positive absence; no further process probe."
+    },
+    {
+      "name": "eight inputs unchanged",
+      "pass": true,
+      "detail": "Byte/hash/portable identity exact; nanosecond exactness remains original Python comparison, not rounded JS arithmetic."
+    },
+    {
+      "name": "all embedded artifact bodies self-verify",
+      "pass": true,
+      "detail": "13 text artifact bodies; binary identities are original runtime capture hashes, not V8 physical rehash."
+    },
+    {
+      "name": "exact whole source membership",
+      "pass": true,
+      "detail": "All five whole Swift files, no extracted implementation or shim."
+    },
+    {
+      "name": "exact generated source membership",
+      "pass": true,
+      "detail": "Only resource accessor, empty test anchor, generated test entry point."
+    },
+    {
+      "name": "output map matches PinkhaSharingTests-OutputFileMap.json",
+      "pass": true,
+      "detail": "Every selected source maps to an actual compilation object; module root row remains separate."
+    },
+    {
+      "name": "output map matches PinkhaSharingTests-test-runner-OutputFileMap.json",
+      "pass": true,
+      "detail": "Every selected source maps to an actual compilation object; module root row remains separate."
+    },
+    {
+      "name": "output map matches PinkhaSharing-OutputFileMap.json",
+      "pass": true,
+      "detail": "Every selected source maps to an actual compilation object; module root row remains separate."
+    },
+    {
+      "name": "12 generated ordinary discoveries",
+      "pass": true,
+      "detail": "7 authority + 5 presentation references; generated runner selects XCTest and calls original methods, not alternate implementations."
+    },
+    {
+      "name": "Swift driver official path and target",
+      "pass": true,
+      "detail": "Actual SwiftBuild implementation emitted10 log driver observations; no claim these are10 test/OS invocations."
+    },
+    {
+      "name": "resource samples within granted limits",
+      "pass": true,
+      "detail": "76 sampled observations; max gap0.308s; no continuous-peak claim."
+    },
+    {
+      "name": "exact raw before/after input arrays",
+      "pass": true,
+      "detail": "Identical full original JSON array bodies including every decimal nanosecond metadata field. This verifies the retained original report text without JS integer rounding; it is not a new physical filesystem scan."
+    },
+    {
+      "name": "runtime inputs equal frozen complete package",
+      "pass": true,
+      "detail": "All8 source/resource manifest rows (56729B) match original runtime before/after identities. Five unchanged6ade inputs plus three frozen candidate bodies are the exact package published in80bd, as established by retained whole primary publication and exact inverse."
+    },
+    {
+      "name": "named supplement anchor closure",
+      "pass": true,
+      "detail": "Four original anchors retain exact bytes and captured physical metadata; ns fields are strings."
+    },
+    {
+      "name": "named supplement text integrity",
+      "pass": true,
+      "detail": "All actual response and plist text bodies self-verify."
+    },
+    {
+      "name": "exact owned link-list object custody",
+      "pass": true,
+      "detail": "All12 unique listed objects are retained:8 source objects,3 module objects and1 clang aggregate; physical reads/hashes and ELF identities captured."
+    },
+    {
+      "name": "source output map to retained objects",
+      "pass": true,
+      "detail": "Five whole original source inputs plus three generated inputs map to the eight source objects."
+    },
+    {
+      "name": "three actual module objects retained",
+      "pass": true,
+      "detail": "All three link-list module objects have same-path product module captures and stable ELF identities. Actual verbose SwiftBuild log does not emit standalone -modulewrap commands; none is inferred."
+    },
+    {
+      "name": "original compiler overlaps retained",
+      "pass": true,
+      "detail": "Four link lists and both final products match original compiler capture."
+    },
+    {
+      "name": "actual two autolink responses",
+      "pass": true,
+      "detail": "Complete actual final-response content: toolchain/platform libraries only. Generated runner links Testing but no Swift Testing test events ran."
+    },
+    {
+      "name": "HE and EN copied resources",
+      "pass": true,
+      "detail": "Both copied resources are byte-identical to frozen inputs. Runtime language choice and RTL remain untested."
+    },
+    {
+      "name": "read-only supplement",
+      "pass": true,
+      "detail": "One named4,765,782B data read; no test/compile replay or closed-group probe; shallow metadata supplies no recursive/free-space credit."
+    },
+    {
+      "name": "independent peer original bound",
+      "pass": true,
+      "detail": "Root fully read26,327B/212b0390 peer original; matching four anchors and bounded component scope."
+    }
+  ],
+  "generatedSemantics": {
+    "resourceAccessor": "Foundation Bundle.module lookup only; DEBUG resource override mechanism is generated standard code, not replacement sharing logic.",
+    "anchor": "public func __test_anchor_PinkhaSharingTests() {}",
+    "runner": "Original test-module references. Twelve discovered XCTest methods. Linux main invokes XCTMain for xctest; optional Swift Testing branch is generated but no Swift Testing test events were executed. Experimental observer block is compile-time false.",
+    "discoveries": [
+      {
+        "method": "testAccountDrainRejectsStaleCompletionAndKeepsOtherEngineActive",
+        "reference": "SharingAuthorityTests.testAccountDrainRejectsStaleCompletionAndKeepsOtherEngineActive"
+      },
+      {
+        "method": "testInvitationDescriptionsDoNotExposeShareCapability",
+        "reference": "SharingAuthorityTests.testInvitationDescriptionsDoNotExposeShareCapability"
+      },
+      {
+        "method": "testMutationRequiresCurrentRequestAndExplicitRoleAuthority",
+        "reference": "SharingAuthorityTests.testMutationRequiresCurrentRequestAndExplicitRoleAuthority"
+      },
+      {
+        "method": "testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval",
+        "reference": "SharingAuthorityTests.testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval"
+      },
+      {
+        "method": "testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets",
+        "reference": "SharingAuthorityTests.testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets"
+      },
+      {
+        "method": "testPerMemberRoleOptionsRejectMalformedEntries",
+        "reference": "SharingAuthorityTests.testPerMemberRoleOptionsRejectMalformedEntries"
+      },
+      {
+        "method": "testSnapshotRejectsDuplicateMembersAndSelfEditing",
+        "reference": "SharingAuthorityTests.testSnapshotRejectsDuplicateMembersAndSelfEditing"
+      },
+      {
+        "method": "testCurrentScopeReadbackKeepsUpdatedMembersVisible",
+        "reference": "SharingPresentationTests.testCurrentScopeReadbackKeepsUpdatedMembersVisible"
+      },
+      {
+        "method": "testInvitationReadbackRejectsForeignScopeWithoutRetry",
+        "reference": "SharingPresentationTests.testInvitationReadbackRejectsForeignScopeWithoutRetry"
+      },
+      {
+        "method": "testMutationReadbackRejectsForeignScopeWithoutRepeatingWrite",
+        "reference": "SharingPresentationTests.testMutationReadbackRejectsForeignScopeWithoutRepeatingWrite"
+      },
+      {
+        "method": "testOldGenerationCannotClearReopenedSharingState",
+        "reference": "SharingPresentationTests.testOldGenerationCannotClearReopenedSharingState"
+      },
+      {
+        "method": "testRefreshRejectsForeignEngineAccountAndSpace",
+        "reference": "SharingPresentationTests.testRefreshRejectsForeignEngineAccountAndSpace"
+      }
+    ],
+    "sourceBodyInjection": "NONE; every generated .swift membership is explicitly accounted for"
+  },
+  "resources": {
+    "samples": 76,
+    "minRoot": 2314567680,
+    "minDevelopment": 1296080896,
+    "minMemory": 3841691648,
+    "sampledPeakOwnedAllocation": 55525376,
+    "maxSampleIntervalSeconds": 0.3076440477743745,
+    "last": {
+      "atUnixSeconds": 1795844570.034038,
+      "elapsedSeconds": 15.816723194904625,
+      "rootFreeBytes": 2314571776,
+      "developmentFreeBytes": 1296080896,
+      "memoryAvailableBytes": 4224409600,
+      "ownedAllocatedBytes": 55525376
+    }
+  },
+  "scope": {
+    "linuxWholePackage": true,
+    "sourceCompleteFiles": 5,
+    "resourcesAsInputs": 2,
+    "selectedNewXCTest": 3,
+    "oldMethodsExecuted": 0,
+    "swiftUIConditionalBranches": "NOT_COMPILED_ON_LINUX",
+    "nativeProjector2": "NOT_RUN",
+    "appleCompile": "NOT_RUN",
+    "sharingUITest": "NOT_RUN",
+    "oppositeAppOSRTL": "NOT_RUN",
+    "physicalDevices": "NOT_RUN"
+  },
+  "retainedOriginalStatus": "Original receipt componentAcceptance and compiler-evidence unqualifiedClaims remain byte-for-byte unchanged. This later review qualifies only its explicit scope.",
+  "sourceReviewHistory": "Source2 added legitimate native SwiftPM sources recognition before execution. Actual6.4.3 backend used SwiftBuild SwiftFileList. Old v1 source/controller artifacts remain; no test failure or replay was invented for a pre-execution review correction.",
+  "readFailuresRetained": {
+    "initialCompilerAndLog65000BytePeeks": "PARTIAL only, never used as full SHA evidence",
+    "initialLogRangeReads": [
+      {
+        "range": [
+          1,
+          160
+        ],
+        "error": "MCP-32603"
+      },
+      {
+        "range": [
+          161,
+          -1
+        ],
+        "error": "MCP-32603"
+      }
+    ],
+    "sameImmutableFileRetries": "Both succeeded untruncated and concatenated to original73952B/f954b385 SHA."
+  },
+  "finalLinkClosure": {
+    "status": "PASS_PACKAGE_OWNED_FINAL_LINK_RESPONSE_OBJECT_CUSTODY",
+    "supplement": {
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/attempt1/torah-link-closure-supplement.json",
+      "bytes": 32875,
+      "sha256": "48b298f66520e60759e4b8c312d5e02d1a77d0c95aee54aa114d58c8adcd794c",
+      "gitBlob": "756d7ba52202b7d32d9e7eca172342ed8eeb98cc"
+    },
+    "scope": "Whole package inputs -> real source object maps and retained module objects -> actual clang -r aggregate -> shared test object -> generated XCTest runner. No transitive hash census of installed OS/toolchain libraries or unlogged internal module-wrap command is claimed.",
+    "products": [
+      {
+        "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/libPinkhaSharing.a",
+        "bytes": 784982,
+        "sha256": "138ca4d8a5296c4d302369bb445ca083b77b862860d824de3ca43e7ace415e43",
+        "kind": "actual-static-product"
+      },
+      {
+        "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharingTests-test-runner",
+        "bytes": 148504,
+        "sha256": "ebde5fd632de897555ba9b2d70dc875a2fb9abfd55cdd2e5a4bcdb3cec954a5d",
+        "kind": "actual-final-product"
+      },
+      {
+        "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/runtime/build/out/Products/Debug-linux-aarch64/PinkhaSharingTests.so",
+        "bytes": 1032360,
+        "sha256": "f5df4aabad7cce14d01c3917dd8ea53f2f6130129f00175a19e6a3cea0cf75ca",
+        "kind": "actual-final-product"
+      }
+    ],
+    "staticArchive": "The llvm-ar archive is a separate retained product; actual test linkage uses the clang aggregate through PinkhaSharingTests.so."
+  },
+  "futureRuntime": "No automatic retry; both Native2 Apple methods and user-facing sharing acceptance remain open.",
+  "retention": "Original runtime/build and all evidence remain retained. Potential cache release is separate and requires exact protected product/resource/generated-source inventory, owner review and authorized retirement.",
+  "independentPeer": {
+    "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-role3-component-20261128/attempt1/torah-independent-actual-review.json",
+    "bytes": 26327,
+    "sha256": "212b03900c2b3b2e6cd49a9c0d2018aa6ff4987271dff2de25d69185f1254ee2",
+    "gitBlob": "5d9987a16f8b058d69f0a3c92844ca576a737252"
+  },
+  "rootInterpretationStop": {
+    "stage": "V8 evidence interpretation, no host action",
+    "check": "three actual module wrappers",
+    "reason": "Assumed literal -modulewrap plus -o driver shape did not match actual retained log; qualification halted before final checks persisted.",
+    "rawLogSHA": "f954b3856d9e8ec80618b3d03073ea1789f9209a025587049e9d46048bca2673",
+    "runtime": "Actual3PASS unchanged; no rerun"
+  },
+  "rootInterpretationResolution": "Removed the unsupported assumption that SwiftBuild logs standalone -modulewrap commands. Its actual four link lists, three captured swiftmodule identities and three named retained ELF module objects are qualified as recorded. No test or compiler was repeated; no source or evidence changed."
+}

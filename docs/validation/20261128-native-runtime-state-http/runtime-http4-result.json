@@ -1,0 +1,630 @@
+{
+  "PersonalSpaceProvenanceClaim": false,
+  "absoluteDeadlineReuse": {
+    "controlsReexecuted": 0,
+    "function": {
+      "bytes": 1745,
+      "sha256": "b92bf5edfce867716532a89c17880cbc6cafe3afe1b97b8e81647c497103be81"
+    },
+    "originalControllerSHA256": "26ed736be9e5ddb8def2af26de6648bba4ab8ad85f55be91bc045dc215de4b84",
+    "receiptSHA256": "0a2da3fdb8c1d962a0e6d74e750292dc934ff5c826c0b025bb38702717394db6"
+  },
+  "accountCopies": 0,
+  "accountFileReadsByController": 0,
+  "accountInitializations": 0,
+  "admissionFreeBytes": {
+    "development": 2091945984,
+    "root": 2291294208
+  },
+  "allOwnedGroupsPositivelyAbsent": true,
+  "closedPairProcessAdmission": {
+    "accountContentsRead": false,
+    "matchingProcesses": 0,
+    "processesExamined": 365
+  },
+  "cloudQuotaActivationCalls": 0,
+  "compilerInvocations": 0,
+  "completionErrors": [],
+  "controller": {
+    "bytes": 41423,
+    "sha256": "a7f0fbe8067946d35865be61d3c35a1b82fe3e1b85df6f06040c758273c4a18d"
+  },
+  "domainMutationRequests": 0,
+  "errors": [],
+  "freeAfter": {
+    "development": 2091061248,
+    "root": 2291060736
+  },
+  "freshAccountByteCustodyClaim": false,
+  "heartSyncDateClaim": false,
+  "historicalRemovalFailureSHA256": "ecd4e58378cbb82731926536e82fca655da64ee156057ba411a242c95942c2ab",
+  "independentSignedRecordExportClaim": false,
+  "lastKnownClosedCustodySHA256": "792268b4d7448d9c9b6665ee6388f26c18e5de0635aa05f1b390db7f20a5567d",
+  "memAvailableBefore": 4438138880,
+  "minimumFreeBytes": {
+    "development": 2091020288,
+    "root": 2290864128
+  },
+  "nativeObjectExistenceClaim": false,
+  "nativeOperationalStoreWritesPossible": true,
+  "nativeSourceUnchanged": true,
+  "newNativeBuilds": 0,
+  "newRuntimeRouteOfflineHTTPAcceptance": false,
+  "oldContentOrMetadataRoutesReexecuted": 0,
+  "originalC13SourceUnchanged": true,
+  "ownerObservationCount": 2,
+  "ownershipHelperSHA256": "f9de18c0fdc879ff916ba34e9afa0da9d6b91444eebfa1e5a8d6a50d3523ca56",
+  "peakOwnedBytes": 77824,
+  "phases": [
+    {
+      "accountId": "A7MAdySTn1MR4Fb3gDr67ZeXEvt8fqNjtHEwB3b9kUGFZZya",
+      "actor": "owner",
+      "denials": [],
+      "gracefulStopIntent": {
+        "leaderUnreaped": true,
+        "pid": 2916684,
+        "signal": 15
+      },
+      "logSHA256": "8297cc2d2ab178e4ae8e2a5ec61c6ed7e17a21eaadac86eb9bb7996fd50a4d20",
+      "membership": [
+        {
+          "identity": "A7MAdySTn1MR4Fb3gDr67ZeXEvt8fqNjtHEwB3b9kUGFZZya",
+          "permission": "owner",
+          "status": "active",
+          "step": "self-member"
+        },
+        {
+          "identity": "AAFSi1CkNvwiTLAkKWQF9K5GnLcfFaqvfYYCa1zmJWETjuyR",
+          "permission": "none",
+          "status": "removed",
+          "step": "removed-member"
+        },
+        {
+          "identity": "AAFSi1CkNvwiTLAkKWQF9K5GnLcfFaqvfYYCa1zmJWETjuyR",
+          "permission": "none",
+          "status": "removed",
+          "step": "removed-member-final"
+        },
+        {
+          "identity": "A7MAdySTn1MR4Fb3gDr67ZeXEvt8fqNjtHEwB3b9kUGFZZya",
+          "permission": "owner",
+          "status": "active",
+          "step": "self-member-final"
+        }
+      ],
+      "name": "owner-runtime",
+      "observations": [
+        {
+          "label": "space",
+          "route": "/v1/spaces/bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l/runtime-state",
+          "value": {
+            "access": {
+              "aclIsEmpty": false,
+              "personalSpaceId": null,
+              "reason": "personal_provenance_unavailable",
+              "value": null
+            },
+            "capturedAt": "2026-11-28T00:26:58.542920778Z",
+            "contract": "pinkha-space-runtime-state-v1",
+            "coordinator": {
+              "fetchedAt": "2026-11-28T00:26:57.548178133Z",
+              "isShared": true,
+              "limits": {
+                "readersLimit": 1000,
+                "writersLimit": 1000
+              },
+              "status": "SpaceStatusCreated"
+            },
+            "scope": {
+              "accountId": "A7MAdySTn1MR4Fb3gDr67ZeXEvt8fqNjtHEwB3b9kUGFZZya",
+              "aclHeadId": "bafyreig7oqgzqrarc4ynt6szfyldltbv3iwh37w6lvfv7oahrtde5zzq3m",
+              "authorityIdentity": "A7MAdySTn1MR4Fb3gDr67ZeXEvt8fqNjtHEwB3b9kUGFZZya",
+              "networkId": "N72HQKYajADVPoyw2XXtyTScBYR7SwkudRULgED4CYyHdphU",
+              "spaceId": "bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l"
+            }
+          }
+        },
+        {
+          "label": "object",
+          "route": "/v1/spaces/bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l/objects/bafyreicytuyyuw7nu6cklsgptni4k5xoyi3u4suijh6lp5moki2nvtpi7e/runtime-state",
+          "value": {
+            "capturedAt": "2026-11-28T00:26:58.760893641Z",
+            "contract": "pinkha-object-runtime-state-v1",
+            "objectId": "bafyreicytuyyuw7nu6cklsgptni4k5xoyi3u4suijh6lp5moki2nvtpi7e",
+            "objectSync": {
+              "basis": "responsible_space_round",
+              "lastSyncAt": "2026-11-28T00:26:57.826673907Z",
+              "state": "synced"
+            },
+            "scope": {
+              "accountId": "A7MAdySTn1MR4Fb3gDr67ZeXEvt8fqNjtHEwB3b9kUGFZZya",
+              "aclHeadId": "bafyreig7oqgzqrarc4ynt6szfyldltbv3iwh37w6lvfv7oahrtde5zzq3m",
+              "authorityIdentity": "A7MAdySTn1MR4Fb3gDr67ZeXEvt8fqNjtHEwB3b9kUGFZZya",
+              "networkId": "N72HQKYajADVPoyw2XXtyTScBYR7SwkudRULgED4CYyHdphU",
+              "spaceId": "bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l"
+            },
+            "spaceSync": {
+              "globalPeers": 0,
+              "lastSyncedAt": "2026-11-28T00:26:57.826673907Z",
+              "localPeers": 0,
+              "networkPeers": 3,
+              "networkProtocolIncompatible": false,
+              "p2p": "notconnected",
+              "spaceId": "bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l",
+              "state": "synced",
+              "synced": 2,
+              "total": 2
+            }
+          }
+        }
+      ],
+      "offline": false,
+      "runtimeScope": {
+        "accountId": "A7MAdySTn1MR4Fb3gDr67ZeXEvt8fqNjtHEwB3b9kUGFZZya",
+        "aclHeadId": "bafyreig7oqgzqrarc4ynt6szfyldltbv3iwh37w6lvfv7oahrtde5zzq3m",
+        "authorityIdentity": "A7MAdySTn1MR4Fb3gDr67ZeXEvt8fqNjtHEwB3b9kUGFZZya",
+        "networkId": "N72HQKYajADVPoyw2XXtyTScBYR7SwkudRULgED4CYyHdphU",
+        "spaceId": "bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l"
+      },
+      "status": "PASS_PHASE",
+      "stepsCompleted": [
+        "health",
+        "identity",
+        "self-member",
+        "removed-member",
+        "runtime:('space', '/v1/spaces/bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l/runtime-state')",
+        "runtime:('object', '/v1/spaces/bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l/objects/bafyreicytuyyuw7nu6cklsgptni4k5xoyi3u4suijh6lp5moki2nvtpi7e/runtime-state')",
+        "removed-member-final",
+        "self-member-final"
+      ],
+      "stopRequested": true
+    },
+    {
+      "accountId": "AAFSi1CkNvwiTLAkKWQF9K5GnLcfFaqvfYYCa1zmJWETjuyR",
+      "actor": "member",
+      "denials": [
+        "space",
+        "object"
+      ],
+      "gracefulStopIntent": {
+        "leaderUnreaped": true,
+        "pid": 2916847,
+        "signal": 15
+      },
+      "logSHA256": "6562ce6e7b09501b68bbd345170136b871b404414b72bac1836d41ae80020b17",
+      "membership": [
+        {
+          "identity": "AAFSi1CkNvwiTLAkKWQF9K5GnLcfFaqvfYYCa1zmJWETjuyR",
+          "permission": "none",
+          "status": "removed",
+          "step": "self-member"
+        },
+        {
+          "identity": "AAFSi1CkNvwiTLAkKWQF9K5GnLcfFaqvfYYCa1zmJWETjuyR",
+          "permission": "none",
+          "status": "removed",
+          "step": "self-member-final"
+        }
+      ],
+      "name": "member-runtime",
+      "observations": [],
+      "offline": false,
+      "status": "PASS_PHASE",
+      "stepsCompleted": [
+        "health",
+        "identity",
+        "self-member",
+        "deny:('space', '/v1/spaces/bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l/runtime-state')",
+        "deny:('object', '/v1/spaces/bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l/objects/bafyreicytuyyuw7nu6cklsgptni4k5xoyi3u4suijh6lp5moki2nvtpi7e/runtime-state')",
+        "self-member-final"
+      ],
+      "stopRequested": true
+    }
+  ],
+  "privateRecordExports": 0,
+  "processes": [
+    {
+      "absenceObservedAtSeconds": 4.433280614204705,
+      "argv": [
+        "/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127/attempt7/any",
+        "run",
+        "--config",
+        "/mnt/development/projects/evidence/pinkha-n-runtime-state-http-20261127/attempt1/network.yml",
+        "--data-dir",
+        "/var/lib/pinkha-c-filesv2-20261126/attempt1/alice",
+        "--addr",
+        "127.0.0.1:53857"
+      ],
+      "cleanupErrors": [],
+      "cwd": "/mnt/development/projects/evidence/pinkha-n-runtime-state-http-20261127/attempt1",
+      "exitCode": 0,
+      "expectedServiceShutdown": true,
+      "forcedCleanup": false,
+      "logSHA256": "8297cc2d2ab178e4ae8e2a5ec61c6ed7e17a21eaadac86eb9bb7996fd50a4d20",
+      "pgid": 2916684,
+      "pid": 2916684,
+      "processGroupAbsent": true,
+      "seconds": 4.433282614685595,
+      "signals": [],
+      "stopReason": null,
+      "unreapedLeaderDuringGroupCleanup": true
+    },
+    {
+      "absenceObservedAtSeconds": 3.8278709845617414,
+      "argv": [
+        "/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127/attempt7/any",
+        "run",
+        "--config",
+        "/mnt/development/projects/evidence/pinkha-n-runtime-state-http-20261127/attempt1/network.yml",
+        "--data-dir",
+        "/var/lib/pinkha-c-filesv2-20261126/attempt1/bob",
+        "--addr",
+        "127.0.0.1:54375"
+      ],
+      "cleanupErrors": [],
+      "cwd": "/mnt/development/projects/evidence/pinkha-n-runtime-state-http-20261127/attempt1",
+      "exitCode": 0,
+      "expectedServiceShutdown": true,
+      "forcedCleanup": false,
+      "logSHA256": "6562ce6e7b09501b68bbd345170136b871b404414b72bac1836d41ae80020b17",
+      "pgid": 2916847,
+      "pid": 2916847,
+      "processGroupAbsent": true,
+      "seconds": 3.8278727447614074,
+      "signals": [],
+      "stopReason": null,
+      "unreapedLeaderDuringGroupCleanup": true
+    }
+  ],
+  "productAndCompilerModesUnchanged": true,
+  "protocol": "pinkha-native-runtime-state-http-four-v1",
+  "publicInputsUnchanged": true,
+  "removedMemberDenialCount": 2,
+  "requests": [
+    {
+      "bodyReadInvocations": 0,
+      "failure": {
+        "message": "[Errno 111] Connection refused",
+        "type": "ConnectionRefusedError"
+      },
+      "kind": "identity-or-membership",
+      "method": "GET",
+      "path": "/v1/health",
+      "phase": "owner-runtime",
+      "range": null,
+      "stage": "dispatching"
+    },
+    {
+      "bodyReadInvocations": 0,
+      "failure": {
+        "message": "[Errno 111] Connection refused",
+        "type": "ConnectionRefusedError"
+      },
+      "kind": "identity-or-membership",
+      "method": "GET",
+      "path": "/v1/health",
+      "phase": "owner-runtime",
+      "range": null,
+      "stage": "dispatching"
+    },
+    {
+      "bodyReadInvocations": 0,
+      "headers": {
+        "Content-Length": "311",
+        "Content-Range": "",
+        "Content-Type": "application/json"
+      },
+      "kind": "identity-or-membership",
+      "method": "GET",
+      "path": "/v1/health",
+      "phase": "owner-runtime",
+      "range": null,
+      "stage": "ready-status",
+      "status": 200
+    },
+    {
+      "bodyReadInvocations": 1,
+      "headers": {
+        "Content-Length": "147",
+        "Content-Range": "",
+        "Content-Type": "application/json"
+      },
+      "kind": "identity-or-membership",
+      "method": "GET",
+      "path": "/v1/account",
+      "phase": "owner-runtime",
+      "range": null,
+      "response": {
+        "bytes": 147,
+        "sha256": "d312b4e403363f558d7a885f1f929944d64d032e77ce50fc23f36de2225eecab"
+      },
+      "stage": "metadata-response",
+      "status": 200
+    },
+    {
+      "bodyReadInvocations": 1,
+      "headers": {
+        "Content-Length": "103",
+        "Content-Range": "",
+        "Content-Type": "application/json"
+      },
+      "kind": "identity-or-membership",
+      "method": "GET",
+      "path": "/v1/spaces/bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l/members/me",
+      "phase": "owner-runtime",
+      "range": null,
+      "response": {
+        "bytes": 103,
+        "sha256": "9e5f52dbd23692708d4f312b35c0676f4f4eee16a326a0aac798d9e6470a6b4e"
+      },
+      "stage": "metadata-response",
+      "status": 200
+    },
+    {
+      "bodyReadInvocations": 1,
+      "headers": {
+        "Content-Length": "103",
+        "Content-Range": "",
+        "Content-Type": "application/json"
+      },
+      "kind": "identity-or-membership",
+      "method": "GET",
+      "path": "/v1/spaces/bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l/members/AAFSi1CkNvwiTLAkKWQF9K5GnLcfFaqvfYYCa1zmJWETjuyR",
+      "phase": "owner-runtime",
+      "range": null,
+      "response": {
+        "bytes": 103,
+        "sha256": "0c42f4ed8bc372982a604c03b0bf7c62bd17d327d9690d00b194a289d286c6a6"
+      },
+      "stage": "metadata-response",
+      "status": 200
+    },
+    {
+      "bodyReadInvocations": 1,
+      "headers": {
+        "Content-Length": "724",
+        "Content-Range": "",
+        "Content-Type": "application/json"
+      },
+      "kind": "runtime-observation",
+      "method": "GET",
+      "path": "/v1/spaces/bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l/runtime-state",
+      "phase": "owner-runtime",
+      "range": null,
+      "response": {
+        "bytes": 724,
+        "sha256": "45f39842c33d7bafed4f6a858e0c1494889f2209b524a97d8921efc40a5f4f10"
+      },
+      "responsePath": "/mnt/development/projects/evidence/pinkha-n-runtime-state-http-20261127/attempt1/responses/007.json",
+      "stage": "metadata-response",
+      "status": 200
+    },
+    {
+      "bodyReadInvocations": 1,
+      "headers": {
+        "Content-Length": "933",
+        "Content-Range": "",
+        "Content-Type": "application/json"
+      },
+      "kind": "runtime-observation",
+      "method": "GET",
+      "path": "/v1/spaces/bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l/objects/bafyreicytuyyuw7nu6cklsgptni4k5xoyi3u4suijh6lp5moki2nvtpi7e/runtime-state",
+      "phase": "owner-runtime",
+      "range": null,
+      "response": {
+        "bytes": 933,
+        "sha256": "9c3889cbbe7802a0a8fe9cd173bfc3b0343a42993899b32461d701c389cabbd3"
+      },
+      "responsePath": "/mnt/development/projects/evidence/pinkha-n-runtime-state-http-20261127/attempt1/responses/008.json",
+      "stage": "metadata-response",
+      "status": 200
+    },
+    {
+      "bodyReadInvocations": 1,
+      "headers": {
+        "Content-Length": "103",
+        "Content-Range": "",
+        "Content-Type": "application/json"
+      },
+      "kind": "identity-or-membership",
+      "method": "GET",
+      "path": "/v1/spaces/bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l/members/AAFSi1CkNvwiTLAkKWQF9K5GnLcfFaqvfYYCa1zmJWETjuyR",
+      "phase": "owner-runtime",
+      "range": null,
+      "response": {
+        "bytes": 103,
+        "sha256": "0c42f4ed8bc372982a604c03b0bf7c62bd17d327d9690d00b194a289d286c6a6"
+      },
+      "stage": "metadata-response",
+      "status": 200
+    },
+    {
+      "bodyReadInvocations": 1,
+      "headers": {
+        "Content-Length": "103",
+        "Content-Range": "",
+        "Content-Type": "application/json"
+      },
+      "kind": "identity-or-membership",
+      "method": "GET",
+      "path": "/v1/spaces/bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l/members/me",
+      "phase": "owner-runtime",
+      "range": null,
+      "response": {
+        "bytes": 103,
+        "sha256": "9e5f52dbd23692708d4f312b35c0676f4f4eee16a326a0aac798d9e6470a6b4e"
+      },
+      "stage": "metadata-response",
+      "status": 200
+    },
+    {
+      "bodyReadInvocations": 0,
+      "failure": {
+        "message": "[Errno 111] Connection refused",
+        "type": "ConnectionRefusedError"
+      },
+      "kind": "identity-or-membership",
+      "method": "GET",
+      "path": "/v1/health",
+      "phase": "member-runtime",
+      "range": null,
+      "stage": "dispatching"
+    },
+    {
+      "bodyReadInvocations": 0,
+      "headers": {
+        "Content-Length": "311",
+        "Content-Range": "",
+        "Content-Type": "application/json"
+      },
+      "kind": "identity-or-membership",
+      "method": "GET",
+      "path": "/v1/health",
+      "phase": "member-runtime",
+      "range": null,
+      "stage": "ready-status",
+      "status": 200
+    },
+    {
+      "bodyReadInvocations": 1,
+      "headers": {
+        "Content-Length": "148",
+        "Content-Range": "",
+        "Content-Type": "application/json"
+      },
+      "kind": "identity-or-membership",
+      "method": "GET",
+      "path": "/v1/account",
+      "phase": "member-runtime",
+      "range": null,
+      "response": {
+        "bytes": 148,
+        "sha256": "5bbbbd0039cf9891a21bc223dd6b37230382c6cda92582e812a26648764cb7d4"
+      },
+      "stage": "metadata-response",
+      "status": 200
+    },
+    {
+      "bodyReadInvocations": 1,
+      "headers": {
+        "Content-Length": "103",
+        "Content-Range": "",
+        "Content-Type": "application/json"
+      },
+      "kind": "identity-or-membership",
+      "method": "GET",
+      "path": "/v1/spaces/bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l/members/me",
+      "phase": "member-runtime",
+      "range": null,
+      "response": {
+        "bytes": 103,
+        "sha256": "0c42f4ed8bc372982a604c03b0bf7c62bd17d327d9690d00b194a289d286c6a6"
+      },
+      "stage": "metadata-response",
+      "status": 200
+    },
+    {
+      "bodyReadInvocations": 1,
+      "errorCode": "acl.forbidden",
+      "headers": {
+        "Content-Length": "200",
+        "Content-Range": "",
+        "Content-Type": "application/json"
+      },
+      "kind": "runtime-denial",
+      "method": "GET",
+      "path": "/v1/spaces/bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l/runtime-state",
+      "phase": "member-runtime",
+      "range": null,
+      "response": {
+        "bytes": 200,
+        "sha256": "57bae69aceed403effbd8cd221a780c9aa309f5523e4b0619831ee5d765b2879"
+      },
+      "responsePath": "/mnt/development/projects/evidence/pinkha-n-runtime-state-http-20261127/attempt1/responses/015.json",
+      "stage": "confirmed-typed-denial",
+      "status": 403
+    },
+    {
+      "bodyReadInvocations": 1,
+      "errorCode": "acl.forbidden",
+      "headers": {
+        "Content-Length": "273",
+        "Content-Range": "",
+        "Content-Type": "application/json"
+      },
+      "kind": "runtime-denial",
+      "method": "GET",
+      "path": "/v1/spaces/bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l/objects/bafyreicytuyyuw7nu6cklsgptni4k5xoyi3u4suijh6lp5moki2nvtpi7e/runtime-state",
+      "phase": "member-runtime",
+      "range": null,
+      "response": {
+        "bytes": 273,
+        "sha256": "2c50097625c0a7e8100dc8dfb1796471bbe426b1f01b2ef23d0f06581593c956"
+      },
+      "responsePath": "/mnt/development/projects/evidence/pinkha-n-runtime-state-http-20261127/attempt1/responses/016.json",
+      "stage": "confirmed-typed-denial",
+      "status": 403
+    },
+    {
+      "bodyReadInvocations": 1,
+      "headers": {
+        "Content-Length": "103",
+        "Content-Range": "",
+        "Content-Type": "application/json"
+      },
+      "kind": "identity-or-membership",
+      "method": "GET",
+      "path": "/v1/spaces/bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l/members/me",
+      "phase": "member-runtime",
+      "range": null,
+      "response": {
+        "bytes": 103,
+        "sha256": "0c42f4ed8bc372982a604c03b0bf7c62bd17d327d9690d00b194a289d286c6a6"
+      },
+      "stage": "metadata-response",
+      "status": 200
+    }
+  ],
+  "resourcePolicy": {
+    "controllerDeadlineSeconds": 360,
+    "developmentAdmissionReserveBytes": 33554432,
+    "developmentFloorBytes": 536870912,
+    "finalVerificationSeconds": 60,
+    "logCapPerProcessBytes": 8388608,
+    "maximumConcurrentNativeProcesses": 1,
+    "maximumPhaseSeconds": 240,
+    "maximumRuntimeGETSeconds": 15,
+    "memoryLimitPerNative": "512MiB",
+    "outputAllocationSampleSeconds": 1,
+    "ownedOutputCapBytes": 33554432,
+    "requiredOuterTimeoutSeconds": 480,
+    "rootAdmissionReserveBytes": 134217728,
+    "rootFloorBytes": 2147483648,
+    "workersPerNative": 2
+  },
+  "reusedContentHTTP14SHA256": "7efa899783f5cabb54b2693dca0a22a9571d499ef4b9838749dfb8e677784099",
+  "reusedMetadataHTTP18SHA256": "8aaaf6fd04eb535bea79116ceaeac5a0dab6293d2d40bb1202616a6cef1c94ee",
+  "reusedOwnershipFiveControlReceiptSHA256": "040ffa3fcf93094369e24928732aeba9eb10fdb673db76ab7540a887748aa27d",
+  "roleRestorations": 0,
+  "runtimeNativeProducer": {
+    "C13RetainedActualMethods": 13,
+    "binary": {
+      "bytes": 78294169,
+      "mode": 448,
+      "path": "/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127/attempt7/any",
+      "sha256": "84a4432a0f6b330444dc35f1cf024d95fe9eea1e4e8eb3e2dfb1b99dcb24e974"
+    },
+    "compiledSourceInputSHA256": "3552d6f65350c1eba2e9763c7f9a9daa64ada0335f64020ad585fff4a0e286e4",
+    "newQualificationEvents": 18,
+    "oldMethodsReexecuted": 0,
+    "receiptPath": "/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127/attempt7/result.json",
+    "receiptSHA256": "f832753c0d365e984ed7f53ad6f4e3b20b125562b1871e0d7c5d5c54794fdfe2",
+    "sdkSourceFiles": 750,
+    "sourceFiles": 1638,
+    "sourceManifestSHA256": "12277084b55ab7ff17f865711e15cb3580fca253eb51ec114c0fb707f24a56b9"
+  },
+  "runtimeResponsesUnchanged": true,
+  "seconds": 13.978,
+  "status": "PASS_CURRENT_AUTHORITY_RUNTIME_GET4_ONLY",
+  "uploadCalls": 0
+}

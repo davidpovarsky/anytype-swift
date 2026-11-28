@@ -1,0 +1,34 @@
+{
+  "OSExecOrDetachedFallbackAllowed": false,
+  "carrierRequiredBounds": {
+    "OracleOuter": 3600,
+    "foregroundSSH": 3300
+  },
+  "carrierRole": null,
+  "currentReadyFalseLaunch": {
+    "bytes": 1211,
+    "path": "/mnt/development/projects/evidence/pinkha-w3-runtime18-apple-preparation-20261128-source/app-bae-forward-controller-prepared1/plans/stage-foreground.ready-false.json",
+    "sha256": "5be40f96060ae364eb32986332569374e179e17c896116c8fa9e2cc5bf11814f"
+  },
+  "currentSource": {
+    "bytes": 17752,
+    "path": "/mnt/development/projects/evidence/pinkha-w3-runtime18-apple-preparation-20261128-source/app-bae-forward-controller-prepared1/after/run_stage_with_whole_budget.py",
+    "sha256": "df4ec51f67631a477c8176b34e7c1d764e4750bbfff5ace096c4ea7daf009ffb"
+  },
+  "individualOriginalCommandCeilingsUnchanged": true,
+  "ordinaryFutureSourceRetargetRequiresDistinctReviewedConstantDelta": true,
+  "original38aFunctionsChanged": [
+    "main"
+  ],
+  "readyForExecution": false,
+  "reason": "main adds only a fail-closed null-literal guard and replaces three exact byte constants by separately fixed literals; all original execution/cleanup statements remain unchanged.",
+  "requiredRootBoundLiterals": [
+    "STAGE_PLAN_SHA",
+    "STAGE_PLAN_BYTES",
+    "WINDOW_SHA",
+    "WINDOW_BYTES",
+    "SUPPLEMENT_SHA",
+    "SUPPLEMENT_BYTES"
+  ],
+  "schema": "pinkha-fixed-stage-wrapper-literal-binding-v1"
+}

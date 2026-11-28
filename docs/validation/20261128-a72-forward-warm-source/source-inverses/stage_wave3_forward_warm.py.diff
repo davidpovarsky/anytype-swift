@@ -1,0 +1,122 @@
+--- original/stage_wave3_forward_warm.py
++++ after/stage_wave3_forward_warm.py
+@@ -1,4 +1,4 @@
+-"""Forward-stage an explicitly bound source on the retained clean8f2 cache.
++"""Forward-stage an explicitly bound source from the actual retained a72 cache.
+ 
+ The checked-in proposal is UNBOUND. This controller cannot admit a build, run
+ tests, replace native artifacts, delete caches, or re-probe historical groups.
+@@ -21,18 +21,19 @@
+ sys.dont_write_bytecode = True
+ SOURCE = Path('/Users/m1/development/anytype-d-active-20261125/main14/source')
+ DERIVED = SOURCE.parent / 'app-derived'
+-BASELINE = '8f2c11713fb8a40ae13444104723666ffef68afe'
+-BASELINE_TREE = '7bcaa6e1b6eadf42eaaaebcb75aab84686aa1f9a'
++BASELINE = 'a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd'
++BASELINE_TREE = '2adebea229e42c5ff56e50aaf0adebbacfbc4c41'
++PRIOR_A72_ROOT = SOURCE.parent.parent / 'main16-wave3-forward-a72f2e1ee303'
+ PRIOR_ROOT = SOURCE.parent.parent / 'main16-wave3-8f2c11713fb8'
+ FAILED_ROOT = SOURCE.parent.parent / 'main16-wave3-6aab20344fcf'
+ FAILED_SHA = '6aab20344fcf1c645d7c96e0b9ec034ef07003a9'
+ FAILED_RECEIPT = 'ec5d9fd6979144eb452e0ba99c38653eb1b32dfdd1686a2eef48b580731cb0f3'
+ ORIGINAL15 = '11ab2f45511d8b7917709c1706475538b9ea4ed228e1dc908dfa55a331cacc74'
+ PRIOR_STAGE = '506620e9c9cb2aafe0c89076269c2a7d3a4cb6fa7334924a18dda4dff1b2f6bb'
+-SDK_BEFORE = 'b10eb0805789a04f9f48721230961e45ba6a93ceb5d95cb90437a59c87ae9528'
+-LOCK_BEFORE = 'e22368e522ac795253935b0a31e39d1b36bd9043ef2ed1014845927914527ccd'
+-KIT_BEFORE = '9058b489e9acc271b4f8ef69e2ed24648f93b4ed'
+-KIT_AFTER = '26beca175d64a4d34e3567f2bbb4bf308d714478'
++SDK_BEFORE = '41445d6e8ea29da6460aeb340f006b7d0eaa7f0fb5a4a805d2c369ff4ef17124'
++LOCK_BEFORE = '4065a37e9e6dd3c117bd72bec90c2039108a0985df6989f9dc66b0f47840f689'
++KIT_BEFORE = '26beca175d64a4d34e3567f2bbb4bf308d714478'
++KIT_AFTER = '414e0d3e95d53509381d233a23fcdd28ef24167a'
+ LOCK_RELATIVE = 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved'
+ FLOOR = 2 * 1024 ** 3
+ STAGE_GROWTH = 512 * 1024 ** 2
+@@ -42,7 +43,7 @@
+     'originalAdapter': '47c66dde6122d19b12e5206a4a5f0b1841a026fb8088aa4bdb2c69d6a657cfcd',
+     'census': '229222b72fd01aa515aef502aa8f8c889344f9e4cd60981421f49f53ecf3bd2a',
+     'lifecycle': '73bb6a4f6dde58faa723c38fddd322b6a6ff356fbbee44ecdeb949a77d358e1a',
+-    'warmAdapter': '29b524b32bd8428db62cf9119d1f7f80a5b4d6406ce1d1574dbdefef20fe3adf',
++    'warmAdapter': '181b5f3ca42943e1dc8179d16a98d63998f966212920e63c3c8a5317e98b4d75',
+     'phaseObserver': '75dfe996edc8ffd5eece2efbd6a64238e221a0d4b9e885edaf47d9cebe043826',
+ }
+ 
+@@ -179,7 +180,8 @@
+     oldstage = read_ref(plan['prior8f2Stage'])
+     require(sha(oldstage) == PRIOR_STAGE, 'Original actual8f2 staging receipt differs')
+     previous = json.loads(oldstage.read_bytes())
+-    require(previous['sourceCommit'] == BASELINE and previous['tree'] == BASELINE_TREE,
++    require(previous['sourceCommit'] == '8f2c11713fb8a40ae13444104723666ffef68afe'
++            and previous['tree'] == '7bcaa6e1b6eadf42eaaaebcb75aab84686aa1f9a',
+             'Prior staging must describe actual8f2')
+     path = read_ref(plan['failedPreservation'])
+     require(path == FAILED_ROOT / 'failed-preservation1/receipt.json' and sha(path) == FAILED_RECEIPT,
+@@ -303,7 +305,7 @@
+             'Actual published forward source required')
+     require(plan['previousSourceSHA'] == BASELINE and plan['previousSourceTree'] == BASELINE_TREE
+             and plan['sourceRoot'] == str(SOURCE) and plan['appDerived'] == str(DERIVED),
+-            'This route is scoped to the actual retained8f2 physical cache')
++            'This route is scoped to the actual retained a72 physical cache')
+     require(SOURCE.is_dir() and SOURCE.resolve() == SOURCE and not SOURCE.is_symlink()
+             and DERIVED.is_dir() and DERIVED.resolve() == DERIVED and not DERIVED.is_symlink(),
+             'The original source and warm DerivedData must be physical')
+@@ -322,6 +324,9 @@
+     require(all(not (PRIOR_ROOT / name).exists() for name in
+                 ('build16', 'root-dispatch1', 'control-dispatch1', 'build-admission.approved.json')),
+             'The original8f2 build is no longer an untouched predispatch checkpoint')
++    require(all(not (PRIOR_A72_ROOT / name).exists() for name in
++                ('build16', 'root-dispatch1', 'control-dispatch1', 'build-admission.approved.json')),
++            'The actual a72 stage is no longer an untouched prebuild checkpoint')
+     bundle = read_ref(plan['gitBundle'])
+     template_path = read_ref(plan['buildAdmissionTemplate'])
+     template = json.loads(template_path.read_bytes())
+@@ -331,6 +336,8 @@
+             and template['sourceRoot'] == str(SOURCE) and template['appDerived'] == str(DERIVED)
+             and template['forwardWarm']['targetSDKRevision'] == plan['sdkRevision'],
+             'Source staging must emit an unapproved exact build draft')
++    require(template['forwardWarm']['priorForwardStage'] == plan['priorForwardStage'],
++            'The source and build plans must retain the same exact prior a72 stage')
+     require(shutil.disk_usage(SOURCE).free >= FLOOR + STAGE_GROWTH, 'Staging envelope unavailable')
+     root.mkdir(mode=0o700)
+     stage = root / 'source-staging1'
+@@ -351,11 +358,13 @@
+         report['ownersBefore'] = census(controls, stage / 'owners-before.json', plan, report, commands)
+         report['toolchainIntake'] = toolchain_intake(commands, plan, stage)
+         report['priorRetention'] = existing_retention(plan, controls['preservation'])
++        report['priorForwardStage'] = plan['priorForwardStage']
++        report['priorForwardQualification'] = controls['warmAdapter'].wr_prior_forward(plan['priorForwardStage'])
+         packages_before = controls['warmAdapter'].wr_packages(SOURCE, DERIVED)
+         before_lock = (SOURCE / LOCK_RELATIVE).read_bytes()
+         require(hashlib.sha256(before_lock).hexdigest() == LOCK_BEFORE
+                 and sha(SOURCE / 'Dependencies/Hanlin/.pinkha-source.json') == SDK_BEFORE,
+-                'Fresh baseline SDK/lock differs from the actual8f2 observation')
++                'Fresh baseline SDK/lock differs from the actual a72 stage')
+         write(stage / 'packages-before.json', packages_before)
+         native_inputs(plan, controls['originalStager'])
+         commands.git('bundle', 'verify', str(bundle))
+@@ -391,7 +400,7 @@
+                 'Final source does not pin the admitted SDK revision')
+         sdk = SOURCE / 'Dependencies/Hanlin'
+         require(sha(sdk / '.pinkha-source.json') == SDK_BEFORE, 'Original SDK changed before retention move')
+-        prior_sdk = root / 'retained-prior-sdk385'
++        prior_sdk = root / 'retained-prior-sdkc0'
+         require(not prior_sdk.exists() and not prior_sdk.is_symlink(), 'Prior SDK retention destination exists')
+         sdk.rename(prior_sdk)
+         commands.run([sys.executable, '-B', str(SOURCE / 'Tools/Hanlin/prepare_sdk.py'),
+@@ -432,6 +441,8 @@
+                 'Original producer lifecycle input differs')
+         identity(commands, args.accepted_source, plan['appSourceTree'])
+         report['ownersAfter'] = census(controls, stage / 'owners-after.json', plan, report, commands)
++        require(controls['warmAdapter'].wr_prior_forward(plan['priorForwardStage'])
++                == report['priorForwardQualification'], 'Prior a72 evidence changed during staging')
+         commands.barrier()
+         report.update(status='PASS_EXACT_APP16_SOURCE_AND_NATIVE_REUSED_ORIGINALS_RETAINED',
+                       finishedAt=time.time(), tree=plan['appSourceTree'],
+@@ -451,6 +462,7 @@
+             sizes[name] = int(text.split()[0]) * 1024
+         cache = {'protocol': 'pinkha-forward-warm-cache-qualification-v1', 'sourceCommit': args.accepted_source,
+                  'baselineSourceSHA': BASELINE, 'stageReceiptSHA256': stage_ref['sha256'],
++                 'priorForwardStage': plan['priorForwardStage'],
+                  'stageSourceAndNativePreservationRetained': True,
+                  'priorFailedSourceCommit': FAILED_SHA, 'failedPreservationSHA256': FAILED_RECEIPT,
+                  'baselinePreservationSHA256': report['baselinePreservationSHA256'],

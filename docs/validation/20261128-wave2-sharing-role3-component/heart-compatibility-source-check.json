@@ -1,0 +1,148 @@
+{
+  "schema": "pinkha.sharing.heart-compatibility-source-check.v1",
+  "status": "BOUNDED_NO_NEW_SOURCE_DEFECT",
+  "reviewer": "torah_continue",
+  "reviewedAtUTC": "2026-11-28 05:32:37 UTC",
+  "repository": "davidpovarsky/anytype-swift",
+  "currentCommit": "1ae5f762cd42c3c4500c553a17014e343440ce0f",
+  "conclusion": "The Native Guest transition mismatch is not demonstrated in the inspected Heart adapter or ordinary Heart members route. No Heart source follow-up is proposed by this finite check.",
+  "coreFindings": [
+    {
+      "subject": "Actual Heart adapter",
+      "source": "Anytype/Sources/Pinkha/Sharing/HeartSpaceSharingService.swift",
+      "detail": "The adapter conforms to PinkhaSpaceSharingService. readSnapshot admits active same-Space state and derives editable identities from active, nonself participants satisfying the original space.canChangeRole(target:). Owner grants Reader/Writer/Admin; Admin grants Reader/Writer; other actors grant nothing. The constructor supplies no per-member role map."
+    },
+    {
+      "subject": "Existing target eligibility",
+      "source": "Anytype/Sources/ServiceLayer/ParticipantSpacesStorage/Model/ParticipantSpaceViewData.swift",
+      "detail": "canChangeRole rejects an Owner target; Owner can change other targets, Admin can change Reader/Writer targets only, and other actors cannot change roles. The adapter separately excludes self and inactive participants. Its removable set remains separate and uses existing canRemove, which excludes Owner/self and prevents an Admin from removing another Admin."
+    },
+    {
+      "subject": "Exact Heart role vocabulary",
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ParticipantPermissions.swift",
+      "detail": "The actual generated Heart protobuf enum declares Reader=0, Writer=1, Owner=2, NoPermissions=3 and Admin=4, plus UNRECOGNIZED(Int). It has no Guest enum case. ParticipantPermissions aliases this enum. The adapter maps NoPermissions/UNRECOGNIZED to shared .none, and nativeRole accepts only Reader/Writer/Admin; Guest is rejected before a role-change RPC."
+    },
+    {
+      "subject": "Real role-change backend call",
+      "source": "Modules/Services/Sources/Services/Workspace/WorkspaceService.swift",
+      "detail": "HeartSpaceSharingService.apply first reads a current snapshot, calls mutation.validate(in:), checks the account, and invokes WorkspaceService.participantPermissionsChange. That original service sends ClientCommands.spaceParticipantPermissionsChange with the scoped spaceID and one Anytype_Model_ParticipantPermissionChange(identity, perms). The adapter checks the account again and reads a resulting snapshot. No Native HTTP role mapping is substituted."
+    },
+    {
+      "subject": "Scope of the negative result",
+      "detail": "The Heart client/adapter cannot issue the Native Guest upgrades, Writer/Admin-to-Guest, or Reader-to-Guest transitions through this inspected API. This does not establish an additional Heart Guest feature or a backend server authorization result. Native any-sync 5d71 semantics were not assumed to govern Heart."
+    }
+  ],
+  "ordinaryRoute": {
+    "chain": [
+      "SpaceSettingsViewModel.onMembersTap",
+      "SpaceSettingsCoordinatorViewModel.onSpaceShareSelected",
+      "SpaceSettingsCoordinatorView sheet(showSpaceShareData)",
+      "SpaceShareCoordinatorView",
+      "SpaceShareView",
+      "SpaceShareViewModel.participantContextActions / showPermissionAlert / showMakeAdminAlert",
+      "WorkspaceService.participantPermissionsChange"
+    ],
+    "observation": "This exact Settings-to-Members route uses the original SpaceShareView/model, not a newly inferred PinkhaSharing host adoption. Its menu is target-aware through canShowRoleMenu/canChangeRole/canPromoteToAdmin and existing plan-limit gates, and offers Admin (Owner actor only), Writer, Reader and removal; there is no Guest choice.",
+    "limit": "The adapter's existence is proven, but all constructor call sites or other Heart entry points were not indexed. No global absence, global adoption or missing-integration defect is claimed."
+  },
+  "currentVersusPublishedSuccessor": {
+    "inspectedCurrentSharedModule": {
+      "path": "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceSharing.swift",
+      "commit": "1ae5f762cd42c3c4500c553a17014e343440ce0f",
+      "bytes": 8004,
+      "sha256": "7d2dd76b72c5bcda23650b2e87069e72dc8e23cb823d5b7e5ff56e16f26002cc",
+      "gitBlob": "c80d25d2b7b3ce8af7842b1391bdc69c0d0a699a",
+      "state": "Original global-list shared module; optional member map is not present at this exact current commit."
+    },
+    "separatelyPublishedReviewedSuccessor": {
+      "commit": "80bd7636bb53391d8350a7ef39810e0b2cd9b733",
+      "sharedModuleBytes": 9079,
+      "sharedModuleSHA256": "32b76990f19402c2975c751273d3aae87c579d8103339ace14a49d835a8ff028",
+      "gitBlob": "10a57636a2ab759a7d42a179f17f43f2c9e1cf1a",
+      "boundary": "Its optional nil member-role map deliberately retains the existing Heart grant-list behavior for this unchanged caller. That source compatibility is distinct from claiming it is already integrated at 1ae."
+    },
+    "frozenSuccessorOrShared3Changed": false
+  },
+  "primarySourcePins": [
+    {
+      "path": "Anytype/Sources/Pinkha/Sharing/HeartSpaceSharingService.swift",
+      "bytes": 7218,
+      "sha256": "337e17f1e8df93111df29fd80d3b5d0edbf21ed5914577637f36003ba4936215",
+      "gitBlob": "ad052eec4fa2f1b8a2d46008ae4b50c8705f9e3f"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/ParticipantSpacesStorage/Model/ParticipantSpaceViewData.swift",
+      "bytes": 2450,
+      "sha256": "da98aa3e52834bb8716233d11ee79a5f2c2ea9dbf4d6fd7e7edec6943c1b887d",
+      "gitBlob": "4678f4569647d7f07b82fb98635676519bb9f5a9"
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ParticipantPermissions.swift",
+      "bytes": 2220,
+      "sha256": "5022bf16a8c3ef693a41d29e136ed053af79e2fd4ea4de5d41275a1b7980c798",
+      "gitBlob": "cacce9daad76cdc83f46ffc7ab0c25790fa01d3e"
+    },
+    {
+      "path": "Modules/Services/Sources/Services/Workspace/WorkspaceService.swift",
+      "bytes": 12134,
+      "sha256": "284c09888c8cf75b2fa54a0f529e0ac6401fbc9ba9c9a923973edaaace061c21",
+      "gitBlob": "cdf22c38b3f647bcd83ab89af29ae4d9f5b5c317"
+    },
+    {
+      "path": "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceSharing.swift",
+      "bytes": 8004,
+      "sha256": "7d2dd76b72c5bcda23650b2e87069e72dc8e23cb823d5b7e5ff56e16f26002cc",
+      "gitBlob": "c80d25d2b7b3ce8af7842b1391bdc69c0d0a699a"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/SpaceSettings/SpaceSettings/SpaceSettingsViewModel.swift",
+      "bytes": 15371,
+      "sha256": "6a51ca6b579cda507ad4b76415e8db7afd05a4fb26527bd078c00325ce515c14",
+      "gitBlob": "08e2ca29673e52d96aaba49717c7e66c17f7f8c5"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Flows/SpaceSettings/SpaceSettingsCoordinatorViewModel.swift",
+      "bytes": 2877,
+      "sha256": "fb721ce321ccbc636e7803d6782e25732fc2595b4f995edf0a14b43cb4c34b62",
+      "gitBlob": "e6bb4a6976a211306b83a173c4f80e4c59beb48a"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Flows/SpaceSettings/SpaceSettingsCoordinatorView.swift",
+      "bytes": 2415,
+      "sha256": "3be6600b7400b52f2d781094a52e1038d1b4ce3769c780011676e0bf3dd9b321",
+      "gitBlob": "c012055c2f8de844c0918cd55546f1f95a5afe63"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Flows/SpaceShareCoordinator/SpaceShareCoordinatorView.swift",
+      "bytes": 913,
+      "sha256": "7bc8c5f285844fc009b06f333a61915baaf86ac9522715025921a202dd1c53b4",
+      "gitBlob": "2c8473b430667504dee9b4742b57d8ba99e19766"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Modules/SpaceShare/SpaceShareView.swift",
+      "bytes": 5215,
+      "sha256": "0fd8b63e879dcf20df8df0f162ad3bc485c6c9c735c87b9b6d66b7b5d59efe79",
+      "gitBlob": "45c477c488feddceb6476ad1d2c8ab0ef957fcbd"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Modules/SpaceShare/SpaceShareViewModel.swift",
+      "bytes": 18263,
+      "sha256": "2f6a75585340ce01ed455daa72fa4a37ae4ede1ac317dd23d60d47fd5f0c5df8",
+      "gitBlob": "722c1cd4ba09d034505f079e7d82e08957b8998c"
+    }
+  ],
+  "evidenceBoundary": {
+    "method": "Bounded exact-commit GitHub file and immediate directory reads; whole-body SHA-256 and Git-blob identities independently calculated. Existing shared-role review was reused for the separate 80bd successor.",
+    "locatorPrecision": "A default-branch exact-symbol search returned no hits and was used only as an unsuccessful locator, not as absence evidence. The actual Heart adapter and named model were subsequently resolved in the exact current tree.",
+    "scope": "Typed Heart adapter/RPC and ordinary Settings members source path only.",
+    "backendServerSourceIndependentlyReviewed": false,
+    "runtimeOrACLTransitionAccepted": false,
+    "compilerOrTestsRun": false,
+    "hostScriptsOrProcessQueries": false,
+    "nativeAccountInvitationActions": false,
+    "macOrFixtures": false,
+    "sourceControlsTestsOrGitChanged": false,
+    "unrelatedRegressionAudit": false
+  },
+  "remaining": "Ordinary Heart sharing runtime/visual acceptance and W3 integration remain separate obligations. No new controller, test, feature or source edit is requested by this negative source finding."
+}

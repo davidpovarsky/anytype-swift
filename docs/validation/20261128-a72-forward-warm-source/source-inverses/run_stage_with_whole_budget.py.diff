@@ -1,0 +1,58 @@
+--- original/run_stage_with_whole_budget.py
++++ after/run_stage_with_whole_budget.py
+@@ -20,18 +20,21 @@
+ import time
+ 
+ sys.dont_write_bytecode = True
+-CONTROL_ROOT = Path('/Users/m1/builds/pinkha-warm-forward-a72-binding-20261127-1')
++CONTROL_ROOT = Path('/Users/m1/builds/pinkha-warm-forward-bae-binding-20261128-1')
+ STAGE = CONTROL_ROOT / 'controls/stage_wave3_forward_warm.py'
+-STAGE_SHA = '62a3f182c1b920f74b2b7ca424501723c66929928c3de7beccc191c80149ef75'
+-STAGE_BYTES = 31457
++STAGE_SHA = '38644915911ae3df8fa9d7d446a7ca1e9d1bc57fd95d5f0542dd35fd3413083a'
++STAGE_BYTES = 32456
+ STAGE_PLAN = CONTROL_ROOT / 'stage-admission1/source-staging.authorized.json'
+-STAGE_PLAN_SHA = '66f8fff64e6f973241da426999875a539a417a1571c1376c6e1473f8bb2a178f'
++STAGE_PLAN_SHA = None
++STAGE_PLAN_BYTES = None
+ WINDOW = CONTROL_ROOT / 'stage-admission1/root-window.json'
+-WINDOW_SHA = '6cf1390ccce6962f2ce71b17d2ba89302c0764ad8284d9341c5f8b32689084c7'
++WINDOW_SHA = None
++WINDOW_BYTES = None
+ SUPPLEMENT = CONTROL_ROOT / 'stage-admission1/stage-total-budget-supplement.json'
+-SUPPLEMENT_SHA = 'ff4333e4976ba75d204f19a747ef741e07404b63eab9d0c6ce15141dcb391d40'
+-SOURCE = 'a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd'
+-BUILD_ROOT = Path('/Users/m1/development/anytype-d-active-20261125/main16-wave3-forward-a72f2e1ee303')
++SUPPLEMENT_SHA = None
++SUPPLEMENT_BYTES = None
++SOURCE = 'bae68131a20fd7ef351c2b4034ebdf520c6d3b39'
++BUILD_ROOT = Path('/Users/m1/development/anytype-d-active-20261125/main16-wave3-forward-bae68131a20f')
+ OUTPUT = CONTROL_ROOT / 'stage-admission1/whole-stage-budget-run1'
+ ACTIVE_SECONDS, WHOLE_SECONDS, OUTER_SECONDS = 3000, 3300, 3600
+ MIB = 1024 ** 2
+@@ -188,6 +191,12 @@
+                 'The actual UID501 Mac source-stage route is required')
+         require(signal.getitimer(signal.ITIMER_REAL) == (0.0, 0.0),
+                 'An unrelated in-process real timer is already active')
++        require(all(isinstance(value, str) and len(value) == 64
++                    and all(character in '0123456789abcdef' for character in value)
++                    for value in (STAGE_PLAN_SHA, WINDOW_SHA, SUPPLEMENT_SHA))
++                and all(type(value) is int and 0 < value <= MIB
++                        for value in (STAGE_PLAN_BYTES, WINDOW_BYTES, SUPPLEMENT_BYTES)),
++                'This source-only wrapper requires exact root-bound plan/window/supplement literals')
+         plan_raw, plan_ref = read_exact(args.plan, args.plan_sha256)
+         plan = json.loads(plan_raw)
+         own_raw, own_ref = read_exact(Path(__file__).resolve())
+@@ -199,9 +208,9 @@
+                 and plan['outerLauncherMaximumSeconds'] == OUTER_SECONDS
+                 and plan['maximumInvocations'] == 1 and plan['outputRoot'] == str(OUTPUT),
+                 'Exact one-stage total-budget launch contract required')
+-        require(plan['stagePlan'] == {'path': str(STAGE_PLAN), 'bytes': 14749, 'sha256': STAGE_PLAN_SHA}
+-                and plan['rootWindow'] == {'path': str(WINDOW), 'bytes': 3150, 'sha256': WINDOW_SHA}
+-                and plan['budgetSupplement'] == {'path': str(SUPPLEMENT), 'bytes': 2676, 'sha256': SUPPLEMENT_SHA},
++        require(plan['stagePlan'] == {'path': str(STAGE_PLAN), 'bytes': STAGE_PLAN_BYTES, 'sha256': STAGE_PLAN_SHA}
++                and plan['rootWindow'] == {'path': str(WINDOW), 'bytes': WINDOW_BYTES, 'sha256': WINDOW_SHA}
++                and plan['budgetSupplement'] == {'path': str(SUPPLEMENT), 'bytes': SUPPLEMENT_BYTES, 'sha256': SUPPLEMENT_SHA},
+                 'Original stage/window identity is fixed')
+         stage_raw, stage_ref = read_exact(STAGE, STAGE_SHA)
+         require(len(stage_raw) == STAGE_BYTES, 'Exact original stager length differs')
