@@ -1,0 +1,71 @@
+--- before/run_cold_bookmark_components.py
++++ after/run_cold_bookmark_components.py
+@@ -435,2 +435,4 @@
+-    owned_output = False
+-    started_at = time.monotonic()
++    owned_output = False
++    owned_output_identity = None
++    owned_output_identity_fields = ('st_dev','st_ino','st_mode','st_uid','st_gid')
++    started_at = time.monotonic()
+@@ -560,3 +562,5 @@
+-            output.mkdir(mode=0o700)
+-            owned_output = True
+-            for path in (output, output.parent):
++            output.mkdir(mode=0o700)
++            owned_output = True
++            output_info = output.lstat()
++            owned_output_identity = tuple(getattr(output_info,key) for key in owned_output_identity_fields)
++            for path in (output, output.parent):
+@@ -790,5 +794,47 @@
+-        if owned_output:
+-            save(output/'result.json',result)
+-    print(json.dumps({'status':result['status'],'receipt':str(output/'result.json') if owned_output else None,
+-                      'sha256':base.sha(output/'result.json') if owned_output else None,
+-                      'seconds':result['seconds'],'errors':result['errors']}))
++        terminal_receipt = None
++        terminal_sha256 = None
++        if owned_output:
++            try:
++                output_info = base.physical(output).lstat()
++                assert owned_output_identity is not None
++                assert tuple(getattr(output_info,key) for key in owned_output_identity_fields) == owned_output_identity
++                assert stat.S_ISDIR(output_info.st_mode), 'owned final output is not a directory'
++                receipt_bytes = (json.dumps(result,ensure_ascii=False,sort_keys=True,indent=2)+'\n').encode()
++                assert len(receipt_bytes) <= RECEIPT_CAP
++                save(output/'result.json',result)
++                expected_receipt = {'bytes':len(receipt_bytes),'sha256':hashlib.sha256(receipt_bytes).hexdigest()}
++                assert base.row(output/'result.json') == expected_receipt, 'final receipt byte identity'
++                output_info = base.physical(output).lstat()
++                assert tuple(getattr(output_info,key) for key in owned_output_identity_fields) == owned_output_identity
++                terminal_receipt = str(output/'result.json')
++                terminal_sha256 = expected_receipt['sha256']
++            except BaseException as error:
++                result['status'] = 'FAIL'
++                result['errors'].append({'phase':'final-receipt-persistence-or-identity',
++                                         'type':type(error).__name__,'message':str(error)})
++                # The first terminal write may have reached disk. It is not a
++                # qualified result after this error. Preserve it and report a
++                # separately owned FAIL receipt; never rerun the workload.
++                result['unqualifiedPrimaryReceipt'] = str(output/'result.json')
++                try:
++                    output_info = base.physical(output).lstat()
++                    assert owned_output_identity is not None
++                    assert tuple(getattr(output_info,key) for key in owned_output_identity_fields) == owned_output_identity
++                    assert stat.S_ISDIR(output_info.st_mode), 'owned failure output is not a directory'
++                    failure_receipt = output/'terminal-persistence-failure.json'
++                    assert not os.path.lexists(failure_receipt), 'failure receipt already exists'
++                    receipt_bytes = (json.dumps(result,ensure_ascii=False,sort_keys=True,indent=2)+'\n').encode()
++                    assert len(receipt_bytes) <= RECEIPT_CAP
++                    save(failure_receipt,result)
++                    expected_receipt = {'bytes':len(receipt_bytes),'sha256':hashlib.sha256(receipt_bytes).hexdigest()}
++                    assert base.row(failure_receipt) == expected_receipt, 'failure receipt byte identity'
++                    output_info = base.physical(output).lstat()
++                    assert tuple(getattr(output_info,key) for key in owned_output_identity_fields) == owned_output_identity
++                    terminal_receipt = str(failure_receipt)
++                    terminal_sha256 = expected_receipt['sha256']
++                except BaseException as fallback_error:
++                    result['errors'].append({'phase':'final-failure-receipt-persistence-or-identity',
++                                             'type':type(fallback_error).__name__,'message':str(fallback_error)})
++    print(json.dumps({'status':result['status'],'receipt':terminal_receipt,
++                      'sha256':terminal_sha256,'ownedOutputCreated':owned_output,
++                      'seconds':result['seconds'],'errors':result['errors']}))

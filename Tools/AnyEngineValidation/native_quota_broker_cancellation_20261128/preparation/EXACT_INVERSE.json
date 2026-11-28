@@ -1,0 +1,46 @@
+{
+  "protocol": "EXACT_UTF8_INVERSE_REPLACEMENTS_V1",
+  "original": {
+    "path": "originals/any/.runtime-artifacts/sdk-source/internal/files/broker/broker.go",
+    "originalRelativePath": ".runtime-artifacts/sdk-source/internal/files/broker/broker.go",
+    "role": "changed-production-preimage",
+    "bytes": 12108,
+    "sha256": "25de187fc12f7e8a9e1aa89c420a47e2bbc9aac021740e0257f79c63245e4f34",
+    "sourceMode": 384,
+    "gitBlob": "5b83d54c9abd93132636e4b864c302a7279ab6e2",
+    "wholeReadback": true
+  },
+  "proposed": {
+    "path": "overlay/any/.runtime-artifacts/sdk-source/internal/files/broker/broker.go",
+    "originalRelativePath": ".runtime-artifacts/sdk-source/internal/files/broker/broker.go",
+    "role": "proposed-production",
+    "bytes": 12218,
+    "sha256": "fe698597e58d3cd2aa4ce99bf00f59cbf101ce81c4b00f77d3539d483fc9ea9d",
+    "sourceMode": 384,
+    "gitBlob": "49c06cd901fc33faca11fa2483c925dfc4898572",
+    "wholeReadback": true
+  },
+  "reverseOrder": true,
+  "replacements": [
+    {
+      "before": ") (*fileprotov2.SpaceQuota, string, error) {\n\tif err := ctx.Err(); err != nil {\n\t\treturn nil, \"\", err\n\t}\n\tctx, cancel := context.WithCancel(ctx)\n",
+      "after": ") (*fileprotov2.SpaceQuota, string, error) {\n\tctx, cancel := context.WithCancel(ctx)\n"
+    },
+    {
+      "before": "\tfor answered := 0; answered < len(peers); {\n\t\tselect {\n\t\tcase <-ctx.Done():\n\t\t\treturn nil, \"\", ctx.Err()\n\t\tcase a := <-answers:\n",
+      "after": "\tfor answered := 0; answered < len(peers); {\n\t\tselect {\n\t\tcase a := <-answers:\n"
+    }
+  ],
+  "verifiedWholeBeforeRecovered": true,
+  "newTestPreimage": "ABSENT_IN_3552",
+  "newTest": {
+    "path": "overlay/any/.runtime-artifacts/sdk-source/internal/files/broker/pinkha_quota_deadline_test.go",
+    "originalRelativePath": ".runtime-artifacts/sdk-source/internal/files/broker/pinkha_quota_deadline_test.go",
+    "role": "new-test-not-run",
+    "bytes": 3804,
+    "sha256": "3545314693fea848a66e55c3fb22b76981a6d30fe859b52f718a8288e4077100",
+    "sourceMode": 384,
+    "gitBlob": "05a3d9ae46f8b48c3ff1bc474661f485dbe1984e",
+    "wholeReadback": true
+  }
+}

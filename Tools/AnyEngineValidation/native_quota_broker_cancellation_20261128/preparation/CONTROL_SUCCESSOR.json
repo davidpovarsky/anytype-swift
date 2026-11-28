@@ -1,0 +1,28 @@
+{
+  "protocol": "QUOTA_CANCELLATION_SOURCE_DELIVERY_SUCCESSOR_V1",
+  "predecessorManifest": "bf41eab5f1eaddfa4662d053dc55be532b6d7b79",
+  "productionUnchanged": true,
+  "originalDependencyBlobsUnchanged": 9,
+  "testChanges": [
+    {
+      "before": "context.WithTimeout(context.Background(), 500*time.Millisecond)",
+      "after": "context.WithTimeout(context.Background(), 5*time.Second)"
+    },
+    {
+      "before": "\t\t\tcase <-time.After(2 * time.Second):\n\t\t\t\tt.Fatal(\"test context did not end\")",
+      "after": "\t\t\tcase <-time.After(7 * time.Second):\n\t\t\t\tt.Fatal(\"test context did not end\")"
+    },
+    {
+      "before": "// releases the callback and joins the coordinator. It observes callback return,\n// not the private sender's final instruction. The original len(peers)-buffered\n// channel still has room for every late answer after the coordinator returns.",
+      "after": "// releases the callback and joins the coordinator. Cleanup observes callback\n// return if callback entry was seen; early entry failures make that observation\n// conditional. It does not observe the private sender's final instruction. The\n// original len(peers)-buffered channel has room for every late answer."
+    }
+  ],
+  "selectedAffectedOriginalParents": [
+    "TestHedgeQuota",
+    "TestHedgeQuota_Cancelled",
+    "TestQuotaFrom_RemembersUsablePeer"
+  ],
+  "previousEvents": 4,
+  "newSelectedEvents": 7,
+  "executionStatus": "NOT_RUN"
+}

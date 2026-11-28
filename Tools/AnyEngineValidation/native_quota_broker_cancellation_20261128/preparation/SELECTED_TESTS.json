@@ -1,0 +1,41 @@
+{
+  "protocol": "PINKHA_QUOTA_BROKER_CANCELLATION_SELECTION_V2",
+  "status": "NOT_RUN",
+  "package": "./internal/files/broker",
+  "goRunPattern": "^(TestPinkhaQuotaHedgePreCancelledSkipsFleet|TestPinkhaQuotaHedgeEndsBeforeBlockedPeerReturns|TestHedgeQuota|TestHedgeQuota_Cancelled|TestQuotaFrom_RemembersUsablePeer)$",
+  "newParents": [
+    "TestPinkhaQuotaHedgePreCancelledSkipsFleet",
+    "TestPinkhaQuotaHedgeEndsBeforeBlockedPeerReturns"
+  ],
+  "affectedOriginalParents": [
+    "TestHedgeQuota",
+    "TestHedgeQuota_Cancelled",
+    "TestQuotaFrom_RemembersUsablePeer"
+  ],
+  "parents": [
+    "TestPinkhaQuotaHedgePreCancelledSkipsFleet",
+    "TestPinkhaQuotaHedgeEndsBeforeBlockedPeerReturns",
+    "TestHedgeQuota",
+    "TestHedgeQuota_Cancelled",
+    "TestQuotaFrom_RemembersUsablePeer"
+  ],
+  "children": [
+    "TestPinkhaQuotaHedgeEndsBeforeBlockedPeerReturns/cancel",
+    "TestPinkhaQuotaHedgeEndsBeforeBlockedPeerReturns/deadline"
+  ],
+  "totalEvents": 7,
+  "newEvents": 4,
+  "affectedOriginalEvents": 3,
+  "expectedParentEvents": 5,
+  "expectedChildEvents": 2,
+  "expectedTotalEvents": 7,
+  "affectedOriginalSelectionReason": "hedgeQuota callee changed; original method bodies retained",
+  "unselectedOriginalParents": [
+    "TestPeerFirst",
+    "TestSpaceQuotaOf"
+  ],
+  "priorN24EventsNotReplayedOrRecounted": 24,
+  "fixtureAccounts": 0,
+  "networkUse": 0,
+  "arbitraryCallbackForcedTermination": false
+}

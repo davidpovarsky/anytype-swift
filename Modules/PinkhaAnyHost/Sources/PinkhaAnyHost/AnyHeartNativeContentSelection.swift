@@ -8,7 +8,8 @@ public enum AnyHeartNativeContentSelectionError: Error, Equatable, Sendable {
     case unsupportedSource, compiledDefinitionDependency(String)
 }
 
-/// The exact dependency closure of all captured native Page instances. An
+/// The exact dependency closure of supported captured native Page smartblocks.
+/// Basic and Bookmark layouts retain their distinct composition contracts. An
 /// unused definition is retained in the original catalogue, not reclassified
 /// as a Page or granted the behavior of a different native type.
 public struct AnyHeartNativeContentSelection: Sendable {
@@ -73,7 +74,18 @@ public struct AnyHeartNativeContentSelection: Sendable {
                 throw AnyHeartNativeContentSelectionError.unknownType(page.sourceObjectID)
             }
             requiredTypes.insert(Data(type.objectID.utf8))
-            for key in page.details.keys {
+            let structuralKeys: Set<String>
+            if type.recommendedLayout == 11 {
+                let layout = try AnyHeartNativeBookmarkLayout(snapshot: page)
+                structuralKeys = Set(layout.structuralDetailKeys)
+                guard let description = catalog.relation(key: "description") else {
+                    throw AnyHeartNativeContentSelectionError.unknownProperty("description")
+                }
+                requiredProperties.insert(Data(description.objectID.utf8))
+            } else {
+                structuralKeys = []
+            }
+            for key in page.details.keys where !structuralKeys.contains(key) {
                 guard let property = catalog.relation(key: key) else {
                     throw AnyHeartNativeContentSelectionError.unknownProperty(key)
                 }
@@ -108,7 +120,7 @@ public struct AnyHeartNativeContentSelection: Sendable {
                 guard let type = typeByID[id] else {
                     throw AnyHeartNativeContentSelectionError.unknownType(String(decoding: id, as: UTF8.self))
                 }
-                guard type.recommendedLayout == 0 else {
+                guard type.recommendedLayout == 0 || type.recommendedLayout == 11 else {
                     throw AnyHeartNativeContentSelectionError.unsupportedType(type.objectID)
                 }
                 for relationID in type.recommendedRelations + type.featuredRelations + type.hiddenRelations + type.fileRelations {

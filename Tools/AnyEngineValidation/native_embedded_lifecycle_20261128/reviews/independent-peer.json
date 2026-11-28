@@ -1,0 +1,91 @@
+{
+  "protocol": "pinkha-independent-embedded-lifecycle-source-peer-v1",
+  "reviewer": "/root/cutover",
+  "dateUTC": "2026-11-28",
+  "repository": "davidpovarsky/anytype-swift",
+  "status": "CLEAR_SOURCE_ONLY_NOT_COMPILED_NOT_RUN",
+  "production": {
+    "blob": "734e9312c1a3c57c399ec05da5221de498327fb5",
+    "bytes": 16440,
+    "sha256": "7e04af3c356e2b7596540e69b54b7b1e390d00610e2cf2202e8356b1e17a9154",
+    "commentOnlyInverse": "be3c9430cbeb4af96d89afd432b07823fa8b373a24ab848635f6d2782026c6c8"
+  },
+  "tests": {
+    "blob": "b92ed15a556f5098a062ad8aff86ccf3bdd00ad8",
+    "bytes": 19960,
+    "sha256": "e92092ec1469323c9a0631dfd01cbad1973a6f1a54ab0deabb9c4ed8768ad026",
+    "parents": [
+      "TestLifecycleReservationCoversPendingLegacyAndBoundStarts",
+      "TestLifecycleCancelledPendingStartCannotSkipPreviousDrain",
+      "TestLifecycleGracefulStopFencesNextGeneration",
+      "TestLifecycleGracefulStopWaitsAfterStopNow",
+      "TestLifecycleLateReadyCannotRepublishStoppedGeneration",
+      "TestLifecycleFailedStartReleasesReservation",
+      "TestConcurrentLegacyAndBoundStartsShareOneManagedRuntime"
+    ]
+  },
+  "unchangedOtherSixParents": true,
+  "sourceDependencies": [
+    {
+      "blob": "6de2b3fb55389213b597b830392810aa172b39c8",
+      "bytes": 10883,
+      "sha256": "44270ad3062652ef091a0808eb1d247202e7b55dc4c935099293e7dfe9796b32"
+    },
+    {
+      "blob": "d0437ce8b317ef84b16815642ffe50baf05f5087",
+      "bytes": 2162,
+      "sha256": "df3e4bdd15dfedbda827cf53f6b65c1179a6b63a3c74617302b8ae91432992a6"
+    },
+    {
+      "blob": "d467bee408bacf1d2bc150927d980738958041aa",
+      "bytes": 9549,
+      "sha256": "cc46dc417918f1e963f9e184e6f9fb304d6b7d86fc711f74cc0e2072f01f1bfc"
+    },
+    {
+      "blob": "b9c02e6e02332aefd82c92b489bf9093d11f73ea",
+      "bytes": 1440,
+      "sha256": "f7fd391ee5ae82d47e76ce94883d6c5834d54647c000e7fbbf94c429ef763245"
+    }
+  ],
+  "findingsClosed": [
+    "Every launched real-export caller has a WaitGroup obligation; the buffered result channel cannot block an early-failure return.",
+    "Cleanup releases the launch barrier, repeatedly calls StopNow until all eight callers return, then cancels and waits the final drain under the same finite timer.",
+    "No automatic TempDir or generic setup cleanup can remove the manually owned root while a late caller remains; incomplete custody aborts the test binary and retains the root.",
+    "Only completely drained successful fixtures are removed.",
+    "StartBound failure returns the zero result; whitespace network identity is rejected by the exact binding helper.",
+    "Actual managed health serializes networkId and account as direct non-omitted fields."
+  ],
+  "productionAssessment": [
+    "Single pending/running reservation under handleMu.",
+    "Previous drain remains in the transitive cancellation barrier.",
+    "Matching-generation ready and finish checks prevent stale publication or clearing.",
+    "Only one owner closes h.done; actual production runner remains server.RunWith."
+  ],
+  "limitations": [
+    "Source review only; no compiler/test/native invocation.",
+    "The six private controls exercise the actual lifecycle state machine with injected runner behavior; only the seventh uses real exported Start/StartBound and RunWith.",
+    "No successful runtime or Apple ABI acceptance is inferred."
+  ],
+  "reviewMethod": [
+    "Fetched each complete exact Git blob through the GitHub connector and independently computed its UTF-8 SHA256/byte count in memory.",
+    "Read the complete original/new lifecycle implementation, original reset helper, new test file, and exact binding/health dependencies.",
+    "Compared the final production comment inverse to be3c9430; unchanged production spans were compared to the exact f372 preimage3b734dd4.",
+    "Compared all six non-real-runner test parents byte-for-byte with828c2078; read the complete changed real-export test and options helper."
+  ],
+  "originalFinding": {
+    "sourceTestSHA256": "828c207824def1578e4b0a067b4de2c6a8e782038a878ef7428a3039038be7fb",
+    "status": "Closed in e92092ec",
+    "description": "An early Fatal in the real mixed-export test could invoke generic cleanup before every launched caller had entered or returned from Start, permitting a late generation after cleanup. The final test owns and joins the entire cohort before draining/removing its fixture."
+  },
+  "methodAttribution": {
+    "newParents": 7,
+    "explicitSubcases": 6,
+    "privateRunnerParents": 6,
+    "realExportManagedAccountFreeParents": 1,
+    "oldAffectedParentExecution": "Planned separately; not run by this peer"
+  },
+  "noOracleAction": true,
+  "noCompilerOrTestInvocation": true,
+  "noAccountOrFixturePayloadRead": true,
+  "noBranchOrCommitChangeByThisReview": true
+}

@@ -1,0 +1,425 @@
+{
+  "schema": "pinkha.ordinary14.native-read-reopen-contract.v1",
+  "status": "SOURCE_ONLY_NOT_PARSED_NOT_COMPILED_NOT_RUN",
+  "purpose": "Qualify fourteen exact original property definitions against a copied accepted destination account, then demonstrate their current definition/value readers after a fresh native process and cold journal reopen. New property values are synthetic qualification data.",
+  "sourceCarrierBase": {
+    "repository": "davidpovarsky/anytype-swift",
+    "branch": "codex/chatgpt-wave15-w1-ordinary14-source-20261128",
+    "commit": "6869e4597b26688c1d9964d2de28e2ccbcba9e60",
+    "tree": "e3b291c84122ebdd9cd310ca940c3df49f155ec0",
+    "prefix": "source-carriers/ordinary14-20261128",
+    "allExistingCarrierFilesPreserved": true
+  },
+  "nativeFixture": {
+    "path": "tests/NativeOrdinaryPropertySupplementReadReopenTests.swift",
+    "bytes": 35277,
+    "sha256": "a7f0f24e18d5d45db5d7d7916fa6480e8e8bbc05768ae2d1cd6c56897c2ed41d",
+    "gitBlobSHA": "5c0fad045d101f99e37442b32098dcf022d2201b",
+    "className": "NativeOrdinaryPropertySupplementReadReopenTests",
+    "methodName": "testFourteenOriginalDefinitionsCurrentValuesAndLeaseReadsSurviveNativeColdReopen",
+    "methodCount": 1,
+    "invocationsPlanned": 2,
+    "selection": "One exact named method in each fresh process phase; not part of the eight-method component selection."
+  },
+  "currentProduction": {
+    "overlays": [
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationPlan.swift",
+        "carrierPath": "source-carriers/ordinary14-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationPlan.swift",
+        "bytes": 41312,
+        "sha256": "878a1d994dbbfd98de0f4b1a6ac4fbd9cfd3ea369b66d659e5e0b6667ba8d59e",
+        "gitBlobSHA": "df49d5572d0a91a68a48bee7f88882703ad2ad5c"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationExecutor.swift",
+        "carrierPath": "source-carriers/ordinary14-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationExecutor.swift",
+        "bytes": 25038,
+        "sha256": "37a827abab7f8458ff0274bc0cc99a65ba62ea6068e7498d025be7fee1fee8dd",
+        "gitBlobSHA": "aeca8507f67581edb57d315fe43322c6946edc0d"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationNativeMigration.swift",
+        "carrierPath": "source-carriers/ordinary14-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationNativeMigration.swift",
+        "bytes": 24363,
+        "sha256": "b47533f131f3919336c9667d80be1911aedcd131544b5e73ee8910f100d18850",
+        "gitBlobSHA": "f4f23e111468ca494ae661019610463247161df5"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedDefinitionDirectory.swift",
+        "carrierPath": "source-carriers/ordinary14-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedDefinitionDirectory.swift",
+        "bytes": 22948,
+        "sha256": "f8706b054757b2601a1e094558989c2a66d44b7a9ddcaee94a543563db38ff27",
+        "gitBlobSHA": "6cd38819232f457f04f9eab1b93c538670403e05"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationVerifier.swift",
+        "carrierPath": "source-carriers/ordinary14-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationVerifier.swift",
+        "bytes": 38447,
+        "sha256": "e258557056b1cc699026c08ace93250248dfc626cc29c853ce39eb3cbf4576a9",
+        "gitBlobSHA": "b83d7cbd0fc8eca43a08fb0085544f621cee3ece"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationImportedPropertyNamespace.swift",
+        "carrierPath": "source-carriers/ordinary14-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationImportedPropertyNamespace.swift",
+        "bytes": 13010,
+        "sha256": "3076e98bd0d7a1106f376faa8e04de9252e47756c2ff806856a4334eae2457cb",
+        "gitBlobSHA": "850edf99029a1512b020875b8d2c051b1e3f1ecc"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeOrdinaryPropertySupplement.swift",
+        "carrierPath": "source-carriers/ordinary14-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeOrdinaryPropertySupplement.swift",
+        "bytes": 9026,
+        "sha256": "8023022c6740bc88fb9502e1e572bfdf4299e0b8e1b9a24e03217e2c790e72dd",
+        "gitBlobSHA": "21f6afa06a05eb694e289a14c488a666efc2dfe3"
+      }
+    ],
+    "unchangedAPIInputs": [
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedDefinitionStore.swift",
+        "bytes": 10792,
+        "sha256": "e209c44b174e3ec6a0a1c967135e5d8313a49600ac58161e08dd98969fd9c9c2",
+        "sourceMode": 420,
+        "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedDefinitionStore.swift",
+        "compiled": false
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+        "bytes": 43999,
+        "sha256": "bd78d4bed9ff005d05317a0f6eff1f40bc6b9bbe3495608ed1e4edd830b11a0c",
+        "sourceMode": 420,
+        "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+        "compiled": false
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedSourceFacts.swift",
+        "bytes": 21281,
+        "sha256": "7db9678676b2d691388befbc6955ed4863694adab9ade6870dba336671cf078f",
+        "sourceMode": 420,
+        "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedSourceFacts.swift",
+        "compiled": false
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+        "bytes": 5633,
+        "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd",
+        "sourceMode": 420,
+        "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+        "compiled": false
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCanonicalDefinitionSupplementTests.swift",
+        "bytes": 10755,
+        "sha256": "e8a40030d0cca49e7978869e487ba1422bc135e65f88469ba61ee852a73b7319",
+        "sourceMode": 420,
+        "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCanonicalDefinitionSupplementTests.swift",
+        "compiled": false
+      }
+    ],
+    "externalOwnerVerifier": "AnyDestinationMigrationVerifier.swift e258 successor is required; its 9ac predecessor cannot verify this property-only external-owner plan.",
+    "compositionOrder": "C6 checkpoint Journal/Executor dependencies first, then C14 Executor37a/Plan878a and the other C14 overlays. Never overwrite the C14 Executor with its C6 predecessor."
+  },
+  "existingComponentGraph": {
+    "gitBlobSHA": "ef81c07cfd4a5eed3d24ca7c7a8ab97359d66132",
+    "bytes": 90964,
+    "sha256": "0211fc145d788ac42b8a2ca01160edce1667c69aca05384f342b1edeafc6ace8",
+    "wholeFiles": 111,
+    "productionFiles": 109,
+    "testFiles": 2,
+    "selectedComponentMethods": 8,
+    "oldCanonicalMethodsExcluded": 3,
+    "status": "IN_MEMORY_SOURCE_DERIVATION_NOT_INSTALLED_NOT_COMPILED_NOT_RUN",
+    "changedByThisPacket": false,
+    "nativeFixtureIncluded": false
+  },
+  "backend": {
+    "path": "/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127/attempt7/any",
+    "bytes": 78294169,
+    "mode": 448,
+    "sha256": "84a4432a0f6b330444dc35f1cf024d95fe9eea1e4e8eb3e2dfb1b99dcb24e974",
+    "receipt": {
+      "path": "/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127/attempt7/result.json",
+      "bytes": 19865,
+      "sha256": "f832753c0d365e984ed7f53ad6f4e3b20b125562b1871e0d7c5d5c54794fdfe2"
+    },
+    "compiledInputs": {
+      "path": "/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127/attempt7/compiled-source-inputs.json",
+      "bytes": 369957,
+      "sha256": "3552d6f65350c1eba2e9763c7f9a9daa64ada0335f64020ad585fff4a0e286e4"
+    },
+    "presenceFreshlyObserved": false,
+    "custody": "N reports current product protected, no prior custody or relocation. Future controller must freshly admit all physical product/source identities and modes.",
+    "sourceRoot": "/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127/attempt7/source",
+    "fullFileCount": 1638,
+    "fullModeCount": 1638,
+    "sourceCapabilityProof": {
+      "path": "BACKEND_SOURCE_PROOF.json",
+      "gitBlobSHA": "4cd1800a00f0d397b90b35efaa944037a877b829",
+      "bytes": 12094,
+      "sha256": "60e12183d8bae793f6777b2de950c2a8cac7591f3a360cae9cba4aae118f8309"
+    },
+    "explicitProducerChange": true,
+    "old1dcEquivalent": false,
+    "sourceFindingOnly": "Current prepared-definition source permits the new property plan to target an existing signed custom owner in the same account/Space/store while retaining current Writer/schema/prepared-intent checks; this is not the missing native C14 acceptance."
+  },
+  "retainedInputs": {
+    "canonicalHelper": {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCanonicalDefinitionSupplementTests.swift",
+      "bytes": 10755,
+      "sha256": "e8a40030d0cca49e7978869e487ba1422bc135e65f88469ba61ee852a73b7319",
+      "sourceMode": 420,
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCanonicalDefinitionSupplementTests.swift",
+      "compiled": false
+    },
+    "canonicalPlanSHA256": "4a61914d5dbd3ccb4874f81444e4d0770c9e7e2dfe4259b8b93f15796accb930",
+    "canonicalMappingsSHA256": "eabdf2e362189abd5a2e78f7c13f1f1d77d8339c27109d2a6ec19ccdbb2755a3",
+    "originalBundleManifestSHA256": "cbfb3aa1fd89707138adeccbce7389c40dc0a993f2285f6e517120e4e4239ed4",
+    "originalCompletedOperationCount": 182,
+    "originalSnapshotCount": 156,
+    "originalPages": 2,
+    "originalValuesPresentForSelectedKeys": 0,
+    "sourcePayloadsReadToPrepareThisPacket": false,
+    "accountCopy": "A later controller must bind the actual retained accepted destination account and copy it into a fresh private namespace. No account or fixture payload is included in this public carrier."
+  },
+  "definitionScope": {
+    "relationKeys": [
+      "aperture",
+      "artist",
+      "audioAlbum",
+      "audioAlbumTrackNumber",
+      "audioGenre",
+      "audioLyrics",
+      "camera",
+      "cameraIso",
+      "done",
+      "exposure",
+      "focalRatio",
+      "releasedYear",
+      "source",
+      "tag"
+    ],
+    "counts": {
+      "string": 8,
+      "number": 4,
+      "boolean": 1,
+      "array": 1
+    },
+    "stringSemantics": {
+      "longtext": [
+        "aperture",
+        "artist",
+        "audioAlbum",
+        "audioGenre",
+        "audioLyrics",
+        "camera",
+        "exposure"
+      ],
+      "url": [
+        "source"
+      ]
+    },
+    "arraySemantics": {
+      "tag": {
+        "originalOptions": [],
+        "testedValue": [],
+        "nonemptyOptionsQualified": false
+      }
+    },
+    "defaults": "Exact captured null defaults only.",
+    "maxCount": "Exact captured one for thirteen descriptors; tag zero means the original unbounded declaration. No maxCount>1 engine enforcement claim.",
+    "readonly": false,
+    "sourceAdmission": false,
+    "full129Coverage": false
+  },
+  "runtimeInput": {
+    "environment": [
+      "PINKHA_NATIVE_ORDINARY14_FIXTURE",
+      "PINKHA_NATIVE_ORDINARY14_WORK",
+      "PINKHA_NATIVE_ORDINARY14_PHASE",
+      "PINKHA_NATIVE_DEFINITION_RETAINED",
+      "PINKHA_NATIVE_ORIGINAL156"
+    ],
+    "schema": 2,
+    "closedKeys": [
+      "schema",
+      "phase",
+      "binarySHA256",
+      "componentScope",
+      "baseURL",
+      "accountID",
+      "spaceID",
+      "outboundDeniedByOS",
+      "networkPeerCount",
+      "accountIsOwnedCopy",
+      "retainedPhaseFiles",
+      "sourceManifestSHA256",
+      "producerReceiptSHA256"
+    ],
+    "componentScope": "original-ordinary14-native-copy-runtime18-v1",
+    "baseURL": "http://127.0.0.1:<owned-port>/ only; no URL credentials/query/fragment.",
+    "accountAndSpace": "Must equal both the exact completed preservation plan and supplemental binding; not caller-selected substitutes.",
+    "requiredAssertions": {
+      "outboundDeniedByOS": true,
+      "networkPeerCount": 0,
+      "accountIsOwnedCopy": true
+    },
+    "jsonLimitBytes": 65536,
+    "workDirectoryMode": "0700",
+    "outputFileMode": "0600",
+    "privateOutputFileCapBytes": 4194304,
+    "preEffectCompletePlanLimitBytes": 4194304,
+    "controllerOwnsEvidence": "Fixture assertions on runtime metadata do not prove OS containment, producer identity, process ownership, original-account immutability, or request counts. The later controller must establish those facts independently.",
+    "layout": "The runtime JSON, copied native account and original immutable fixture copies must be outside PINKHA_NATIVE_ORDINARY14_WORK. The execute phase requires that work directory to be initially empty; the fixture alone creates its journal and six phase files there."
+  },
+  "phases": [
+    {
+      "name": "execute",
+      "freshNativeProcess": true,
+      "nativeDefinitionOperations": 14,
+      "freshPropertyEdits": 14,
+      "old182Operations": 0,
+      "oldNamespaceCreations": 0,
+      "readers": "Current SourceFacts on both mapped editable Pages; current definition reads for all14; current property reads and conditional writes; full schema-known synced values outside the new14 remain equal.",
+      "planExecution": "Only the new property-only supplement through the existing prepared migration executor and external original namespace prerequisite.",
+      "freshValues": "Exact literal values in the pinned fixture. False, empty tag array, decomposed Unicode text, numeric values and an exact URL string are positive values, not reconstructed original data."
+    },
+    {
+      "name": "reopen",
+      "freshNativeProcess": true,
+      "nativeDefinitionOperations": 0,
+      "freshPropertyEdits": 0,
+      "old182Operations": 0,
+      "oldNamespaceCreations": 0,
+      "readers": "Read the completed supplement checkpoint without running the executor, reconstruct its exact intents/progress, then use current verifier/definition/property/SourceFacts APIs under a new application session and lease.",
+      "coldComparison": "Complete canonical comparison bytes equal the retained execute phase; both checkpoint and comparison digests must agree.",
+      "readOnlyQualification": "No native prepare/commit/property mutation API is selected by the fixture in this phase."
+    }
+  ],
+  "outputContract": {
+    "privatePayloads": [
+      {
+        "path": "original-business-values.json",
+        "createdIn": "execute",
+        "meaning": "Observed original schema-known synced values and source-facts rows for the two destination Pages."
+      },
+      {
+        "path": "supplement-plan.json",
+        "createdIn": "execute",
+        "meaning": "Full exact new supplemental plan including its typed original namespace prerequisite."
+      },
+      {
+        "path": "supplement-mappings.json",
+        "createdIn": "execute",
+        "meaning": "Fourteen ordered committed mappings with new immutable intents."
+      },
+      {
+        "path": "current-comparison.json",
+        "createdIn": "execute",
+        "meaning": "All14 descriptors/current values, original business state and native verification proof; byte-compared after reopen."
+      }
+    ],
+    "privateJournal": {
+      "path": "supplement-journal/",
+      "createdIn": "execute",
+      "reopen": "Existing-only readCompletedCheckpoint; no migration driver replay.",
+      "contains": "Original journal manifest/log/owner lock and fourteen intent/receipt entries; future controller must preserve and inventory the complete actual private membership."
+    },
+    "publicEligibleProofs": [
+      "execute-proof.json",
+      "reopen-proof.json"
+    ],
+    "publicProofClosedKeys": [
+      "phase",
+      "originalDefinitionCount",
+      "binarySHA256",
+      "sourceManifestSHA256",
+      "producerReceiptSHA256",
+      "originalPageCount",
+      "originalPresentValuesForFourteenKeys",
+      "nativeSchemaOperations",
+      "freshPropertyEdits",
+      "newValuesAreOriginalMigrationData",
+      "original182OperationsReplayed",
+      "originalNamespaceCreationReplayed",
+      "allFourteenSignedDefinitionsCurrent",
+      "allObservedOriginalSchemaKnownSyncedValuesUnchanged",
+      "originalSourceFactsUnchanged",
+      "foreignWorkspaceReadersRefused",
+      "revokedLeaseReadersRefused",
+      "checkpointSHA256",
+      "comparisonSHA256",
+      "coldComparisonEqual",
+      "whole129DefinitionsQualified",
+      "whole19TypeFamiliesQualified",
+      "sourceAdmissionGranted",
+      "originalEncryptedHistoryReconstructed",
+      "nativeACLRevocationQualified",
+      "cardinalityGreaterThanOneQualified",
+      "nonemptyTagOptionsQualified",
+      "originalAccountsMutated"
+    ],
+    "phaseMarkers": [
+      "PINKHA_NATIVE_ORDINARY14_PHASE_PASS execute",
+      "PINKHA_NATIVE_ORDINARY14_PHASE_PASS reopen"
+    ],
+    "reopenRetainedPhaseFileKeys": [
+      "original-business-values.json",
+      "supplement-plan.json",
+      "supplement-mappings.json",
+      "current-comparison.json",
+      "execute-proof.json"
+    ],
+    "reopenRetainedPhaseFileRowKeys": [
+      "bytes",
+      "sha256"
+    ],
+    "reopenInputHashes": "The controller must derive exact SHA256 and byte counts only after the first native/helper groups have closed and bind all five rows to the second immutable runtime input.",
+    "publication": "Only public proof copies, source, qualified logs and structured controller evidence may be published. No original account, copied account, private comparison, private journal, fixture payload, tokens or keys."
+  },
+  "futureRuntimeGates": {
+    "ready": false,
+    "compilerManifest": null,
+    "compilerReceipt": null,
+    "compiledRunner": null,
+    "runtimeController": null,
+    "reason": "The public source fixture and contract are complete enough for review; a separate finite compiler graph, source installer, qualified physical runner and owned runtime controller remain to be prepared and reviewed. This contract authorizes no execution.",
+    "mustBindBeforeAndAfter": [
+      "All original and copied source/fixture ledgers with public/private classification",
+      "All1638 current backend source bytes and modes, exact f832 closed producer receipt and current84a physical bytes/mode",
+      "Exact separately compiled test source/products/modes plus one physical executable, without SwiftPM --skip-build mutation",
+      "The exact original account remains unchanged; only the fresh copy may be mutated",
+      "Every owned group positively closed; request/phase deadlines and independent final integrity retained"
+    ],
+    "directSelection": "Use the source-qualified direct XCTest route with a separately frozen exact full list of the new compiled cohort. No list count or runner identity is inferred from Native159 or from this uncompiled fixture.",
+    "resourcePolicy": "Keep the existing native workload live floors, ownership, fixed caps and finite deadline policy when deriving the controller; freeze the concrete tuple for review before runtime. No capacity credit or executable availability is implied by this carrier.",
+    "sameMethodEvents": "Two actual PASS events for the same selected method in two independently owned native/test phases, not two unique methods. Any skip, extra selected method, missing phase, incomplete closure or failed final audit refuses acceptance."
+  },
+  "limitations": {
+    "syntheticComponentEightRun": false,
+    "nativeMethodRun": false,
+    "originalEncryptedHistoryReconstructed": false,
+    "all129DefinitionsQualified": false,
+    "all19TypeFamiliesQualified": false,
+    "sourceAdmission": false,
+    "nativeACLRemoval": false,
+    "fullC6OwnerNativeAuthority": false,
+    "nativeAccountRunBindingN24": false,
+    "cardinalityGreaterThanOne": false,
+    "nonemptyTagOptions": false,
+    "originalDataMutation": false
+  },
+  "predecessors": {
+    "old1dcDraft": {
+      "path": "previous-unrun/NativeOrdinaryPropertySupplementReadReopenTests-1dc.swift",
+      "bytes": 34004,
+      "sha256": "f5c4b2c8c90b5439ab9147ca5ce41c999164bd925c998090bd47e8980d9bb7d7",
+      "notRun": true
+    },
+    "first84aDraft": {
+      "path": "previous-unrun/NativeOrdinaryPropertySupplementReadReopenTests-84a-before-output-bound.swift",
+      "bytes": 34956,
+      "sha256": "312050bc19ab1c954dc55733abfbc710bc8ef6557935c3889ecd116ca7ecdc66",
+      "notRun": true
+    },
+    "earlierEightMethodFixtures": "7fc2 and7adad remain preserved in the parent carrier; current synthetic8 fixture is920ed. They are separate from this one native method."
+  }
+}

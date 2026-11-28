@@ -26,6 +26,30 @@ public struct AnyHeartNativePreservationArchive: Sendable {
             captureManifestSHA256 = bundle.manifestSHA256; sourceWitnessSHA256 = bundle.sourceWitnessSHA256
             recoveredManifestSHA256 = recovered.manifestSHA256
         }
+
+        /// An expected persisted identity, not a source session or admission.
+        /// restore still checks the complete original bundle and recovered
+        /// descriptors against all five values before returning any member.
+        public init(expectedAccountID: String, expectedSpaceID: String,
+                    captureManifestSHA256: String, sourceWitnessSHA256: String,
+                    recoveredManifestSHA256: String) throws {
+            func identifier(_ value: String) -> Bool {
+                !value.isEmpty && value.utf8.count <= 4096 &&
+                    value.unicodeScalars.allSatisfy { !CharacterSet.controlCharacters.contains($0) }
+            }
+            func digest(_ value: String) -> Bool {
+                value.utf8.count == 64 &&
+                    value.utf8.allSatisfy { (48...57).contains($0) || (97...102).contains($0) }
+            }
+            guard identifier(expectedAccountID), identifier(expectedSpaceID),
+                  [captureManifestSHA256, sourceWitnessSHA256, recoveredManifestSHA256].allSatisfy(digest) else {
+                throw AnyHeartNativePreservationError.binding
+            }
+            self.accountID = expectedAccountID; self.spaceID = expectedSpaceID
+            self.captureManifestSHA256 = captureManifestSHA256
+            self.sourceWitnessSHA256 = sourceWitnessSHA256
+            self.recoveredManifestSHA256 = recoveredManifestSHA256
+        }
         public static func == (lhs: Self, rhs: Self) -> Bool {
             Data(lhs.accountID.utf8) == Data(rhs.accountID.utf8) &&
                 Data(lhs.spaceID.utf8) == Data(rhs.spaceID.utf8) &&
@@ -131,6 +155,19 @@ public struct AnyHeartNativePreservationArchive: Sendable {
         self.binding = binding; bytes = data; sha256 = AnyContentDigest.sha256(data)
         originalMemberCount = bundle.verifiedMembers.count + 1
         recoveredMemberCount = recovered.verifiedMembers.count + 4
+    }
+
+
+    /// Reopens exactly one already-preserved source file. This validates the
+    /// same complete member set as restore and never writes or restores an
+    /// account. It preserves the original bytes instead of re-exporting them.
+    public init(restoring data: Data, expected: Binding) throws {
+        let restored = try Self.restore(data, expected: expected)
+        self.binding = expected
+        self.bytes = data
+        self.sha256 = AnyContentDigest.sha256(data)
+        self.originalMemberCount = restored.originalMemberCount
+        self.recoveredMemberCount = restored.recoveredMemberCount
     }
 
     public static func restore(_ data: Data, expected: Binding) throws -> Restored {

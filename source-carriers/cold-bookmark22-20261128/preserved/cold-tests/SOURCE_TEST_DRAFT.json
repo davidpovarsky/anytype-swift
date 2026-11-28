@@ -1,0 +1,148 @@
+{
+  "compilerInvocations": 0,
+  "fixtureRootEnvironment": "PINKHA_IMPORTED_CONTEXT_FIXTURE_ROOT",
+  "fixtureRootRequiredMode": 448,
+  "methods": {
+    "NativeImportedCheckpointTests.swift": [
+      "testCompletedCheckpointColdReadsKeepExactMappingsAndDoNotCallTheDriver",
+      "testMissingAndIncompleteCheckpointNeverCreatesOrReconcilesJournalEntries",
+      "testOriginalExclusiveWriterAndSharedColdReaderUseOneLockWithoutWrites",
+      "testChangedReceiptIdentityRefusesEvenWhenItsJournalEnvelopeIsValid",
+      "testExactBindingRejectsUnicodeAliasAndChangedPlanWithoutRepair",
+      "testAliasAndReplacedOwnerLockRefuseBeforeColdDelivery",
+      "testCancelledColdReadLeavesCompletedCheckpointAndDriverUntouched"
+    ],
+    "NativeImportedContextReferenceTests.swift": [
+      "testClosedReferenceWireRejectsMissingExtraDuplicateAndMalformedFields",
+      "testReferenceBindingKeepsOpaqueUTF8AndNeverAuthenticatesAChangedCheckpointHash"
+    ]
+  },
+  "nativeHTTPRequests": 0,
+  "newMethods": 9,
+  "newNativeAccounts": 0,
+  "newTestFiles": {
+    "NativeImportedCheckpointTests.swift": {
+      "bytes": 19829,
+      "path": "/mnt/development/projects/evidence/pinkha-c-imported-context-tests-preparation-20261128-draft1/NativeImportedCheckpointTests.swift",
+      "sha256": "0dc91a427fc7cd1f0dc2bd6ed81d3eb89da5be68aaf50ae98d90d802bde91be5"
+    },
+    "NativeImportedContextReferenceTests.swift": {
+      "bytes": 5563,
+      "path": "/mnt/development/projects/evidence/pinkha-c-imported-context-tests-preparation-20261128-draft1/NativeImportedContextReferenceTests.swift",
+      "sha256": "799badbdcb90764b15ab5a5452f124d77d7378634697247abc1b811d341253bd"
+    }
+  },
+  "notQualified": [
+    "native cold owner.open",
+    "native catalog delivery through new owner",
+    "offloaded archive recovery",
+    "original encrypted history",
+    "live authorization from persisted locator"
+  ],
+  "oldMethodsSelected": 0,
+  "primaryTests": [
+    {
+      "bytes": 36577,
+      "path": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationMigrationExecutorTests.swift",
+      "sha256": "ddb609436ac644570daf03806a427ed5bc3c6cf653c5ffbf2dc82d538b995041"
+    },
+    {
+      "bytes": 6406,
+      "path": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeCanonicalSupplementTests.swift",
+      "sha256": "fbd02a09f9e0be7ecc15932839f183fb55578d2b67d1ff416bd8d4c7f1eef418"
+    },
+    {
+      "bytes": 28422,
+      "path": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeSourcePreservationTests.swift",
+      "sha256": "4b89b5873c75f7d13096219e07dd83a0c83cd96d94021fb8c62948759563c6d7"
+    }
+  ],
+  "productionChanged": false,
+  "productionFiles": [
+    {
+      "after": {
+        "bytes": 24055,
+        "mode": 384,
+        "path": "/mnt/development/projects/evidence/pinkha-c-imported-context-preparation-20261128-draft2/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationExecutor.swift",
+        "sha256": "53e036d4843fe368d5731b2da517cdfb3be1b996c946d432c51d53769003f41c"
+      },
+      "before": {
+        "bytes": 19745,
+        "mode": 384,
+        "path": "/mnt/development/projects/evidence/pinkha-c-imported-context-preparation-20261128-draft2/before/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationExecutor.swift",
+        "sha256": "e1b70db384a5308d759fa763446245a2369aa7a083d5d4080032d4e51f959b63"
+      },
+      "relative": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationExecutor.swift",
+      "role": "existing-source-extension"
+    },
+    {
+      "after": {
+        "bytes": 21624,
+        "mode": 384,
+        "path": "/mnt/development/projects/evidence/pinkha-c-imported-context-preparation-20261128-draft2/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationJournal.swift",
+        "sha256": "f0846218cf0ceb933271ff87985eca590e11edaf8fb429a3ed2381cc7b70d6db"
+      },
+      "before": {
+        "bytes": 13471,
+        "mode": 384,
+        "path": "/mnt/development/projects/evidence/pinkha-c-imported-context-preparation-20261128-draft2/before/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationJournal.swift",
+        "sha256": "6a21f98fe4cbeb0208e6842dd3b6a9dbad4672ddd0c04ee6b01c38c1dc3cea52"
+      },
+      "relative": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationJournal.swift",
+      "role": "existing-source-extension"
+    },
+    {
+      "after": {
+        "bytes": 19909,
+        "mode": 384,
+        "path": "/mnt/development/projects/evidence/pinkha-c-imported-context-preparation-20261128-draft2/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift",
+        "sha256": "48b82172c829e2f4fdd3910fdbb29a68bb74520e30cb48158188c0568ecd5927"
+      },
+      "relative": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift",
+      "role": "new"
+    },
+    {
+      "after": {
+        "bytes": 10952,
+        "mode": 384,
+        "path": "/mnt/development/projects/evidence/pinkha-c-imported-context-preparation-20261128-draft2/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextReference.swift",
+        "sha256": "950a947e9c3ad57ae70e627042747ef1dff4b6e890e22d2246cf776c2a3f7e87"
+      },
+      "relative": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextReference.swift",
+      "role": "new"
+    },
+    {
+      "after": {
+        "bytes": 15167,
+        "mode": 384,
+        "path": "/mnt/development/projects/evidence/pinkha-c-imported-context-preparation-20261128-draft2/overlay/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePreservationArchive.swift",
+        "sha256": "b1b7f69afe8a0248dc98471dd4c0a93a87e9670859b253a84d784ba7791bc642"
+      },
+      "before": {
+        "bytes": 13126,
+        "mode": 384,
+        "path": "/mnt/development/projects/evidence/pinkha-c-imported-context-preparation-20261128-draft2/before/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePreservationArchive.swift",
+        "sha256": "83c8f527b576184dfbaf3537c9b17fd53fa78c422deed203e68007c34a261ea0"
+      },
+      "relative": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePreservationArchive.swift",
+      "role": "existing-source-extension"
+    }
+  ],
+  "productionManifest": {
+    "bytes": 6418,
+    "mode": 384,
+    "path": "/mnt/development/projects/evidence/pinkha-c-imported-context-preparation-20261128-draft2/SOURCE_DRAFT.json",
+    "sha256": "5629d18cb0682050d6bc9ed6bd4f3568977618fcd55406f332985714f3e0986e"
+  },
+  "scope": [
+    "exact completed journal read without executor replay",
+    "missing or incomplete journal refusal without repair",
+    "original exclusive writer versus shared reader ownership",
+    "receipt identity and exact opaque binding refusal",
+    "changed owner lock and alias refusal",
+    "cancellation before delivery",
+    "closed persisted locator decoding and exact UTF8 identity"
+  ],
+  "sourceOnly": true,
+  "status": "SOURCE_ONLY_NINE_NEW_COMPONENT_METHODS_NOT_COMPILED_NOT_RUN"
+}

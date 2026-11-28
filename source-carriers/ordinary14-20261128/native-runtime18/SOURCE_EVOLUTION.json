@@ -1,0 +1,117 @@
+{
+  "schema": "pinkha.ordinary14.native-source-evolution.v1",
+  "status": "SOURCE_ONLY_NEVER_EXECUTED",
+  "producerTransition": {
+    "status": "SOURCE_ONLY_NOT_PARSED_NOT_COMPILED_NOT_RUN",
+    "predecessor": {
+      "bytes": 34004,
+      "sha256": "f5c4b2c8c90b5439ab9147ca5ce41c999164bd925c998090bd47e8980d9bb7d7",
+      "engineSHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636"
+    },
+    "current": {
+      "bytes": 34956,
+      "sha256": "312050bc19ab1c954dc55733abfbc710bc8ef6557935c3889ecd116ca7ecdc66"
+    },
+    "producer": {
+      "path": "/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127/attempt7/any",
+      "bytes": 78294169,
+      "mode": 448,
+      "sha256": "84a4432a0f6b330444dc35f1cf024d95fe9eea1e4e8eb3e2dfb1b99dcb24e974",
+      "receipt": {
+        "path": "/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127/attempt7/result.json",
+        "bytes": 19865,
+        "sha256": "f832753c0d365e984ed7f53ad6f4e3b20b125562b1871e0d7c5d5c54794fdfe2"
+      },
+      "compiledInputs": {
+        "path": "/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127/attempt7/compiled-source-inputs.json",
+        "bytes": 369957,
+        "sha256": "3552d6f65350c1eba2e9763c7f9a9daa64ada0335f64020ad585fff4a0e286e4"
+      },
+      "presenceFreshlyObserved": false,
+      "custody": "N reports current product protected, no prior custody or relocation. Future controller must freshly admit all physical product/source identities and modes."
+    },
+    "edits": [
+      {
+        "before": "/// Fourteen original descriptors are installed; all new values are explicit\n",
+        "after": "/// The engine is the separately qualified Runtime18 product (84a); this is\n/// an explicit producer change from the preserved, unrun 1dc draft.\n/// Fourteen original descriptors are installed; all new values are explicit\n"
+      },
+      {
+        "before": "\"accountIsOwnedCopy\", \"retainedPhaseFiles\"])",
+        "after": "\"accountIsOwnedCopy\", \"retainedPhaseFiles\", \"sourceManifestSHA256\", \"producerReceiptSHA256\"])"
+      },
+      {
+        "before": "runtime[\"schema\"] == .integer(1)",
+        "after": "runtime[\"schema\"] == .integer(2)"
+      },
+      {
+        "before": "\"1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636\"))",
+        "after": "\"84a4432a0f6b330444dc35f1cf024d95fe9eea1e4e8eb3e2dfb1b99dcb24e974\"))\n        try require(runtime[\"sourceManifestSHA256\"] == .string(\n            \"3552d6f65350c1eba2e9763c7f9a9daa64ada0335f64020ad585fff4a0e286e4\"))\n        try require(runtime[\"producerReceiptSHA256\"] == .string(\n            \"f832753c0d365e984ed7f53ad6f4e3b20b125562b1871e0d7c5d5c54794fdfe2\"))"
+      },
+      {
+        "before": "\"original-ordinary14-native-copy-v1\"",
+        "after": "\"original-ordinary14-native-copy-runtime18-v1\""
+      },
+      {
+        "before": "        let baseURL = try XCTUnwrap(URL(string: XCTUnwrap(runtime[\"baseURL\"]?.string)))",
+        "after": "        let baseURLString = try XCTUnwrap(runtime[\"baseURL\"]?.string)\n        let baseURL = try XCTUnwrap(URL(string: baseURLString))"
+      },
+      {
+        "before": "                        let edit = try properties.prepareSetValue(current, key: nativeKey, value: XCTUnwrap(fixtureValues[key]))",
+        "after": "                        let fixtureValue = try XCTUnwrap(fixtureValues[key])\n                        let edit = try properties.prepareSetValue(current, key: nativeKey, value: fixtureValue)"
+      },
+      {
+        "before": "\"allOriginalSyncedValuesUnchanged\": .bool(true)",
+        "after": "\"allObservedOriginalSchemaKnownSyncedValuesUnchanged\": .bool(true)"
+      },
+      {
+        "before": "            \"phase\": .string(phase), \"originalDefinitionCount\": .integer(14),",
+        "after": "            \"phase\": .string(phase), \"originalDefinitionCount\": .integer(14),\n            \"binarySHA256\": .string(\"84a4432a0f6b330444dc35f1cf024d95fe9eea1e4e8eb3e2dfb1b99dcb24e974\"),\n            \"sourceManifestSHA256\": .string(\"3552d6f65350c1eba2e9763c7f9a9daa64ada0335f64020ad585fff4a0e286e4\"),\n            \"producerReceiptSHA256\": .string(\"f832753c0d365e984ed7f53ad6f4e3b20b125562b1871e0d7c5d5c54794fdfe2\"),"
+      }
+    ],
+    "exactInverseToPreservedDraft": true,
+    "componentGraphChanged": false,
+    "original182Replay": false,
+    "sourceCapabilityOnly": "Current3552 prepared-definition source supports a new property plan on an existing signed custom owner under current Writer/schema checks. No old1dc source equivalence or native C14 pass is inferred."
+  },
+  "outputBoundAndScopeSelfAudit": {
+    "predecessor": "312050bc19ab1c954dc55733abfbc710bc8ef6557935c3889ecd116ca7ecdc66",
+    "replacements": [
+      [
+        "        try require(original.plan.items.count == 182 && supplement.plan.items.count == 14)\n",
+        "        try require(original.plan.items.count == 182 && supplement.plan.items.count == 14)\n        // Admit the complete durable plan payload before any native request or effect.\n        let supplementPlanBytes = try AnyDestinationMigrationJournal.encoded(supplement.plan)\n        try require(supplementPlanBytes.count <= 4 * 1024 * 1024)\n"
+      ],
+      [
+        "                    try Ordinary14NativeIO.write(AnyDestinationMigrationJournal.encoded(supplement.plan),\n",
+        "                    try Ordinary14NativeIO.write(supplementPlanBytes,\n"
+      ],
+      [
+        "            \"nativeACLRevocationQualified\": .bool(false), \"originalAccountsMutated\": .bool(false)])",
+        "            \"nativeACLRevocationQualified\": .bool(false), \"cardinalityGreaterThanOneQualified\": .bool(false),\n            \"nonemptyTagOptionsQualified\": .bool(false), \"originalAccountsMutated\": .bool(false)])"
+      ]
+    ],
+    "exactInverse": true,
+    "sourceOnly": true,
+    "reason": "Bound complete persisted plan before first native request; make the positive value/empty tag and max>1 limitations explicit."
+  },
+  "currentFixture": {
+    "bytes": 35277,
+    "sha256": "a7f0f24e18d5d45db5d7d7916fa6480e8e8bbc05768ae2d1cd6c56897c2ed41d"
+  },
+  "canonicalHelperTargetObservation": {
+    "sourceGraphSHA256": "0211fc145d788ac42b8a2ca01160edce1667c69aca05384f342b1edeafc6ace8",
+    "finding": "The unchanged canonical helper has the new isolatedPath Tests/Ordinary14ContractTests but retains target ColdBookmarkContractTests from its donor. No controller has consumed this graph. Fix only this target metadata when deriving the new native/component graph; the full e8a source remains exact.",
+    "rows": [
+      {
+        "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCanonicalDefinitionSupplementTests.swift",
+        "target": "ColdBookmarkContractTests",
+        "isolatedPath": "Tests/Ordinary14ContractTests/NativeCanonicalDefinitionSupplementTests.swift",
+        "kind": "test-helper"
+      }
+    ]
+  },
+  "noProductionEdits": true,
+  "oldSnapshotsPreserved": true,
+  "compilerRuns": 0,
+  "nativeRuns": 0,
+  "original182Replays": 0
+}

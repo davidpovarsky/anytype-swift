@@ -1,0 +1,180 @@
+{
+  "additions": [
+    {
+      "bytes": 28578,
+      "carrierPath": "source-carriers/cold-bookmark22-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift",
+      "gitBlobSHA": "aa327b376d796948effcba35f8348085c5072470",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift",
+      "physicalMode": 384,
+      "sha256": "16f9af20d193bdc64f9397b6f728780d5a2af8ce3f848e18d9bf7c0d28d8dbdf"
+    },
+    {
+      "bytes": 10952,
+      "carrierPath": "source-carriers/cold-bookmark22-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextReference.swift",
+      "gitBlobSHA": "756a0c82221927756cd2793d13698ba10d33738e",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextReference.swift",
+      "physicalMode": 384,
+      "sha256": "950a947e9c3ad57ae70e627042747ef1dff4b6e890e22d2246cf776c2a3f7e87"
+    },
+    {
+      "bytes": 19898,
+      "carrierPath": "source-carriers/cold-bookmark22-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContentContext.swift",
+      "gitBlobSHA": "0ec7d66f9f5122b420991516d1731b5ffa650b8d",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContentContext.swift",
+      "physicalMode": 384,
+      "sha256": "96cd7578f2b6afdbf990f784dfcd3b3d668cc1ad492158503d5bf26b75279f4b"
+    },
+    {
+      "bytes": 9365,
+      "carrierPath": "source-carriers/cold-bookmark22-20261128/overlay/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeBookmarkLayout.swift",
+      "gitBlobSHA": "ad4d44cc8b298f60d85daad182d6ea70426b5992",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeBookmarkLayout.swift",
+      "physicalMode": 384,
+      "sha256": "754e7187ea7bee52ca7e1fccbf5d8c7e7edee412f1307df0cd64886e3ad1aacc"
+    },
+    {
+      "bytes": 13872,
+      "carrierPath": "source-carriers/cold-bookmark22-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeBookmarkComposition.swift",
+      "gitBlobSHA": "c046011ab09b165f2c39ab5d9fab22d05095ee16",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeBookmarkComposition.swift",
+      "physicalMode": 384,
+      "sha256": "ae6ba66142c227b24a75ecc40de780e409dc15bfe6774c58b5a74e069c1ab6a8"
+    }
+  ],
+  "compositionWithOrdinary14": {
+    "executorC14GitBlob": "aeca8507f67581edb57d315fe43322c6946edc0d",
+    "executorC14SHA256": "37a827abab7f8458ff0274bc0cc99a65ba62ea6068e7498d025be7fee1fee8dd",
+    "executorC22SHA256": "53e036d4843fe368d5731b2da517cdfb3be1b996c946d432c51d53769003f41c",
+    "order": [
+      "C22 cold context + Bookmark source",
+      "C14 ordinary-property overlay6869"
+    ],
+    "rule": "Apply the complete exact C14 executor after C22. C14 includes the C22 executor changes and replaces it. Never overwrite the newer C14 executor with the older C22 body. C14 depends on the f0846218 journal. No composed C22+C14 graph or test union is asserted here."
+  },
+  "parentCommit": "d1b04526825ad10b07c59313727629cec35f9559",
+  "parentTree": "b0140be8a4d53766a7e4a221e037b00e9d4c3bb2",
+  "protocol": "PINKHA_COLD_BOOKMARK22_OVERLAY_INVERSE_V1",
+  "replacements": [
+    {
+      "after": {
+        "bytes": 24055,
+        "carrierPath": "source-carriers/cold-bookmark22-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationExecutor.swift",
+        "gitBlobSHA": "d1b790c5737bb58c353a98586748445f0346667b",
+        "physicalMode": 384,
+        "sha256": "53e036d4843fe368d5731b2da517cdfb3be1b996c946d432c51d53769003f41c"
+      },
+      "before": {
+        "bytes": 19745,
+        "carrierPath": "source-carriers/cold-bookmark22-20261128/before/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationExecutor.swift",
+        "gitBlobSHA": "d2ca07c1f7340a1ef5f96803ed64f6ed76866693",
+        "physicalMode": 420,
+        "sha256": "e1b70db384a5308d759fa763446245a2369aa7a083d5d4080032d4e51f959b63"
+      },
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationExecutor.swift"
+    },
+    {
+      "after": {
+        "bytes": 21624,
+        "carrierPath": "source-carriers/cold-bookmark22-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationJournal.swift",
+        "gitBlobSHA": "d95816cab15a4134c3d073fbca72f11c8bf6fdf1",
+        "physicalMode": 384,
+        "sha256": "f0846218cf0ceb933271ff87985eca590e11edaf8fb429a3ed2381cc7b70d6db"
+      },
+      "before": {
+        "bytes": 13471,
+        "carrierPath": "source-carriers/cold-bookmark22-20261128/before/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationJournal.swift",
+        "gitBlobSHA": "0d8c14ea091d2c74b7f2f414df4112a064f5e1d9",
+        "physicalMode": 420,
+        "sha256": "6a21f98fe4cbeb0208e6842dd3b6a9dbad4672ddd0c04ee6b01c38c1dc3cea52"
+      },
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationJournal.swift"
+    },
+    {
+      "after": {
+        "bytes": 15167,
+        "carrierPath": "source-carriers/cold-bookmark22-20261128/overlay/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePreservationArchive.swift",
+        "gitBlobSHA": "cdc17c17784aebbae2e1dff9f13b0c84ab0a8f92",
+        "physicalMode": 384,
+        "sha256": "b1b7f69afe8a0248dc98471dd4c0a93a87e9670859b253a84d784ba7791bc642"
+      },
+      "before": {
+        "bytes": 13126,
+        "carrierPath": "source-carriers/cold-bookmark22-20261128/before/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePreservationArchive.swift",
+        "gitBlobSHA": "e95ddbf0d1e9eb51e44c0a85291ca256b47f5f09",
+        "physicalMode": 420,
+        "sha256": "83c8f527b576184dfbaf3537c9b17fd53fa78c422deed203e68007c34a261ea0"
+      },
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePreservationArchive.swift"
+    },
+    {
+      "after": {
+        "bytes": 13818,
+        "carrierPath": "source-carriers/cold-bookmark22-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeTextBlockPlan.swift",
+        "gitBlobSHA": "2810c4a4ca66eea42acb1663b33a91ffbfca2f44",
+        "physicalMode": 384,
+        "sha256": "87d0a6a4071a3052fef77adc6fd36389c35253585d8d9bc93696fbb61b62c1cb"
+      },
+      "before": {
+        "bytes": 12300,
+        "carrierPath": "source-carriers/cold-bookmark22-20261128/before/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeTextBlockPlan.swift",
+        "gitBlobSHA": "df9158e55598af2e51c0f2917de0b4f8d8e685a3",
+        "physicalMode": 420,
+        "sha256": "cd55ddb71a46e810b750fc2aac4c11b431e30717af28615651efe2d7919962f9"
+      },
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeTextBlockPlan.swift"
+    },
+    {
+      "after": {
+        "bytes": 13296,
+        "carrierPath": "source-carriers/cold-bookmark22-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativePageComposition.swift",
+        "gitBlobSHA": "ccc1900e42779fddce9b367276cc70710e4c3fd5",
+        "physicalMode": 384,
+        "sha256": "bbd81ee8d2fc7cb762b3583830e59c3ad39b27dac47eac46e80627abfa73b1a0"
+      },
+      "before": {
+        "bytes": 13241,
+        "carrierPath": "source-carriers/cold-bookmark22-20261128/before/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativePageComposition.swift",
+        "gitBlobSHA": "15dac38f7adb1101ee21c3d9f074fa86764a8c4f",
+        "physicalMode": 420,
+        "sha256": "7b28a3f837ddedb595952f4ec9326fb621b8ec56bffb33200249cddbb577e6ec"
+      },
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativePageComposition.swift"
+    },
+    {
+      "after": {
+        "bytes": 14004,
+        "carrierPath": "source-carriers/cold-bookmark22-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeContentSelection.swift",
+        "gitBlobSHA": "85aa1f92280655a87e0046367a819a0d82f63cea",
+        "physicalMode": 384,
+        "sha256": "bd4acc0a73f7b733b43b3823e82f0e7523013a7155e94562bc7e965e4dc97b57"
+      },
+      "before": {
+        "bytes": 13277,
+        "carrierPath": "source-carriers/cold-bookmark22-20261128/before/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeContentSelection.swift",
+        "gitBlobSHA": "4a393bfe27725d89e8be27219ee2a0d842f00ce5",
+        "physicalMode": 420,
+        "sha256": "8ae7d4536c77ead4b3189fa5f3611bca6c75def421d4f81ee4c2776260b089e1"
+      },
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeContentSelection.swift"
+    },
+    {
+      "after": {
+        "bytes": 6771,
+        "carrierPath": "source-carriers/cold-bookmark22-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeContentComposition.swift",
+        "gitBlobSHA": "d26703ec0f510b849c98498cab11682899a7d95e",
+        "physicalMode": 384,
+        "sha256": "0890a16d2d9a6d8074db7d02d88eaea33186ee5be9069693e62e12938936ec1f"
+      },
+      "before": {
+        "bytes": 5629,
+        "carrierPath": "source-carriers/cold-bookmark22-20261128/before/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeContentComposition.swift",
+        "gitBlobSHA": "0286affc9a0d3da9686a713a9172976b345936c3",
+        "physicalMode": 420,
+        "sha256": "2d3f2603bf9d1b5f7f9238cb15d64369bf6c74cbfd124bbfa672df3f59e55c81"
+      },
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeContentComposition.swift"
+    }
+  ],
+  "rollback": "An explicitly applied standalone C22 overlay is inverted by restoring the seven exact before-images and removing only its five newly introduced production paths. This delivery itself is additive under two new prefixes and does not apply the overlay.",
+  "status": "SOURCE_ONLY_NO_APPLICATION_PERFORMED"
+}

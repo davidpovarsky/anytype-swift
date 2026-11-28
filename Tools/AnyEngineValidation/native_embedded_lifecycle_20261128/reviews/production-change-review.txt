@@ -1,0 +1,288 @@
+Read-only line correspondence; not an applyable patch.
+...
+    4    4 // (`mobile/android`) and the c-archive shim (`mobile/ios`). Each shim is a thin
+    5    5 // host-idiom adapter; this package owns the real logic so it is exercised
+    6    6 // once by a single host-runnable test suite.
+    7    7 //
+    8    8 // What it owns:
++        9 //   - a mutex-guarded, single-server-per-process reservation covering
++       10 //     pending startup as well as a bound listener;
++       11 //   - a drain (`stopping`) channel so a fast restart waits for either
++       12 //     stop mode's teardown before re-booting on the same data dir
+-   9      //   - a mutex-guarded, single-server-per-process singleton with a
+-  10      //     double-start guard;
+-  11      //   - a drain (`stopping`) channel so a fast restart waits for a prior
+-  12      //     hard-stop's teardown before re-booting on the same data dir
+   13   13 //     (otherwise a background->foreground restart could run two engines
+   14   14 //     against one data dir);
+   15   15 //   - the GOMEMLIMIT soft cap via debug.SetMemoryLimit (iOS jetsam AND
+   16   16 //     Android's low-memory killer);
+   17   17 //   - config assembly: config.Defaults() + DataDir + Listen.Addr +
+...
+   45   45 //
+   46   46 // An empty nodeconfYAML is not an error: it selects the embedded
+   47   47 // production nodeconf, the same default the CLI and desktop sidecar boot
+   48   48 // on. Hosts pass YAML only to override the network.
+   49   49 var (
++       50 	// ErrAlreadyRunning: this process already owns a running server or a
++       51 	// pending start. The caller must await or Stop that attempt first.
+-  50      	// ErrAlreadyRunning: a server is already started in this process. The
+-  51      	// caller must Stop the current one before starting again.
+   52   52 	ErrAlreadyRunning = errors.New("embedded: server already running")
+   53   53 	// ErrBadDataDir: the data directory argument is empty, or could not be
+   54   54 	// resolved / created (bad path, unwritable parent).
+   55   55 	ErrBadDataDir = errors.New("embedded: bad data directory")
+   56   56 	// ErrBadOptions: an Options field the host controls is invalid — an
+...
+   84   84 // (any-store v2 page buffers alone are ~120 MB), so 256 MiB measured
+   85   85 // 15 GC cycles/s and 4 of 8 cores in mark work for the whole cold sync.
+   86   86 // 2 GiB leaves normal GOGC pacing in charge and still bounds a runaway.
+   87   87 const gomemlimitBytes = 2 << 30 // 2 GiB
+   88   88 
++       89 // handle is the package-level, mutex-guarded reservation. It is published
++       90 // before startup and remains address-less until Ready. Start guards every
++       91 // native export against overlap; Stop can also cancel an unpublished start.
+-  89      // handle is the package-level, mutex-guarded server handle. Only one
+-  90      // server runs per process; Start guards against a double-start, and the
+-  91      // stop paths reach the running server through this.
+   92   92 var (
+   93   93 	handleMu sync.Mutex
+   94   94 	handle   *serverHandle
++       95 	// stopping covers a cancelled running or pending start. Both stop
++       96 	// modes publish it before releasing ownership. A cancelled pending
++       97 	// start retains any prior drain in its completion chain.
+-  95      	// stopping is the done channel of a hard-stopped server whose run
+-  96      	// goroutine may still be tearing down. StopNow returns before the
+-  97      	// drain completes, so the next Start waits on this before booting —
+-  98      	// otherwise a fast background->foreground restart could run two
+-  99      	// engines against one data dir.
+  100   98 	stopping chan struct{}
+  101   99 )
+  102  100 
+  103  101 type serverHandle struct {
+  104  102 	cancel context.CancelFunc // cancels the RunWith ctx
++      103 	done   chan struct{}      // closed after prior drain and full attempt completion
+- 105      	done   chan struct{}      // closed when RunWith returns
+  106  104 	addr   string             // the bound listen address (host:port)
+  107  105 }
+  108  106 
+  109  107 // Options are the host-supplied inputs for Start. The embedded path has
+  110  108 // no config file and no env — every knob a host can turn crosses this
+...
+  253  251 }
+  254  252 
+  255  253 // The original lifecycle remains shared by legacy and network-bound starts.
+  256  254 // A non-nil binding requests the independent identity of this exact boot.
+  257  255 func startEmbeddedWithBinding(opts Options, binding *BoundStartResult) (string, error) {
++      256 	return startEmbeddedWithRunner(opts, binding, func(ctx context.Context, cfg config.Config, options server.RunOptions) error {
++      257 		return server.RunWith(ctx, cfg, options)
++      258 	})
++      259 }
++      260 
++      261 // The runner seam is private. Production always supplies canonical RunWith;
++      262 // controlled tests can hold the pre-Ready and teardown boundaries without a
++      263 // package-global runner override or another lifecycle implementation.
++      264 type embeddedRunFunc func(context.Context, config.Config, server.RunOptions) error
++      265 
++      266 func startEmbeddedWithRunner(opts Options, binding *BoundStartResult, run embeddedRunFunc) (string, error) {
+- 258      	// Soft memory cap, applied unconditionally at start so it is in force
+- 259      	// before the engine allocates. SetMemoryLimit's argument is a soft
+- 260      	// GOMEMLIMIT in bytes; -1 leaves it unchanged (used to read it back).
+  261  267 	debug.SetMemoryLimit(gomemlimitBytes)
+  262  268 
++      269 	// Reserve ownership before releasing the lock, including while waiting for
++      270 	// a previous drain or validating options. A second native export cannot
++      271 	// launch another engine in the interval before Ready publishes an address.
+  263  272 	handleMu.Lock()
+  264  273 	if handle != nil {
+  265  274 		handleMu.Unlock()
+  266  275 		return "", ErrAlreadyRunning
+  267  276 	}
+  268  277 	prev := stopping
++      278 	ctx, cancel := context.WithCancel(context.Background())
++      279 	h := &serverHandle{cancel: cancel, done: make(chan struct{})}
++      280 	handle = h
+  269  281 	handleMu.Unlock()
+  270  282 
++      283 	runStarted := false
++      284 	defer func() {
++      285 		if !runStarted {
++      286 			cancel()
++      287 			finishEmbeddedHandle(h)
++      288 		}
++      289 	}()
++      290 
++      291 	// A cancelled pending start still owns its done barrier until the prior
++      292 	// engine is fully drained. Closing it early would let a later restart
++      293 	// bypass that engine's teardown through an already-completed barrier.
+- 271      	// A prior hard stop (StopNow) returns before its run goroutine has
+- 272      	// finished tearing down — the engine and SQLite still hold the data
+- 273      	// dir. Wait for that teardown before booting a new engine on the same
+- 274      	// dir, so a fast restart can't run two engines on one data dir.
+  275  294 	if prev != nil {
+  276  295 		<-prev
+  277  296 	}
++      297 	if err := ctx.Err(); err != nil {
++      298 		return "", &BootError{Err: err}
++      299 	}
+- 278      
+  279  300 	if opts.DataDir == "" {
+  280  301 		return "", ErrBadDataDir
+  281  302 	}
+  282  303 	if err := validateOptions(opts); err != nil {
+  283  304 		return "", err
+...
+  288  309 		if err != nil {
+  289  310 			return "", err
+  290  311 		}
+  291  312 		binding.NetworkID = networkID
+  292  313 	}
++      314 	if err := ctx.Err(); err != nil {
++      315 		return "", &BootError{Err: err}
++      316 	}
+  293  317 	if _, err := config.EnsureDataDir(opts.DataDir); err != nil {
+  294  318 		return "", fmt.Errorf("%w: %w", ErrBadDataDir, err)
+  295  319 	}
++      320 	if err := ctx.Err(); err != nil {
++      321 		return "", &BootError{Err: err}
++      322 	}
+  296  323 
++      324 	ready := make(chan string, 1)
++      325 	runErr := make(chan error, 1)
++      326 	runStarted = true
+- 297      	ctx, cancel := context.WithCancel(context.Background())
+- 298      	done := make(chan struct{})
+- 299      	ready := make(chan string, 1) // delivers the bound addr once
+- 300      	runErr := make(chan error, 1) // delivers RunWith's return
+- 301      
+  302  327 	go func() {
++      328 		defer func() {
++      329 			cancel()
++      330 			finishEmbeddedHandle(h)
++      331 		}()
++      332 		runErr <- run(ctx, cfg, server.RunOptions{
+- 303      		defer close(done)
+- 304      		err := server.RunWith(ctx, cfg, server.RunOptions{
+  305  333 			Ready:        func(addr string) { ready <- addr },
+  306  334 			ControlToken: strings.TrimSpace(opts.ControlToken),
+  307  335 		})
+- 308      		runErr <- err
+  309  336 	}()
+  310  337 
+- 311      	// Block until the listener binds (success) or boot errors out before
+- 312      	// binding.
+  313  338 	select {
+  314  339 	case addr := <-ready:
+  315  340 		handleMu.Lock()
++      341 		current := handle == h && ctx.Err() == nil
++      342 		if current {
++      343 			h.addr = addr
++      344 		}
+- 316      		handle = &serverHandle{cancel: cancel, done: done, addr: addr}
+  317  345 		handleMu.Unlock()
++      346 		if !current {
++      347 			// Stop may have cancelled this start while Ready was pending.
++      348 			// Its late address must never become the current engine handle.
++      349 			cancel()
++      350 			<-h.done
++      351 			err := <-runErr
++      352 			if err == nil {
++      353 				err = ctx.Err()
++      354 			}
++      355 			return "", &BootError{Err: err}
++      356 		}
+  318  357 		return addr, nil
+  319  358 	case err := <-runErr:
+- 320      		// RunWith returned before Ready fired: boot failed before the
+- 321      		// listener bound. Drain the goroutine and report. (A serve-loop
+- 322      		// failure AFTER binding can't reach here — Ready has already
+- 323      		// delivered the addr and Start has returned it.)
+  324  359 		cancel()
++      360 		<-h.done
+- 325      		<-done
+  326  361 		if err == nil {
+  327  362 			err = errors.New("server exited without binding")
+  328  363 		}
+  329  364 		return "", &BootError{Err: err}
++      365 	case <-ctx.Done():
++      366 		<-h.done
++      367 		err := <-runErr
++      368 		if err == nil {
++      369 			err = ctx.Err()
++      370 		}
++      371 		return "", &BootError{Err: err}
+  330  372 	}
+  331  373 }
+  332  374 
++      375 // Exactly one path owns this completion: the Start defer before a runner is
++      376 // launched, or the runner goroutine after RunWith has returned. It clears only
++      377 // this generation, never a later reservation or a later drain barrier.
++      378 func finishEmbeddedHandle(h *serverHandle) {
++      379 	handleMu.Lock()
++      380 	defer handleMu.Unlock()
++      381 	if handle == h {
++      382 		handle = nil
++      383 	}
++      384 	if stopping == h.done {
++      385 		stopping = nil
++      386 	}
++      387 	close(h.done)
++      388 }
++      389 
++      390 // Stop cancels the current running or pending start. Both stop modes retain its
++      391 // drain barrier before clearing the handle, so a restart waits for full native
++      392 // teardown. Graceful Stop also waits for an already pending hard-stop drain.
++      393 // Non-graceful Stop never waits for validation, startup or engine shutdown.
+- 333      // Stop tears down the running server. When graceful, it cancels the run
+- 334      // context and waits for RunWith to return (Echo's graceful drain); when
+- 335      // not graceful, it cancels the context and returns without waiting for a
+- 336      // clean drain so the hard-stop path stays bounded for the iOS background-
+- 337      // task expiration handler. Either way the handle is cleared so a
+- 338      // subsequent Start is clean.
+- 339      //
+- 340      // The non-graceful path returns while the run goroutine is still
+- 341      // draining, so it records that teardown in `stopping`; the next Start
+- 342      // waits on it before booting to avoid running two engines against one
+- 343      // data dir. Safe to call when no server is running.
+  344  394 func Stop(graceful bool) {
+  345  395 	handleMu.Lock()
+  346  396 	h := handle
+- 347      	handle = nil
+  348  397 	if h == nil {
++      398 		prev := stopping
+  349  399 		handleMu.Unlock()
++      400 		if graceful && prev != nil {
++      401 			<-prev
++      402 		}
+  350  403 		return
+  351  404 	}
++      405 	handle = nil
++      406 	stopping = h.done
+- 352      	if !graceful {
+- 353      		stopping = h.done
+- 354      		go func() {
+- 355      			<-h.done
+- 356      			handleMu.Lock()
+- 357      			if stopping == h.done {
+- 358      				stopping = nil
+- 359      			}
+- 360      			handleMu.Unlock()
+- 361      		}()
+- 362      	}
+  363  407 	handleMu.Unlock()
+  364  408 
+  365  409 	h.cancel()
+  366  410 	if graceful {
+- 367      		// Wait for RunWith to fully return — Echo's graceful shutdown
+- 368      		// closed the listener and drained in-flight handlers.
+  369  411 		<-h.done
+  370  412 	}
+- 371      	// Non-graceful: ctx is cancelled (which unblocks RunWith's select and
+- 372      	// triggers shutdown); we return immediately without waiting on h.done
+- 373      	// so the caller's deadline is never at our mercy. The teardown
+- 374      	// continues in the background and is tracked via `stopping`.
+  375  413 }
+  376  414 
+  377  415 // StopNow hard-stops the server and returns promptly (well under 1s): it
+  378  416 // cancels the run context to force the listener closed but does NOT wait
+  379  417 // for a clean drain. The iOS beginBackgroundTask expiration handler calls

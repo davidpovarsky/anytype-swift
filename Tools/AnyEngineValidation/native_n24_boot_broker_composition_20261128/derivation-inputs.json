@@ -1,0 +1,131 @@
+{
+  "canonicalJSON": "Recursively sorted object keys, two-space indentation and one final LF; full files and modes included.",
+  "exportName": "deriveFinal64",
+  "jsonArguments": {
+    "bootSelection": {
+      "bytes": 6893,
+      "gitBlob": "bb54ab873578c38ad2b26cae45ec549c244e2c8c",
+      "jsonPointer": "",
+      "path": "Tools/AnyEngineValidation/native_n24_boot_broker_composition_20261128/inputs/root-boot-lifecycle-selection.json",
+      "sha256": "dde922871f07cb3f124d53999ee950fd9f1d04ed5784bf28c2fe90c1b6b9c8c0",
+      "sourceOnly": true
+    },
+    "brokerSelection": {
+      "bytes": 1417,
+      "gitBlob": "e15ff16072e4df5db70205110ff8031651435747",
+      "jsonPointer": "",
+      "originCommit": "dae5c971f61eda51e497df21a974b1c7fad29184",
+      "path": "Tools/AnyEngineValidation/native_quota_broker_cancellation_20261128/preparation/SELECTED_TESTS.json",
+      "sha256": "e29ebd0347405792b6c6b560e0aec4a24fb8d7e7e597f7e997fc1f8ae71129f8"
+    },
+    "n24Overlay": {
+      "bytes": 21152,
+      "gitBlob": "e6971f1075e51025aa0e18c936f69c24a306fad5",
+      "jsonPointer": "",
+      "originCommit": "94fd763d459210b496557894628333d466abae73",
+      "path": "Tools/AnyEngineValidation/native_bound_http_source_20261128/overlay-manifest.json",
+      "sha256": "6820c3cca3e593072aa1407edf315e17d266f0b69a5935194bcec651fea35446"
+    },
+    "n24Selection": {
+      "bytes": 3820,
+      "gitBlob": "4e1774e9ce9b8bfc96d0fe92dc62a1198f3b5e63",
+      "jsonPointer": "",
+      "originCommit": "94fd763d459210b496557894628333d466abae73",
+      "path": "Tools/AnyEngineValidation/native_bound_http_source_20261128/test-selection.json",
+      "sha256": "87d1ca5bf68563f50d7557b350ffd15e0ffcd496db62d67ac3eba07111fb0590"
+    },
+    "rootActions": {
+      "bytes": 9025,
+      "gitBlob": "52da9d86fb60866633331fa63d3906aedacff725",
+      "jsonPointer": "/orderedOverlayActions",
+      "path": "Tools/AnyEngineValidation/native_n24_boot_broker_composition_20261128/inputs/root-source-composition.json",
+      "sha256": "7822a8c641331259b23f2569adaddb34095ec4b86b0f44fd11bd1932ed571e1f",
+      "sourceOnly": true
+    }
+  },
+  "literalArguments": {
+    "brokerActions": [
+      {
+        "action": "replace",
+        "after": {
+          "bytes": 12218,
+          "nativeMode": 384,
+          "sha256": "fe698597e58d3cd2aa4ce99bf00f59cbf101ce81c4b00f77d3539d483fc9ea9d"
+        },
+        "before": {
+          "bytes": 12108,
+          "nativeMode": 384,
+          "sha256": "25de187fc12f7e8a9e1aa89c420a47e2bbc9aac021740e0257f79c63245e4f34"
+        },
+        "carrierCommit": "dae5c971f61eda51e497df21a974b1c7fad29184",
+        "carrierPath": "Tools/AnyEngineValidation/native_quota_broker_cancellation_20261128/overlay/any/.runtime-artifacts/sdk-source/internal/files/broker/broker.go",
+        "kind": "production",
+        "sourceRelativePath": ".runtime-artifacts/sdk-source/internal/files/broker/broker.go",
+        "stage": "quota-broker-cancellation"
+      },
+      {
+        "action": "add",
+        "after": {
+          "bytes": 3804,
+          "nativeMode": 384,
+          "sha256": "3545314693fea848a66e55c3fb22b76981a6d30fe859b52f718a8288e4077100"
+        },
+        "before": null,
+        "carrierCommit": "dae5c971f61eda51e497df21a974b1c7fad29184",
+        "carrierPath": "Tools/AnyEngineValidation/native_quota_broker_cancellation_20261128/overlay/any/.runtime-artifacts/sdk-source/internal/files/broker/pinkha_quota_deadline_test.go",
+        "kind": "test",
+        "sourceRelativePath": ".runtime-artifacts/sdk-source/internal/files/broker/pinkha_quota_deadline_test.go",
+        "stage": "quota-broker-cancellation"
+      }
+    ],
+    "lifecycleCommit": "584d8eb7423e61823aa67c173312b742d540a27f",
+    "n24Commit": "94fd763d459210b496557894628333d466abae73"
+  },
+  "loaderBoundary": "The caller supplies exact full text/JSON arguments after identity checks. The module has no imports, filesystem, network, process, test-runner, CLI or native entrypoint.",
+  "modulePath": "Tools/AnyEngineValidation/native_n24_boot_broker_composition_20261128/derive-source-composition.mjs",
+  "protocol": "pinkha-final64-pure-derivation-bindings-v1",
+  "rawTextArguments": {
+    "mapTexts.base": {
+      "bytes": 369957,
+      "gitBlob": "1bb7c086f3d28a8e7c2aedee26656a2ba40b71b3",
+      "originCommit": "94fd763d459210b496557894628333d466abae73",
+      "path": "Tools/AnyEngineValidation/native_bound_http_source_20261128/maps/runtime18-base-source.json",
+      "sha256": "3552d6f65350c1eba2e9763c7f9a9daa64ada0335f64020ad585fff4a0e286e4"
+    },
+    "mapTexts.n24Production": {
+      "bytes": 371724,
+      "gitBlob": "a05a56ed177b4d021fd75d324d56e47ba5e44aeb",
+      "originCommit": "94fd763d459210b496557894628333d466abae73",
+      "path": "Tools/AnyEngineValidation/native_bound_http_source_20261128/maps/native-production-source.json",
+      "sha256": "f5cee416ebf393079a3eedc7cf9890df64548628a90291803201ed0c6fdef645"
+    },
+    "mapTexts.n24Qualification": {
+      "bytes": 372692,
+      "gitBlob": "9792fcbd610497272c50c3e79fd6df61028d7066",
+      "originCommit": "94fd763d459210b496557894628333d466abae73",
+      "path": "Tools/AnyEngineValidation/native_bound_http_source_20261128/maps/native-qualification-source.json",
+      "sha256": "b757e6f81d7fadd76abfb0f6e96974896eee59c7dc62a6b984c021003bce7e47"
+    },
+    "mapTexts.n24SDKProduction": {
+      "bytes": 148000,
+      "gitBlob": "25a07f6e187c667f1e633ab1e888ce2b0901e3fe",
+      "originCommit": "94fd763d459210b496557894628333d466abae73",
+      "path": "Tools/AnyEngineValidation/native_bound_http_source_20261128/maps/sdk-production-source.json",
+      "sha256": "4a756afeda551334ae012fd9256c0f7bec83321ab83bd5595b7ee99c90ef8f40"
+    },
+    "mapTexts.rootProduction": {
+      "bytes": 372320,
+      "gitBlob": "1ce090d287fca70d23763322dc65777cbf6e879a",
+      "path": "Tools/AnyEngineValidation/native_n24_boot_broker_composition_20261128/inputs/root-native-production-source.json",
+      "sha256": "5206276e3071eeac65784c08a6981b5300eb9017b084c0052db0b2afe46dc74e",
+      "sourceOnly": true
+    },
+    "mapTexts.rootQualification": {
+      "bytes": 374143,
+      "gitBlob": "7fc43dd1fdcbc1cace415ce8b47038e7165e500d",
+      "path": "Tools/AnyEngineValidation/native_n24_boot_broker_composition_20261128/inputs/root-native-qualification-source.json",
+      "sha256": "8c263f483b327c76d511b6b5786654f64743df9a300741f0ef8760f25b216c3c",
+      "sourceOnly": true
+    }
+  }
+}

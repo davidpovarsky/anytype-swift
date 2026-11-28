@@ -1,0 +1,75 @@
+--- /mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeTextBlockPlan.swift
++++ /mnt/development/projects/evidence/pinkha-w1-bookmark-family-preparation-20261128-draft1/AnyHeartNativeTextBlockPlan.swift
+@@ -34,6 +34,7 @@
+     public let contentSHA256: String
+     public let entries: [Entry]
+     public let pageLayout: AnyHeartNativePageLayout?
++    public let bookmarkLayout: AnyHeartNativeBookmarkLayout?
+     public var permitsDestinationWrites: Bool { false }
+ 
+     public init(snapshot: AnyHeartNativeSnapshotView) throws {
+@@ -47,8 +48,15 @@
+         try self.init(snapshot: snapshot, projectedPageLayout: pageLayout)
+     }
+ 
++    /// Uses the separately validated Bookmark property header while retaining
++    /// the same body graph, inline marks, hierarchy and destination operations.
++    public init(snapshot: AnyHeartNativeSnapshotView, bookmarkLayout: AnyHeartNativeBookmarkLayout) throws {
++        try self.init(snapshot: snapshot, projectedPageLayout: nil, projectedBookmarkLayout: bookmarkLayout)
++    }
++
+     private init(snapshot: AnyHeartNativeSnapshotView,
+-                 projectedPageLayout pageLayout: AnyHeartNativePageLayout?) throws {
++                 projectedPageLayout pageLayout: AnyHeartNativePageLayout?,
++                 projectedBookmarkLayout bookmarkLayout: AnyHeartNativeBookmarkLayout? = nil) throws {
+         guard snapshot.issues.isEmpty,
+               snapshot.depthFirstIDs.count == snapshot.blocks.count else {
+             throw AnyHeartNativeTextBlockPlanError.incompleteGraph
+@@ -61,7 +69,16 @@
+                 throw AnyHeartNativeTextBlockPlanError.incompleteGraph
+             }
+         }
+-        let structural = Set((pageLayout?.structuralBlockIDs ?? []).map { Data($0.utf8) })
++        if let bookmarkLayout {
++            guard pageLayout == nil,
++                  Data(bookmarkLayout.sourceSpaceID.utf8) == Data(snapshot.sourceSpaceID.utf8),
++                  Data(bookmarkLayout.sourceObjectID.utf8) == Data(snapshot.sourceObjectID.utf8),
++                  bookmarkLayout.snapshotSHA256 == snapshot.snapshotSHA256,
++                  bookmarkLayout.viewSHA256 == snapshot.viewSHA256 else {
++                throw AnyHeartNativeTextBlockPlanError.incompleteGraph
++            }
++        }
++        let structural = Set((pageLayout?.structuralBlockIDs ?? bookmarkLayout?.structuralBlockIDs ?? []).map { Data($0.utf8) })
+         let rows = Dictionary(uniqueKeysWithValues: snapshot.blocks.map { (Data($0.id.utf8), $0) })
+         let rootID = Data(snapshot.sourceObjectID.utf8)
+         guard let root = rows[rootID], root.parentID == nil,
+@@ -146,6 +163,9 @@
+         if let pageLayout, entries.map(\.sourceBlockID) != pageLayout.bodyBlockIDs {
+             throw AnyHeartNativeTextBlockPlanError.incompleteGraph
+         }
++        if let bookmarkLayout, entries.map(\.sourceBlockID) != bookmarkLayout.bodyBlockIDs {
++            throw AnyHeartNativeTextBlockPlanError.incompleteGraph
++        }
+         var materialFields: [String: AnyJSON] = [
+             "contract": .string("pinkha-heart-native-text-block-plan-v1"),
+             "space": .string(snapshot.sourceSpaceID), "object": .string(snapshot.sourceObjectID),
+@@ -161,6 +181,10 @@
+             materialFields["contract"] = .string("pinkha-heart-native-text-block-plan-v2")
+             materialFields["pageLayoutSHA256"] = .string(pageLayout.contentSHA256)
+         }
++        if let bookmarkLayout {
++            materialFields["contract"] = .string("pinkha-heart-native-text-block-plan-v3")
++            materialFields["bookmarkLayoutSHA256"] = .string(bookmarkLayout.contentSHA256)
++        }
+         let material: AnyJSON = .object(materialFields)
+         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
+         let bytes = try encoder.encode(material)
+@@ -171,7 +195,7 @@
+         sourceSpaceID = snapshot.sourceSpaceID; sourceObjectID = snapshot.sourceObjectID
+         snapshotSHA256 = snapshot.snapshotSHA256; viewSHA256 = snapshot.viewSHA256
+         contentSHA256 = AnyContentDigest.sha256(bytes); self.entries = entries
+-        self.pageLayout = pageLayout
++        self.pageLayout = pageLayout; self.bookmarkLayout = bookmarkLayout
+     }
+ 
+     /// The owner must be an earlier ordinary object item in the enclosing

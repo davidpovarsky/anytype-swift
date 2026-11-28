@@ -1,0 +1,22 @@
+{
+  "protocol": "PINKHA_QUOTA_BROKER_CANCELLATION_SELECTION_V1",
+  "status": "NOT_RUN",
+  "package": "./internal/files/broker",
+  "goRunPattern": "^(TestPinkhaQuotaHedgePreCancelledSkipsFleet|TestPinkhaQuotaHedgeEndsBeforeBlockedPeerReturns)$",
+  "parents": [
+    "TestPinkhaQuotaHedgePreCancelledSkipsFleet",
+    "TestPinkhaQuotaHedgeEndsBeforeBlockedPeerReturns"
+  ],
+  "children": [
+    "TestPinkhaQuotaHedgeEndsBeforeBlockedPeerReturns/cancel",
+    "TestPinkhaQuotaHedgeEndsBeforeBlockedPeerReturns/deadline"
+  ],
+  "expectedParentEvents": 2,
+  "expectedChildEvents": 2,
+  "expectedTotalEvents": 4,
+  "priorN24EventsNotReplayedOrRecounted": 24,
+  "oldSourceTestsDeliveredAsContextOnly": true,
+  "fixtureAccounts": 0,
+  "networkUse": 0,
+  "arbitraryCallbackForcedTermination": false
+}
