@@ -1,0 +1,15 @@
+{
+  "status": "SOURCE_ONLY_NOT_PARSED_NOT_COMPILED_NOT_RUN",
+  "predecessor": {
+    "blob": "f96aedfdcbeb7aa35a719ed3d65d848c50e93bc2",
+    "bytes": 16086,
+    "sha256": "3e67b5518e0779f5156482ed887cbde9fafe643419d0f45c8717d4deaa43288e"
+  },
+  "finding": "The source owner must own the full actual destination operation, including its final session/presentation awaits.",
+  "edits": [
+    {
+      "before": "    public func execute(_ request: AnyHeartNativeMigrationRequest, client: AnyHTTPClient,\n                        session: AnyApplicationSession, lease: AnyHostLease) async throws -> AnyHeartNativeMigrationCompletion {\n        try await withOwnedOperation { ticket in\n            try await self.produce(request, client: client, session: session, lease: lease, ticket: ticket)\n        }\n    }",
+      "after": "    public typealias DestinationBody = @Sendable (\n        AnyHTTPClient, AnyApplicationSession, AnyHostLease\n    ) async throws -> AnyHeartNativeMigrationCompletion\n    public typealias DestinationOperation = @Sendable (\n        _ body: @escaping DestinationBody\n    ) async throws -> AnyHeartNativeMigrationCompletion\n\n    /// The App adapter invokes the ORIGINAL presentation-owned operation here.\n    /// Registration surrounds that entire invocation, including its final async\n    /// session validation and presentation delivery fence, not just our body.\n    public func execute(_ request: AnyHeartNativeMigrationRequest,\n                        inDestination: @escaping DestinationOperation) async throws -> AnyHeartNativeMigrationCompletion {\n        try await withOwnedOperation { ticket in\n            try await inDestination { client, session, lease in\n                try await self.produce(request, client: client, session: session, lease: lease, ticket: ticket)\n            }\n        }\n    }"
+    }
+  ]
+}

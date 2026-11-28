@@ -1,0 +1,294 @@
+{
+  "schema": "pinkha-e-same-owner-destination-operation-source-manifest-v1",
+  "status": "SOURCE_REVIEW_CLEAR_RUNTIME_NOT_RUN_PREPARED_FOR_NORMAL_ISOLATED_PUBLICATION",
+  "repository": "davidpovarsky/anytype-swift",
+  "branch": "codex/chatgpt-wave15-w1-destination-operation-20261128",
+  "sourceParent": "af1aca9c33c0b38101c20ab24c88b1cfc07d7a17",
+  "sourceParentTree": "4b017155088782ec1b3d31e872e3aaf387707823",
+  "evidencePrefix": "Tools/AnyEngineValidation/same_owner_destination_operation_20261128",
+  "activeSourceFiles": 3,
+  "sourceAndEvidenceFilesExcludingThisManifest": 18,
+  "sourceAndEvidenceBytesExcludingThisManifest": 146594,
+  "ownership": {
+    "classification": "DOWNSTREAM_OWNED_PINKHA",
+    "upstreamOwnedEdits": 0,
+    "upstreamExceptions": [],
+    "AppSourceEdits": 0,
+    "upstreamObservation": {
+      "url": "https://api.github.com/repos/anyproto/anytype-swift/branches/develop",
+      "branch": "develop",
+      "head": "d857b23ea540be33d6faab4f7a7a1a260ab578c1",
+      "tree": "a575168994b9e084925b54ca1367acee9ab75587",
+      "readOnly": true,
+      "notAnIntegrationBase": true
+    },
+    "sourceParentIsW3CurrentSource227": true,
+    "finalIntegrationRefChanges": 0,
+    "worktreeActions": 0
+  },
+  "acceptance": {
+    "sourceReview": "CLEAR",
+    "currentPreimages": "WHOLE_BYTES_EQUAL_DAA_AT_AF1",
+    "literalForwardAndInverse": "PASS_ALL_SEVEN_EDITS",
+    "SwiftParser": "NOT_RUN",
+    "compiler": "NOT_RUN",
+    "raceTests": "NOT_RUN",
+    "native": "NOT_RUN",
+    "dualRuntime": "NOT_RUN",
+    "actualAppCaller": "PENDING_W3",
+    "postReturnPersistence": "PENDING_W3",
+    "capacityOrRuntimeRelease": false
+  },
+  "publicAPI": {
+    "type": "PinkhaEmbeddedAnyPresentation",
+    "method": "performDestinationOperation(expectedAccountID:expectedSpaceID:_:)",
+    "operation": "@Sendable (AnyHTTPClient, AnyApplicationSession, AnyHostLease) async throws -> Value",
+    "result": "Value: Sendable",
+    "CProducerMethod": "AnyHeartNativeMigrationProducer.execute(_:inDestination:)",
+    "CProducerCodeIncludedAsActiveSource": false
+  },
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 29548,
+      "sha256": "8a610e6869a941d07d2d6a2c7e10a3b917427e89ee6f1f00cbe5cc5adfcde7fe",
+      "blob": "5a032474b2e2bc7c07d502920042741d22eff1f5",
+      "role": "active-downstream-source",
+      "origin": {
+        "kind": "exact-reviewed-afterimage",
+        "before": {
+          "blob": "7356bed6598d094e4945d1265e67a6433ac3ab22",
+          "bytes": 25081,
+          "sha256": "b029c7f5e3064c3333117301478633f70a2dd8768dde57a0d1df2d38b807e775"
+        }
+      }
+    },
+    {
+      "path": "Tools/AnyEngineValidation/same_owner_destination_operation_20261128/before/Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 25081,
+      "sha256": "b029c7f5e3064c3333117301478633f70a2dd8768dde57a0d1df2d38b807e775",
+      "blob": "7356bed6598d094e4945d1265e67a6433ac3ab22",
+      "role": "exact-current-beforeimage",
+      "origin": {
+        "kind": "current-af1-and-daa-identical",
+        "commit": "af1aca9c33c0b38101c20ab24c88b1cfc07d7a17"
+      }
+    },
+    {
+      "path": "Tools/AnyEngineValidation/same_owner_destination_operation_20261128/patches/root.patch",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 5253,
+      "sha256": "867af508ff6790a4a5da686ebc841c41a6bdee09cb2c984e9c87e768ee30963e",
+      "blob": "3ed4d82b581aa9aa5202ef120a00eafa3db63d78",
+      "role": "exact-forward-and-inverse",
+      "origin": {
+        "kind": "seven-literal-edits-in-three-files"
+      }
+    },
+    {
+      "path": "Modules/PinkhaEngineHost/Sources/PinkhaEngineHost/PinkhaEngineHost.swift",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 3438,
+      "sha256": "0e7e1fe0b692a7c3178fc9176e672e09b2352a0b06e286b9526f6b752cd87175",
+      "blob": "07629409adc5a6e762e582f8e81adcb621700bd4",
+      "role": "active-downstream-source",
+      "origin": {
+        "kind": "exact-reviewed-afterimage",
+        "before": {
+          "blob": "9821f005c15f993c8ded7765efcfd645b7fa0eba",
+          "bytes": 2875,
+          "sha256": "96199ef741b8a432fc9c2dd50f063f427052f35e904da5ce16fc1facefceec72"
+        }
+      }
+    },
+    {
+      "path": "Tools/AnyEngineValidation/same_owner_destination_operation_20261128/before/Modules/PinkhaEngineHost/Sources/PinkhaEngineHost/PinkhaEngineHost.swift",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 2875,
+      "sha256": "96199ef741b8a432fc9c2dd50f063f427052f35e904da5ce16fc1facefceec72",
+      "blob": "9821f005c15f993c8ded7765efcfd645b7fa0eba",
+      "role": "exact-current-beforeimage",
+      "origin": {
+        "kind": "current-af1-and-daa-identical",
+        "commit": "af1aca9c33c0b38101c20ab24c88b1cfc07d7a17"
+      }
+    },
+    {
+      "path": "Tools/AnyEngineValidation/same_owner_destination_operation_20261128/patches/host.patch",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 1128,
+      "sha256": "6c7c8fcb28fc7446c12451f430df92f22f10be8b296fda08306acd11d3ea4cc1",
+      "blob": "a06b6eb8a6b76979ed6b975bfee90a182f02e117",
+      "role": "exact-forward-and-inverse",
+      "origin": {
+        "kind": "seven-literal-edits-in-three-files"
+      }
+    },
+    {
+      "path": "Modules/PinkhaEngineHost/Package.swift",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 1249,
+      "sha256": "c2f33b0401d4f73f1e274ee74ef4b7a4bf806c4b8e1585d403ff5bfb6e09a477",
+      "blob": "3abede4c18c7e608fd630ef30c9bb0e57af2fa9b",
+      "role": "active-downstream-source",
+      "origin": {
+        "kind": "exact-reviewed-afterimage",
+        "before": {
+          "blob": "a5c131d2ceb0b661b4fbcec4d5bd69989947f41f",
+          "bytes": 1111,
+          "sha256": "0032ffe0b212d501e7d9eaf4ec99e854c138f72b3e5bcf24a6f8821c21a8271b"
+        }
+      }
+    },
+    {
+      "path": "Tools/AnyEngineValidation/same_owner_destination_operation_20261128/before/Modules/PinkhaEngineHost/Package.swift",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 1111,
+      "sha256": "0032ffe0b212d501e7d9eaf4ec99e854c138f72b3e5bcf24a6f8821c21a8271b",
+      "blob": "a5c131d2ceb0b661b4fbcec4d5bd69989947f41f",
+      "role": "exact-current-beforeimage",
+      "origin": {
+        "kind": "current-af1-and-daa-identical",
+        "commit": "af1aca9c33c0b38101c20ab24c88b1cfc07d7a17"
+      }
+    },
+    {
+      "path": "Tools/AnyEngineValidation/same_owner_destination_operation_20261128/patches/package.patch",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 1164,
+      "sha256": "1845344e45720a4aed9217c0f3c1ff896c3c68c44f0e6a8e525e4a5f6db34e36",
+      "blob": "42021477be0dc10cc3c4769152572f8c015ba21c",
+      "role": "exact-forward-and-inverse",
+      "origin": {
+        "kind": "seven-literal-edits-in-three-files"
+      }
+    },
+    {
+      "path": "Tools/AnyEngineValidation/same_owner_destination_operation_20261128/provenance/source-proposal.json",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 15754,
+      "sha256": "6963f548d9a57986acf252f6e6cdd10beb1d98fe70fadff2df9d0750211d5a94",
+      "blob": "5149cb803f11239387789b71fa5cabc3f1986310",
+      "role": "initial-source-proposal",
+      "origin": {
+        "kind": "whole-readback-git-source-artifact",
+        "blob": "5149cb803f11239387789b71fa5cabc3f1986310"
+      }
+    },
+    {
+      "path": "Tools/AnyEngineValidation/same_owner_destination_operation_20261128/reviews/root-destination-operation-peer.json",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 6671,
+      "sha256": "1eef73a388237266e9f414862f8d8f77ce89eee22437bdeb172002d7d603d20a",
+      "blob": "38021968c0d8525ff9d3cf1da5cdfd4e8d308d3d",
+      "role": "independent-source-peer",
+      "origin": {
+        "kind": "whole-readback-git-source-artifact",
+        "blob": "38021968c0d8525ff9d3cf1da5cdfd4e8d308d3d"
+      }
+    },
+    {
+      "path": "Tools/AnyEngineValidation/same_owner_destination_operation_20261128/reviews/n-destination-operation-peer.json",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 4629,
+      "sha256": "02ef0e1e06628eaea5bb6d5db8fbd442fa29a38af061129172ac98575ca842a1",
+      "blob": "20ba1a15ac02155d5e84b60776d0b12076f76dce",
+      "role": "independent-source-peer",
+      "origin": {
+        "kind": "whole-readback-git-source-artifact",
+        "blob": "20ba1a15ac02155d5e84b60776d0b12076f76dce"
+      }
+    },
+    {
+      "path": "Tools/AnyEngineValidation/same_owner_destination_operation_20261128/reviews/e-c-producer-lifetime-peer.json",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 15067,
+      "sha256": "7a5db2d3a7390deb0a1401283b6498ad6a33407cd6acf820b9702800e2198a38",
+      "blob": "50a9780180a2367794111b1f353c7ea8750417b4",
+      "role": "corrected-producer-lifetime-peer",
+      "origin": {
+        "kind": "whole-readback-git-source-artifact",
+        "blob": "50a9780180a2367794111b1f353c7ea8750417b4"
+      }
+    },
+    {
+      "path": "Tools/AnyEngineValidation/same_owner_destination_operation_20261128/provenance/c-producer-outer-invocation-correction.json",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 1859,
+      "sha256": "1c231c86b6278c24a546d9223a7fbe1925d531a577601e1b5b134e6da3db58d3",
+      "blob": "9f019b59b78010b9aad05900458c90ae8fdfa6c8",
+      "role": "preserved-producer-correction",
+      "origin": {
+        "kind": "whole-readback-git-source-artifact",
+        "blob": "9f019b59b78010b9aad05900458c90ae8fdfa6c8"
+      }
+    },
+    {
+      "path": "Tools/AnyEngineValidation/same_owner_destination_operation_20261128/provenance/source-capture-cutover-finding.json",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 16119,
+      "sha256": "59903ecacb96a7fc0f619169d231c30a64ac47a0028d2fa46cd35514d1c3350e",
+      "blob": "48679795a430ec6ec08ac2c16b1733d33927374b",
+      "role": "preserved-source-finding",
+      "origin": {
+        "kind": "whole-readback-git-source-artifact",
+        "blob": "48679795a430ec6ec08ac2c16b1733d33927374b"
+      }
+    },
+    {
+      "path": "Tools/AnyEngineValidation/same_owner_destination_operation_20261128/provenance/current-source227-input-join.json",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 5499,
+      "sha256": "1c24c8e8c9f00b7504c6d8131c05ffb4231b8464c72b44a6adf421406ec8c787",
+      "blob": "88cee230c2b950bcaf38c18f2461e5353cd8956d",
+      "role": "current-whole-source-join",
+      "origin": {
+        "kind": "E-independent-Git-read"
+      }
+    },
+    {
+      "path": "Tools/AnyEngineValidation/same_owner_destination_operation_20261128/CALLER_CONTRACT.json",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 4520,
+      "sha256": "00ede0ce2e04c33eae16c4ced7e7a0a1003731f7437846d34706125eeb2c9ba1",
+      "blob": "67a476cc60f91ee1d3c58727fdd486a67753e423",
+      "role": "explicit-source-only-caller-contract",
+      "origin": {
+        "kind": "reviewed-source-interface"
+      }
+    },
+    {
+      "path": "Tools/AnyEngineValidation/same_owner_destination_operation_20261128/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 5629,
+      "sha256": "2b12df0dae1230a6e2afed87477e73436c29683c25519aa8e13a1a6b14ff0c1f",
+      "blob": "87df23263ff603887f6610ee20fa2b779a2364ca",
+      "role": "source-handoff",
+      "origin": {
+        "kind": "E-original"
+      }
+    }
+  ],
+  "inverseRequirement": "Restore the exact three beforeimage blobs/modes and remove only the wholly new evidence prefix; the resulting full root tree must equal the immutable sourceParentTree.",
+  "publicationProof": "A later evidence-only child may retain the actual source commit/tree and complete readback/inverse result. This manifest does not claim execution or completed publication."
+}

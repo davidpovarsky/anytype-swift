@@ -1,0 +1,133 @@
+--- a/Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift
++++ b/Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift
+@@ -19,6 +19,19 @@
+ 
+     public func resume() { model.resume() }
+ 
++    /// Runs against this presentation's actual destination owner. The caller
++    /// supplies its expected account/Space and awaits all work in the operation.
++    public func performDestinationOperation<Value: Sendable>(
++        expectedAccountID: String, expectedSpaceID: String,
++        _ operation: @escaping @Sendable (
++            AnyHTTPClient, AnyApplicationSession, AnyHostLease
++        ) async throws -> Value
++    ) async throws -> Value {
++        try await model.performDestinationOperation(
++            expectedAccountID: expectedAccountID, expectedSpaceID: expectedSpaceID,
++            operation)
++    }
++
+     public func suspendAndWait() async {
+         model.suspend()
+         await model.waitForSuspension()
+@@ -210,6 +223,30 @@
+     }
+ }
+ 
++/// A cancelled drain still waits for the public operation's terminal decision.
++/// The typed operation never awaits this fence, so cancellation cannot form a
++/// cycle between its result and the presentation's suspend-and-drain path.
++@MainActor
++fileprivate final class AnyNativeDestinationOperationCompletion {
++    private var completed = false
++    private var waiter: CheckedContinuation<Void, Never>?
++
++    func wait() async {
++        guard !completed else { return }
++        await withCheckedContinuation { continuation in
++            waiter = continuation
++        }
++    }
++
++    func finish() {
++        guard !completed else { return }
++        completed = true
++        let pending = waiter
++        waiter = nil
++        pending?.resume()
++    }
++}
++
+ @Observable
+ @MainActor
+ fileprivate final class AnyNativeRootModel {
+@@ -358,6 +395,79 @@
+ 
+     func refreshSpaces() { execute { try await self.loadSpaces() } }
+ 
++    /// Reserves the same slot as account/Space UI operations. Suspension cancels
++    /// the typed task and waits until this call has delivered or refused its
++    /// result before the application can stop or a new presentation can resume.
++    func performDestinationOperation<Value: Sendable>(
++        expectedAccountID: String, expectedSpaceID: String,
++        _ action: @escaping @Sendable (
++            AnyHTTPClient, AnyApplicationSession, AnyHostLease
++        ) async throws -> Value
++    ) async throws -> Value {
++        try Task.checkCancellation()
++        guard operation == nil, suspension == nil, joining == nil else {
++            throw AnyNativeApplicationError.busy
++        }
++        guard let owner = workspace, let lifetime = presentationLifetime else {
++            throw AnyHostError.sessionClosed
++        }
++        let ticket = epoch
++        try requireDestinationOwner(owner, lifetime: lifetime, ticket: ticket,
++            expectedAccountID: expectedAccountID, expectedSpaceID: expectedSpaceID)
++
++        let completion = AnyNativeDestinationOperationCompletion()
++        let work = Task<Value, Error> {
++            try Task.checkCancellation()
++            return try await owner.session.perform { lease in
++                try await action(owner.client, owner.session, lease)
++            }
++        }
++        let drain = Task<Void, Never> {
++            await withTaskCancellationHandler {
++                await completion.wait()
++            } onCancel: {
++                work.cancel()
++            }
++        }
++        operation = drain
++        busy = true
++        defer {
++            operation = nil
++            if ticket == epoch { busy = false }
++            completion.finish()
++        }
++
++        let value = try await withTaskCancellationHandler {
++            try await work.value
++        } onCancel: {
++            work.cancel()
++        }
++        try Task.checkCancellation()
++        // No suspension between this MainActor identity check and return.
++        try requireDestinationOwner(owner, lifetime: lifetime, ticket: ticket,
++            expectedAccountID: expectedAccountID, expectedSpaceID: expectedSpaceID)
++        return value
++    }
++
++    private func requireDestinationOwner(
++        _ owner: AnyNativeWorkspaceOwner, lifetime: AnyUIPresentationLifetime,
++        ticket: UUID, expectedAccountID: String, expectedSpaceID: String
++    ) throws {
++        guard ticket == epoch, wantsForeground, started, suspension == nil,
++              page == .workspace, let current = workspace,
++              current.session === owner.session,
++              presentationLifetime === lifetime, lifetime.isActive else {
++            throw AnyHostError.sessionClosed
++        }
++        guard let account,
++              Data(account.id.utf8) == Data(expectedAccountID.utf8),
++              Data(owner.client.expectedAccountID.utf8) == Data(expectedAccountID.utf8),
++              Data(owner.workspace.accountID.utf8) == Data(expectedAccountID.utf8),
++              Data(owner.workspace.spaceID.utf8) == Data(expectedSpaceID.utf8) else {
++            throw AnyHostError.wrongWorkspace
++        }
++    }
++
+     func showMembers() {
+         guard page == .workspace, let workspace, presentationLifetime?.isActive == true else { return }
+         do {

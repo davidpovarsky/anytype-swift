@@ -1,0 +1,18 @@
+--- a/Modules/PinkhaEngineHost/Package.swift
++++ b/Modules/PinkhaEngineHost/Package.swift
+@@ -10,12 +10,13 @@
+     platforms: [.iOS("27.0")],
+     products: [.library(name: "PinkhaEngineHost", targets: ["PinkhaEngineHost"])],
+     dependencies: unified ? [.package(path: "../PinkhaAnyNative"), .package(path: "../PinkhaAnyUI"),
++                             .package(path: "../PinkhaAnyHost"), .package(path: "../PinkhaAnyEngine")] : [],
+-                             .package(path: "../PinkhaAnyHost")] : [],
+     targets: [
+         .target(name: "PinkhaEngineHost",
+             dependencies: unified ? [.product(name: "PinkhaAnyNative", package: "PinkhaAnyNative"),
+                                      .product(name: "PinkhaAnyUI", package: "PinkhaAnyUI"),
++                                     .product(name: "PinkhaAnyHost", package: "PinkhaAnyHost"),
++                                     .product(name: "PinkhaAnyEngine", package: "PinkhaAnyEngine")] : [],
+-                                     .product(name: "PinkhaAnyHost", package: "PinkhaAnyHost")] : [],
+             swiftSettings: unified ? [.define("PINKHA_DUAL_ENGINE_RUNTIME")] : [])
+     ]
+ )

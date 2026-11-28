@@ -1,0 +1,49 @@
+{
+  "schema": "pinkha-e-capture-fixture-syntax-input-locator-correction-v1",
+  "status": "LATER_PATH_LABEL_CORRECTION_NO_SOURCE_OR_EXECUTION_CHANGE",
+  "repository": "davidpovarsky/anytype-swift",
+  "evidenceParent": "079bca906a5d94ab7150e49ce43a800f34aa1ec7",
+  "parentTree": "e9670f9361cf273c356b962aee49cdc9fba2321c",
+  "correction": {
+    "observedParserInputLabel": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyHeartNativeCaptureDescriptorTests.swift",
+    "canonicalRepositoryPath": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCaptureDescriptorTests.swift",
+    "parsedGitBlob": "7e3242682b32353fce800a573ac0e72e51e72827",
+    "parsedBytes": 23514,
+    "parsedSHA256": "90d0f70b5f9c08d733c132319c3a0c821c7671f71ff927aba8d3a1f7d45cac6b",
+    "canonicalOriginalAtImmutableRef": {
+      "ref": "ff5777896ced23171522a0d6d735e2b235b11ffc",
+      "gitBlob": "0d3ca0d57d0c385f46a582140ae775ad6a6a6cf1",
+      "bytes": 16613,
+      "sha256": "3756a525ca78fb60d1990bb8b67662fdefa570f069532ec8e6537f09c9afd935",
+      "wholeReadback": true
+    },
+    "reason": "The raw parser controller and its metadata used an AnyHeartNativeCaptureDescriptorTests.swift input label. The actual repository/overlay basename is NativeCaptureDescriptorTests.swift. C confirmed the canonical mapping, and E independently fetched the complete original at the exact ff577 commit."
+  },
+  "preserved": {
+    "actualRaw": "fce9af59b8c5c2b6bb0be7062bc8677fefa8b4a5",
+    "actualMetadata": "334e14b9e1bf73ef654a1ea2ad1225ea260ba67c",
+    "executedController": "d8940f9a36bf11a1819e1cb4fbf72d301b565f74",
+    "priorUnrunController": "e849548cfd4c727b235f2b032e1c4e82e810ceba",
+    "earlierPublication": "079bca906a5d94ab7150e49ce43a800f34aa1ec7",
+    "allHistoricalBytesUnchanged": true
+  },
+  "interpretation": [
+    "The input label is a reporting locator, not a source path opened by the frontend. The actual argv parsed a sealed /proc/self/fd/4 member containing the exact 7e324 whole bytes.",
+    "The canonical original at ff577 is the prior 16,613-byte source; the 23,514-byte 7e324 overlay remains separately proposed. This correction does not claim that overlay was active in ff577.",
+    "The same five-file syntax result remains attributed to its exact whole input bodies. No parser rerun, compiler/typecheck/test/native action or active-source edit accompanies this correction.",
+    "Future source graph locators must use the canonical basename. This later note does not rewrite the raw observation or its original labels."
+  ],
+  "publication": {
+    "onlyAddedFile": "LOCATOR_CORRECTION.json",
+    "activeSourceChanges": 0,
+    "previousFilesChanged": 0,
+    "parentTreeInverseRequired": true
+  },
+  "invocations": {
+    "hostRead": 0,
+    "parser": 0,
+    "compiler": 0,
+    "tests": 0,
+    "native": 0
+  }
+}

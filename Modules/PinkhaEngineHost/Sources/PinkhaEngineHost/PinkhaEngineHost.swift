@@ -4,6 +4,7 @@ import SwiftUI
 import PinkhaAnyNative
 import PinkhaAnyUI
 import PinkhaAnyHost
+import PinkhaAnyEngine
 
 /// The application's public boundary owns the real underlying Any actor.
 /// Private native modules stay linked by this facade, without exposing their
@@ -38,6 +39,19 @@ public final class PinkhaEmbeddedAnyPresentation {
     }
 
     public func resume() { session.resume() }
+
+    /// Forwards into the same presentation owner used by the mounted Any view.
+    public func performDestinationOperation<Value: Sendable>(
+        expectedAccountID: String, expectedSpaceID: String,
+        _ operation: @escaping @Sendable (
+            AnyHTTPClient, AnyApplicationSession, AnyHostLease
+        ) async throws -> Value
+    ) async throws -> Value {
+        try await session.performDestinationOperation(
+            expectedAccountID: expectedAccountID, expectedSpaceID: expectedSpaceID,
+            operation)
+    }
+
     public func suspendAndWait() async { await session.suspendAndWait() }
 }
 
