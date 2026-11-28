@@ -1,0 +1,159 @@
+{
+  "schema": "pinkha-app-drain-pin-map-whole-inverse/v1",
+  "base": "967cee8c801c533449182c827e79cebb79d415e4",
+  "baseTree": "29ff1f876a470d952277bc30cc3a6c9b72ab5169",
+  "productOnlyTree": "fa2f10c20cedea5fc028e81194f39d214be051c6",
+  "offsetSemantics": "Byte offsets in immutable complete before/after files. Restore by applying operations in descending afterStart; no sequential-offset or line-number interpretation.",
+  "rows": [
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinHost.swift",
+      "before": {
+        "bytes": 9251,
+        "sha256": "ac55cc76dbf5b0c289a11c19bf9671a579b0ffc0188ca7de30ebe4a0b6bf0c41",
+        "gitBlob": "90d6822be96caa72e99dc12277465e98c1b3e2f7",
+        "gitMode": "100644"
+      },
+      "after": {
+        "bytes": 9301,
+        "sha256": "797badce5c2b85af3e0ce2fce1eef08a736f7ed95b502bb229f38ed82aa65f74",
+        "gitBlob": "a53045a7f35198ac198c6c08baea769037e3ad85",
+        "gitMode": "100644"
+      },
+      "operations": [
+        {
+          "beforeStart": 9180,
+          "afterStart": 9180,
+          "before": "        PinkhaHanlinAccountOwner.shared.unregister(session.id)\n",
+          "after": "        let owner = PinkhaHanlinAccountOwner.shared\n        if owner.owns(self) { owner.unregister(session.id) }\n"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatPresentation.swift",
+      "before": {
+        "bytes": 33940,
+        "sha256": "b950c4bd94d0d5553b842593ed8c7b11e805edb9b26a0e5e155db3488f6250a6",
+        "gitBlob": "0e27ed6a0696db35f95c30ad8249b9fa6730985e",
+        "gitMode": "100644"
+      },
+      "after": {
+        "bytes": 34505,
+        "sha256": "d28d7947c84020e21a2effc08b77f249c4fb992ba837ecf47a6ef6fbb44c39de",
+        "gitBlob": "7c6d6cc2fee1aa29fd7d9189752ad33f29311b03",
+        "gitMode": "100644"
+      },
+      "operations": [
+        {
+          "beforeStart": 32425,
+          "afterStart": 32425,
+          "before": "        PinkhaHanlinAccountOwner.shared.unregister(session.id)\n",
+          "after": ""
+        },
+        {
+          "beforeStart": 32616,
+          "afterStart": 32553,
+          "before": "",
+          "after": "            // Account/engine closure must still find and join this retiring owner.\n            defer {\n                let owner = PinkhaHanlinAccountOwner.shared\n                if owner.owns(self) { owner.unregister(self.session.id) }\n            }\n"
+        },
+        {
+          "beforeStart": 33068,
+          "afterStart": 33257,
+          "before": "",
+          "after": "            // Consumer EOF is not the SDK producer's final persistence barrier.\n            do { try await agent?.invalidateAndDrain() }\n            catch {\n                // A failed canonical write never restores permission to retry.\n                self.receiptState.requireReconciliation()\n                self.errorMessage = PinkhaHanlinStrings.uncertain\n            }\n"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Tests/PinkhaAnyHanlinTests/NativeMountedOwnerTests.swift",
+      "before": {
+        "bytes": 5176,
+        "sha256": "3fefee3df894d6d35576be15baf5eb146b90601a890deda4ed7b4ab9cc97eec4",
+        "gitBlob": "c397c2f44e19bb072fedde6a0c56e70edfe6c564",
+        "gitMode": "100644"
+      },
+      "after": {
+        "bytes": 5332,
+        "sha256": "58902bb9e7899521b58cdd6ad632920da842ebf69fb9a2c033996431240b739e",
+        "gitBlob": "3ca52b8ae3b7cfac89c6f5c77d32501953c21e20",
+        "gitMode": "100644"
+      },
+      "operations": [
+        {
+          "beforeStart": 2606,
+          "afterStart": 2606,
+          "before": "",
+          "after": "        let presentation = MountedOwner(session: host.session)\n        defer { PinkhaHanlinAccountOwner.shared.unregister(presentation.session.id) }\n"
+        },
+        {
+          "beforeStart": 2719,
+          "afterStart": 2868,
+          "before": "            let presentation = MountedOwner(session: host.session)\n",
+          "after": ""
+        },
+        {
+          "beforeStart": 3272,
+          "afterStart": 3354,
+          "before": "",
+          "after": "        XCTAssertTrue(PinkhaHanlinAccountOwner.shared.owns(presentation))\n"
+        }
+      ]
+    },
+    {
+      "path": "Tools/Hanlin/source.json",
+      "before": {
+        "bytes": 376,
+        "sha256": "9579442498f119615fa990d5f3229e5dca08e6c177ca58e7d28e254930f28bcf",
+        "gitBlob": "179a63c9df96500fe72bdbee4fcc52949b3ab4a2",
+        "gitMode": "100644"
+      },
+      "after": {
+        "bytes": 376,
+        "sha256": "a99b7a8c1fc9907341b816a542b4dc2a8ddbcc69f49488da69225f815b501f59",
+        "gitBlob": "6bef0704f4f6c21104e648d3949c7cd62717432c",
+        "gitMode": "100644"
+      },
+      "operations": [
+        {
+          "beforeStart": 68,
+          "afterStart": 68,
+          "before": "  \"revision\": \"9af3e798212dc33b3cc7ea95a065a98c034788c6\",\n",
+          "after": "  \"revision\": \"d6b1fbc7429c437adaacdbab2eac69ff436b02cf\",\n"
+        }
+      ]
+    },
+    {
+      "path": "docs/any-engine-port/SOURCE_REFACTOR_MAP.json",
+      "before": {
+        "bytes": 248145,
+        "sha256": "d3174f2efc5e5c62d6b58306f9ca9e86271d32f2e6afa1e94d65b8bf801ae597",
+        "gitBlob": "87b7d48812dfab3e49955da6009c2c617fdd1c75",
+        "gitMode": "100644"
+      },
+      "after": {
+        "bytes": 248145,
+        "sha256": "4c9a423e64c1814b06a54c041efb8af56e2999b74c9bf534968cf285dd6246ec",
+        "gitBlob": "f9f16815e6137af680bafa55a7da42f39e496eda",
+        "gitMode": "100644"
+      },
+      "operations": [
+        {
+          "beforeStart": 31694,
+          "afterStart": 31694,
+          "before": "          \"gitBlob\": \"0e27ed6a0696db35f95c30ad8249b9fa6730985e\"\n",
+          "after": "          \"gitBlob\": \"7c6d6cc2fee1aa29fd7d9189752ad33f29311b03\"\n"
+        },
+        {
+          "beforeStart": 181844,
+          "afterStart": 181844,
+          "before": "      \"replacementBlob\": \"179a63c9df96500fe72bdbee4fcc52949b3ab4a2\",\n",
+          "after": "      \"replacementBlob\": \"6bef0704f4f6c21104e648d3949c7cd62717432c\",\n"
+        }
+      ]
+    }
+  ],
+  "mapFieldsOnly": [
+    "/changes/16/sharedSources/1/gitBlob",
+    "/changes/102/replacementBlob"
+  ],
+  "completeOriginalsRestored": true
+}

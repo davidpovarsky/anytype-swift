@@ -53,9 +53,10 @@ final class NativeMountedOwnerTests: XCTestCase {
     @MainActor
     func testMountedOwnerReplacesProvisionalHostAndRemountsOnlySameIdentity() async throws {
         let (host, source, native) = try fixture()
+        let presentation = MountedOwner(session: host.session)
+        defer { PinkhaHanlinAccountOwner.shared.unregister(presentation.session.id) }
         try withExtendedLifetime(source) {
             XCTAssertTrue(PinkhaHanlinAccountOwner.shared.owns(host))
-            let presentation = MountedOwner(session: host.session)
             try PinkhaHanlinAccountOwner.shared.register(presentation)
             try host.bindMountedPresentation(presentation)
             XCTAssertFalse(PinkhaHanlinAccountOwner.shared.owns(host))
@@ -65,6 +66,7 @@ final class NativeMountedOwnerTests: XCTestCase {
             XCTAssertThrowsError(try host.bindMountedPresentation(presentation))
         }
         await host.close()
+        XCTAssertTrue(PinkhaHanlinAccountOwner.shared.owns(presentation))
         await native.revokeAndDrain()
     }
 

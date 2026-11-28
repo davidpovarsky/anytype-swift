@@ -626,9 +626,13 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
         currentSaveMessageID = nil
         receiptMessages.removeAll()
         isConfigured = false
-        PinkhaHanlinAccountOwner.shared.unregister(session.id)
         if dismissController { controller?.dismiss(animated: true, completion: completion) }
         closing = Task { [host] in
+            // Account/engine closure must still find and join this retiring owner.
+            defer {
+                let owner = PinkhaHanlinAccountOwner.shared
+                if owner.owns(self) { owner.unregister(self.session.id) }
+            }
             await agent?.invalidate()
             await host.invalidate()
             // A close during Stop joins the same original stream/persistence
@@ -639,6 +643,13 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
             await savePreparation?.value
             await saveAcceptance?.drain()
             #endif
+            // Consumer EOF is not the SDK producer's final persistence barrier.
+            do { try await agent?.invalidateAndDrain() }
+            catch {
+                // A failed canonical write never restores permission to retry.
+                self.receiptState.requireReconciliation()
+                self.errorMessage = PinkhaHanlinStrings.uncertain
+            }
         }
     }
 }

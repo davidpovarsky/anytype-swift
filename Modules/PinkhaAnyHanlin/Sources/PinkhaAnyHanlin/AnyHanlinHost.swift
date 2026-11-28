@@ -176,6 +176,7 @@ public final class AnyHanlinHost: HanlinHostCancellationDrainSource, PinkhaHanli
     public func close() async {
         invalidate()
         await router.invalidate()
-        PinkhaHanlinAccountOwner.shared.unregister(session.id)
+        let owner = PinkhaHanlinAccountOwner.shared
+        if owner.owns(self) { owner.unregister(session.id) }
     }
 }
