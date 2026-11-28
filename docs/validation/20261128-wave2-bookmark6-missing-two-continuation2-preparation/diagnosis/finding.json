@@ -1,0 +1,239 @@
+{
+  "status": "SOURCE_PROVEN_FILTER_AND_VERBOSITY_DEFECTS_NO_REEXECUTION",
+  "createdUTC": "2026-11-28T00:20:01.210936+00:00",
+  "scope": "Retained actual receipts plus exact official source; no controller/product mutation, imports, tests, Swift, host operations, runtime queries or signals.",
+  "actual": {
+    "receipt": {
+      "path": "wave2-bookmark6-component/missing-two-execution-preparation/actual-continuation1/receipt.json",
+      "bytes": 4021,
+      "sha256": "fe4dcf305e035f38b237b198e9db956aff63aa8bd8e4f34a6ff539f2b9d5bb64"
+    },
+    "command": {
+      "path": "wave2-bookmark6-component/missing-two-execution-preparation/actual-continuation1/command.json",
+      "bytes": 1649,
+      "sha256": "b870c5387a23a6d6fd34336513329cf6ea98897653c47727c07843cfa42a61eb"
+    },
+    "stdout": {
+      "path": "wave2-bookmark6-component/missing-two-execution-preparation/actual-continuation1/stdout.original.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "wave2-bookmark6-component/missing-two-execution-preparation/actual-continuation1/stderr.original.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "controller": {
+      "path": "wave2-bookmark6-component/missing-two-preparation/run_missing_two.py",
+      "bytes": 34063,
+      "sha256": "0e8fa19767222fef6f954bf4bfdb34e58a77986251e69cf461b29f7311f01627"
+    },
+    "originalOverallFail": {
+      "path": "wave2-bookmark6-component/runtime-attempt1-root-custody/original-attempt/receipt.json",
+      "bytes": 4923,
+      "sha256": "4441afb94ce64ef8656dd001ec040bee2cb69201eaddba16d2fc8e7a3d4fb556"
+    },
+    "compilerCompletion": {
+      "path": "wave2-bookmark6-component/runtime-attempt1-root-custody/completion1.json",
+      "bytes": 589557,
+      "sha256": "ac38377da08aac68629d2ae04f8d4878a52eb8b28ee3e1009700c810902302d7"
+    },
+    "recordedChildExitCode": 69,
+    "recordedStdoutBytes": 0,
+    "recordedStderrBytes": 0,
+    "testEventsObserved": 0,
+    "closedGroupNeverProbed": 2862993
+  },
+  "primarySource": {
+    "path": "wave2-bookmark6-component/exit69-source-diagnosis/primary/source-manifest.json",
+    "bytes": 7147,
+    "sha256": "ca45e3f3a81c1a766cca2bf860b7e551422ec85826a95ac492ce5c2948e3526a"
+  },
+  "toolchainVersionCorroboration": {
+    "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/stdout.original.log",
+    "line": 5,
+    "observedText": "Testing Library Version: 6.4.3 (ba0861fb203553c)",
+    "boundary": "Historical same-toolchain corroboration, not a new physical libTesting.so hash or an executed Bookmark test."
+  },
+  "findings": [
+    {
+      "id": "BOOKMARK-DISPATCH-01",
+      "defect": "The original filter ends at the method name or (), while the matching Swift Testing runtime filters the complete Test.ID.description including its source-location suffix.",
+      "originalFilter": "(?:creationOverrideRejectsAnotherWorkspaceBeforeDispatch|creationOverrideAndDefaultCreatorShareTheExistingMutationQueue)(?:\\(\\))?$",
+      "proofChain": [
+        {
+          "file": "Configuration.TestFilter.swift",
+          "lines": [
+            255,
+            259,
+            309,
+            316
+          ],
+          "fact": "The regex predicate uses String(describing: item.test.id); matched concrete test IDs determine graph selection."
+        },
+        {
+          "file": "TestDeclarationMacro.swift",
+          "lines": [
+            419,
+            426
+          ],
+          "fact": "The macro forwards the complete function name and AttributeInfo arguments to Test.__function."
+        },
+        {
+          "file": "AttributeDiscovery.swift",
+          "lines": [
+            141,
+            143,
+            179
+          ],
+          "fact": "The Test attribute name supplies sourceBounds and those bounds are included in function arguments."
+        },
+        {
+          "file": "SourceLocationGeneration.swift",
+          "lines": [
+            25,
+            41,
+            58,
+            66
+          ],
+          "fact": "Macro source locations are emitted from the actual file ID/path, line and column."
+        },
+        {
+          "file": "Test+Macro.swift",
+          "lines": [
+            158,
+            176
+          ],
+          "fact": "The function test stores its name, containing type and source bounds."
+        },
+        {
+          "file": "Test.swift",
+          "lines": [
+            107,
+            110,
+            337,
+            359
+          ],
+          "fact": "A test sourceLocation is its stored sourceBounds.lowerBound."
+        },
+        {
+          "file": "Test.ID.swift",
+          "lines": [
+            132,
+            141,
+            152,
+            162
+          ],
+          "fact": "Non-suite test IDs retain their source location; description appends it as another slash component."
+        },
+        {
+          "file": "SourceLocation.swift",
+          "lines": [
+            46,
+            49,
+            181,
+            183
+          ],
+          "fact": "SourceLocation description is basename:positiveLine:positiveColumn."
+        },
+        {
+          "file": "EntryPoint.swift",
+          "lines": [
+            134,
+            154
+          ],
+          "fact": "A SwiftPM entry with a filter and empty selected tests suppresses console output and returns EXIT_NO_TESTS_FOUND."
+        },
+        {
+          "file": "SwiftPMEntryPoint.swift",
+          "lines": [
+            26,
+            28,
+            83,
+            85
+          ],
+          "fact": "Linux EXIT_NO_TESTS_FOUND is EX_UNAVAILABLE; the Never overload exits with the result."
+        }
+      ],
+      "meaning": "This controller filter deterministically excludes both normally generated requested test IDs. The silent69 result is exactly the matching implementation no-selected-tests path; it is not a per-test assertion failure or evidence of conditional Testing omission.",
+      "proposedFilter": "^PinkhaAnyIntegrationTests\\.AnyHierarchyTests/(?:creationOverrideRejectsAnotherWorkspaceBeforeDispatch|creationOverrideAndDefaultCreatorShareTheExistingMutationQueue)\\(\\)/AnyHierarchyTests\\.swift:[1-9][0-9]*:[1-9][0-9]*$",
+      "selectionBoundary": "Anchored module + suite + exactly two complete parameterless method names + mandatory exact source basename and positive line/column. It does not select the suite parent or any other27 method.",
+      "notClaimed": "No test IDs were enumerated or test bodies executed during this diagnosis. Runtime discovery/product integrity beyond retained qualification is not newly observed."
+    },
+    {
+      "id": "BOOKMARK-DISPATCH-02",
+      "defect": "Current direct argv has default verbosity0 but the result parser requires the named suite aka text only emitted at verbosity>0.",
+      "proofChain": [
+        {
+          "file": "EntryPoint.swift",
+          "lines": [
+            264,
+            276,
+            528,
+            536
+          ],
+          "fact": "Without verbosity or verbose arguments, verbosity is0; --verbosity 1 is accepted."
+        },
+        {
+          "file": "Event.HumanReadableOutputRecorder.swift",
+          "lines": [
+            211,
+            219,
+            287,
+            294
+          ],
+          "fact": "Named suites include aka only at positive verbosity; unlabelled functions use their complete name."
+        },
+        {
+          "file": "Event.HumanReadableOutputRecorder.swift",
+          "lines": [
+            427,
+            470,
+            640,
+            658
+          ],
+          "fact": "Started/passed method and final total messages retain the parser format."
+        }
+      ],
+      "parser": {
+        "function": "swift_testing_two_result",
+        "lineStart": 249,
+        "lineEnd": 287,
+        "bytes": 3008,
+        "sha256": "6f284780316ece9027b1a14f9e7a69693518f87205009a51e0a336c2acc13d6f"
+      },
+      "proposal": "Add explicit --verbosity 1 to the separately reviewed successor argv and preserve the current strict result parser unchanged.",
+      "methodNamesCompatible": true,
+      "unlabelledParameterlessMethodNames": [
+        "creationOverrideRejectsAnotherWorkspaceBeforeDispatch()",
+        "creationOverrideAndDefaultCreatorShareTheExistingMutationQueue()"
+      ],
+      "suiteDisplayName": "Native wiki hierarchy preserves the original tree domain",
+      "requiredSuiteTypeName": "AnyHierarchyTests"
+    }
+  ],
+  "compilationAndLinkFacts": {
+    "bindings": {
+      "path": "wave2-bookmark6-component/exit69-source-diagnosis/actual-link-bindings.json",
+      "bytes": 15525,
+      "sha256": "563e9fe1bcca50225762bda45b0c329f4e8d69c6a124fbf14e262990ea09efd7"
+    },
+    "testImport": "Unconditional import Testing in the complete pinned AnyHierarchyTests.swift; no #if in that file.",
+    "actualFlags": "Both test-library and generated-runner compiler argv include the actual Testing macro-plugin path and no disable-Testing define. Test-library uses Swift6; generated runner uses Swift5.",
+    "actualAutolink": "Both actual autolink response files include -lTesting; the runner also includes -lXCTest and explicitly links the qualified Integration .so. AnyHierarchyTests.o is in the .so LinkFileList.",
+    "generatedEntry": "Exact ef1 generated entry calls Testing.__swiftPMEntryPoint for swift-testing when canImport(Testing). It contains no explicit69 branch. If that compile branch were absent, swift-testing would not execute the xctest branch and main would return normally.",
+    "notClaimed": "No newly inspected ELF symbol table, fresh toolchain binary hash, macro expansion artifact or runtime enumeration."
+  },
+  "minimalRequalificationRoute": {
+    "sourceOnlySuccessorOwner": "/root/editor",
+    "permittedProposalOnly": "Replace the filter with the fully anchored mandatory-source-suffix form; set --verbosity 1; use a fresh continuation2 evidence path and retain every original failure/pin.",
+    "compiledInputsProducts": "Reuse exact c533 runner and5eac Integration library with unchanged source/compiler/Crypto witnesses if they still pass the existing admission checks. No source rebuild is justified by these two specific defects.",
+    "acceptance": "Existing strict positive two-method start/pass, suite ordering, exact2 total, zero XCTest/old27 validation remains mandatory. No success claim until a separately authorized future actual execution.",
+    "lifecycle": "Keep original process helper/resource floors/deadline and immutable source checks. Never query either original closed group.",
+    "runtimeGrant": false
+  },
+  "originalSixMethodBoundary": "The original3729 mixed-run filter has the same terminal$ defect. SwiftPM6.4.3 maps this exit to noMatchingTests and combines a positive XCTest result with it as success, so its childexit0 does not establish Integration execution. This explains a compatible path, not an observation that its conditional dispatch branch actually ran. Original overallFAIL4441 and its four qualified XCTest positives remain unchanged.",
+  "executionPerformed": false,
+  "sourceChangesPerformed": false,
+  "newControlsPerformed": false
+}

@@ -1,0 +1,74 @@
+{
+  "schema": "bookmark6-continuation2-interfaces-execution-envelope-source-review/v1",
+  "createdUTC": "2026-11-28T00:27:28.478683+00:00",
+  "reviewer": "/root/interfaces",
+  "status": "PASS_SOURCE_ENVELOPE_REVIEW_ONLY_NOT_EXECUTION",
+  "concreteBlockers": [],
+  "inputs": {
+    "launch_exact_missing_two.py": {
+      "path": "wave2-bookmark6-component/missing-two-continuation2-execution-preparation/launch_exact_missing_two.py",
+      "bytes": 636,
+      "sha256": "ae0c89d9c65a776bc1b60163b63b2eed3559c7151d89d3c3109b7b632b5de1ac"
+    },
+    "collect_continuation_originals.py": {
+      "path": "wave2-bookmark6-component/missing-two-continuation2-execution-preparation/collect_continuation_originals.py",
+      "bytes": 9956,
+      "sha256": "48ccbaaff7da050594b6848b85603a984a307115b01a2e2476b72fae8067b4ba"
+    },
+    "source-upload.b64": {
+      "path": "wave2-bookmark6-component/missing-two-continuation2-execution-preparation/source-upload.b64",
+      "bytes": 49548,
+      "sha256": "cf89f3c5086384b684e1ecb1399a23c33f0207ed664660badc5fecc595d85fbe"
+    },
+    "dispatch-spec.json": {
+      "path": "wave2-bookmark6-component/missing-two-continuation2-execution-preparation/dispatch-spec.json",
+      "bytes": 958,
+      "sha256": "77495154c93b9b990b3d7eb0237a313b3cb80ffbacc29a983c778e23295e3e9d"
+    },
+    "envelope-derivation.json": {
+      "path": "wave2-bookmark6-component/missing-two-continuation2-execution-preparation/envelope-derivation.json",
+      "bytes": 2676,
+      "sha256": "56eb188aa6dc97e206cd62bec35f4254df3d8c179772ac3d70759e9f253e3b63"
+    }
+  },
+  "controller": {
+    "path": "wave2-bookmark6-component/missing-two-continuation2-preparation/run_missing_two.py",
+    "bytes": 37159,
+    "sha256": "d7b0eb74a542290f67d1d6a68c7dc3f0ee87773ca9c7f82cfb109666a4edce54"
+  },
+  "controllerPeerReview": {
+    "path": "wave2-bookmark6-component/missing-two-continuation2-preparation/interfaces-independent-source-review.json",
+    "bytes": 9379,
+    "sha256": "07778593c70fd6df38f31922f6371e1f57f8fc351b1ab070531421aeb88592fc"
+  },
+  "independentExactChecks": [
+    "All three launcher replacements are unique literal substitutions; applying forward reproduces complete636-byte ae0c source and reversing restores complete636-byte5af075 predecessor.",
+    "The two collector replacements are exact ATTEMPT continuation1-to-continuation2 and source0e8-to-d7b0; forward/reverse reproduce complete9956-byte48cc and50a9 files.",
+    "All five collector function bodies sha/identity/completed_job/read_original/collect are byte-identical to the previously reviewed collector.",
+    "Strict base64 decode of49548-byte transport equals complete37159-byte d7b0 reviewed controller.",
+    "Dispatch content equals the complete launcher bytes. Every non-content dispatch field equals the original dispatch specification: same pinned host/link/python3, ROOT cwd, backgroundtrue, timeout360, both notification flagsfalse."
+  ],
+  "launcherScope": {
+    "fixedUploadedSource": "/var/lib/sentinelx/uploads/pinkha-wave2-bookmark-missing-two-d7b0eb74a542290f.py",
+    "sourceByteAndSHAQualification": "37159 / d7b0eb74a542290f67d1d6a68c7dc3f0ee87773ca9c7f82cfb109666a4edce54; existing regular-file, non-symlink and physical-path checks retained.",
+    "workingDirectory": "Exact ROOT and PWD before os.execv; controller retains ROOT admission and subprocess COMPONENT cwd.",
+    "exec": "Same /usr/bin/python3 -I -B and reviewed execution flag; no launcher child manager, compiler or extra test command.",
+    "availability": "Source publication and fresh runtime coordination are still null in the retained static envelope. This review supplies neither."
+  },
+  "collectorScope": {
+    "fixedAttempt": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/continuation2",
+    "files": "Exactly the original nine named receipt/command/process/resource/witness/log files; no generic walk or source/build mutation.",
+    "completedJob": "Caller must supply actual terminal360s job JSON on the fixed host, a unique continuation2 receipt summary and exact receipt digest before any filesystem collection.",
+    "readCustody": "Original2MiB per file/8MiB total/256KiB completed-job bounds, physical directory checks, regular single-link files, nofollow/nonblocking read and before/fd/after identity comparisons unchanged. Empty logs remain valid zero-byte originals.",
+    "transport": "Original13MiB serialized cap, deterministic gzip,48000-character chunks and cross-chunk gzip identity unchanged.",
+    "acceptanceBoundary": "Collection is explicitly independent of test/compiler outcome, does not upgrade a FAIL and makes no runtime release decision.",
+    "processBoundary": "No subprocess, process query, signal, write, automatic loop or imported controller; old2634766/2862993 remain unqueried historical records.",
+    "definitions": "Collector remains inert until its collect function is explicitly called with terminal job evidence."
+  },
+  "reviewMethod": "Complete source read plus local byte/hash/literal inverse/base64 comparisons and Python AST body comparison. None of the launcher, collector, controller, result parser or regex was imported or executed.",
+  "hostOperations": false,
+  "testsOrControlsRun": false,
+  "candidateEdits": false,
+  "runtimeGrant": false,
+  "remainingGate": "Root owns immutable source publication, current exact-source upload/readback, separately granted runtime window and all actual execution/result qualification."
+}
