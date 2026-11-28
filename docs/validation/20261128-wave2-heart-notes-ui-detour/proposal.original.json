@@ -1,0 +1,108 @@
+{
+  "schema": "pinkha.heart-notes.mounted-coverage-proposal.v1",
+  "status": "SOURCE_MAPPING_ONLY_IMPLEMENTATION_NOT_STARTED",
+  "base": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+  "sources": [
+    {
+      "path": "PinkhaStage1Acceptance/Tests/PinkhaT5NativeAcceptanceUITests.swift",
+      "bytes": 34629,
+      "sha256": "b43f97b3c1283f05b728b15cc9871bfecc1692ca55563f1e2c1f1886ecd38d5e",
+      "gitBlob": "d4a15a8c318880c379c83a8ee2631e2fd6fa7568"
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/TorahT5UIAcceptancePreparationTests.swift",
+      "bytes": 37826,
+      "sha256": "4df2de4b4c1345b7a02e01c4d8b21e2cc632a37f85a1732616148186102b185e",
+      "gitBlob": "d4045c4faeab9ccb1cef226fbca66cc631458cd6"
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/run_t5_native_ui.py",
+      "bytes": 40104,
+      "sha256": "7751e2eb9b796f085d78a3e8d8498d5b7bea339ff5cf0ee7a3dcd5bcf895f80d",
+      "gitBlob": "c87a78312377dcc09a443226c8552d81e594499a"
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/t5_native_ui_evidence.py",
+      "bytes": 20451,
+      "sha256": "b6217cfe0e38d5266f63b80b1d965ce49c8a12fc4b1bdefe2f1c7a9deee88c7b",
+      "gitBlob": "3c2f4bde9fff0643af1c98a5df0c5b3adaa0d5a3"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+      "bytes": 6852,
+      "sha256": "56fff3e1472e7e29ce3efde3f8b63eb6eb2c0e9a1920c36c6a99100bbe71f58e",
+      "gitBlob": "698dc52075c73cc8f584abd458c3a46cbe075c4a"
+    },
+    {
+      "path": "PinkhaStage1Acceptance/Tests/AnytypeComprehensiveAcceptanceUITests.swift",
+      "bytes": 78853,
+      "sha256": "d7e512cb695695ea88e14bf8527d0051aeb9b315e40a7a52289a8f0b0323d6f3",
+      "gitBlob": "a11cbeb6e19d1ba3ab02478575e4f3881665b1c5"
+    }
+  ],
+  "existingSelection": {
+    "target": "PinkhaStage1AcceptanceUITests",
+    "methods": [
+      "PinkhaT5NativeAcceptanceUITests/testCurrentSpaceRowsAndExactBlockNavigation",
+      "PinkhaT5NativeAcceptanceUITests/testAddNoteEditOpenUnlinkAndRetainAfterRelaunch"
+    ],
+    "preparationTarget": "AnytypeTests",
+    "preparation": "TorahT5UIAcceptancePreparationTests/prepareFreshNativeUIFixture",
+    "methodAllowanceSeconds": 300,
+    "outerUICommandSeconds": 900,
+    "setupLaunchDeadlineSeconds": 120,
+    "unchanged": true
+  },
+  "existingCoverage": [
+    "UI2 is genuine XCUIApplication interaction with io.anytype.app on the source/run/token-bound disposable native fixture. It is not hosted realNativeQueryAndNoteLifecycle.",
+    "The first method requires exact current-Space rows from page/note/writing and opens exact distant block/quote results after proving they start offscreen.",
+    "The second selects In Documents, creates through the real Add note to source button, observes a distinct mounted Note object ID, types and observes its real block ID/text, opens it through its related result, unlinks through the real context action, relaunches, verifies the related row remains absent, and reopens the same retained editable Note/body.",
+    "The strict evidence helper binds two exact methods, seven related stages and six Note stages, exact native fixture identities, stable result-ID encoding, original PNG/AX attachments, and four distinct process identities across preparation plus three UI lifetimes. Its relaunch claim is backed by recorded AX PIDs, not launch() alone.",
+    "R08 is an additional Hebrew light/dark read-only related-tool journey and is not Notes-tool coverage. Comprehensive Inspector coverage also selects In Documents; no Notes selection was found in these bounded relevant UI sources."
+  ],
+  "gap": {
+    "proven": "The existing UI2 openRelatedDocuments helper always selects In Documents. It never selects Notes or observes torah-inspector-note-* rows.",
+    "identityBoundary": "The prepared target(role:note).associationID is that Note's canonical source association, while a Notes row is a context association on the origin document with anytypeNoteObjectId and matching torahSelectionId. These IDs must not be equated, nor equated with the related resultID.",
+    "kitSource": {
+      "repository": "davidpovarsky/TorahInspectorKit",
+      "ref": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "path": "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+      "bytes": 56161,
+      "sha256": "5ac7fad544a637c5e0ae0e2c497ac7e4c6fb0cde3bc232a620e44f390dab8464",
+      "gitBlob": "c9e7b0fa676f13350fb9f04560b8d2fc3f344ed0",
+      "evidence": "Exact source/selector excerpts supplied by Interfaces' completed primary-source review; no duplicate whole Kit audit."
+    },
+    "selectors": {
+      "picker": "torah-inspector-tools",
+      "add": "torah-inspector-add-note",
+      "rowPrefix": "torah-inspector-note-",
+      "unlinkPrefix": "torah-inspector-note-unlink-"
+    }
+  },
+  "proposal": {
+    "changedMethodOnly": "testAddNoteEditOpenUnlinkAndRetainAfterRelaunch",
+    "insertionPoint": "After its original related-result Open, nativeBack(origin), openRelatedDocuments(), requireRows(linkedRows); before the original unlinkRow block.",
+    "steps": [
+      "Select the existing Notes segment within torah-inspector-tools using the core journey's English locale; require the selected tool and actual add-note control.",
+      "Require one actual Notes row for this fresh origin after the single existing UI creation; record its full association-based AX identifier rather than fabricate one from fixture or related IDs.",
+      "Tap that exact observed row; the existing production service resolves its association ID to the actual Note object. Reuse requireCurrentDocument(noteID) and requireBody(editedBlockID, bodyText) to prove it is the already observed created Note.",
+      "Use original nativeBack(origin), reopen In Documents and reassert the same linkedRows; then retain every original Unlink, relaunch, absence, same Note/body and editability assertion."
+    ],
+    "evidence": "Use separate named JSON/AX/screenshot attachments, including actual row identity and observed target/body. Keep all six original observations, their order, names and original required attachments unchanged; the original exporter retains every selected-case attachment. Do not add an observation stage to the strict original receipt.",
+    "noNewMethodOrFixture": true,
+    "noControllerOrParserChange": true,
+    "noSecondCreationOrUnlink": true,
+    "noTimeoutIncrease": true,
+    "nativeContractUnchanged": true,
+    "admission": "An implemented full-file source successor still requires explicit W3 source/compiler/product admission. Current existing source pins must not be silently repinned."
+  },
+  "limits": {
+    "testsOrControlsExecuted": false,
+    "sourceEdited": false,
+    "runtimeOrMacAccess": false,
+    "uiAcceptance": "NOT_RUN",
+    "originalStage1FourChanged": false,
+    "originalHistorical36Plus9Changed": false,
+    "notesSpecificUnlink": "Not claimed by positive list/open detour; the original In Documents unlink and cold preservation remain intact."
+  }
+}

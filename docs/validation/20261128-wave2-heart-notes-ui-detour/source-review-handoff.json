@@ -1,0 +1,138 @@
+{
+  "schema": "pinkha.heart-notes.ui-detour-source-handoff.v1",
+  "status": "FROZEN_SOURCE_CANDIDATE_NOT_RUN",
+  "base": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+  "path": "PinkhaStage1Acceptance/Tests/PinkhaT5NativeAcceptanceUITests.swift",
+  "original": {
+    "bytes": 34629,
+    "sha256": "b43f97b3c1283f05b728b15cc9871bfecc1692ca55563f1e2c1f1886ecd38d5e",
+    "gitBlob": "d4a15a8c318880c379c83a8ee2631e2fd6fa7568"
+  },
+  "candidate": {
+    "bytes": 38096,
+    "sha256": "2a71529b40bd0ae074bd891ad6b7705cf6372c17ef499b01b00ba2312f51c1a1",
+    "gitBlob": "ca8b7cb767ec7913131be8b6346f3cd6fc2b883f"
+  },
+  "replacementFile": "replacements.json",
+  "replacement": {
+    "bytes": 3817,
+    "sha256": "8a71087fa0dabea24cc899c80ee57ac09de069ed172386d731cbc7357d89cd6f",
+    "gitBlob": "2b57d157e68f72a78cfb863cdd39d07e24d34933"
+  },
+  "proposalFile": "proposal.original.json",
+  "originalProposalUnchanged": {
+    "bytes": 6965,
+    "sha256": "8cd6b2a6826d6457c29a574dc0ee3951b68b2e3b8907971268cbea1b954109f3",
+    "gitBlob": "0d23c4730758d60854342c980f45590d603aace8"
+  },
+  "change": {
+    "kind": "One pure insertion in the existing note-lifecycle method",
+    "insertedBytes": 3467,
+    "insertedSHA256": "0250e420d1de38ca513a375dcbec830a88575b14185ef4cb3043c1be701c5dc1",
+    "forwardExact": true,
+    "fullInverseExact": true,
+    "unchangedPrefix": {
+      "bytes": 10822,
+      "sha256": "e80c100be9fe68a5e31a4996653a2d9f4c6150f7b8cbadb4d35d7eda47662854"
+    },
+    "unchangedSuffix": {
+      "bytes": 23807,
+      "sha256": "86104e8bcf399ab14ab282e90496aa7bafc2530bfcc626e7b1e9076c51705eff"
+    },
+    "allOriginalStatementsAndOrderingRetained": true
+  },
+  "sourceChecks": {
+    "methodNamesBefore": [
+      "testCurrentSpaceRowsAndExactBlockNavigation",
+      "testAddNoteEditOpenUnlinkAndRetainAfterRelaunch",
+      "testHebrewRelatedRowsLongTitlesAndReadOnlyNavigation"
+    ],
+    "methodNamesAfter": [
+      "testCurrentSpaceRowsAndExactBlockNavigation",
+      "testAddNoteEditOpenUnlinkAndRetainAfterRelaunch",
+      "testHebrewRelatedRowsLongTitlesAndReadOnlyNavigation"
+    ],
+    "coreSelection": [
+      "PinkhaT5NativeAcceptanceUITests/testCurrentSpaceRowsAndExactBlockNavigation",
+      "PinkhaT5NativeAcceptanceUITests/testAddNoteEditOpenUnlinkAndRetainAfterRelaunch"
+    ],
+    "newMethods": 0,
+    "newFixtureOrHTTPCalls": 0,
+    "unchangedSetupAndFixtureTypes": true,
+    "unchangedEveryOriginalHelper": true,
+    "originalObservationAppendSites": 13,
+    "candidateObservationAppendSites": 13,
+    "legacyStageContracts": {
+      "related": 7,
+      "note": 6,
+      "collectorUnchanged": true,
+      "collectorSHA256": "b6217cfe0e38d5266f63b80b1d965ce49c8a12fc4b1bdefe2f1c7a9deee88c7b"
+    },
+    "originalTimeoutsUnchanged": true,
+    "controllerAndProducerFilesChanged": 0
+  },
+  "behavior": [
+    "After the original In Documents row Open/back/linkedRows check, the detour selects the unique English Notes segment under the real torah-inspector-tools segmented control.",
+    "It requires the actual Notes Add control but does not tap it. The row predicate expressly excludes torah-inspector-note-unlink- from torah-inspector-note- matching.",
+    "It waits for and requires one actual row in this fresh-origin fixture, derives a nonempty observed association ID, and then re-queries that complete identifier with unique/enabled/hittable checks. No related-result, fixture-target, account or object identity is substituted for the association ID.",
+    "Before tapping the row it attaches actual row identity/count/selected-tool values in a separately named JSON and calls the original AX/screenshot helper.",
+    "The row is tapped; original requireCurrentDocument(noteID) and requireBody(editedBlockID,bodyText) bind the production association-resolution route to the Note already created and edited by the journey.",
+    "Original nativeBack and openRelatedDocuments return to the origin; linkedRows is rechecked before the untouched original unlink block and every original cold-reopen/body-retention assertion."
+  ],
+  "attachments": {
+    "json": "t5-notes-tool-positive-observation",
+    "accessibilityAndScreenshots": [
+      "t5-notes-tool-positive-list",
+      "t5-notes-tool-positive-opened-note"
+    ],
+    "legacyReceiptNameUnchanged": "t5-native-ui-note-lifecycle-receipt",
+    "seventhLegacyStageAdded": false,
+    "originalExporterRetainsAdditionalCaseAttachments": true
+  },
+  "dependencies": {
+    "productPrerequisite": {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift",
+      "bytes": 5364,
+      "sha256": "adf601dc09bd2abee727fce05b3141f7e9344dfb2dd45b8731f99461cc7caf99",
+      "meaning": "Root-owned one-line Notes tool exposure; must be present in admitted App."
+    },
+    "service": {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+      "sha256": "56fff3e1472e7e29ce3efde3f8b63eb6eb2c0e9a1920c36c6a99100bbe71f58e"
+    },
+    "kit": {
+      "ref": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "path": "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+      "sha256": "5ac7fad544a637c5e0ae0e2c497ac7e4c6fb0cde3bc232a620e44f390dab8464"
+    }
+  },
+  "preFreezeCorrection": {
+    "schema": "pinkha.notes-ui.authoring-precision.v1",
+    "status": "PRE_FREEZE_SOURCE_CORRECTION",
+    "finding": "The existing method declares local let add = XCUIElement. Qualify XCTestCase.add explicitly as self.add for the new JSON attachment.",
+    "before": "        add(notesAttachment)\n",
+    "after": "        self.add(notesAttachment)\n",
+    "priorCandidate": {
+      "bytes": 38091,
+      "sha256": "7c43169b392ac77e837fc0f060ca186e0dc2b09416dfd78386eb18b141a38424",
+      "gitBlob": "fd19e7d8d15f870f32e9ed5648f6cbd10c646107"
+    },
+    "candidate": {
+      "bytes": 38096,
+      "sha256": "2a71529b40bd0ae074bd891ad6b7705cf6372c17ef499b01b00ba2312f51c1a1",
+      "gitBlob": "ca8b7cb767ec7913131be8b6346f3cd6fc2b883f"
+    },
+    "completeInverseToDraft": true,
+    "compilerOrTestsExecuted": false
+  },
+  "limits": {
+    "compilerOrTestRuns": 0,
+    "macOrNativeCalls": 0,
+    "gitOrSourceTreeWrites": 0,
+    "notesSpecificUnlinkExecuted": false,
+    "additionalMutationActionIntroduced": false,
+    "uiCoverage": "NOT_RUN",
+    "physicalOrVisualAcceptance": "NOT_RUN",
+    "admission": "W3 must explicitly admit the changed full UI source and matching compiled App/UI. No existing source pin, historical result, controller, 300s case allowance, 900s UI command allowance or original first-Apple execution order is changed."
+  }
+}
