@@ -1,0 +1,93 @@
+{
+  "protocol": "FILES_QUEUE_ACTIVE_RETRY_TEN_COMPONENT_SELECTION_V1",
+  "status": "SOURCE_ONLY_ALL_SELECTED_TESTS_NOT_RUN",
+  "packageMode": "explicit-file package from queue.go, unchanged queue_test.go, queue_retry_generation_test.go",
+  "originalQueueGitBlob": "d3709091d751d3d08f8a78dca74c47cb808ac77d",
+  "candidateQueueGitBlob": "bb51b481a41a4b4bf36443a804debb08686a3919",
+  "originalTestsGitBlob": "1878f37c567acf97efd1d8ace8d09fc08f20878a",
+  "newTestsGitBlob": "6f14e1470313235163e52293721b3b01290a0933",
+  "expectedCompiledParents": [
+    "TestQueueRunSuccess",
+    "TestQueueBackoffAndManualKick",
+    "TestQueueLimited",
+    "TestQueuePersistsAcrossRestart",
+    "TestQueueListSpaceAndRemove",
+    "TestEnqueueDelayedSchedulesFuture",
+    "TestEnqueueDelayedKeepsExistingSchedule",
+    "TestQueueRestartResetsBackoff",
+    "TestQueueRestartRestartsBackoff",
+    "TestQueueRestartKeepsDelayedSchedule",
+    "TestQueueNoFileNodes",
+    "TestQueueRunsJobsConcurrently",
+    "TestQueueRemoveCancelsRunningJob",
+    "TestQueueRunnerNilAfterJobContextEndedKeepsJob",
+    "TestQueueKickDuringLimitedAttemptKeepsRetryDue",
+    "TestQueueEnqueueDuringFailureKeepsRetryDue",
+    "TestQueueActiveRetryRequestsCoalesce",
+    "TestQueueRemovedAttemptCannotSettleReplacement",
+    "TestQueueAcknowledgedRetrySurvivesReopen",
+    "TestQueueRetryDuringSuccessCompletesOnce"
+  ],
+  "candidate": {
+    "parents": [
+      "TestQueueKickDuringLimitedAttemptKeepsRetryDue",
+      "TestQueueEnqueueDuringFailureKeepsRetryDue",
+      "TestQueueActiveRetryRequestsCoalesce",
+      "TestQueueRemovedAttemptCannotSettleReplacement",
+      "TestQueueAcknowledgedRetrySurvivesReopen",
+      "TestQueueRetryDuringSuccessCompletesOnce",
+      "TestQueueBackoffAndManualKick",
+      "TestQueueLimited",
+      "TestQueueRemoveCancelsRunningJob",
+      "TestQueueRunnerNilAfterJobContextEndedKeepsJob"
+    ],
+    "children": [],
+    "runRegex": "^(TestQueueKickDuringLimitedAttemptKeepsRetryDue|TestQueueEnqueueDuringFailureKeepsRetryDue|TestQueueActiveRetryRequestsCoalesce|TestQueueRemovedAttemptCannotSettleReplacement|TestQueueAcknowledgedRetrySurvivesReopen|TestQueueRetryDuringSuccessCompletesOnce|TestQueueBackoffAndManualKick|TestQueueLimited|TestQueueRemoveCancelsRunningJob|TestQueueRunnerNilAfterJobContextEndedKeepsJob)$",
+    "expectedRuns": 10,
+    "expectedPasses": 10,
+    "expectedSkips": 0
+  },
+  "originalRegression": {
+    "parents": [
+      "TestQueueKickDuringLimitedAttemptKeepsRetryDue"
+    ],
+    "children": [],
+    "runRegex": "^TestQueueKickDuringLimitedAttemptKeepsRetryDue$",
+    "expectedRuns": 1,
+    "expectedPasses": 0,
+    "expectedFailures": 1,
+    "expectedSkips": 0,
+    "acceptedFailure": "Controlled first attempt entered, KickJob returned true and persisted next=0; releasing ErrLimited prevented a second attempt within the 5-second bound. Failure must be this test assertion, with the job still pending and classified LIMITED, not a build/setup/timeout/cleanup failure.",
+    "acceptance": "NOT_RUN"
+  },
+  "excludedOriginalParents": [
+    "TestQueueRunSuccess",
+    "TestQueuePersistsAcrossRestart",
+    "TestQueueListSpaceAndRemove",
+    "TestEnqueueDelayedSchedulesFuture",
+    "TestEnqueueDelayedKeepsExistingSchedule",
+    "TestQueueRestartResetsBackoff",
+    "TestQueueRestartRestartsBackoff",
+    "TestQueueRestartKeepsDelayedSchedule",
+    "TestQueueNoFileNodes",
+    "TestQueueRunsJobsConcurrently"
+  ],
+  "fakeData": {
+    "spaceID": "sp",
+    "fileID": "file",
+    "jobKind": "durable",
+    "actualAccountCount": 0,
+    "actualFileUploadCount": 0,
+    "networkRequestCount": 0
+  },
+  "fixtureLifetime": "Fresh private AnyStore DB per test except the one exact same-path orderly close/reopen case. Private callbacks have a cleanup stop gate; Queue.Close joins them before the DB closes. A test-process hang/timeout is failure, not cleanup success.",
+  "originalControlNote": "Original regression and candidate component results must be separate; a successful negative-control reproduction is not a successful original Queue implementation.",
+  "excludedClaims": [
+    "actual process-crash injection",
+    "native or account acceptance",
+    "current quota capacity",
+    "cloud durability or resumed transfer",
+    "permission-revoke acceptance",
+    "native64/E source or gate qualification"
+  ]
+}
