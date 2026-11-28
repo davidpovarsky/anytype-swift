@@ -1,0 +1,814 @@
+{
+  "controllerPredecessor": {
+    "bytes": 39934,
+    "oldMethodsSelected": 0,
+    "path": "/workspace/scratch/9be24899e901/migration-relay/type-provider-references/component-slice/qualification/run_provider_components.py",
+    "sha256": "6e2690f9693a00c5fbf6876274156e823426b0c4082cd7b23c00b23bf11cef91"
+  },
+  "dependencySourcePins": {
+    "swift-asn1": "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+    "swift-crypto": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed"
+  },
+  "excludedEarlierMethods": {
+    "NativeCanonicalDefinitionSupplementTests": [
+      "testEightOriginalCanonicalDefinitionsRetainEvidenceAndDistinctValueSemantics",
+      "testSupplementRefusesDuplicateExistingAndCallerChosenAliases",
+      "testSupplementRefusesSelfConsistentChangedWireAndForeignSourceSpace"
+    ]
+  },
+  "expectedCounts": {
+    "compiledTestFiles": 2,
+    "excludedEarlierMethods": 3,
+    "httpFixtureInstances": 0,
+    "methods": 0,
+    "originalCoreCompiledFiles": 8,
+    "originalProjectCompiledFiles": 84,
+    "originalProjectReadFiles": 85,
+    "plannedNativeMethods": 1,
+    "preparedProductionCompiledFiles": 2,
+    "productionCompiledFiles": 94
+  },
+  "graph": {
+    "bytes": 95067,
+    "sha256": "ab2c0b2a838f667b5e5318caa147fa4605fa106aa36ea4357b1b7c077d8a59df"
+  },
+  "methods": {
+    "NativeImportedCatalogReadReopenTests": [
+      "testAllOriginalCatalogRowsAndMetadataReadSignedNativeStateAndColdReopen"
+    ]
+  },
+  "methodsArePlannedOnlyNoTestInvocation": true,
+  "original313ManifestIsHistoricalProducer": true,
+  "original313ManifestSHA256": "ca0dd9bb060b738c71bf6d84b992a09b7cb4c5c3182e6a7234cb690e6b9a9eaa",
+  "originalCoreCommit": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+  "originalCoreFiles": [
+    {
+      "bytes": 24592,
+      "path": "Sources/TorahInspectorCore/Models.swift",
+      "sha256": "59a0c8639c8c778c67ff9c60db4b979e3ba7a39dff4c3fb669a54ae23dc113a0"
+    },
+    {
+      "bytes": 510,
+      "path": "Sources/TorahInspectorCore/ProviderProtocols.swift",
+      "sha256": "9f5f28f1d71a97831827dce5dfe2324a60460fc7760137b9527e4c3815d20273"
+    },
+    {
+      "bytes": 461,
+      "path": "Sources/TorahInspectorCore/TorahInspectorCoordinator.swift",
+      "sha256": "fccfc25ee56e165c6559aba52a1ccec39d10db6fd6a94a91c867cd38dc693116"
+    },
+    {
+      "bytes": 17499,
+      "path": "Sources/TorahInspectorCore/TorahInspectorRepository.swift",
+      "sha256": "519828f3d602811758d2698e00a06567b41d31d465b143175441f08873300040"
+    },
+    {
+      "bytes": 3444,
+      "path": "Sources/TorahInspectorCore/TorahReaderScrollStateMachine.swift",
+      "sha256": "90173f3198133c6a746d00c9a6af9ad8cd854f5643f924d98e9095133da5bbdc"
+    },
+    {
+      "bytes": 355,
+      "path": "Sources/TorahInspectorCore/TorahRelatedDocumentsAccessError.swift",
+      "sha256": "0ff22bb5a56ddff0235e7b6c5188c737b110cb2848d7e17dcaefc3ca1d6df2e6"
+    },
+    {
+      "bytes": 3410,
+      "path": "Sources/TorahInspectorCore/TorahSourceTransfer.swift",
+      "sha256": "994da5da2cb6b163083c7f3dea20cfe74c781211eea0f144b394a6d047affc97"
+    },
+    {
+      "bytes": 2005,
+      "path": "Sources/TorahInspectorCore/TorahToolSelectorStateMachine.swift",
+      "sha256": "34dda44a571764ea98e43449422340ad7a00dbe4b0d43c0036d7d48ad8119729"
+    }
+  ],
+  "originalCoreRoot": "/mnt/development/projects/caches/pinkha-w1-migration-swift-20261127/checkouts/TorahInspectorKit",
+  "originalProjectCommit": "12e49ea69efdde499a6b5343cbe77139073dfbd8",
+  "originalProjectFiles": [
+    {
+      "bytes": 9870,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahClaimsRepository.swift",
+      "sha256": "cc9ee5e3eb159ef5ea68e7a87928fd94f047a8668c2f2483890faffdac8d73a1",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 11996,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahContract.swift",
+      "sha256": "048ebd2d82e3a22265c3fea4ead6ba406b4f8d7d8f00367ec0c7779fac1b0d8f",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 6644,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahOperationRead.swift",
+      "sha256": "7205b72e687975bfda695bcccbcdbdd486af45c13ef7f0ddd20fcf58c9d5a312",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 27831,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyHTTPClient.swift",
+      "sha256": "8fce86456dfdfd7237a999fb56b6dcdf6d0917c068a797ed5d9a88c5e33d5182",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 2600,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyJSON.swift",
+      "sha256": "fb8937994d7db5728a7872386670eaeb2e74dcb84abba92814316bb3d458008d",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 12640,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyLiveQuery.swift",
+      "sha256": "445930138f7aefe46f6d41995059acafad9363178da4bc17574d2a0e399c8cf4",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 6439,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileDurability.swift",
+      "sha256": "364a1bea4e4cae6134c9bb5935c0432f257657f3ae0c889a669354de975c2dc6",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 2695,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyObjectCreationUncertain.swift",
+      "sha256": "c4635b23304e60b1d27b546c53e8901a841160bd79bd43a066b50bc02b2b0704",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 10163,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnySSEParser.swift",
+      "sha256": "1b5b55f99d357418d0df7ec43bc61e8bac1e1f246c613019f8c8b025c03cbdad",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 13237,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahClaimsRepository.swift",
+      "sha256": "cd11b4cc0e54b4593d5a9111ca37ef7556bf3bcaa71ddb1532e900dd94ac0145",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 3828,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahLiveQuery.swift",
+      "sha256": "d2cdada5bf2a639127e58dbbe7b422188df76cb145d32023d4b1011006fd69af",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 12417,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahOperation.swift",
+      "sha256": "c5cdbf04c36554a1c4a74dc164014a3cc9bd33b201479702d7c1224d3d661980",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 5633,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+      "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 2574,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationAnchoredText.swift",
+      "sha256": "519b06bac9334e8483895daa66e3028e51a55347c543be55d59604a083f030b5",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 13314,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationContentProjection.swift",
+      "sha256": "80cd6bb0ba2ff87ca917a0c83ab1864c3bfd17ad8fcf0438b7dbf69ecd441f78",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 27878,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationDefinitionCoverage.swift",
+      "sha256": "e2095c83e1fe238184db7adf0220db40a5521ee9dca31302a810af203d59fbd4",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 2446,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationImmutableRecordAuthority.swift",
+      "sha256": "86aac99f4399349166257a7523a748d8f388c1877ae4cad1fd53a67dd3df3fb7",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 3645,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationImmutableRecordChecks.swift",
+      "sha256": "c61c901522875690a5d5178b5583cf3a5e136d1a6ba448d0f9187d6fad6a6889",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 19745,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationExecutor.swift",
+      "sha256": "e1b70db384a5308d759fa763446245a2369aa7a083d5d4080032d4e51f959b63",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 13471,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationJournal.swift",
+      "sha256": "6a21f98fe4cbeb0208e6842dd3b6a9dbad4672ddd0c04ee6b01c38c1dc3cea52",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 40052,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationPlan.swift",
+      "sha256": "cb1f3d9be09caa0c19f1242a1c6917a6cbf6fc60d000c1d2044a85b20efba13f",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 35249,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationVerifier.swift",
+      "sha256": "9ac0bc80265a2ea57413b9aa1ccb22babef698a0276bb447a66998762b20fecf",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 23299,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationNativeMigration.swift",
+      "sha256": "bab9be2ae8767f70239386b58eed452e5ea5bfd024d6a9003bb68cc8785efdf6",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 4116,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationSystemCoverage.swift",
+      "sha256": "ffc3caca0ed71a6a68671f5a0f94c7722e8c78ef6ce4ed237ccea247630381a6",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 8318,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorSnapshot.swift",
+      "sha256": "d2956d5e698631a7ab90c039b2647ac518da2dea224f4e01c59dd4ca0cf9ea9f",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 6237,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartInlineConversion.swift",
+      "sha256": "7caee65ae45891383412987e2a471a2281510e4bdba21c0f880e2eadea86e7e4",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 5629,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeContentComposition.swift",
+      "sha256": "2d3f2603bf9d1b5f7f9238cb15d64369bf6c74cbfd124bbfa672df3f59e55c81",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 13277,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeContentSelection.swift",
+      "sha256": "8ae7d4536c77ead4b3189fa5f3611bca6c75def421d4f81ee4c2776260b089e1",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 38683,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeDefinitionPlan.swift",
+      "sha256": "66cebc79a53506c6a34cbc12801706f7eb1dc73ce5a1a915953ffc6e444b90e4",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 2630,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeFileBinding.swift",
+      "sha256": "c530fc9e12af92a3c1ab557f04dbdf32bc27f0decdc5223226f069fed0696158",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 13241,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativePageComposition.swift",
+      "sha256": "7b28a3f837ddedb595952f4ec9326fb621b8ec56bffb33200249cddbb577e6ec",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 4591,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourceFacts.swift",
+      "sha256": "48af3651539d55983cc1e6383282ca6866353b1cb2070de7f8bab71946f3f6c9",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 17751,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourcePreservation.swift",
+      "sha256": "ff103d4110e17fbb9ed6375ba0dc59968cf59fbb5bc77d8740dc53a40ce1cf98",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 12300,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeTextBlockPlan.swift",
+      "sha256": "cd55ddb71a46e810b750fc2aac4c11b431e30717af28615651efe2d7919962f9",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 2773,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHostCanonical.swift",
+      "sha256": "d234b3d87ab9ec8317f159d413eb140eb94c1ae0aa0b1e20f30391b4e51c4840",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 41061,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyInlineMarkdown.swift",
+      "sha256": "c537820797785b9f4f3bd00533706c16145c91e5f6999936a9b97243c4d9a483",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 12014,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeBlockCreator.swift",
+      "sha256": "6bea1d2f1108cf737d68f91cf891c901e0140212b574aaf9e42fa63b392fd652",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 1927,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFilePropertyFormat.swift",
+      "sha256": "d068f7dc5ca478788a3457e7114da87b154bac46efacc89fe7a81401b7d887a1",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 2019,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFileReference.swift",
+      "sha256": "19babf809e1c6c7ec8f517f89a9eb19f6e7a67e6ec743a02a5d523ab3aa5308f",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 12275,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeHistoryReader.swift",
+      "sha256": "097a4c59dd7cdce04d9ae7951190a4b57918a9184386942be552691a1aca3fe8",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 4547,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedDefaultMetadata.swift",
+      "sha256": "b8ac71373d973d19b8d452a6f994087f2b8aa20245ce018ca4b46d776e996adb",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 18194,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedDefinitionDirectory.swift",
+      "sha256": "bc0a444fa673bb1d5fb0494e73132462e080ed52b8ab3e95dd1cb7721509440c",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 21281,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedSourceFacts.swift",
+      "sha256": "7db9678676b2d691388befbc6955ed4863694adab9ade6870dba336671cf078f",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 3865,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedTypeOrder.swift",
+      "sha256": "4516a77ba08a02fdfb714d58629c03deb62856e8a250114bbc913d41f45be5a2",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 8198,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedTypePresentation.swift",
+      "sha256": "9cc30290575197f7cc2b8f3c8fdd700b8967223b035726f314ea11b2e1991e1a",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 14656,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+      "sha256": "0273ca566d58456569eeff7d90e6e582791fcf33aa2c6b2e48c280fe53dcb723",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 19838,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedDefinitionMigration.swift",
+      "sha256": "8d44ac127127a59dc1826f3716b41948ee89f846c42221e35e4f7171476af925",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 15234,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedFileMigration.swift",
+      "sha256": "16b230914002ef5700397e6596671ee201852d6bb962e63a519521f3b2d15009",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 18393,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedImmutableRecord.swift",
+      "sha256": "83e543085c6911be85076f097eb55f3b054e24422378c32e99e5ab7dc1693e30",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 13543,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedInlineFileMigration.swift",
+      "sha256": "4c134d514014b021bfd346ca93fe11f2cbc4af12ee6c263e9b42276e0065591f",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 18794,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedMigration.swift",
+      "sha256": "e8c0e084b0a18a7c4892529054f9b9d393d8cdd72d357aef4d330ea2a4ae059d",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 12743,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedPropertyUpdate.swift",
+      "sha256": "d2265107059c571af533fe0996b29dfafc7bc0ec3d63f46e46158319b37e3c9c",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 43999,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "sha256": "bd78d4bed9ff005d05317a0f6eff1f40bc6b9bbe3495608ed1e4edd830b11a0c",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 10755,
+      "compile": true,
+      "kind": "test-helper",
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCanonicalDefinitionSupplementTests.swift",
+      "sha256": "e8a40030d0cca49e7978869e487ba1422bc135e65f88469ba61ee852a73b7319",
+      "target": "CatalogNativeTests"
+    },
+    {
+      "bytes": 2695,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyConditionalPropertyFence.swift",
+      "sha256": "baec5f9838f1bdbf6d6aedb557998cd334b3a77bbc73ce42f0c1408e14d40129",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 2949,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartInlineProjection.swift",
+      "sha256": "ecd9e751715263ab6c592be9d2cf22129d5e295c5b7510595ff5886d630529fe",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 3335,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeBundledDefinition.swift",
+      "sha256": "524deb8119421132b0b802c7dfc40d0718a4e01235afc3e7697aa5c09ee79a3c",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 5012,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeCompiledRelation.swift",
+      "sha256": "abce8533e20f169fc431bd1d851d0c56fde878974d6eadef8a42fc1035de4096",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 23399,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionCatalog.swift",
+      "sha256": "437131d2f7095af0a450e7c695aa9c9bed13ea290f576d49870c5224b60a3965",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 8326,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePageLayout.swift",
+      "sha256": "be3ac5f21dfa71fc61be05d910bdc37a8832d252acb1d48ac2c03b88959f5e10",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 13126,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePreservationArchive.swift",
+      "sha256": "83c8f527b576184dfbaf3537c9b17fd53fa78c422deed203e68007c34a261ea0",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 13436,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeRecoveredDefinitions.swift",
+      "sha256": "de4b8b0596954a3f476bfff2c3af63b15f789d6ed17d806e54a2cd221c9bd449",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 12396,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeSnapshotView.swift",
+      "sha256": "8128c8e00ff10f4904ea1bf1638741a0de1d68565b8a2e30f9a8b5c97ebfc0d0",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 23124,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeSpaceBundle.swift",
+      "sha256": "9f7aa90550b3ab54cd86928a5c254b6f4af13762e14ce80fb62199f444879977",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 18654,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeStoreContext.swift",
+      "sha256": "42617085d07295f4eb8a67973380d6a5174ef29bba4b9b29b1e58105d99c6a81",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 20551,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartSpaceArchive.swift",
+      "sha256": "6a6535670cc9128704f6aabab1c5afd694ac695d4310f59c5e9b5b3acb15292e",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 24167,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartSpaceMigrationDryRun.swift",
+      "sha256": "c96bc27e447087cfe845b311cd21e5d99d68b4815b5d337848a4f54ee03b274c",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 16048,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHierarchyModels.swift",
+      "sha256": "0a594737c72b9f065cd4e70aff425f521a6d7ff86ce7b1ebd21dd1221d150700",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 8273,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyLexicographicPosition.swift",
+      "sha256": "079984b4d7aabdb375ca7bb466337db3f6282e5cd3f535ad8f8ae90b4ad86c73",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 6882,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyNativeDocumentPolicy.swift",
+      "sha256": "a4fa5fc4fc1185b1778ae960b60e39a03e3d4ce487c34bd4d69401946ff7e366",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 1870,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahSemanticAnchorMigration.swift",
+      "sha256": "a8968f34c5f3af00537ba9b183ce0065ff7dadd31e55ca413dddc26fbe96728d",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 1537,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahSourceJSONGuard.swift",
+      "sha256": "a40e49f4d3424e5625498e1a95baad171e22391a786d16c3f3e0c4c1ea926541",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 10327,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahWorkspace.swift",
+      "sha256": "7a51c02baafba146fac43ab0b5737ab3db6465ebdc142bce3d1a6ea33bf36c56",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 16150,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSemanticTextAnchor.swift",
+      "sha256": "bfefc94965cfe6dbdf910452eaec3a9530854a6d5b6a09a1a9b10339c6c30274",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 3339,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyBuilder.swift",
+      "sha256": "7ac6eea3d287c43afd9849e82093466987764c518d81880208dd5452c4112b97",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 5447,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyModels.swift",
+      "sha256": "7f201585eb76b34271e49fe686770302ece2d67d3e2ba4304167637ea0ddcb0b",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 1804,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyMutationValidator.swift",
+      "sha256": "3f5f9e21035851c171ee5c64e4789048ce2fcf78163d839ef69155499fbf0d21",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 6164,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyOrdering.swift",
+      "sha256": "7e33fc757c7c2888a8715fa7f110503bf9dc577ea06cf5bbbcd71e0793a9adf8",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 5165,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationIdentity.swift",
+      "sha256": "85738df63c9ae987c1180c20e661cd21cd4acc20afcd376592f87ca32dcdb626",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 15128,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationModels.swift",
+      "sha256": "0007274a78d39fd4c8e0105eb50cec106c807cf53735caa0de1f4a85cd7fbde1",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 6237,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationPayloadCodec.swift",
+      "sha256": "9956aa25174812c5878927b5c62cff5f5d1d16e8becb536e23dadb25a01422d1",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 2445,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationRepository.swift",
+      "sha256": "63c789b1e14b85fb8032f2cf8fecb4fcb7e768453c03b9304e78ac77775fb66e",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 8403,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahCanonicalAssociations.swift",
+      "sha256": "e5c988ebb64572e5228592f8a833ca8e5c2638fd991d0f7fc7e9bb114e4e3f3d",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 3789,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahSemanticAnchorAssociation.swift",
+      "sha256": "17c469ea127bf01211c7e819c00a2e15ea07facbe2c6d86505a5f0fce82cb3f4",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 7503,
+      "compile": true,
+      "kind": "production",
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahSourceJSONGuard.swift",
+      "sha256": "ad856a6ed49f645ec2d5cb6a0bc3c7b6e7566c5cd7ad2a3081ccd748849ab9f6",
+      "target": "PinkhaKit"
+    }
+  ],
+  "originalProjectRoot": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127",
+  "preparedSources": [
+    {
+      "bytes": 8689,
+      "kind": "production",
+      "originalLocalPath": "root-relay/original-source-metadata/Sources/AnyHeartOriginalMetadata.swift",
+      "path": "Sources/AnyHeartOriginalMetadata.swift",
+      "sha256": "54710744dc013f3ab48c823d48a6310e0ca537957ccf9800ef0b3219f18cb6c0",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 19519,
+      "kind": "production",
+      "originalLocalPath": "root-relay/original-source-metadata/Sources/AnyNativeImportedCatalog.swift",
+      "path": "Sources/AnyNativeImportedCatalog.swift",
+      "sha256": "bf886d81f6b0fe7b724f0e347f991681e7ca9d6599476ee13dbce9fb1a84b50b",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 15568,
+      "kind": "test",
+      "originalLocalPath": "root-relay/original-source-metadata/Tests/NativeImportedCatalogReadReopenTests.swift",
+      "path": "Tests/NativeImportedCatalogReadReopenTests.swift",
+      "sha256": "5e2d6d2d136727c4d4a567d1470694b719e9a990145f0f77b456fe4c843d3a65",
+      "target": "CatalogNativeTests"
+    }
+  ],
+  "retainedCryptoProducer": {
+    "allFourOriginalModuleAndDocumentationBytesRequired": true,
+    "changedOldInputRows": 451,
+    "currentObservationSHA256": "d93433b85ab53b941cde27af52d3612d21b2a93af3d5e838cff2126607f3af17",
+    "currentProducerSHA256": "437fab26265b371180016caae6fc87c72a9b471deecc70d6d99b92309d51959f",
+    "historicalApplicationSourceRows": 313,
+    "linkedIntermediateObjects": 448,
+    "newHelperExecutionStatus": "NOT_RUN_SOURCE_ONLY",
+    "previousHelperSHA256": "6a4e00ff18e90a0fea100306e70eb220d85129f0e9d322010872d83464a5d309",
+    "producerTestsReplayed": false,
+    "sharedAdmissionHelperSHA256": "206bbf988fe28657ada7eb98079fad951d9cee66146da6a9204e7279fe845ad0",
+    "unchangedDependencyFiles": 1130
+  },
+  "schema": 1,
+  "scope": "ISOLATED_ORIGINAL_CATALOG_NATIVE1_COMPILER_FULL_SOURCE_ONLY",
+  "sourceOnlyUntilActualControllerReceipt": true,
+  "status": "SOURCE_ONLY_NOT_INSTALLED_OR_COMPILED_OR_RUN"
+}
