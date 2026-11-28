@@ -1,0 +1,86 @@
+{
+  "protocol": "pinkha-root-capacity-geometry-evidence-v1",
+  "status": "ACTUAL_READ_ONLY_OBSERVATIONS_NO_CAPACITY_ADMITTED",
+  "repository": "davidpovarsky/anytype-swift",
+  "expectedSoleParent": "412d8e77e54ddd4c8f138643d4d4bab18c684aec",
+  "ownedBranch": "codex/chatgpt-wave15-network-quota-broker-source-20261128",
+  "prefix": "docs/validation/20261128-root-capacity-geometry",
+  "totalAddedFilesIncludingThisManifest": 4,
+  "memberCountExcludingThisManifest": 3,
+  "files": [
+    {
+      "path": "docs/validation/20261128-root-capacity-geometry/root-device-geometry.json",
+      "mode": "100644",
+      "bytes": 5258,
+      "sha256": "1366be885d875787de8246de380a1dd8721fb8fba2ceecf340b693c2a0ca537f",
+      "gitBlob": "de5069b281e7dfff4aa01bd0cd9d1b46fb4bd9ac"
+    },
+    {
+      "path": "docs/validation/20261128-root-capacity-geometry/root-ext4-header.json",
+      "mode": "100644",
+      "bytes": 3608,
+      "sha256": "e08e293d6a8a9e7b95a75053c64078833bd5c9ba6e052d97fb04cfd36a16e739",
+      "gitBlob": "7840849b43333e244b9353bd9436e40dc5a6ffaa"
+    },
+    {
+      "path": "docs/validation/20261128-root-capacity-geometry/RECONCILIATION.md",
+      "mode": "100644",
+      "bytes": 3956,
+      "sha256": "366ee9f0c6d939d5f4fced77ef26ab360a64a0c742eef90a9ad0d8fb597f5128",
+      "gitBlob": "1c4476ef1673fc6428fa2524bfb341b831eae415"
+    }
+  ],
+  "observationSources": [
+    {
+      "name": "geometry",
+      "bytes": 8492,
+      "sha256": "eb6904c809d1dce0ab82ef95146a4b99f2763bd80b964dbf9822d09c6519cf9e",
+      "sourceBodyIncluded": false,
+      "wallLimitSeconds": 10,
+      "outputLimitBytes": 16384
+    },
+    {
+      "name": "ext4-header",
+      "bytes": 4270,
+      "sha256": "8a65fe0af1e82e39630f7c4d3f197649d4c7a6a239a8788fe2ceea9954b4a111",
+      "sourceBodyIncluded": false,
+      "wallLimitSeconds": 10,
+      "outputLimitBytes": 16384
+    }
+  ],
+  "exactReconciliation": {
+    "wholeDeviceBytes": 53687091200,
+    "partitionBytes": 52612283904,
+    "filesystemBlockCount": 12844795,
+    "filesystemBlockSize": 4096,
+    "filesystemBytes": 52612280320,
+    "overheadBytes": 1728172032,
+    "partitionRemainderBytes": 3584,
+    "statvfsFilesystemBytes": 50884108288,
+    "deviceTailBytes": 16896,
+    "deviceTail512Sectors": 33,
+    "headerReservedBlocks": 0,
+    "wholeAdditionalFilesystemBlocksInsidePartition": 0
+  },
+  "scope": {
+    "rawObservationsUnmodified": true,
+    "sourceAndControllerChanges": 0,
+    "newHostCommandsForPublication": 0,
+    "fileCensus": 0,
+    "userFilePayloadReads": 0,
+    "filesystemWritesByObservationScripts": 0,
+    "resizeOrGrow": 0,
+    "reserveChanges": 0,
+    "providerOperations": 0,
+    "compilerInvocations": 0,
+    "nativeInvocations": 0,
+    "newCapacityAdmittedBytes": 0,
+    "guardsChanged": false
+  },
+  "limits": [
+    "Raw geometric gaps are not safely allocatable capacity.",
+    "Header free blocks are not statvfs available bytes.",
+    "Sentinel temporary script transport was cleaned up; the observation scripts made no storage changes.",
+    "All existing runtime and ownership gates remain in force."
+  ]
+}
