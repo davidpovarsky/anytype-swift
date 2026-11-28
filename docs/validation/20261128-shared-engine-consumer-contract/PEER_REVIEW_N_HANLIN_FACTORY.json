@@ -1,0 +1,155 @@
+{
+  "schema": "pinkha.hanlin-save-factories-source-contract-peer.v1",
+  "status": "CLEAR_BOUNDED_SOURCE_CONTRACT_DELTA_NOT_RUNTIME_ACCEPTANCE",
+  "reviewer": "network_files",
+  "repository": "davidpovarsky/anytype-swift",
+  "publishedCommit": {
+    "sha": "f0eab88b57da3ef9b3586dc9a40c853948060eb9",
+    "soleParent": "ff5777896ced23171522a0d6d735e2b235b11ffc",
+    "tree": "819108a9b1b2bc3f7c1e1435c2b8c49d465d2d98",
+    "changedPaths": [
+      "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinReadWriteHost.swift",
+      "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinHost.swift",
+      "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/AnyHanlinPresentation.swift",
+      "docs/any-engine-port/SOURCE_REFACTOR_MAP.json"
+    ],
+    "onlyFourDeclaredPaths": true
+  },
+  "wholeInputs": [
+    {
+      "key": "heart",
+      "path": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinReadWriteHost.swift",
+      "predecessor": {
+        "blob": "fdc4af17c9b08f5bb9d26c1f2ed2fb6d771f177c",
+        "bytes": 14387,
+        "sha256": "6c5ca4c50a1142a5a60c523b5367ac1751b81100708e032cfe268b793fdfcc58"
+      },
+      "current": {
+        "blob": "cb77c90a4aeee72a8927cfe8d8d6e117734628a9",
+        "bytes": 14960,
+        "sha256": "3a9354144bf006724e9c0b5e79631cf2c8894d7c4be3985494a9c42e3b4c7774"
+      }
+    },
+    {
+      "key": "host",
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinHost.swift",
+      "predecessor": {
+        "blob": "a53045a7f35198ac198c6c08baea769037e3ad85",
+        "bytes": 9301,
+        "sha256": "797badce5c2b85af3e0ce2fce1eef08a736f7ed95b502bb229f38ed82aa65f74"
+      },
+      "current": {
+        "blob": "6cc9dbc0e3ce1b43d6b23b7261598243397c9aa5",
+        "bytes": 10187,
+        "sha256": "e70dabbe24b5816a63f2fd48f48bab736c36bf1549b16b9efb685858b9dc0ab9"
+      }
+    },
+    {
+      "key": "presentation",
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/AnyHanlinPresentation.swift",
+      "predecessor": {
+        "blob": "d6f7f93a59175c7a2302705dd789fd4bfc68b7cf",
+        "bytes": 14044,
+        "sha256": "adfce667d905c6f02736246fd8611b6c88cddea7a75c547ec0d11f4a9cd5988c"
+      },
+      "current": {
+        "blob": "57485f736788adf1e31834ef07072b3678a9d7d3",
+        "bytes": 15077,
+        "sha256": "377a49db18564d04d125d122e065f8ef574315300c50aa2c5f1e54d300501dc7"
+      }
+    },
+    {
+      "key": "map",
+      "path": "docs/any-engine-port/SOURCE_REFACTOR_MAP.json",
+      "predecessor": {
+        "blob": "f9f16815e6137af680bafa55a7da42f39e496eda",
+        "bytes": 248145,
+        "sha256": "4c9a423e64c1814b06a54c041efb8af56e2999b74c9bf534968cf285dd6246ec"
+      },
+      "current": {
+        "blob": "eef1084617365768ef60cfc3b771a597aeeaf479",
+        "bytes": 248145,
+        "sha256": "c61e852c651f4fc339c669192c62bc7e47917b893d1e6d97b825eefdf9b03bfc"
+      }
+    }
+  ],
+  "exactDiff": {
+    "independentWholeForwardAndInverse": true,
+    "swiftHunks": 4,
+    "mapHunks": 1,
+    "files": [
+      {
+        "path": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinReadWriteHost.swift",
+        "patch": "@@ -48,21 +48,31 @@ final class PinkhaHanlinReadWriteHost: HanlinHostCancellationDrainSource {\n                          installation: installation, write: write, saveMessage: saveMessage)\n     }\n \n+    /// Explicit production save composition with the original Heart context.\n+    /// Native eligibility, mounted consent and the protected shared worker\n+    /// remain authoritative. Ordinary make stays read/create-only until the\n+    /// separately reviewed production entry is admitted.\n+    static func makeForSavingMessages(presenter: UIViewController,\n+        routeOwner: SpaceHubCoordinatorViewModel, conversationID: UUID,\n+        locale: Locale = .autoupdatingCurrent) throws -> PinkhaHanlinReadWriteHost {\n+        let context = try PinkhaHanlinCreatePageContext(presenter: presenter, routeOwner: routeOwner,\n+            conversationID: conversationID, locale: locale)\n+        return try make(context: context, includeSaveMessage: true)\n+    }\n+\n     #if DEBUG\n     static func readOnlyForTesting(read: PinkhaHanlinHostAdapter,\n                                    session: HanlinHostSession) throws -> PinkhaHanlinReadWriteHost {\n         try .init(read: read, session: session, installation: nil, write: nil, saveMessage: nil)\n     }\n \n-    /// Explicit native acceptance composition only. Ordinary app construction\n-    /// keeps save absent until its real body/authority acceptance is complete.\n-    /// This has no launch-argument, settings, model or remote activation path.\n+    /// Existing native acceptance uses the same production composition.\n+    /// The real fixture, body and authority admission remain with its caller.\n     static func makeForSaveMessageAcceptance(presenter: UIViewController,\n         routeOwner: SpaceHubCoordinatorViewModel, conversationID: UUID,\n         locale: Locale = .autoupdatingCurrent) throws -> PinkhaHanlinReadWriteHost {\n-        let context = try PinkhaHanlinCreatePageContext(presenter: presenter, routeOwner: routeOwner,\n+        try makeForSavingMessages(presenter: presenter, routeOwner: routeOwner,\n             conversationID: conversationID, locale: locale)\n-        return try make(context: context, includeSaveMessage: true)\n     }\n     #endif\n "
+      },
+      {
+        "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinHost.swift",
+        "patch": "@@ -91,16 +91,29 @@ public final class AnyHanlinHost: HanlinHostCancellationDrainSource, PinkhaHanli\n         access.observeInvalidation { [weak self] in self?.invalidate() }\n     }\n \n-    #if DEBUG\n-    /// Uncalled native acceptance assembly. Ordinary production initialization\n-    /// keeps the save capability absent until real body/authority qualification.\n-    public static func makeForSaveMessageAcceptance(native: AnyApplicationSession,\n+    /// Explicit full-message composition for the original native services.\n+    /// The mounted presentation, current authority, consent and protected\n+    /// journal still determine whether the shared router can expose a save.\n+    /// Ordinary initialization remains read/create-only until its separately\n+    /// reviewed production entry is admitted.\n+    public static func makeForSavingMessages(native: AnyApplicationSession,\n         documents: AnyEditorDocumentStore, owner: any AnyHanlinPresentationOwner,\n         conversationID: UUID, locale: Locale = .current, creation: AnyHanlinCreationServices,\n         saveServices: AnyHanlinSaveMessageServices) throws -> AnyHanlinHost {\n         try .init(native: native, documents: documents, owner: owner, conversationID: conversationID,\n                   locale: locale, creation: creation, saveServices: saveServices)\n     }\n+\n+    #if DEBUG\n+    /// The acceptance route exercises the same explicit production composition.\n+    /// Its fixture and native readback admission remain with the existing caller.\n+    public static func makeForSaveMessageAcceptance(native: AnyApplicationSession,\n+        documents: AnyEditorDocumentStore, owner: any AnyHanlinPresentationOwner,\n+        conversationID: UUID, locale: Locale = .current, creation: AnyHanlinCreationServices,\n+        saveServices: AnyHanlinSaveMessageServices) throws -> AnyHanlinHost {\n+        try makeForSavingMessages(native: native, documents: documents, owner: owner,\n+            conversationID: conversationID, locale: locale, creation: creation, saveServices: saveServices)\n+    }\n     #endif\n \n     /// The real chat presentation replaces this host's provisional account-owner"
+      },
+      {
+        "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/AnyHanlinPresentation.swift",
+        "patch": "@@ -41,11 +41,12 @@ public enum AnyHanlinPresentation {\n         }\n     }\n \n-    #if DEBUG\n-    /// Real original-parser/native acceptance path only. No production call,\n-    /// settings switch, model argument or launch argument alone can select this path.\n+    /// Explicit production save composition using the original native client,\n+    /// creator, authority and Markdown planner. This uses the same mounted\n+    /// presentation as the read/create-only entry and grants no permission.\n+    /// Ordinary editor activation remains a separate source-reviewed change.\n     @discardableResult\n-    public static func presentForSaveMessageAcceptance(\n+    public static func presentForSavingMessages(\n         from presenter: UIViewController, native: AnyApplicationSession,\n         documents: AnyEditorDocumentStore, client: AnyHTTPClient,\n         sourceOwner: any AnyHanlinSourcePresentationOwner,\n@@ -57,11 +58,28 @@ public enum AnyHanlinPresentation {\n             try await PinkhaHanlinOriginalMarkdownSavePlanner.convert($0)\n         }\n         return try present(from: presenter, sourceOwner: sourceOwner, hooks: hooks) { owner in\n-            try AnyHanlinHost.makeForSaveMessageAcceptance(native: native, documents: documents,\n+            try AnyHanlinHost.makeForSavingMessages(native: native, documents: documents,\n                 owner: owner, conversationID: conversationID, locale: locale,\n                 creation: creation, saveServices: services)\n         }\n     }\n+\n+    #if DEBUG\n+    /// Existing fixture admission and hooks exercise the production composition.\n+    /// Neither a model argument nor a launch argument alone grants a capability.\n+    @discardableResult\n+    public static func presentForSaveMessageAcceptance(\n+        from presenter: UIViewController, native: AnyApplicationSession,\n+        documents: AnyEditorDocumentStore, client: AnyHTTPClient,\n+        sourceOwner: any AnyHanlinSourcePresentationOwner,\n+        conversationID: UUID, locale: Locale = .autoupdatingCurrent,\n+        creation: AnyHanlinCreationServices,\n+        hooks: PinkhaHanlinPresentationHooks = .init()\n+    ) throws -> PinkhaHanlinChatController {\n+        try presentForSavingMessages(from: presenter, native: native, documents: documents,\n+            client: client, sourceOwner: sourceOwner, conversationID: conversationID,\n+            locale: locale, creation: creation, hooks: hooks)\n+    }\n     #endif\n \n     private static func present(from presenter: UIViewController,"
+      },
+      {
+        "path": "docs/any-engine-port/SOURCE_REFACTOR_MAP.json",
+        "patch": "@@ -546,7 +546,7 @@\n       \"from\": \"Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinReadWriteHost.swift\",\n       \"to\": \"Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinReadWriteHost.swift\",\n       \"baselineBlob\": \"26c4b78b33caf7acf497bef95359fe2764404300\",\n-      \"replacementBlob\": \"fdc4af17c9b08f5bb9d26c1f2ed2fb6d771f177c\",\n+      \"replacementBlob\": \"cb77c90a4aeee72a8927cfe8d8d6e117734628a9\",\n       \"reason\": \"Keep UIKit/native mounting and write binding in app; extract exact router, bounded replay identity and tool contract for both native engines. Reviewed2026-11-27 Wave3 cancellation: preserve the canonical SDK/session, original native worker, journal, permission/dispatch gates and shared Composer. Stop/close/normal EOF drain the original task before account release; late UI is fenced and uncertain results do not permit automatic retry. Add Hebrew/English Stop labels and optional shared host drain. Pin the same original packages to38528941720d9b4f2da8dce7afbc788c2e554a0c. Reviewed2026-11-27 Wave3 fe0: Add an optional nil-by-default Save binding with exact route/descriptor validation, bounded body replay fingerprint, shared original cancellation drain and account fences. A Save route cannot reach the title-only create delegate; no production factory installs Save in this candidate. Reviewed Wave3 cc839: share the original mounted Heart installation and generic outer binding across original create and semantic-body runners; production Save remains disabled until real native acceptance.\",\n       \"sharedSources\": [\n         {"
+      }
+    ]
+  },
+  "sourceMap": {
+    "rows": 146,
+    "onlyChangedRowIndex": 32,
+    "onlyChangedField": "replacementBlob",
+    "before": "fdc4af17c9b08f5bb9d26c1f2ed2fb6d771f177c",
+    "after": "cb77c90a4aeee72a8927cfe8d8d6e117734628a9",
+    "allOtherRowsAndFieldsEqual": true,
+    "wholeRawInverse": true
+  },
+  "contractFindings": [
+    {
+      "status": "SUPPORTED",
+      "statement": "Release-visible explicit Save composition now exists: Heart makeForSavingMessages, AnyHanlinHost.makeForSavingMessages, and UIKit AnyHanlinPresentation.presentForSavingMessages."
+    },
+    {
+      "status": "SUPPORTED",
+      "statement": "The existing DEBUG acceptance factories remain available under DEBUG and delegate to the new factories with the same arguments; no prior public/acceptance API was removed."
+    },
+    {
+      "status": "SUPPORTED",
+      "statement": "Heart's new factory creates the same PinkhaHanlinCreatePageContext and calls the unchanged private make(context:includeSaveMessage:) with true. The shared installation, original generic Heart bindings, preflight, consent, protected journal, native runner dispatch, cancellation and drain source are unchanged."
+    },
+    {
+      "status": "SUPPORTED",
+      "statement": "Any's new host factory invokes the unchanged private initializer. Its existing expected-account, presentation-owner, creator/authority, native access, protected account-owner, shared router and Save binding setup are unchanged."
+    },
+    {
+      "status": "SUPPORTED",
+      "statement": "The new UIKit presentation entry creates AnyHanlinSaveMessageServices from the supplied original AnyHTTPClient and existing PinkhaHanlinOriginalMarkdownSavePlanner, then uses the unchanged private mount/presentation helper. The UI owner, consent installation, final mounting checks, revocation and asynchronous close behavior are unchanged."
+    },
+    {
+      "status": "SUPPORTED",
+      "statement": "Ordinary Heart make still uses includeSaveMessage:false; ordinary Any convenience init still passes saveServices:nil; ordinary AnyHanlinPresentation.present still constructs that ordinary host. This commit does not activate those ordinary editor entries for Save."
+    }
+  ],
+  "documentationCaveats": [
+    "Heart's factory is app-internal rather than a newly public cross-module API. The Any presentation factory remains inside canImport(UIKit).",
+    "The low-level Any host factory accepts explicit AnyHanlinSaveMessageServices, including its conversion closure. The UIKit presentation factory is the entry that specifically installs the original Markdown converter; do not conflate those API contracts.",
+    "The map's unchanged reason contains historical fe0/cc839 claims that no production factory installs Save. These describe preserved older candidates and must not be restated as the current release-visible API surface.",
+    "Source publication does not prove Release compilation, mounted consent behavior, native full-body persistence/readback, authority behavior, Stop/EOF/account drain, or ordinary App adoption. Those acceptance obligations remain pending.",
+    "This finite peer checks the four published changes and literal predecessor preservation; it is not a new whole-App/dependency/API census or a requalification of unchanged implementations."
+  ],
+  "suggestedDocumentation": "At f0eab88b57da3ef9b3586dc9a40c853948060eb9, explicit Hanlin Save composition is available outside DEBUG for both engines. The factories reuse the existing native constructors and shared mounted authority, consent, journal and cancellation/drain paths; DEBUG acceptance factories delegate to the same entry points. Ordinary Heart make, Any host initialization and editor presentation remain Save-disabled. Source publication is not actual native body/authority or mounted UI acceptance, and ordinary application adoption remains separately gated.",
+  "activity": {
+    "gitWholeSourceReads": true,
+    "sourceChanges": false,
+    "branchOrCommitPublication": false,
+    "oracle": false,
+    "parse": false,
+    "typecheck": false,
+    "compile": false,
+    "test": false,
+    "native": false,
+    "accountOrPayloadReads": false
+  },
+  "blockingFindings": []
+}

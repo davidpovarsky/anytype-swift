@@ -1,0 +1,57 @@
+{
+  "protocol": "capture-definition-evidence-optional-test-compatibility-v1",
+  "status": "SOURCE_ONLY_NOT_COMPILED_NOT_RUN",
+  "entries": [
+    {
+      "name": "AnyDestinationNativeSourcePreservationTests.swift",
+      "before": {
+        "blob": "74f6f4079b702cfa810c285610652b59faa62741",
+        "bytes": 28422,
+        "sha256": "4b89b5873c75f7d13096219e07dd83a0c83cd96d94021fb8c62948759563c6d7"
+      },
+      "after": {
+        "label": "legacyPreservation",
+        "key": "c_direct_capture_legacyPreservationTests_source_draft1",
+        "blob": "4c2f66a5dd6bb0026c191c9af658589e9c0997ef",
+        "bytes": 28485,
+        "sha256": "50905e9048d8a24cbfc70197db527eebf213f82cbadb64a289c97c212bdf7934",
+        "equal": true
+      },
+      "literalEdits": [
+        {
+          "before": "        let restored = try AnyHeartNativePreservationArchive.restore(downloaded, expected: archive.binding)\n        try require(restored.bundle.manifestBytes == original.manifestBytes &&\n                    restored.recoveredDefinitions.manifestBytes == recovered.manifestBytes &&",
+          "after": "        let restored = try AnyHeartNativePreservationArchive.restore(downloaded, expected: archive.binding)\n        let restoredRecovery = try XCTUnwrap(restored.recoveredDefinitions)\n        try require(restored.bundle.manifestBytes == original.manifestBytes &&\n                    restoredRecovery.manifestBytes == recovered.manifestBytes &&"
+        }
+      ],
+      "forwardAndInverseExact": true,
+      "selectedMethods": [],
+      "assertionMessagesOrExpectedValuesChanged": false
+    },
+    {
+      "name": "RecoveredCompiledDefinitionTests.swift",
+      "before": {
+        "blob": "3a3a9938c547c559192425f8dbcae494338d9662",
+        "bytes": 36622,
+        "sha256": "c383fd40d7844a7b1b1e46c530256b73bcb951fc094cc41ff406e0e66125250c"
+      },
+      "after": {
+        "label": "legacyRecovered",
+        "key": "c_direct_capture_legacyRecoveredTests_source_draft1",
+        "blob": "563bed95bdd822165d5a2479ee9eb948579b21e6",
+        "bytes": 36659,
+        "sha256": "a521190e904d3b32993ed1754e2628be7173471a73a6f69a56c818c9a7a0fadc",
+        "equal": true
+      },
+      "literalEdits": [
+        {
+          "before": "        XCTAssertEqual(restored.recoveredDefinitions.originalProducerBytes, f.evidence.producer)\n        XCTAssertEqual(try decode(restored.recoveredDefinitions.originalProducerBytes)[\"status\"], .string(\"FAIL\"))\n        XCTAssertTrue(restored.bundle.bundledDefinitions.isEmpty)\n        XCTAssertEqual(restored.recoveredDefinitions.definitions.count, 7)",
+          "after": "        let restoredRecovery = try XCTUnwrap(restored.recoveredDefinitions)\n        XCTAssertEqual(restoredRecovery.originalProducerBytes, f.evidence.producer)\n        XCTAssertEqual(try decode(restoredRecovery.originalProducerBytes)[\"status\"], .string(\"FAIL\"))\n        XCTAssertTrue(restored.bundle.bundledDefinitions.isEmpty)\n        XCTAssertEqual(restoredRecovery.definitions.count, 7)"
+        }
+      ],
+      "forwardAndInverseExact": true,
+      "selectedMethods": [],
+      "assertionMessagesOrExpectedValuesChanged": false
+    }
+  ],
+  "selection": "These two original test files are compatibility source successors, not selected for replay in the new component cohort."
+}

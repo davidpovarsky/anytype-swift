@@ -4,6 +4,8 @@ This is a bounded source audit of immutable integration commit `daaedc545eac20df
 
 The audit changes no application or engine code. It grants no new runtime, Apple, cloud or release acceptance. W3 owns the actual Hanlin, MiniApps and Otsaria consumer integration.
 
+A later, separately bounded Hanlin factory delta is bound to published integration commit `f0eab88b57da3ef9b3586dc9a40c853948060eb9`, whose sole parent is `ff5777896ced23171522a0d6d735e2b235b11ffc`. Its three complete Swift files and source map were retrieved and joined to all four whole predecessor bodies. `HANLIN_FACTORY_SOURCE_DELTA.json` and `PEER_REVIEW_N_HANLIN_FACTORY.json` record that scope; it does not turn the original twelve-file audit into a complete current-App review.
+
 ## Shared ownership and authorization
 
 | Boundary | Concrete source interface | Required behavior and limits |
@@ -17,7 +19,17 @@ The audit changes no application or engine code. It grants no new runtime, Apple
 
 The current Hanlin package uses the existing HanlinAgentSDK, HanlinPlatform, HanlinPresentationSDK and HanlinMiniAppsBridge package paths. The adapter does not create a second Hanlin tool router or a separate arbitrary Markdown client: `AnyHanlinSaveMessageServices` constructs its body adapter from the same supplied HTTP client.
 
-The ordinary `AnyHanlinHost` initializer currently supplies no full-message save services. The separate `makeForSaveMessageAcceptance` assembly is DEBUG-only and explicitly awaits body/authority qualification. This source boundary must not be reported as an already enabled production save-message capability.
+At the original audited revision, the explicit save assembly was DEBUG-only. The later `f0eab88b` source provides these explicit factories in release-visible code:
+
+| Entry | Exact composition and scope |
+| --- | --- |
+| Heart `PinkhaHanlinReadWriteHost.makeForSavingMessages` | App-internal factory. Builds the original Heart context and invokes the unchanged private constructor with `includeSaveMessage: true`. The native runners, mounted presentation, confirmation, account journal and drain remain the original implementations. |
+| `AnyHanlinHost.makeForSavingMessages` | Public low-level factory. Requires the original native session, document store, owner, creation services and explicit Save services. It delegates to the same private initializer; those supplied services include their conversion closure. |
+| `AnyHanlinPresentation.presentForSavingMessages` | UIKit-only public presentation entry. Creates Save services with the supplied native HTTP client and the original Markdown converter, then uses the same mounted presentation helper and host factory. |
+
+The DEBUG acceptance factories now delegate to these same entries. The ordinary Heart `make` still passes `includeSaveMessage: false`; ordinary Any initialization still passes `saveServices: nil`; ordinary Any presentation still uses that initializer. The source delta changes neither those ordinary entry points nor their existing authority, consent, journal or cancellation/drain bodies.
+
+The new factory names expose a source API. They do not prove Release compilation, native Markdown body persistence/readback, Allow/Cancel behavior, Stop after a native root mutation, or ordinary editor adoption. W3 owns those actual consumer gates. The source map changes only `changes[32].replacementBlob`; its retained statement about the earlier candidate having no production Save factory is historical text, not the current explicit API contract.
 
 ## Files: storage, acknowledgement and durability
 
@@ -43,9 +55,9 @@ The generic HTTP client performs account checks before/after ordinary requests a
 
 N's published Files acceptance matrix distinguishes actual retained P2P/range/crash/cold-offline evidence, the smaller-file cloud proof, and one offload/cloud-refetch proof. Actual cloud durability and retrieval of the original49,363-byte PNG and8MiB large file, fresh-vs-cached quota, cloud-specific interruption/resume and new-source/ABI consumer qualification remain open. The two small cloud files do not qualify the larger ones.
 
-The historical SDK06 accepted23methods/32cases, ACK7 and original Hanlin UI22 remain at their original source/product scope. The newer SDKd6b drain source and current Any/N24/lifecycle/broker overlays need their explicitly matched qualification. No old unchanged cohort is scheduled for replay by this document.
+The historical SDK06 accepted23methods/32cases, ACK7 and original Hanlin UI22 remain at their original source/product scope. The original audit did not qualify the newer SDKd6b drain source or Any/N24/lifecycle/broker overlays. Later results remain in their own exact evidence records; this factory-source delta neither replaces nor extends those runtime results. No old unchanged cohort is scheduled for replay by this document.
 
-The current source delivery for imported documents is C22 `bcd4518793abda5f4183c81ddd150ae94abdb20e`, with its engine factory/document identity contract. At the audited integration commit, C14 is already applied; preserve executor37a, journalf084 and directoryf870 when adopting C22. The application still owns exact checkpoint selection persistence, actual mounted document identity and session lifetime. A separate Ordinary14 cold-context extension is owner work and is not silently included here.
+The imported-document source delivery considered by the original audit is C22 `bcd4518793abda5f4183c81ddd150ae94abdb20e`, with its engine factory/document identity contract. At the audited integration commit, C14 is already applied; preserve executor37a, journalf084 and directoryf870 when adopting C22. The application still owns exact checkpoint selection persistence, actual mounted document identity and session lifetime. The later Ordinary14 cold-context integration and current-capture producer foundation have separate source contracts. The published C foundation `32a174219cca9b916c4fa5738d0e1891f6dbc349` returns the genuine preservation/content completion and two locators; its strict Ordinary14 execution and third locator remain an explicit C-owned follow-on. This documentation does not add either engine implementation.
 
 ## Otsaria and actual consumer acceptance
 

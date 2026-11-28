@@ -172,8 +172,9 @@ final class AnyDestinationNativeSourcePreservationTests: XCTestCase, @unchecked 
         let downloaded = try Self.sourceBytes(download.lastPathComponent, under: work)
         try require(downloadedSHA == archive.sha256 && downloaded == archive.bytes)
         let restored = try AnyHeartNativePreservationArchive.restore(downloaded, expected: archive.binding)
+        let restoredRecovery = try XCTUnwrap(restored.recoveredDefinitions)
         try require(restored.bundle.manifestBytes == original.manifestBytes &&
-                    restored.recoveredDefinitions.manifestBytes == recovered.manifestBytes &&
+                    restoredRecovery.manifestBytes == recovered.manifestBytes &&
                     restored.originalMemberCount == 314 && restored.recoveredMemberCount == 18 &&
                     !restored.grantsSourceSession && !restored.restoresAnAccount)
         for member in original.verifiedMembers {

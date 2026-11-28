@@ -1,0 +1,76 @@
+{
+  "schema": "pinkha-c-peer-producer-lifetime-controls-v1",
+  "status": "CLEAR_SOURCE_ONLY_NOT_PARSED_NOT_COMPILED_NOT_RUN",
+  "reviewer": "C / migration",
+  "scope": "Whole four-method source; constructor/API/fixture positive preconditions and expected typed result, complementary to N task/gate cleanup.",
+  "test": {
+    "gitBlobSHA": "451dbcdb6f6071071971b40c734498c027c2992c",
+    "bytes": 32021,
+    "sha256": "d7e2ee2138793c442d37a57fc7e1b4af8d834484f71a7240c468b35971e42781"
+  },
+  "primaryInputs": [
+    {
+      "path": "AnyHeartNativeMigrationProducer.swift",
+      "blob": "19892c31e9c027395f0e89fcc59edefcabe9f4ab",
+      "bytes": 17059,
+      "sha256": "3d69a030340e8718bd082726e69abebb32cc8428cd9201c1a00afa7803055e01"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourceAccountController.swift",
+      "name": "SourceAccountController",
+      "blob": "63f2a6083f487acd925e525e4922ccc98c900d67",
+      "ref": "daaedc545eac20df260489b8a7579527c057aeac",
+      "bytes": 10161,
+      "sha256": "87ae93153c2f425c20e842dac6b60d18fae867978fe6d180a717faee9bf465cd"
+    },
+    {
+      "path": "AnyHeartNativeSourceCaptureCoordinator.swift",
+      "name": "CaptureCoordinator",
+      "blob": "f8bb507c5604ffcc7556693403bb4af10ce7a446",
+      "bytes": 13243,
+      "sha256": "3d77b08c4d3c14c9520d116fdd382244cfad796378fa6e4b065ef5e7061c3da7"
+    },
+    {
+      "path": "AnyDestinationMigrationPlan.swift",
+      "bytes": 41312,
+      "sha256": "878a1d994dbbfd98de0f4b1a6ac4fbd9cfd3ea369b66d659e5e0b6667ba8d59e"
+    },
+    {
+      "path": "AnyHeartNativeCaptureDescriptorTests.swift",
+      "blob": "7e3242682b32353fce800a573ac0e72e51e72827",
+      "bytes": 23514,
+      "sha256": "90d0f70b5f9c08d733c132319c3a0c821c7671f71ff927aba8d3a1f7d45cac6b"
+    },
+    {
+      "path": "AnyHeartNativeDefinitionCatalog.swift",
+      "blob": "5977b6d5ed7ad32bb66aea734e7598f172d800ce",
+      "bytes": 23399,
+      "sha256": "437131d2f7095af0a450e7c695aa9c9bed13ea290f576d49870c5224b60a3965"
+    }
+  ],
+  "sourceFindings": [
+    "All 668 lines of the four-method file were read. Its receipt body is exactly the 2,706-byte Root descriptor fixture body, SHA256 82a3991bdb52f80f52c8ac10ff28f25eccead9fa9ef2773212b1574d25d3f3cf; static versus instance declaration is the only enclosing adaptation.",
+    "The fake Full, unassociated session grant is obtained through the original SourceAccount capture path. ASCII account/Space/request identities, canonical private directory, owned 0400 files and the exact descriptor fields satisfy the actual constructor prerequisites.",
+    "The empty captured bundle is admitted by the original bundle/catalog review boundary; it carries no complete head census and grants no destination authority. The producer initializer checks the actual descriptor/bundle binding and accepts this bounded source review.",
+    "Busy control preserves the first registered task and tests slot reuse only after its terminal value. Busy and inactive expectations name the actual producer error enum.",
+    "External invalidation sets the producer latch and cancels its owned operation before joining. The test deliberately lets the outer result arrive late; its normal value is refused with inactive after the original source grant has closed.",
+    "An injected native token-close failure maps to original SourceAccount.sessionCloseFailed. The outer operation is still joined, the same grant is retained, and an explicit later invalidate retries that exact token without another create.",
+    "Test four explicitly constructs AnyDestinationSourceBinding using valid ASCII identities, three actual/valid digests and a nonempty unique sourceObjectIDs list, with nil definition manifest. Constructor success is asserted before the operation starts.",
+    "The existing Coordinator.review.requireSameSource rejects the missing complete head census with sourceBinding before bridge.validate. Original SourceAccount.revalidate invalidates and drains its native state, closes the fake grant, and returns the original typed error without awaiting the producer itself.",
+    "The cleanup supervisor and gates were read, but N independently owns their bounded task registration/drain/failure review."
+  ],
+  "limitations": [
+    "No execution/typechecking/compiler/native authority",
+    "Synthetic grant/descriptor; test4 has no complete head census and must refuse before bridge.validate",
+    "withOwnedOperation generic core only, not execute/produce/real destination operation",
+    "N separately reviews task/gate cleanup"
+  ],
+  "invocations": {
+    "parser": 0,
+    "compiler": 0,
+    "tests": 0,
+    "native": 0,
+    "Oracle": 0
+  },
+  "noProductionChanges": true
+}

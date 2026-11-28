@@ -100,6 +100,52 @@ public struct AnyHeartNativeCaptureDescriptor: Sendable {
         return bundle
     }
 
+    /// Retain the verified capture members for the preservation producer.
+    /// This is source evidence only. Live native source authorization remains
+    /// the existing capture controller's separate revalidate(source:) call.
+    /// Run this bounded read off the main actor; no file is written or removed.
+    public func loadPreservationSource(under privateParent: URL) throws -> AnyHeartNativeCapturedPreservationSource {
+        try Task.checkCancellation()
+        let reader = try AnyNativePrivateBundleReader(parent: privateParent, child: privateBundleDirectory)
+        let manifest = try reader.read("manifest.json", expectedBytes: nil, maximum: 16 * 1024 * 1024)
+        guard !manifest.isEmpty, AnyContentDigest.sha256(manifest) == manifestSHA256 else {
+            throw AnyHeartNativeCaptureError.changedMember("manifest.json")
+        }
+        let maximum = AnyHeartNativePreservationArchive.maximumBytes
+        guard manifest.count <= maximum else { throw AnyHeartNativePreservationError.limit }
+        var total = manifest.count
+        var members: [String: Data] = [:]
+        var rawPaths = Set<Data>()
+        let bundle = try AnyHeartNativeSpaceBundle(manifest: manifest,
+            sourceAccountID: sourceAccountID, sourceSpaceID: sourceSpaceID) { member in
+            try Task.checkCancellation()
+            // Subtract from the bounded total before addition or member I/O.
+            guard member.byteCount >= 0, member.byteCount <= maximum - total else {
+                throw AnyHeartNativePreservationError.limit
+            }
+            guard !Self.exact(member.path, "manifest.json"), members[member.path] == nil,
+                  rawPaths.insert(Data(member.path.utf8)).inserted else {
+                throw AnyHeartNativeCaptureError.privateMember(member.path)
+            }
+            let bytes = try reader.read(member.path, expectedBytes: member.byteCount, maximum: member.byteCount)
+            total += bytes.count
+            members[member.path] = bytes
+            // The original bundle constructor independently verifies the
+            // declared byte count and SHA256 before accepting this member.
+            return bytes
+        }
+        guard bundle.manifestSHA256 == manifestSHA256, bundle.sourceRows.sha256 == sourceRowsSHA256,
+              bundle.trees.count == nativeTrees, bundle.objects.count == capturedObjects,
+              bundle.receipt["CapturedFiles"]?.integer == Int64(capturedFiles),
+              bundle.receipt["CurrentFilePayloadCompleteness"]?.bool == currentFilePayloadCompleteness,
+              bundle.receipt["OriginalNativeHistoryRowsRetained"]?.bool == true,
+              bundle.receipt["PermitsDestinationWrites"]?.bool == false else {
+            throw AnyHeartNativeCaptureError.sourceBinding
+        }
+        try Task.checkCancellation()
+        return try AnyHeartNativeCapturedPreservationSource(bundle: bundle, members: members)
+    }
+
     private static func validID(_ value: String) -> Bool {
         !value.isEmpty && value.utf8.count <= 4096 && !value.contains("\0")
     }
@@ -113,6 +159,58 @@ public struct AnyHeartNativeCaptureDescriptor: Sendable {
     }
     private static func exact(_ first: String, _ second: String) -> Bool {
         Data(first.utf8) == Data(second.utf8)
+    }
+}
+
+/// An immutable copy of the exact declared capture members. It carries no
+/// native token, current source authorization or destination write permission.
+/// The archive constructor still applies its own complete encoded-size bound.
+public struct AnyHeartNativeCapturedPreservationSource: Sendable {
+    public let bundle: AnyHeartNativeSpaceBundle
+    private let members: [String: Data]
+
+    public var grantsSourceSession: Bool { false }
+    public var permitsDestinationWrites: Bool { false }
+
+    fileprivate init(bundle: AnyHeartNativeSpaceBundle, members: [String: Data]) throws {
+        let declared = Set(bundle.verifiedMembers.map { Data($0.path.utf8) })
+        guard declared.count == bundle.verifiedMembers.count,
+              !declared.contains(Data("manifest.json".utf8)),
+              members.count == declared.count,
+              Set(members.keys.map { Data($0.utf8) }) == declared else {
+            throw AnyHeartNativeCaptureError.sourceBinding
+        }
+        let maximum = AnyHeartNativePreservationArchive.maximumBytes
+        guard bundle.manifestBytes.count <= maximum else { throw AnyHeartNativePreservationError.limit }
+        var total = bundle.manifestBytes.count
+        for member in bundle.verifiedMembers {
+            try Task.checkCancellation()
+            guard member.byteCount >= 0, member.byteCount <= maximum - total,
+                  let bytes = members[member.path], bytes.count == member.byteCount else {
+                throw AnyHeartNativePreservationError.limit
+            }
+            guard AnyContentDigest.sha256(bytes) == member.sha256 else {
+                throw AnyHeartNativeCaptureError.changedMember(member.path)
+            }
+            total += bytes.count
+        }
+        self.bundle = bundle; self.members = members
+    }
+
+    /// Only a member with the exact original path, count and digest can be
+    /// retrieved. Returning retained bytes does not revalidate a source session.
+    public func capturedMemberData(_ member: AnyHeartNativeSpaceBundle.Member) throws -> Data {
+        try Task.checkCancellation()
+        guard bundle.verifiedMembers.contains(where: {
+            Data($0.path.utf8) == Data(member.path.utf8) &&
+                $0.byteCount == member.byteCount && $0.sha256 == member.sha256
+        }), let bytes = members[member.path] else {
+            throw AnyHeartNativeCaptureError.privateMember(member.path)
+        }
+        guard bytes.count == member.byteCount, AnyContentDigest.sha256(bytes) == member.sha256 else {
+            throw AnyHeartNativeCaptureError.changedMember(member.path)
+        }
+        return bytes
     }
 }
 

@@ -226,4 +226,113 @@ final class NativeCaptureDescriptorTests: XCTestCase {
             print("PRIVATE_CAPTURE_READER objects=\(count) verifiedMembers=\(bundle.verifiedMembers.count) originalManifest=\(manifestHash) permitsDestinationWrites=false originalSourceIssuesRetained=true")
         }
     }
+
+    // These are synthetic private-file controls for the new export boundary.
+    // They do not prove a native capture, live authority or destination import.
+    private func rewritePreservationControl(_ data: Data, at url: URL) throws {
+        try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: url.path)
+        try data.write(to: url)
+        try FileManager.default.setAttributes([.posixPermissions: 0o400], ofItemAtPath: url.path)
+    }
+
+    func testPreservationExportRetainsOnlyDeclaredBytesAndNoAuthority() throws {
+        try withFixture { root, directory, value in
+            let undeclared = directory.appendingPathComponent("unlisted-private-control")
+            try Data("not a declared capture member".utf8).write(to: undeclared)
+            try FileManager.default.setAttributes([.posixPermissions: 0o400], ofItemAtPath: undeclared.path)
+            let capture = try descriptor(value)
+            let source = try capture.loadPreservationSource(under: root)
+            XCTAssertEqual(source.bundle.manifestSHA256, capture.manifestSHA256)
+            XCTAssertEqual(source.bundle.sourceWitnessSHA256, hash("unit-witness"))
+            XCTAssertEqual(source.bundle.verifiedMembers.count, 1)
+            XCTAssertEqual(source.bundle.sourceRows.sha256, capture.sourceRowsSHA256)
+            XCTAssertEqual(try source.capturedMemberData(source.bundle.sourceRows),
+                           Data("synthetic unit control; not a native capture".utf8))
+            XCTAssertFalse(source.grantsSourceSession)
+            XCTAssertFalse(source.permitsDestinationWrites)
+            XCTAssertFalse(source.bundle.receipt["HasNativeSourceAdmission"]?.bool ?? true)
+            XCTAssertTrue(FileManager.default.fileExists(atPath: undeclared.path),
+                          "An export does not remove unrelated private files")
+        }
+    }
+
+    func testPreservationExportKeepsOriginalBytesAndRefusesSubstitutedMemberDescriptor() throws {
+        try withFixture { root, directory, value in
+            let capture = try descriptor(value)
+            let source = try capture.loadPreservationSource(under: root)
+            let originalRows = try source.capturedMemberData(source.bundle.sourceRows)
+            let replacement = Data("different synthetic source-row member".utf8)
+            var manifest = try XCTUnwrap(JSONDecoder().decode(AnyJSON.self, from: source.bundle.manifestBytes).object)
+            var member = try XCTUnwrap(manifest["SourceRows"]?.object)
+            member["Bytes"] = .integer(Int64(replacement.count))
+            member["SHA256"] = .string(AnyContentDigest.sha256(replacement))
+            manifest["SourceRows"] = .object(member)
+            let foreign = try AnyHeartNativeSpaceBundle(manifest: encode(.object(manifest)),
+                sourceAccountID: account, sourceSpaceID: space) { requested in
+                    XCTAssertEqual(requested.path, source.bundle.sourceRows.path)
+                    return replacement
+                }
+            XCTAssertThrowsError(try source.capturedMemberData(foreign.sourceRows)) { error in
+                XCTAssertEqual(error as? AnyHeartNativeCaptureError,
+                               .privateMember(source.bundle.sourceRows.path))
+            }
+            try rewritePreservationControl(replacement,
+                at: directory.appendingPathComponent("native-source-rows.witness"))
+            XCTAssertEqual(try source.capturedMemberData(source.bundle.sourceRows), originalRows,
+                           "The returned source is an immutable byte copy, not live source authority")
+            XCTAssertThrowsError(try capture.loadPreservationSource(under: root),
+                                 "A fresh export must still match the captured manifest")
+        }
+    }
+
+    func testPreservationExportCountsManifestInAggregateLimitBeforeMemberIO() throws {
+        try withFixture { root, directory, _ in
+            let file = directory.appendingPathComponent("manifest.json")
+            var manifest = try XCTUnwrap(JSONDecoder().decode(AnyJSON.self, from: Data(contentsOf: file)).object)
+            var member = try XCTUnwrap(manifest["SourceRows"]?.object)
+            member["Bytes"] = .integer(Int64(AnyHeartNativePreservationArchive.maximumBytes))
+            manifest["SourceRows"] = .object(member)
+            let bytes = try encode(.object(manifest))
+            try rewritePreservationControl(bytes, at: file)
+            // The advertised member would alone consume the entire budget.
+            // Its absence makes the expected budget error distinct from a
+            // private-file error; this is not an OS-level no-read measurement.
+            try FileManager.default.removeItem(at: directory.appendingPathComponent("native-source-rows.witness"))
+            let value = try descriptorValue(manifest: bytes, directory: directory,
+                                            accountID: account, spaceID: space)
+            XCTAssertThrowsError(try descriptor(value).loadPreservationSource(under: root)) { error in
+                XCTAssertEqual(error as? AnyHeartNativePreservationError, .limit)
+            }
+        }
+    }
+
+    func testPreservationExportRetainsDescriptorAndPrivateMemberGuards() throws {
+        for mutation in ["changed-manifest", "changed-member", "writable-member",
+                         "member-symlink", "wrong-parent", "wrong-count"] {
+            try withFixture { root, directory, original in
+                var value = try XCTUnwrap(original.object)
+                var parent = root
+                let member = directory.appendingPathComponent("native-source-rows.witness")
+                switch mutation {
+                case "changed-manifest", "changed-member":
+                    let file = mutation == "changed-manifest"
+                        ? directory.appendingPathComponent("manifest.json") : member
+                    var bytes = try Data(contentsOf: file)
+                    bytes[bytes.startIndex] ^= 1
+                    try rewritePreservationControl(bytes, at: file)
+                case "writable-member":
+                    try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: member.path)
+                case "member-symlink":
+                    let retained = root.appendingPathComponent("retained-preservation-control")
+                    try FileManager.default.moveItem(at: member, to: retained)
+                    try FileManager.default.createSymbolicLink(at: member, withDestinationURL: retained)
+                case "wrong-parent":
+                    parent = root.deletingLastPathComponent()
+                default:
+                    value["capturedFiles"] = .integer(1)
+                }
+                XCTAssertThrowsError(try descriptor(.object(value)).loadPreservationSource(under: parent), mutation)
+            }
+        }
+    }
 }

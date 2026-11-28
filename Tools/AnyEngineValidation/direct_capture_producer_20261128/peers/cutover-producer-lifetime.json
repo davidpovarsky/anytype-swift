@@ -1,0 +1,276 @@
+{
+  "schema": "pinkha-e-real-migration-producer-destination-lifetime-source-peer-v1",
+  "status": "SOURCE_LIFETIME_COMPOSITION_CLEAR_NOT_PARSED_COMPILED_OR_RUN",
+  "repository": "davidpovarsky/anytype-swift",
+  "reviewer": "E /root/cutover",
+  "inputs": {
+    "originalProducer": {
+      "blob": "f96aedfdcbeb7aa35a719ed3d65d848c50e93bc2",
+      "bytes": 16086,
+      "sha256": "3e67b5518e0779f5156482ed887cbde9fafe643419d0f45c8717d4deaa43288e"
+    },
+    "outerInvocationSuccessor": {
+      "blob": "3271d972579d432182891838ea77f8a6235c3748",
+      "bytes": 16700,
+      "sha256": "25e8b34d9a5b6cd75bf3dbad6e8e97d3b2f3527f343c796ecb469e05a0c659ad"
+    },
+    "outerInvocationProof": {
+      "blob": "9f019b59b78010b9aad05900458c90ae8fdfa6c8",
+      "bytes": 1859,
+      "sha256": "1c231c86b6278c24a546d9223a7fbe1925d531a577601e1b5b134e6da3db58d3"
+    },
+    "currentCommentSuccessor": {
+      "blob": "b79eda7132645e4e91d3da2877e63a64469dfb40",
+      "bytes": 16714,
+      "sha256": "b5163df521675a4aa66abd109e9cc1c6bf3db943d85b1e6f79097eec5d1ae5ac"
+    },
+    "destinationRootView": {
+      "blob": "5a032474b2e2bc7c07d502920042741d22eff1f5",
+      "bytes": 29548,
+      "sha256": "8a610e6869a941d07d2d6a2c7e10a3b917427e89ee6f1f00cbe5cc5adfcde7fe"
+    },
+    "destinationFacade": {
+      "blob": "07629409adc5a6e762e582f8e81adcb621700bd4",
+      "bytes": 3438,
+      "sha256": "0e7e1fe0b692a7c3178fc9176e672e09b2352a0b06e286b9526f6b752cd87175"
+    },
+    "destinationPackage": {
+      "blob": "3abede4c18c7e608fd630ef30c9bb0e57af2fa9b",
+      "bytes": 1249,
+      "sha256": "c2f33b0401d4f73f1e274ee74ef4b7a4bf806c4b8e1585d403ff5bfb6e09a477"
+    },
+    "destinationSourceProof": {
+      "blob": "5149cb803f11239387789b71fa5cabc3f1986310",
+      "bytes": 15754,
+      "sha256": "6963f548d9a57986acf252f6e6cdd10beb1d98fe70fadff2df9d0750211d5a94"
+    },
+    "independentDestinationRootPeer": {
+      "blob": "38021968c0d8525ff9d3cf1da5cdfd4e8d308d3d",
+      "bytes": 6671,
+      "sha256": "1eef73a388237266e9f414862f8d8f77ce89eee22437bdeb172002d7d603d20a"
+    },
+    "independentDestinationNPeer": {
+      "blob": "20ba1a15ac02155d5e84b60776d0b12076f76dce",
+      "bytes": 4629,
+      "sha256": "02ef0e1e06628eaea5bb6d5db8fbd442fa29a38af061129172ac98575ca842a1"
+    }
+  },
+  "readAndInverse": {
+    "originalProducerWholeBodyRead": true,
+    "originalProducerBytes": 16086,
+    "solePublicExecuteBlockForwardAndInverseExact": true,
+    "allOtherCodeBytesUnchangedInOuterSuccessor": true,
+    "finalTwoClassCommentLinesOnly": [
+      {
+        "line": 53,
+        "before": "/// Invoke execute from the same presentation owner's destination-operation API;",
+        "after": "/// Pass the same presentation owner's destination-operation API as the adapter"
+      },
+      {
+        "line": 54,
+        "before": "/// the client/session/lease must be the triple supplied by that callback.",
+        "after": "/// to execute(..., inDestination:). Its callback supplies the real client/session/lease."
+      }
+    ],
+    "finalCodeIdenticalToOuterSuccessor": true,
+    "sourceNativeOwnerDependencies": [
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourceAccountController.swift",
+        "commit": "af1aca9c33c0b38101c20ab24c88b1cfc07d7a17",
+        "blob": "63f2a6083f487acd925e525e4922ccc98c900d67",
+        "bytes": 10161,
+        "sha256": "87ae93153c2f425c20e842dac6b60d18fae867978fe6d180a717faee9bf465cd",
+        "exactHeldDaaBody": true
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourceCaptureCoordinator.swift",
+        "commit": "af1aca9c33c0b38101c20ab24c88b1cfc07d7a17",
+        "blob": "f8bb507c5604ffcc7556693403bb4af10ce7a446",
+        "bytes": 13243,
+        "sha256": "3d77b08c4d3c14c9520d116fdd382244cfad796378fa6e4b065ef5e7061c3da7",
+        "exactHeldDaaBody": true
+      }
+    ],
+    "currentDestinationPreimagesAndDependencies": {
+      "commit": "af1aca9c33c0b38101c20ab24c88b1cfc07d7a17",
+      "rows": [
+        {
+          "name": "anyRootView",
+          "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+          "commit": "af1aca9c33c0b38101c20ab24c88b1cfc07d7a17",
+          "blob": "7356bed6598d094e4945d1265e67a6433ac3ab22",
+          "bytes": 25081,
+          "sha256": "b029c7f5e3064c3333117301478633f70a2dd8768dde57a0d1df2d38b807e775",
+          "exactHeldDaaBody": true,
+          "old": {
+            "blob": "7356bed6598d094e4945d1265e67a6433ac3ab22",
+            "bytes": 25081,
+            "sha256": "b029c7f5e3064c3333117301478633f70a2dd8768dde57a0d1df2d38b807e775"
+          }
+        },
+        {
+          "name": "engine-host",
+          "path": "Modules/PinkhaEngineHost/Sources/PinkhaEngineHost/PinkhaEngineHost.swift",
+          "commit": "af1aca9c33c0b38101c20ab24c88b1cfc07d7a17",
+          "blob": "9821f005c15f993c8ded7765efcfd645b7fa0eba",
+          "bytes": 2875,
+          "sha256": "96199ef741b8a432fc9c2dd50f063f427052f35e904da5ce16fc1facefceec72",
+          "exactHeldDaaBody": true,
+          "old": {
+            "blob": "9821f005c15f993c8ded7765efcfd645b7fa0eba",
+            "bytes": 2875,
+            "sha256": "96199ef741b8a432fc9c2dd50f063f427052f35e904da5ce16fc1facefceec72"
+          }
+        },
+        {
+          "name": "engineHostPackage",
+          "path": "Modules/PinkhaEngineHost/Package.swift",
+          "commit": "af1aca9c33c0b38101c20ab24c88b1cfc07d7a17",
+          "blob": "a5c131d2ceb0b661b4fbcec4d5bd69989947f41f",
+          "bytes": 1111,
+          "sha256": "0032ffe0b212d501e7d9eaf4ec99e854c138f72b3e5bcf24a6f8821c21a8271b",
+          "exactHeldDaaBody": true,
+          "old": {
+            "blob": "a5c131d2ceb0b661b4fbcec4d5bd69989947f41f",
+            "bytes": 1111,
+            "sha256": "0032ffe0b212d501e7d9eaf4ec99e854c138f72b3e5bcf24a6f8821c21a8271b"
+          }
+        },
+        {
+          "name": "destinationSession",
+          "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+          "commit": "af1aca9c33c0b38101c20ab24c88b1cfc07d7a17",
+          "blob": "1dae52636c3a6eb6dfe2aa88d548d6982a9d8dd0",
+          "bytes": 5633,
+          "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd",
+          "exactHeldDaaBody": true,
+          "old": {
+            "blob": "1dae52636c3a6eb6dfe2aa88d548d6982a9d8dd0",
+            "bytes": 5633,
+            "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd"
+          }
+        },
+        {
+          "name": "presentationLifetime",
+          "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyUIPresentationLifetime.swift",
+          "commit": "af1aca9c33c0b38101c20ab24c88b1cfc07d7a17",
+          "blob": "45cc719e6aebc1559620589710fa6acf78f7656c",
+          "bytes": 1809,
+          "sha256": "43f92a43f956d475a0f87c02c62210a8811da80333b2ec9ccdf554a7fd0b1deb",
+          "exactHeldDaaBody": true,
+          "old": {
+            "blob": "45cc719e6aebc1559620589710fa6acf78f7656c",
+            "bytes": 1809,
+            "sha256": "43f92a43f956d475a0f87c02c62210a8811da80333b2ec9ccdf554a7fd0b1deb"
+          }
+        },
+        {
+          "name": "anyApplication",
+          "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeApplication.swift",
+          "commit": "af1aca9c33c0b38101c20ab24c88b1cfc07d7a17",
+          "blob": "1d69d208865c2f5ae4477916520612fb1af35476",
+          "bytes": 24728,
+          "sha256": "db5fac51bf6af8481b3b95f35dc5f13e216bb13dd6c8997fbf17972112d8a00c",
+          "exactHeldDaaBody": true,
+          "old": {
+            "blob": "1d69d208865c2f5ae4477916520612fb1af35476",
+            "bytes": 24728,
+            "sha256": "db5fac51bf6af8481b3b95f35dc5f13e216bb13dd6c8997fbf17972112d8a00c"
+          }
+        },
+        {
+          "name": "anyEnginePackage",
+          "path": "Modules/PinkhaAnyEngine/Package.swift",
+          "commit": "af1aca9c33c0b38101c20ab24c88b1cfc07d7a17",
+          "blob": "4b5f21e56f8110acfcada98a740cc08eed2cbcdc",
+          "bytes": 773,
+          "sha256": "2bfbf014cbfb6ce37764a2900743783fe3af2535ad4809aa4fc9ea67d16d2e5f",
+          "exactHeldDaaBody": true,
+          "old": {
+            "blob": "4b5f21e56f8110acfcada98a740cc08eed2cbcdc",
+            "bytes": 773,
+            "sha256": "2bfbf014cbfb6ce37764a2900743783fe3af2535ad4809aa4fc9ea67d16d2e5f"
+          }
+        }
+      ],
+      "allExact": true,
+      "readOnly": true,
+      "sourceChanges": 0
+    },
+    "originalSessionPerformAndPresentationLifetimeWholeRead": true
+  },
+  "supersededFinding": {
+    "status": "CLOSED_IN_EXACT_OUTER_INVOCATION_SUCCESSOR",
+    "affected": "3e67b5518e0779f5156482ed887cbde9fafe643419d0f45c8717d4deaa43288e",
+    "finding": "The first producer registered only produce inside the destination callback. That registration could finish before the enclosing original session.perform completed its final async lease validation and before the presentation made its final delivery decision.",
+    "impact": "Source invalidation could finish while the complete destination operation remained pending; there was no final C ticket check after that destination await.",
+    "correction": "The public execute(request,inDestination:) now registers and awaits the actual destination-operation adapter itself. Its private callback invokes produce using the same supplied client/session/lease. The final requireActive and cancellation checks in withOwnedOperation therefore follow completion of the full destination invocation.",
+    "preservedPredecessor": true,
+    "classDocumentationNowMatchesInvocationDirection": true
+  },
+  "checkedBoundaries": [
+    {
+      "name": "Single producer admission",
+      "finding": "withOwnedOperation checks invalidated/cleanup/active and cancellation, creates one ticket and registered task before the first await, and rejects overlapping work."
+    },
+    {
+      "name": "Whole destination ownership",
+      "finding": "The registered task now includes the real presentation operation, its session.perform final lease validation and its final MainActor identity decision. The C wrapper checks the source ticket and cancellation after that await before clearing active and returning."
+    },
+    {
+      "name": "Independent original native cleanup",
+      "finding": "Producer invalidate synchronously marks invalidated and cancels the registered task, starts original SourceAccountController.invalidate, and joins both the native result and the captured registered task. SourceAccountController.drainAndClose still waits only for capture/validation and closes its owned native token; it never waits for the producer."
+    },
+    {
+      "name": "No direct result/cleanup cycle",
+      "finding": "The producer task can await verifySource, which can await original native cleanup on validation failure. That cleanup has no edge back to the producer. The external producer cleanup joins that native cleanup and the entire destination invocation separately."
+    },
+    {
+      "name": "Close failure and repeated invalidation",
+      "finding": "A native close error is obtained only after the registered task was joined; it propagates and keeps transfer refused. The original source owner retains the actual token/close-failed state for a retry, while the outer cleanup task can be attempted again. Concurrent invalidations join the existing outer cleanup task."
+    },
+    {
+      "name": "Live source binding",
+      "finding": "verifySource requires the active ticket and cancellation before and after the original source.revalidate. It does not validate a cached file in place of the actual source owner."
+    },
+    {
+      "name": "Actual destination triple",
+      "finding": "produce requires request/session/lease workspace byte equality, client account equality and actual session generation/run-string equality, then validates the lease and existing account/run and member admission. These are supplied by the existing E operation, not fabricated by the producer."
+    },
+    {
+      "name": "Effect ordering",
+      "finding": "Retained capture/archive planning precedes a live verifySource and destination authorization. Those checks and the current ticket precede private payload materialization and the unchanged destination executor. Original executor/verifier callbacks use live source validation and current destination authorization."
+    },
+    {
+      "name": "Final completed checkpoint",
+      "finding": "produce performs the final native/source awaits, rereads the completed journal synchronously, checks exact canonical plan/mappings/fingerprint, and checks active ticket/cancellation before creating its result. The enclosing E and C delivery checks remain later and separately required."
+    },
+    {
+      "name": "Actual caller shape",
+      "finding": "W3 must call producer.execute(request,inDestination:) with an adapter that awaits presentation.performDestinationOperation(expectedAccountID:expectedSpaceID:body). Invoking producer.execute only inside a separately unregistered destination operation is the preserved rejected predecessor pattern."
+    }
+  ],
+  "materialLimits": [
+    "This is a source/lifetime and API-composition peer, not a Swift parse, typecheck, test, native or dual-runtime observation.",
+    "Cancellation and draining remain cooperative. The real adapter and callback must await all owned work; detached/unjoined work and calling an owner's full invalidation from within that owner's registered task are outside the reviewed invocation.",
+    "The source owner remains live until its explicit invalidate/release path. The caller must await successful cleanup before account/engine ownership transfer; failed token close does not authorize transfer.",
+    "The E operation still requires an already active destination workspace and explicit intended account/Space IDs. No selection descriptor, destination getter/default, provisioning route or App readiness implementation is added by this peer.",
+    "The current App route previously ended source review before switching engines. W3 must supply the real live-source/active-target invocation and persistence/mount/cold-open path; this source peer does not claim that route is complete.",
+    "Post-return App persistence and current identity checks remain outside the E operation fence and are not implemented here.",
+    "Root owns the direct-capture evidence/archive/private-payload and complete-plan/native functional reviews. This peer does not independently qualify their new storage or full-definition behavior.",
+    "Original source, compiled native/API support, Native97/Swift23/current N24 release and all resource gates remain unchanged. No native/compiler/cache permission follows."
+  ],
+  "actions": {
+    "gitReads": true,
+    "gitPeerBlobOnly": true,
+    "AppSourceEdits": 0,
+    "OracleCalls": 0,
+    "MacCalls": 0,
+    "parserCalls": 0,
+    "compilerCalls": 0,
+    "testsRun": 0,
+    "nativeCalls": 0,
+    "branchOrCommitChanges": 0,
+    "privateCaptureOrAccountPayloadReads": 0
+  }
+}

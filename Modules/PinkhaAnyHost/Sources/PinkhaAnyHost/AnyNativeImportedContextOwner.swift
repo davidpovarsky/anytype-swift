@@ -163,7 +163,7 @@ public actor AnyNativeImportedContextOwner {
             let reopened = try AnyHeartNativePreservationArchive(restoring: bytes, expected: expected)
             let restored = try AnyHeartNativePreservationArchive.restore(bytes, expected: expected)
             let preservation = try AnyHeartNativeSourcePreservation(bundle: restored.bundle,
-                recoveredDefinitions: restored.recoveredDefinitions, archive: reopened)
+                definitionEvidence: restored.definitionEvidence, archive: reopened)
             let exactPlan = try preservation.preservationPlan(workspace: reference.binding.workspace,
                 storeID: reference.binding.storeID, planID: reference.binding.planID)
             guard exactPlan.canonicalBytes == checkpoint.plan.canonicalBytes,
@@ -174,8 +174,7 @@ public actor AnyNativeImportedContextOwner {
                 mappings: checkpoint.mappings,
                 supplementalCanonicalDefinitions: reference.supplementalCanonicalDefinitions)
             let directory = try AnyNativeImportedCatalogDirectory(plan: checkpoint.plan, mappings: checkpoint.mappings)
-            let catalog = try AnyHeartNativeDefinitionCatalog(bundle: restored.bundle,
-                recoveredDefinitions: restored.recoveredDefinitions)
+            let catalog = try restored.definitionEvidence.catalog(bundle: restored.bundle)
             let ordinary: AnyNativeImportedOrdinaryPropertyContext?
             if let completedOrdinary {
                 guard let ordinaryJournalDirectory else {

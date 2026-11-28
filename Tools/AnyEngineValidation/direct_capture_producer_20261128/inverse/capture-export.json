@@ -1,0 +1,97 @@
+{
+  "protocol": "pinkha-capture-preservation-member-export-source-v1",
+  "status": "SOURCE_ONLY_NOT_PARSED_NOT_COMPILED_NOT_RUN",
+  "baseCommit": "daaedc545eac20df260489b8a7579527c057aeac",
+  "ownership": "Root owns this delegated C engine export file and focused tests; C owns archive/evidence/producer transitive integration; W3 owns actual App callsite",
+  "classification": "DOWNSTREAM_OWNED_PINKHA_MODULE",
+  "upstreamObservedDevelop": "d857b23ea540be33d6faab4f7a7a1a260ab578c1",
+  "upstreamSourceChanges": 0,
+  "sourceAPI": {
+    "method": "AnyHeartNativeCaptureDescriptor.loadPreservationSource(under:) throws -> AnyHeartNativeCapturedPreservationSource",
+    "value": "public bundle, private exact declared member map, capturedMemberData(_:) throws -> Data",
+    "authority": "No native token, live source admission or destination writes; existing controller revalidate(source:) remains separately required"
+  },
+  "before": [
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeCaptureDescriptor.swift",
+      "gitBlob": "ebb686c347748fddc9424d69651e46036575cf44",
+      "bytes": 12062,
+      "sha256": "8fc03a588299d43623359037515811b89dabae62bf10566eb88da7e6631d8cfa"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCaptureDescriptorTests.swift",
+      "gitBlob": "0d3ca0d57d0c385f46a582140ae775ad6a6a6cf1",
+      "bytes": 16613,
+      "sha256": "3756a525ca78fb60d1990bb8b67662fdefa570f069532ec8e6537f09c9afd935"
+    }
+  ],
+  "after": [
+    {
+      "name": "production",
+      "gitBlob": "03f22b12ff63f05be04f1c8430f02a90c4566590",
+      "bytes": 17627,
+      "sha256": "87ae4d9282aedc813879947f319d854d0bb55496ab796c497e9a7f58af86bfd9"
+    },
+    {
+      "name": "tests",
+      "gitBlob": "7e3242682b32353fce800a573ac0e72e51e72827",
+      "bytes": 23514,
+      "sha256": "90d0f70b5f9c08d733c132319c3a0c821c7671f71ff927aba8d3a1f7d45cac6b"
+    }
+  ],
+  "literalEdits": [
+    {
+      "file": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeCaptureDescriptor.swift",
+      "before": "    private static func validID(_ value: String) -> Bool {\n",
+      "after": "    /// Retain the verified capture members for the preservation producer.\n    /// This is source evidence only. Live native source authorization remains\n    /// the existing capture controller's separate revalidate(source:) call.\n    /// Run this bounded read off the main actor; no file is written or removed.\n    public func loadPreservationSource(under privateParent: URL) throws -> AnyHeartNativeCapturedPreservationSource {\n        try Task.checkCancellation()\n        let reader = try AnyNativePrivateBundleReader(parent: privateParent, child: privateBundleDirectory)\n        let manifest = try reader.read(\"manifest.json\", expectedBytes: nil, maximum: 16 * 1024 * 1024)\n        guard !manifest.isEmpty, AnyContentDigest.sha256(manifest) == manifestSHA256 else {\n            throw AnyHeartNativeCaptureError.changedMember(\"manifest.json\")\n        }\n        let maximum = AnyHeartNativePreservationArchive.maximumBytes\n        guard manifest.count <= maximum else { throw AnyHeartNativePreservationError.limit }\n        var total = manifest.count\n        var members: [String: Data] = [:]\n        var rawPaths = Set<Data>()\n        let bundle = try AnyHeartNativeSpaceBundle(manifest: manifest,\n            sourceAccountID: sourceAccountID, sourceSpaceID: sourceSpaceID) { member in\n            try Task.checkCancellation()\n            // Subtract from the bounded total before addition or member I/O.\n            guard member.byteCount >= 0, member.byteCount <= maximum - total else {\n                throw AnyHeartNativePreservationError.limit\n            }\n            guard !Self.exact(member.path, \"manifest.json\"), members[member.path] == nil,\n                  rawPaths.insert(Data(member.path.utf8)).inserted else {\n                throw AnyHeartNativeCaptureError.privateMember(member.path)\n            }\n            let bytes = try reader.read(member.path, expectedBytes: member.byteCount, maximum: member.byteCount)\n            total += bytes.count\n            members[member.path] = bytes\n            // The original bundle constructor independently verifies the\n            // declared byte count and SHA256 before accepting this member.\n            return bytes\n        }\n        guard bundle.manifestSHA256 == manifestSHA256, bundle.sourceRows.sha256 == sourceRowsSHA256,\n              bundle.trees.count == nativeTrees, bundle.objects.count == capturedObjects,\n              bundle.receipt[\"CapturedFiles\"]?.integer == Int64(capturedFiles),\n              bundle.receipt[\"CurrentFilePayloadCompleteness\"]?.bool == currentFilePayloadCompleteness,\n              bundle.receipt[\"OriginalNativeHistoryRowsRetained\"]?.bool == true,\n              bundle.receipt[\"PermitsDestinationWrites\"]?.bool == false else {\n            throw AnyHeartNativeCaptureError.sourceBinding\n        }\n        try Task.checkCancellation()\n        return try AnyHeartNativeCapturedPreservationSource(bundle: bundle, members: members)\n    }\n\n    private static func validID(_ value: String) -> Bool {\n",
+      "expectedCount": 1
+    },
+    {
+      "file": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeCaptureDescriptor.swift",
+      "before": "private final class AnyNativePrivateBundleReader {\n",
+      "after": "/// An immutable copy of the exact declared capture members. It carries no\n/// native token, current source authorization or destination write permission.\n/// The archive constructor still applies its own complete encoded-size bound.\npublic struct AnyHeartNativeCapturedPreservationSource: Sendable {\n    public let bundle: AnyHeartNativeSpaceBundle\n    private let members: [String: Data]\n\n    public var grantsSourceSession: Bool { false }\n    public var permitsDestinationWrites: Bool { false }\n\n    fileprivate init(bundle: AnyHeartNativeSpaceBundle, members: [String: Data]) throws {\n        let declared = Set(bundle.verifiedMembers.map { Data($0.path.utf8) })\n        guard declared.count == bundle.verifiedMembers.count,\n              !declared.contains(Data(\"manifest.json\".utf8)),\n              members.count == declared.count,\n              Set(members.keys.map { Data($0.utf8) }) == declared else {\n            throw AnyHeartNativeCaptureError.sourceBinding\n        }\n        let maximum = AnyHeartNativePreservationArchive.maximumBytes\n        guard bundle.manifestBytes.count <= maximum else { throw AnyHeartNativePreservationError.limit }\n        var total = bundle.manifestBytes.count\n        for member in bundle.verifiedMembers {\n            try Task.checkCancellation()\n            guard member.byteCount >= 0, member.byteCount <= maximum - total,\n                  let bytes = members[member.path], bytes.count == member.byteCount else {\n                throw AnyHeartNativePreservationError.limit\n            }\n            guard AnyContentDigest.sha256(bytes) == member.sha256 else {\n                throw AnyHeartNativeCaptureError.changedMember(member.path)\n            }\n            total += bytes.count\n        }\n        self.bundle = bundle; self.members = members\n    }\n\n    /// Only a member with the exact original path, count and digest can be\n    /// retrieved. Returning retained bytes does not revalidate a source session.\n    public func capturedMemberData(_ member: AnyHeartNativeSpaceBundle.Member) throws -> Data {\n        try Task.checkCancellation()\n        guard bundle.verifiedMembers.contains(where: {\n            Data($0.path.utf8) == Data(member.path.utf8) &&\n                $0.byteCount == member.byteCount && $0.sha256 == member.sha256\n        }), let bytes = members[member.path] else {\n            throw AnyHeartNativeCaptureError.privateMember(member.path)\n        }\n        guard bytes.count == member.byteCount, AnyContentDigest.sha256(bytes) == member.sha256 else {\n            throw AnyHeartNativeCaptureError.changedMember(member.path)\n        }\n        return bytes\n    }\n}\n\nprivate final class AnyNativePrivateBundleReader {\n",
+      "expectedCount": 1
+    },
+    {
+      "file": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCaptureDescriptorTests.swift",
+      "before": "}\n",
+      "after": "\n    // These are synthetic private-file controls for the new export boundary.\n    // They do not prove a native capture, live authority or destination import.\n    private func rewritePreservationControl(_ data: Data, at url: URL) throws {\n        try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: url.path)\n        try data.write(to: url)\n        try FileManager.default.setAttributes([.posixPermissions: 0o400], ofItemAtPath: url.path)\n    }\n\n    func testPreservationExportRetainsOnlyDeclaredBytesAndNoAuthority() throws {\n        try withFixture { root, directory, value in\n            let undeclared = directory.appendingPathComponent(\"unlisted-private-control\")\n            try Data(\"not a declared capture member\".utf8).write(to: undeclared)\n            try FileManager.default.setAttributes([.posixPermissions: 0o400], ofItemAtPath: undeclared.path)\n            let capture = try descriptor(value)\n            let source = try capture.loadPreservationSource(under: root)\n            XCTAssertEqual(source.bundle.manifestSHA256, capture.manifestSHA256)\n            XCTAssertEqual(source.bundle.sourceWitnessSHA256, hash(\"unit-witness\"))\n            XCTAssertEqual(source.bundle.verifiedMembers.count, 1)\n            XCTAssertEqual(source.bundle.sourceRows.sha256, capture.sourceRowsSHA256)\n            XCTAssertEqual(try source.capturedMemberData(source.bundle.sourceRows),\n                           Data(\"synthetic unit control; not a native capture\".utf8))\n            XCTAssertFalse(source.grantsSourceSession)\n            XCTAssertFalse(source.permitsDestinationWrites)\n            XCTAssertFalse(source.bundle.receipt[\"HasNativeSourceAdmission\"]?.bool ?? true)\n            XCTAssertTrue(FileManager.default.fileExists(atPath: undeclared.path),\n                          \"An export does not remove unrelated private files\")\n        }\n    }\n\n    func testPreservationExportKeepsOriginalBytesAndRefusesSubstitutedMemberDescriptor() throws {\n        try withFixture { root, directory, value in\n            let capture = try descriptor(value)\n            let source = try capture.loadPreservationSource(under: root)\n            let originalRows = try source.capturedMemberData(source.bundle.sourceRows)\n            let replacement = Data(\"different synthetic source-row member\".utf8)\n            var manifest = try XCTUnwrap(JSONDecoder().decode(AnyJSON.self, from: source.bundle.manifestBytes).object)\n            var member = try XCTUnwrap(manifest[\"SourceRows\"]?.object)\n            member[\"Bytes\"] = .integer(Int64(replacement.count))\n            member[\"SHA256\"] = .string(AnyContentDigest.sha256(replacement))\n            manifest[\"SourceRows\"] = .object(member)\n            let foreign = try AnyHeartNativeSpaceBundle(manifest: encode(.object(manifest)),\n                sourceAccountID: account, sourceSpaceID: space) { requested in\n                    XCTAssertEqual(requested.path, source.bundle.sourceRows.path)\n                    return replacement\n                }\n            XCTAssertThrowsError(try source.capturedMemberData(foreign.sourceRows)) { error in\n                XCTAssertEqual(error as? AnyHeartNativeCaptureError,\n                               .privateMember(source.bundle.sourceRows.path))\n            }\n            try rewritePreservationControl(replacement,\n                at: directory.appendingPathComponent(\"native-source-rows.witness\"))\n            XCTAssertEqual(try source.capturedMemberData(source.bundle.sourceRows), originalRows,\n                           \"The returned source is an immutable byte copy, not live source authority\")\n            XCTAssertThrowsError(try capture.loadPreservationSource(under: root),\n                                 \"A fresh export must still match the captured manifest\")\n        }\n    }\n\n    func testPreservationExportCountsManifestInAggregateLimitBeforeMemberIO() throws {\n        try withFixture { root, directory, _ in\n            let file = directory.appendingPathComponent(\"manifest.json\")\n            var manifest = try XCTUnwrap(JSONDecoder().decode(AnyJSON.self, from: Data(contentsOf: file)).object)\n            var member = try XCTUnwrap(manifest[\"SourceRows\"]?.object)\n            member[\"Bytes\"] = .integer(Int64(AnyHeartNativePreservationArchive.maximumBytes))\n            manifest[\"SourceRows\"] = .object(member)\n            let bytes = try encode(.object(manifest))\n            try rewritePreservationControl(bytes, at: file)\n            // The advertised member would alone consume the entire budget.\n            // Its absence makes the expected budget error distinct from a\n            // private-file error; this is not an OS-level no-read measurement.\n            try FileManager.default.removeItem(at: directory.appendingPathComponent(\"native-source-rows.witness\"))\n            let value = try descriptorValue(manifest: bytes, directory: directory,\n                                            accountID: account, spaceID: space)\n            XCTAssertThrowsError(try descriptor(value).loadPreservationSource(under: root)) { error in\n                XCTAssertEqual(error as? AnyHeartNativePreservationError, .limit)\n            }\n        }\n    }\n\n    func testPreservationExportRetainsDescriptorAndPrivateMemberGuards() throws {\n        for mutation in [\"changed-manifest\", \"changed-member\", \"writable-member\",\n                         \"member-symlink\", \"wrong-parent\", \"wrong-count\"] {\n            try withFixture { root, directory, original in\n                var value = try XCTUnwrap(original.object)\n                var parent = root\n                let member = directory.appendingPathComponent(\"native-source-rows.witness\")\n                switch mutation {\n                case \"changed-manifest\", \"changed-member\":\n                    let file = mutation == \"changed-manifest\"\n                        ? directory.appendingPathComponent(\"manifest.json\") : member\n                    var bytes = try Data(contentsOf: file)\n                    bytes[bytes.startIndex] ^= 1\n                    try rewritePreservationControl(bytes, at: file)\n                case \"writable-member\":\n                    try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: member.path)\n                case \"member-symlink\":\n                    let retained = root.appendingPathComponent(\"retained-preservation-control\")\n                    try FileManager.default.moveItem(at: member, to: retained)\n                    try FileManager.default.createSymbolicLink(at: member, withDestinationURL: retained)\n                case \"wrong-parent\":\n                    parent = root.deletingLastPathComponent()\n                default:\n                    value[\"capturedFiles\"] = .integer(1)\n                }\n                XCTAssertThrowsError(try descriptor(.object(value)).loadPreservationSource(under: parent), mutation)\n            }\n        }\n    }\n}\n",
+      "anchor": "final-class-close-only",
+      "expectedCount": 1
+    }
+  ],
+  "forwardAndInverseExact": true,
+  "unchangedOriginals": [
+    "Entire existing loadBundle method",
+    "Entire private AnyNativePrivateBundleReader including canonical path/openat/private-mode/ownership/fstat/size/cancellation checks",
+    "All five original test methods and all original test helpers"
+  ],
+  "limits": {
+    "maximumCapturedAggregateBytes": 67108864,
+    "aggregateIncludesManifest": true,
+    "manifestReadMaximumBytes": 16777216,
+    "memberReadBoundCheckedBeforeIO": true,
+    "guardUsesSubtractionBeforeAddition": true,
+    "encodedArchiveLimitStillSeparate": true,
+    "notAPeakMemoryBound": true
+  },
+  "closedMemberContract": "Only bundle.verifiedMembers with exact UTF8 path, byte count and SHA256 are retained or retrievable. Manifest bytes remain in bundle; manifest.json is excluded from member namespace. No directory enumeration, filesystem output or cleanup is added.",
+  "newSelectedTests": [
+    "testPreservationExportRetainsOnlyDeclaredBytesAndNoAuthority",
+    "testPreservationExportKeepsOriginalBytesAndRefusesSubstitutedMemberDescriptor",
+    "testPreservationExportCountsManifestInAggregateLimitBeforeMemberIO",
+    "testPreservationExportRetainsDescriptorAndPrivateMemberGuards"
+  ],
+  "oldMethodsExcluded": [
+    "testDescriptorRequiresExactCallerIdentityAndUnambiguousCapturedOnlyContract",
+    "testPrivateBundleReadVerifiesAllBytesWithoutPromotingSourceOrDestinationAuthority",
+    "testChangedManifestSourceBytesCountsAndFlagsAreRefused",
+    "testParentEscapeSymlinksAndNonPrivatePermissionsAreRefused",
+    "testOriginalNativeCapturesReadThroughPrivateDescriptorAndKeepTheirSemanticBlockers"
+  ],
+  "testLimits": "All controls are synthetic local fixtures. No native capture/session/OS-level no-read assertion is claimed. Tests are source only, unparsed/uncompiled/unexecuted; original immutable native fixtures are not selected again.",
+  "wholeGitBlobReadbacksExact": true,
+  "sourcePeerPending": "N peer requested; no source acceptance until findings resolved",
+  "applicationCallsiteChanged": false,
+  "oracleCompilerOrNativeInvocations": 0
+}

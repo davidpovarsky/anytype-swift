@@ -1,0 +1,144 @@
+{
+  "protocol": "pinkha-direct-capture-private-storage-independent-peer-v2",
+  "status": "SOURCE_REVIEW_CLEAR_WITH_EXPLICIT_NAMESPACE_OWNER_REQUIREMENT_NOT_PARSED_COMPILED_OR_RUN",
+  "repository": "davidpovarsky/anytype-swift",
+  "scope": "Private archive materialization, exact existing reuse, bounded static capture-directory exclusion, directory ownership, durability, cancellation checkpoints and retained partials. Producer authority/HTTP and registered-task lifetime are separate Root/E reviews.",
+  "current": {
+    "storage": {
+      "gitBlob": "854de837370b8e280ab109da5a99276db75426bf",
+      "bytes": 18809,
+      "sha256": "5822ead21af2235459f73670ad37f92fcfe2f1fe4f619a04f11a2cb90edd7dfe",
+      "wholeReadback": true
+    },
+    "producer": {
+      "gitBlob": "19892c31e9c027395f0e89fcc59edefcabe9f4ab",
+      "bytes": 17059,
+      "sha256": "3d69a030340e8718bd082726e69abebb32cc8428cd9201c1a00afa7803055e01",
+      "wholeReadback": true
+    },
+    "focusedProof": {
+      "gitBlob": "31a082fda3f1cb48364f8aa190e761620421a180",
+      "bytes": 6208,
+      "sha256": "79d2ff03776c7d5a4c360b5970ee694d7d47487d1df45af9b3a2473e03ba8b8b",
+      "wholeReadback": true
+    }
+  },
+  "preserved": {
+    "originalStorage": {
+      "gitBlob": "e1d24e769e614ef122ee06b18fb887b3ef25d15b",
+      "bytes": 7816,
+      "sha256": "5ad22eb6c8e5c4e79b66ec4c92db324fc668d0d3c1e19650962f932225943d56",
+      "wholeReadback": true
+    },
+    "firstCorrectedStorage": {
+      "gitBlob": "fe5e80725ccedd39d130434a968d9c9996484bb3",
+      "bytes": 16082,
+      "sha256": "db285053abc339faba55b42291cff7300ba939ff9f55e9190636b6501fb2dd65",
+      "wholeReadback": true
+    },
+    "producerBeforeStorageScope": {
+      "gitBlob": "b79eda7132645e4e91d3da2877e63a64469dfb40",
+      "bytes": 16714,
+      "sha256": "b5163df521675a4aa66abd109e9cc1c6bf3db943d85b1e6f79097eec5d1ae5ac",
+      "wholeReadback": true
+    },
+    "firstStorageScopeProducer": {
+      "gitBlob": "4c0820c9f2d3e921f22a4785368415d50ea52a65",
+      "bytes": 17020,
+      "sha256": "81755330a554fa36a170311c2db8be51fdc182563492d4582cdca46d7155a722",
+      "wholeReadback": true
+    },
+    "firstStorageScopeProof": {
+      "gitBlob": "eae642be01acf90dca401ed0e8629357d27797a2",
+      "bytes": 3617,
+      "sha256": "96970b3c4b114688b063decff4b3ccdfa8dd0895e13a917295f8790cef6525f4",
+      "wholeReadback": true
+    }
+  },
+  "originalDependencies": {
+    "executor": {
+      "gitBlob": "aeca8507f67581edb57d315fe43322c6946edc0d",
+      "bytes": 25038,
+      "sha256": "37a827abab7f8458ff0274bc0cc99a65ba62ea6068e7498d025be7fee1fee8dd",
+      "wholeReadback": true
+    },
+    "journal": {
+      "gitBlob": "d95816cab15a4134c3d073fbca72f11c8bf6fdf1",
+      "bytes": 21624,
+      "sha256": "f0846218cf0ceb933271ff87985eca590e11edaf8fb429a3ed2381cc7b70d6db",
+      "wholeReadback": true
+    }
+  },
+  "wholeLiteralChecks": {
+    "firstProducerScope": {
+      "edits": 3,
+      "forwardExact": true,
+      "inverseExact": true,
+      "producerBefore": "b79eda7132645e4e91d3da2877e63a64469dfb40",
+      "producerAfter": "4c0820c9f2d3e921f22a4785368415d50ea52a65"
+    },
+    "currentStorageAndBinding": {
+      "storageEdits": 8,
+      "producerEdits": 1,
+      "wholeForwardExact": true,
+      "wholeInverseExact": true,
+      "originalJournalScopeFormulaExact": true,
+      "temporaryDupSitesCloseOnExec": 2
+    }
+  },
+  "preservedFindings": [
+    {
+      "source": "e1d24e769e614ef122ee06b18fb887b3ef25d15b",
+      "finding": "Only lexical capture exclusion allowed a distinct non-symlink physical alias into the capture.",
+      "currentCorrection": "The retained capture descriptor supplies a bounded no-follow directory-identity census; output parents and every examined real ancestor must be outside that identity set."
+    },
+    {
+      "source": "e1d24e769e614ef122ee06b18fb887b3ef25d15b",
+      "finding": "EEXIST readback did not establish file or directory durability after a previous failed sync.",
+      "currentCorrection": "Both paths independently verify the same read descriptor, require file and retained-parent fsync, then recheck descriptor/named/parent identities."
+    },
+    {
+      "source": "fe5e80725ccedd39d130434a968d9c9996484bb3",
+      "finding": "A disjoint journal parent did not exclude static capture aliases at the actual AnyDestinationMigrationV1/binding-scope descendants.",
+      "currentCorrection": "The actual plan binding derives the identical original Journal scope; the two existing directories are opened, excluded from capture identities and retained. Prospective directories are reopened and checked once present under the stable private-namespace owner."
+    },
+    {
+      "source": "fe5e80725ccedd39d130434a968d9c9996484bb3",
+      "finding": "Both temporary dup calls dropped close-on-exec.",
+      "currentCorrection": "Both sites use F_DUPFD_CLOEXEC."
+    }
+  ],
+  "checks": [
+    "All eight current storage literal changes and the single producer binding change apply and reverse to complete predecessor bytes exactly.",
+    "The earlier three producer storage-scope changes apply and reverse exactly to E-reviewed b79eda7132645e4e91d3da2877e63a64469dfb40.",
+    "The original Journal account/Space/store/plan hash material and AnyDestinationMigrationV1 directory name match exactly; Journal and Executor source remain unchanged.",
+    "Capture census opens no file contents; it refuses nonregular/nondirectory entries, repeated directory identities and invalid names, with at most 100000 entries, at most 10000 admitted directories, depth at most 32 and a 256-step output ancestry bound.",
+    "Private base directories are current-owner 0700, checked by descriptor and pathname; opened scope ownership transfers only after admission and failures close acquired descriptors.",
+    "Fresh archive creation uses descriptor-relative EXCL/NOFOLLOW/CLOEXEC, current-owner regular nlink1 0600 then 0400, exact size and stable named identity.",
+    "Archive name uses an independently recomputed SHA256; contents are 4096 through 64 MiB, and independent readback reads at most expected bytes plus one before rejecting an oversize result.",
+    "Existing output must be exact current-owner 0400 regular nlink1 bytes/hash; it is never rewritten or chmodded.",
+    "Cancellation is checked before output work, while walking metadata, during readback and at final scope validation. Failed/partial output is not removed or automatically replaced.",
+    "Storage is captured through the producer authorization closure and checked before/after destination validation and final producer return."
+  ],
+  "lifetimeAndNamespaceLimits": [
+    "The real private App namespace owner must serialize directory moves, mounts and removal through the entire outer registered-operation drain; source checks do not implement an OS namespace lock.",
+    "Base directory descriptors and initially present journal-child descriptors are retained through produce's storage I/O. Previously absent children are reopened and checked by validate; this is not a claim that their first observed descriptor is retained permanently.",
+    "The unchanged Journal still receives a URL and creates/opens its own plan-directory descriptor. The new scope is not descriptor injection into Journal.",
+    "Storage descriptor lifetime may end after produce returns; the outer lease/delivery-only await performs no further storage I/O, while App namespace ownership must continue through that await and drain.",
+    "No atomic protection against an independent administrator rename/mount, no global filesystem mutation audit and no actual platform/crash durability qualification are claimed.",
+    "Ordinary cancellation cannot abort an arbitrary blocking filesystem syscall. Cleanup retains owned partials and waits for the enclosing owned task, as separately reviewed."
+  ],
+  "tests": {
+    "fourAdditionalStorageControls": "Not included in this peer; their focused source review is separate.",
+    "swiftParser": false,
+    "compiler": false,
+    "testsRun": false,
+    "native": false,
+    "oracle": false
+  },
+  "findingsRemainingInRequestedSourceScope": [],
+  "sourceReviewPreparationCorrection": {
+    "supersededUnreferencedPeer": "12aea3e75814a46d1becd36e4a1bdfee11900440",
+    "correction": "The directory count guard checks count < 10000 before inserting, so the admitted maximum is 10000. Only this reporting wording was corrected before handoff; no source or runtime change."
+  }
+}

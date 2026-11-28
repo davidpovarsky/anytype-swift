@@ -15,6 +15,7 @@ public enum AnyNativeImportedContextError: Error, Equatable, Sendable {
 /// migration journal; no display name, xKey search or saved native run is used.
 public struct AnyNativeImportedContextReference: Codable, Sendable {
     public static let version = "pinkha-native-imported-context-v1"
+    public static let capturedVersion = "pinkha-native-imported-context-v2"
     public static let maximumBytes = 32 * 1024 * 1024
     public let contract: String
     public let destinationNetworkID: String
@@ -28,7 +29,9 @@ public struct AnyNativeImportedContextReference: Codable, Sendable {
     public let sourceSpaceID: String
     public let captureManifestSHA256: String
     public let sourceWitnessSHA256: String
-    public let recoveredManifestSHA256: String
+    public let recoveredManifestSHA256: String?
+    /// Absent in the unchanged v1 locator; exactly captured-complete in v2.
+    public let definitionEvidence: String?
     public let archiveSourceKey: String
     public let archiveSHA256: String
     public let archiveBytes: Int64
@@ -78,7 +81,10 @@ public struct AnyNativeImportedContextReference: Codable, Sendable {
         _ = try AnyNativeImportedDefinitionDirectory(plan: plan, mappings: mappings,
             supplementalCanonicalDefinitions: supplementalCanonicalDefinitions)
         _ = try AnyNativeImportedCatalogDirectory(plan: plan, mappings: mappings)
-        contract = Self.version; destinationNetworkID = networkID
+        contract = preservation.definitionEvidence.kind == .recoveredOriginal ? Self.version : Self.capturedVersion
+        definitionEvidence = preservation.definitionEvidence.kind == .capturedComplete
+            ? AnyHeartNativeDefinitionEvidence.Kind.capturedComplete.rawValue : nil
+        destinationNetworkID = networkID
         destinationAccountID = plan.binding.workspace.accountID
         destinationSpaceID = plan.binding.workspace.spaceID
         storeID = plan.binding.storeID; planID = plan.binding.planID; planSHA256 = plan.binding.planSHA256
@@ -113,13 +119,23 @@ public struct AnyNativeImportedContextReference: Codable, Sendable {
     }
 
     func expectedArchiveBinding() throws -> AnyHeartNativePreservationArchive.Binding {
-        try .init(expectedAccountID: sourceAccountID, expectedSpaceID: sourceSpaceID,
-            captureManifestSHA256: captureManifestSHA256, sourceWitnessSHA256: sourceWitnessSHA256,
-            recoveredManifestSHA256: recoveredManifestSHA256)
+        if Data(contract.utf8) == Data(Self.version.utf8) {
+            guard definitionEvidence == nil, let recoveredManifestSHA256 else {
+                throw AnyNativeImportedContextError.invalidReference
+            }
+            return try .init(expectedAccountID: sourceAccountID, expectedSpaceID: sourceSpaceID,
+                captureManifestSHA256: captureManifestSHA256, sourceWitnessSHA256: sourceWitnessSHA256,
+                recoveredManifestSHA256: recoveredManifestSHA256)
+        }
+        guard Data(contract.utf8) == Data(Self.capturedVersion.utf8),
+              definitionEvidence == AnyHeartNativeDefinitionEvidence.Kind.capturedComplete.rawValue,
+              recoveredManifestSHA256 == nil else { throw AnyNativeImportedContextError.invalidReference }
+        return try .init(expectedAccountID: sourceAccountID, expectedSpaceID: sourceSpaceID,
+            capturedManifestSHA256: captureManifestSHA256, sourceWitnessSHA256: sourceWitnessSHA256)
     }
 
     private func validate() throws {
-        guard Data(contract.utf8) == Data(Self.version.utf8),
+        guard [Self.version, Self.capturedVersion].contains(where: { Data($0.utf8) == Data(contract.utf8) }),
               AnyPreparedMigrationPlanBinding.validOpaque(destinationNetworkID, maximum: 4096),
               AnyPreparedMigrationPlanBinding.validOpaque(archiveSourceKey, maximum: 4096),
               [checkpointSHA256, archiveSHA256].allSatisfy(AnyDestinationPlanChecks.digest),
@@ -144,16 +160,23 @@ public struct AnyNativeImportedContextReference: Codable, Sendable {
         case contract, destinationNetworkID, destinationAccountID, destinationSpaceID
         case storeID, planID, planSHA256, checkpointSHA256
         case sourceAccountID, sourceSpaceID, captureManifestSHA256, sourceWitnessSHA256, recoveredManifestSHA256
+        case definitionEvidence
         case archiveSourceKey, archiveSHA256, archiveBytes, supplementalCanonicalDefinitions
     }
 
     public init(from decoder: any Decoder) throws {
         let all = try decoder.container(keyedBy: AnyImportedContextCodingKey.self)
-        guard Set(all.allKeys.map(\.stringValue)) == Set(CodingKeys.allCases.map(\.rawValue)) else {
-            throw AnyNativeImportedContextError.invalidReference
-        }
         let c = try decoder.container(keyedBy: CodingKeys.self)
         contract = try c.decode(String.self, forKey: .contract)
+        let expectedKeys: Set<String>
+        if Data(contract.utf8) == Data(Self.version.utf8) {
+            expectedKeys = Set(CodingKeys.allCases.map(\.rawValue)).subtracting(["definitionEvidence"])
+        } else if Data(contract.utf8) == Data(Self.capturedVersion.utf8) {
+            expectedKeys = Set(CodingKeys.allCases.map(\.rawValue)).subtracting(["recoveredManifestSHA256"])
+        } else { throw AnyNativeImportedContextError.invalidReference }
+        guard Set(all.allKeys.map(\.stringValue)) == expectedKeys else {
+            throw AnyNativeImportedContextError.invalidReference
+        }
         destinationNetworkID = try c.decode(String.self, forKey: .destinationNetworkID)
         destinationAccountID = try c.decode(String.self, forKey: .destinationAccountID)
         destinationSpaceID = try c.decode(String.self, forKey: .destinationSpaceID)
@@ -165,7 +188,13 @@ public struct AnyNativeImportedContextReference: Codable, Sendable {
         sourceSpaceID = try c.decode(String.self, forKey: .sourceSpaceID)
         captureManifestSHA256 = try c.decode(String.self, forKey: .captureManifestSHA256)
         sourceWitnessSHA256 = try c.decode(String.self, forKey: .sourceWitnessSHA256)
-        recoveredManifestSHA256 = try c.decode(String.self, forKey: .recoveredManifestSHA256)
+        if Data(contract.utf8) == Data(Self.version.utf8) {
+            recoveredManifestSHA256 = try c.decode(String.self, forKey: .recoveredManifestSHA256)
+            definitionEvidence = nil
+        } else {
+            recoveredManifestSHA256 = nil
+            definitionEvidence = try c.decode(String.self, forKey: .definitionEvidence)
+        }
         archiveSourceKey = try c.decode(String.self, forKey: .archiveSourceKey)
         archiveSHA256 = try c.decode(String.self, forKey: .archiveSHA256)
         archiveBytes = try c.decode(Int64.self, forKey: .archiveBytes)

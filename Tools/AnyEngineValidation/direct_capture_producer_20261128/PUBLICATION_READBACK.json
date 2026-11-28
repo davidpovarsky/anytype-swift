@@ -1,0 +1,604 @@
+{
+  "schema": "pinkha-direct-capture-producer-publication-readback-v1",
+  "status": "PASS_SOURCE_PUBLICATION_AND_READBACK_SEPARATE_SYNTAX_ONLY",
+  "observedAtUTC": "2026-11-28 11:11:21 UTC",
+  "repository": "davidpovarsky/anytype-swift",
+  "branch": "codex/chatgpt-wave15-w1-direct-capture-producer-20261128",
+  "sourceCommit": "32a174219cca9b916c4fa5738d0e1891f6dbc349",
+  "soleSourceParent": "ff5777896ced23171522a0d6d735e2b235b11ffc",
+  "sourceTree": "31fb14c6c32d8c99a2b6da9d85a0a5fec765e8eb",
+  "sourceCommitAndRefIndependentlyReadBack": true,
+  "declaredChanges": {
+    "files": 76,
+    "bytes": 1677790,
+    "activeSourceFiles": 15,
+    "production": 9,
+    "testSources": 6,
+    "newEvidenceFiles": 61
+  },
+  "completeParentPreservation": {
+    "rootEntries": 42,
+    "moduleParentEntries": 29,
+    "toolsParentEntries": 21,
+    "hostBeforeEntries": 173,
+    "hostAfterEntries": 178,
+    "integrationBeforeEntries": 65,
+    "integrationAfterEntries": 66,
+    "validationBeforeEntries": 81,
+    "validationAfterEntries": 82,
+    "allUndeclaredModesTypesAndObjectIDsEqual": true,
+    "allOriginalBeforeimagesExact": true,
+    "sixNewActivePathsAbsentAtParent": true,
+    "evidencePrefixAbsentAtParent": true
+  },
+  "wholeBlobReadbacks": [
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartMigrationPrivateStorage.swift",
+      "gitBlob": "854de837370b8e280ab109da5a99276db75426bf",
+      "bytes": 18809,
+      "sha256": "5822ead21af2235459f73670ad37f92fcfe2f1fe4f619a04f11a2cb90edd7dfe",
+      "wholeReadback": true
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeCaptureDescriptor.swift",
+      "gitBlob": "03f22b12ff63f05be04f1c8430f02a90c4566590",
+      "bytes": 17627,
+      "sha256": "87ae4d9282aedc813879947f319d854d0bb55496ab796c497e9a7f58af86bfd9",
+      "wholeReadback": true
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+      "gitBlob": "19892c31e9c027395f0e89fcc59edefcabe9f4ab",
+      "bytes": 17059,
+      "sha256": "3d69a030340e8718bd082726e69abebb32cc8428cd9201c1a00afa7803055e01",
+      "wholeReadback": true
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourcePreservation.swift",
+      "gitBlob": "6f59b8fb49546d9f2cc42971a73863c0756b8e8e",
+      "bytes": 19633,
+      "sha256": "c9560ed1180340391944b01b66386b9bc56d7f9b4e559aaf0229293f9bc8e175",
+      "wholeReadback": true
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedCatalog.swift",
+      "gitBlob": "d45211748deacc9fa3d59215c8e15e74a72dd95a",
+      "bytes": 20932,
+      "sha256": "4adc898366a011542266731568b32014189641d3250a8cf778ee25d1ecfa8291",
+      "wholeReadback": true
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift",
+      "gitBlob": "b041309e13291cb41c9cec48d32865bb66af5553",
+      "bytes": 36356,
+      "sha256": "be03fc564171c720a91bd79d060d6edd9798da49cb7a19f88f57ade79e31acec",
+      "wholeReadback": true
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextReference.swift",
+      "gitBlob": "dc6e21e129a02cf75ff6b1bd0598dedaac1d9267",
+      "bytes": 12903,
+      "sha256": "5594056fd2e8a5e08a02bd670f0f534187eab0ca7722c9c6cbedcf474bc929cd",
+      "wholeReadback": true
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeSourcePreservationTests.swift",
+      "gitBlob": "4c2f66a5dd6bb0026c191c9af658589e9c0997ef",
+      "bytes": 28485,
+      "sha256": "50905e9048d8a24cbfc70197db527eebf213f82cbadb64a289c97c212bdf7934",
+      "wholeReadback": true
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCaptureDescriptorTests.swift",
+      "gitBlob": "7e3242682b32353fce800a573ac0e72e51e72827",
+      "bytes": 23514,
+      "sha256": "90d0f70b5f9c08d733c132319c3a0c821c7671f71ff927aba8d3a1f7d45cac6b",
+      "wholeReadback": true
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeDirectCapturePreservationTests.swift",
+      "gitBlob": "a52f10dfc99e00cb3df1a4bb3329862caf7ec99b",
+      "bytes": 31708,
+      "sha256": "7c6f5bc27d287a725a604f653eafc104a3bcd6c61e2452cad7704d3f6d031712",
+      "wholeReadback": true
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeMigrationPrivateStorageTests.swift",
+      "gitBlob": "f3fb604a7a4eef2067e694114dc7203fdc1ee19a",
+      "bytes": 14238,
+      "sha256": "3770f8a8029da34c096495157655fd00ba69c0b209fe769e17b5f31c61c57eb4",
+      "wholeReadback": true
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeMigrationProducerLifetimeTests.swift",
+      "gitBlob": "30480edf10256c5bd367da92ce49db07a2216cc9",
+      "bytes": 32886,
+      "sha256": "1281c6e7fe7718ee0225af0a42bf3f3cb9f30f36adf2f7eaccf02d6004709732",
+      "wholeReadback": true
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/RecoveredCompiledDefinitionTests.swift",
+      "gitBlob": "563bed95bdd822165d5a2479ee9eb948579b21e6",
+      "bytes": 36659,
+      "sha256": "a521190e904d3b32993ed1754e2628be7173471a73a6f69a56c818c9a7a0fadc",
+      "wholeReadback": true
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionEvidence.swift",
+      "gitBlob": "e6785a066c68143eca97fc199851aeac7da6be94",
+      "bytes": 2251,
+      "sha256": "9f53864a7bf97627789e7cb2702a76e280bfc05859a2b8ec5c5130d9075881e3",
+      "wholeReadback": true
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePreservationArchive.swift",
+      "gitBlob": "9ae2c11b553016cd2559787fa5b796989263b4c2",
+      "bytes": 25677,
+      "sha256": "7ae154b210a0aad7f7f9c06a5cfc9b69adcaeb02f4b87f7952e4bf5a19f062b9",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/before/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeCaptureDescriptor.swift",
+      "gitBlob": "ebb686c347748fddc9424d69651e46036575cf44",
+      "bytes": 12062,
+      "sha256": "8fc03a588299d43623359037515811b89dabae62bf10566eb88da7e6631d8cfa",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/before/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourcePreservation.swift",
+      "gitBlob": "86c9020eeb09667aa64a5493b1df5c677ff42d58",
+      "bytes": 17751,
+      "sha256": "ff103d4110e17fbb9ed6375ba0dc59968cf59fbb5bc77d8740dc53a40ce1cf98",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/before/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedCatalog.swift",
+      "gitBlob": "dc4643f23b84c15b4ca2c34736cd89aed3a0feae",
+      "bytes": 19519,
+      "sha256": "bf886d81f6b0fe7b724f0e347f991681e7ca9d6599476ee13dbce9fb1a84b50b",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/before/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift",
+      "gitBlob": "5e75478bae4f1f426625ac4d44ecd4ec144bdc4b",
+      "bytes": 36425,
+      "sha256": "b4891b47901f6243cdad5cb45b000f94fbe8b2b309b4de85692cfda75382b4d7",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/before/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextReference.swift",
+      "gitBlob": "756a0c82221927756cd2793d13698ba10d33738e",
+      "bytes": 10952,
+      "sha256": "950a947e9c3ad57ae70e627042747ef1dff4b6e890e22d2246cf776c2a3f7e87",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/before/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeSourcePreservationTests.swift",
+      "gitBlob": "74f6f4079b702cfa810c285610652b59faa62741",
+      "bytes": 28422,
+      "sha256": "4b89b5873c75f7d13096219e07dd83a0c83cd96d94021fb8c62948759563c6d7",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/before/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCaptureDescriptorTests.swift",
+      "gitBlob": "0d3ca0d57d0c385f46a582140ae775ad6a6a6cf1",
+      "bytes": 16613,
+      "sha256": "3756a525ca78fb60d1990bb8b67662fdefa570f069532ec8e6537f09c9afd935",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/before/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/RecoveredCompiledDefinitionTests.swift",
+      "gitBlob": "3a3a9938c547c559192425f8dbcae494338d9662",
+      "bytes": 36622,
+      "sha256": "c383fd40d7844a7b1b1e46c530256b73bcb951fc094cc41ff406e0e66125250c",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/before/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePreservationArchive.swift",
+      "gitBlob": "cdc17c17784aebbae2e1dff9f13b0c84ab0a8f92",
+      "bytes": 15167,
+      "sha256": "b1b7f69afe8a0248dc98471dd4c0a93a87e9670859b253a84d784ba7791bc642",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/CONTRACT.json",
+      "gitBlob": "9c00f457094133831e7ac70ca7f237330759c3fc",
+      "bytes": 6967,
+      "sha256": "f4f81451d47d7ac48b6394381441df4698b78687a4558715ef41609e2f03c74f",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/dependencies/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourceAccountController.swift",
+      "gitBlob": "63f2a6083f487acd925e525e4922ccc98c900d67",
+      "bytes": 10161,
+      "sha256": "87ae93153c2f425c20e842dac6b60d18fae867978fe6d180a717faee9bf465cd",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/dependencies/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourceCaptureCoordinator.swift",
+      "gitBlob": "f8bb507c5604ffcc7556693403bb4af10ce7a446",
+      "bytes": 13243,
+      "sha256": "3d77b08c4d3c14c9520d116fdd382244cfad796378fa6e4b065ef5e7061c3da7",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/dependencies/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePinkhaSource.swift",
+      "gitBlob": "1a2058e4953df51acffac68e86de51286d1d7fc7",
+      "bytes": 19720,
+      "sha256": "235d4eb714cc8d577571336f265faa36dad2afde756265092020e5d717e7e2de",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/dependencies/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahMigration.swift",
+      "gitBlob": "f88ca6c16fb9c5fbcc897e61f08f33716640415a",
+      "bytes": 21673,
+      "sha256": "4b535020276c2ce467ebc86204e3bcc70b1006cdb7160c2533272ee05a26f90d",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/dependencies/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahSemanticTargetAccess.swift",
+      "gitBlob": "d2e346b8231c15ed9105ee9294b46fc76e278f2a",
+      "bytes": 400,
+      "sha256": "a7b7db78763d7d47ca7e3482dbd4ba4a5d7bca4b8b2b92f3109983b17426095f",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/dependencies/Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaBootstrapProtocols.swift",
+      "gitBlob": "c2e0b92df6fe5912c7e0452a1d866fd58942e676",
+      "bytes": 4878,
+      "sha256": "1d3b20b5f88c2415a10ab21ba696bcfd821cca1b42979ffa51ad24c97818b525",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/dependencies/Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSchemaRoles.swift",
+      "gitBlob": "83e42de4bf880d13ce20a841410681c6e6fa0f8d",
+      "bytes": 1555,
+      "sha256": "891033c5597706f043026fbfa21cfe7eb010117bdbb0a6cdd194ba62e26103a3",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/dependencies/Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSpaceManifest.swift",
+      "gitBlob": "d42050a84d5f232d05493c3f1787390c094db0fc",
+      "bytes": 12178,
+      "sha256": "d3d55b7b7c2ee1ea060af93ec42921a1634f97fd14254c2dc3ac49582c07f0f1",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/FILES.json",
+      "gitBlob": "eeba642e9883dcf26833822b7e8a3f14d7bf5c81",
+      "bytes": 38448,
+      "sha256": "59002db3be747e73e9711abb3ff71ac90968158e1005dbd10f4d1675324b90c0",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/inverse/archive-tests-two-inputs.json",
+      "gitBlob": "b12ef6c3a885ebe7b6266bc6133c2ae27811fb82",
+      "bytes": 20630,
+      "sha256": "385e9b91481d99809b5328699836c98494ca4af9e93e655f728c396c10f10225",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/inverse/archive-v1-to-v2.json",
+      "gitBlob": "9edb003e975f169792e652b613e0b0253d2d4a34",
+      "bytes": 14804,
+      "sha256": "2404a02ee2ba2af0095e4eeb3313dd14e33445c8352a229dff3bc0a5e6d2526e",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/inverse/capture-export.json",
+      "gitBlob": "49649e438b21ffb08deb91a9061f604cc33c3358",
+      "bytes": 17602,
+      "sha256": "87052d4fe53b41db77b709f93452b002d7233a4b5fd9f7b4860136e7ee3d6bef",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/inverse/legacy-optional-test-compatibility.json",
+      "gitBlob": "11bade890d826bdcc97c9fb32724538cbc545b8e",
+      "bytes": 3307,
+      "sha256": "0029637cffad26c52bbf96c01e1e277621ae71d8ee326bdf5f306525bf2bab6e",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/inverse/lifetime-return-observation.json",
+      "gitBlob": "be2eebe92f910a23bcfa2eb5e3491325de1af605",
+      "bytes": 1751,
+      "sha256": "bb35de702f53ea61e1fe1c8f0beef8784c0acdbe22a45151e5c5e1aca7fbd958",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/inverse/storage-final-scope.json",
+      "gitBlob": "31a082fda3f1cb48364f8aa190e761620421a180",
+      "bytes": 6208,
+      "sha256": "79d2ff03776c7d5a4c360b5970ee694d7d47487d1df45af9b3a2473e03ba8b8b",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/inverse/transitive-evidence.json",
+      "gitBlob": "34d9f89cd4c0de7f3665b1d3fc45f3d84dc2adb1",
+      "bytes": 16753,
+      "sha256": "4208fffd0250b8baba8ed6779ee151e10312fb8d152955d08529936e49745c02",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/native-source/four-exact-8ac-source-members.json",
+      "gitBlob": "3107f578cc9ca198fa6f68600967aa6e252e19c2",
+      "bytes": 28092,
+      "sha256": "c2c9878b826ee8693cee33d5f09f020efbf9d00087cbe9272f62c329326253f0",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/peers/cutover-producer-lifetime.json",
+      "gitBlob": "50a9780180a2367794111b1f353c7ea8750417b4",
+      "bytes": 15067,
+      "sha256": "7a5db2d3a7390deb0a1401283b6498ad6a33407cd6acf820b9702800e2198a38",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/peers/migration-lifetime-fixture-api.json",
+      "gitBlob": "23ab42a2fefc930b989f710b6e19ea12c6bfda17",
+      "bytes": 4715,
+      "sha256": "4d0ec8ec5465b4b71360cefa64ac4781b38f220c2a1c8d1176775361967a6d86",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/peers/migration-lifetime-return-order.json",
+      "gitBlob": "5aad95383adbc8fd173388d606e96160b42f5d97",
+      "bytes": 1664,
+      "sha256": "f5e49df21e0a53945aca90242096533baac26cef03cce9c9e36fc29a2e07a90f",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/peers/network-c20-graph.json",
+      "gitBlob": "76db4fd2e0b9838a347d92baefd8c8def061639c",
+      "bytes": 17348,
+      "sha256": "cc99959a11495d9c4d18d0b35888e83ec0a591a0f26e9620146e24e82341752a",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/peers/network-capture-export.json",
+      "gitBlob": "cb269a22607536cdf9ab6e59028d3bde6e41d41a",
+      "bytes": 6579,
+      "sha256": "4472b30b554c89d8632d2807bbd349e360425139cff3d1d63dc8968ef9e8c25a",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/peers/network-lifetime-cleanup.json",
+      "gitBlob": "dde12c38412330b1a24786cffe408b197d64d4c7",
+      "bytes": 5359,
+      "sha256": "6e9791a069e9ff637827be5a8ec39c4537a39df18117308b8c76dcd2dc73472e",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/peers/network-lifetime-return-order.json",
+      "gitBlob": "0616404dfddc6b6a1bb097f28fda777e5bdc001a",
+      "bytes": 2984,
+      "sha256": "1e808aa2507f3a9e0b8e49d091d398fcfd53f10768309c4357db0da8caf36ba1",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/peers/network-storage-tests.json",
+      "gitBlob": "91b39362ef812f4ebb509de55d8ce9b9f946ea78",
+      "bytes": 4313,
+      "sha256": "43540ce96ed8541217b218d0f3141cfb5ad0e29e184ed132ab1e5ccb18138850",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/peers/network-storage.json",
+      "gitBlob": "b6db9cd4b4c0d0d833e26f6909693f6ff2f3c078",
+      "bytes": 8445,
+      "sha256": "3235547ca18f4200cb2b43218bf0dbc6c2b40143e5eec8c72bf6cfaed72b81e3",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/peers/root-archive.json",
+      "gitBlob": "a15c4a3128febd65ed34e069d7de788e06fd1720",
+      "bytes": 2456,
+      "sha256": "0ac232f730677b4f337b18c12a336f020bf330f7205fd7eb74ac9945c46de9cd",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/peers/root-transitive-and-eight-tests.json",
+      "gitBlob": "b95eb1982d3c215f3692da6b9b25cb35d4d4d4cc",
+      "bytes": 10821,
+      "sha256": "75afe4b235d6fd25e5abc6043cdd161af26e12b5a7eafac9abe0045b2aa1a9c3",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/qualification/current-af1-optional-api-census.json",
+      "gitBlob": "be66d9a2e0c349103a10c499d4ce74ba62a06336",
+      "bytes": 28172,
+      "sha256": "2520ff819606cbb2ed108700625f342856a63ad50eb2a706739983c39e1e879c",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/qualification/earlier-missing-v1-path.json",
+      "gitBlob": "d8cb35d5a4c0ed6678d4635321ac2a888c8e6d5c",
+      "bytes": 1963,
+      "sha256": "075b0f7d70e6f62ad39bc05ebc5c12eebb09e4ae7cbe11c27ddcac3dc8343aa7",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/qualification/INTAKE_SOURCE_JOIN.json",
+      "gitBlob": "10e15c0420fecbb096052b4eda3dc6089e4a0f71",
+      "bytes": 8926,
+      "sha256": "8ac0ea200f558acaca43848883a3218c7c5d9598f5cfe220f892497048753f32",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/qualification/lifetime-provenance.json",
+      "gitBlob": "9a1af1c73e0577493c37eae8335812cc4ce132f8",
+      "bytes": 11635,
+      "sha256": "a2232e027d5e5799688a227a98a8d942772d3d865384acea7e2c44c2e0f77912",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/qualification/lifetime-selection.json",
+      "gitBlob": "26d62692dea598f96633a66161f33e23cb6ad6f7",
+      "bytes": 2576,
+      "sha256": "a540f7d78828ba3e34559fb7497fc545f11f56e399430d2f45693528ca112827",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/qualification/retained-v1-input-admission.json",
+      "gitBlob": "a454802f6b3afaf6e9a74b3855f38554c4db859a",
+      "bytes": 3809,
+      "sha256": "8fb7eb0e6ac3e57c81943050f3337c61cdc6d8ec084fb7f11ad1c3fec505cd9f",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/qualification/SELECTION.json",
+      "gitBlob": "7790831b9ff00196c1ca817cb1ec718103f2ae47",
+      "bytes": 3240,
+      "sha256": "5a17d0368b1ccf8716b3b85c79bf3359e0e3e4cc95ed5c2f12aabdb643c3bf37",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/qualification/SOURCE_GRAPH.json",
+      "gitBlob": "46476f8b9f48801029d327a84b1c322350aeb5d3",
+      "bytes": 134037,
+      "sha256": "748a0eb40a29a79198bbc396e7fb03061f7be1988a0259b670a76aeeeddb3597",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/qualification/SYNTAX_INPUT_LABELS.json",
+      "gitBlob": "ff17ae05be81a9ccaf92fd17d708a85e60e650d0",
+      "bytes": 4608,
+      "sha256": "6df6ca1c1c4308d1a6f5d1deac9d60456c6da8553fd44889ca9bfae070029d0e",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/qualification/syntax13/network-source-peer.json",
+      "gitBlob": "c2785c5b771acbbe0711f4c721edaa844e4db849",
+      "bytes": 7717,
+      "sha256": "31ace8e187a768a68345410ede58920c6e2c9621b36b2fd416c41c57396f847e",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/qualification/syntax13/OBSERVATION.json",
+      "gitBlob": "6bd25bdf991d367377c3aa2dd2d1f0445388d03a",
+      "bytes": 7614,
+      "sha256": "4dd45b3c2a80c0f95443fd2c2614329a16d3d515b0253fc245d695f228d26133",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/qualification/syntax13/parse_thirteen_sources.py",
+      "gitBlob": "39554d2fac6aa6c87f813c3fd65b11f69640f670",
+      "bytes": 424529,
+      "sha256": "b085be159031418a566c412eec2be90bd09ac2c727c183de6e2e8c90220be0d8",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/qualification/syntax13/raw-result.json",
+      "gitBlob": "5f7b3a6950b7acdfc1814e364e39b15823bc2e1b",
+      "bytes": 14252,
+      "sha256": "bea5de061ca5f0537986fe354f9088870715ee288c51b73405d3a54bf6fba618",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/README.md",
+      "gitBlob": "45a0f8af24ef1e3068264878d91cdb2d483c2ea6",
+      "bytes": 9706,
+      "sha256": "854c42699a3a2427260d8dfe6b8b13fd1c623973c2f755ccda03960892750a68",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/superseded/archive-tests-corrected-lookup.swift",
+      "gitBlob": "0f1564c9b50b565f3be0e81f67140f94e1a94431",
+      "bytes": 21553,
+      "sha256": "0f740dbb827c302513c0a54e1dae43ea3eaa2e6c5c6bb1c0738469832ddccb0b",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/superseded/archive-tests-wrong-catalog-lookup.swift",
+      "gitBlob": "a8561fbb4c5e8ded245cdcd92b9ef5f3cc4a93ed",
+      "bytes": 20623,
+      "sha256": "55a663c54eef2b465ea7563412c8e0adaed4c054a3c529c34dd0d4126bcb8ec3",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/superseded/lifetime-tests-before-return-witness.swift",
+      "gitBlob": "451dbcdb6f6071071971b40c734498c027c2992c",
+      "bytes": 32021,
+      "sha256": "d7e2ee2138793c442d37a57fc7e1b4af8d834484f71a7240c468b35971e42781",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/superseded/producer-initial.swift",
+      "gitBlob": "f96aedfdcbeb7aa35a719ed3d65d848c50e93bc2",
+      "bytes": 16086,
+      "sha256": "3e67b5518e0779f5156482ed887cbde9fafe643419d0f45c8717d4deaa43288e",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/superseded/producer-lifetime-reviewed.swift",
+      "gitBlob": "b79eda7132645e4e91d3da2877e63a64469dfb40",
+      "bytes": 16714,
+      "sha256": "b5163df521675a4aa66abd109e9cc1c6bf3db943d85b1e6f79097eec5d1ae5ac",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/superseded/producer-outer-operation.swift",
+      "gitBlob": "3271d972579d432182891838ea77f8a6235c3748",
+      "bytes": 16700,
+      "sha256": "25e8b34d9a5b6cd75bf3dbad6e8e97d3b2f3527f343c796ecb469e05a0c659ad",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/superseded/producer-storage-draft2.swift",
+      "gitBlob": "4c0820c9f2d3e921f22a4785368415d50ea52a65",
+      "bytes": 17020,
+      "sha256": "81755330a554fa36a170311c2db8be51fdc182563492d4582cdca46d7155a722",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/superseded/storage-lexical-preflight.swift",
+      "gitBlob": "e1d24e769e614ef122ee06b18fb887b3ef25d15b",
+      "bytes": 7816,
+      "sha256": "5ad22eb6c8e5c4e79b66ec4c92db324fc668d0d3c1e19650962f932225943d56",
+      "wholeReadback": true
+    },
+    {
+      "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/superseded/storage-parent-scope.swift",
+      "gitBlob": "fe5e80725ccedd39d130434a968d9c9996484bb3",
+      "bytes": 16082,
+      "sha256": "db285053abc339faba55b42291cff7300ba939ff9f55e9190636b6501fb2dd65",
+      "wholeReadback": true
+    }
+  ],
+  "graph": {
+    "gitBlob": "46476f8b9f48801029d327a84b1c322350aeb5d3",
+    "sha256": "748a0eb40a29a79198bbc396e7fb03061f7be1988a0259b670a76aeeeddb3597",
+    "files": 131,
+    "production": 127,
+    "tests": 4,
+    "selected": 20,
+    "executed": 0
+  },
+  "actualSyntax": {
+    "raw": "5f7b3a6950b7acdfc1814e364e39b15823bc2e1b",
+    "metadata": "6bd25bdf991d367377c3aa2dd2d1f0445388d03a",
+    "parsedBodies": 13,
+    "normalAbsentGroups": 13,
+    "diagnosticBytes": 0,
+    "mode": "Swift 5 syntax only",
+    "typechecking": false,
+    "testExecution": false,
+    "native": false
+  },
+  "applicationScope": {
+    "applicationEdits": 0,
+    "finalIntegrationRefWrites": 0,
+    "destinationSelectionAndCallsite": "W3-owned; requires actual selected same-owner destination operation.",
+    "privateNamespaceOwner": "Required through complete producer drain.",
+    "ordinary14ThirdLocator": "Not supplied by this foundation; separate C-owned execution successor remains."
+  },
+  "noExecutionImplied": {
+    "componentCompiler": 0,
+    "selectedTestMethods": 0,
+    "nativeCalls": 0,
+    "privateAccountsOpened": 0,
+    "privateArchivePayloadsPublished": 0,
+    "newOracleAllocation": 0
+  },
+  "evidenceCommitRule": "This record may be added only as one new evidence file on a normal child of sourceCommit, without changing any of the source commit's entries."
+}

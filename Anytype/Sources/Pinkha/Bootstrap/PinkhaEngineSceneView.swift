@@ -136,6 +136,8 @@ final class PinkhaEngineSceneOwner {
         }
         do {
             try await task.value
+            // A later review gets a fresh owner after this complete drain.
+            sourceController = nil
             sourceReview = nil
             sourceBinding = nil
             sourceProblem = nil

@@ -1,0 +1,137 @@
+{
+  "protocol": "pinkha-capture-preservation-export-independent-peer-v1",
+  "status": "SOURCE_REVIEW_CLEAR_NOT_COMPILED_NOT_RUN",
+  "reviewer": "N/network_files",
+  "inputs": {
+    "source": {
+      "gitBlob": "03f22b12ff63f05be04f1c8430f02a90c4566590",
+      "bytes": 17627,
+      "sha256": "87ae4d9282aedc813879947f319d854d0bb55496ab796c497e9a7f58af86bfd9",
+      "wholeBodyAndGitSHAReadback": true
+    },
+    "sourceBefore": {
+      "gitBlob": "ebb686c347748fddc9424d69651e46036575cf44",
+      "bytes": 12062,
+      "sha256": "8fc03a588299d43623359037515811b89dabae62bf10566eb88da7e6631d8cfa",
+      "wholeBodyAndGitSHAReadback": true
+    },
+    "tests": {
+      "gitBlob": "7e3242682b32353fce800a573ac0e72e51e72827",
+      "bytes": 23514,
+      "sha256": "90d0f70b5f9c08d733c132319c3a0c821c7671f71ff927aba8d3a1f7d45cac6b",
+      "wholeBodyAndGitSHAReadback": true
+    },
+    "testsBefore": {
+      "gitBlob": "0d3ca0d57d0c385f46a582140ae775ad6a6a6cf1",
+      "bytes": 16613,
+      "sha256": "3756a525ca78fb60d1990bb8b67662fdefa570f069532ec8e6537f09c9afd935",
+      "wholeBodyAndGitSHAReadback": true
+    },
+    "proof": {
+      "gitBlob": "49649e438b21ffb08deb91a9061f604cc33c3358",
+      "bytes": 17602,
+      "sha256": "87052d4fe53b41db77b709f93452b002d7233a4b5fd9f7b4860136e7ee3d6bef",
+      "wholeBodyAndGitSHAReadback": true
+    },
+    "bundle": {
+      "gitBlob": "cb510177ce69cc1cc5a50475d5c1eddbb91bf6ec",
+      "bytes": 23124,
+      "sha256": "9f7aa90550b3ab54cd86928a5c254b6f4af13762e14ce80fb62199f444879977",
+      "wholeBodyAndGitSHAReadback": true
+    },
+    "archive": {
+      "gitBlob": "e95ddbf0d1e9eb51e44c0a85291ca256b47f5f09",
+      "bytes": 13126,
+      "sha256": "83c8f527b576184dfbaf3537c9b17fd53fa78c422deed203e68007c34a261ea0",
+      "wholeBodyAndGitSHAReadback": true
+    }
+  },
+  "scope": [
+    "loadPreservationSource(under:)",
+    "opaque immutable captured-member map",
+    "exact declared-member census and retrieval",
+    "manifest-inclusive64MiB accounting before member I/O",
+    "private FD reader preservation",
+    "new four synthetic test methods and original-five preservation"
+  ],
+  "literalProof": {
+    "status": "EXACT_FORWARD_AND_INVERSE_SOURCE_ONLY",
+    "literalEdits": [
+      {
+        "file": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeCaptureDescriptor.swift",
+        "anchor": "unique-literal",
+        "expectedCount": 1,
+        "originalBytes": 59,
+        "newBytes": 2993
+      },
+      {
+        "file": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeCaptureDescriptor.swift",
+        "anchor": "unique-literal",
+        "expectedCount": 1,
+        "originalBytes": 51,
+        "newBytes": 2682
+      },
+      {
+        "file": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCaptureDescriptorTests.swift",
+        "anchor": "final-class-close-only",
+        "expectedCount": 1,
+        "originalBytes": 2,
+        "newBytes": 6903
+      }
+    ],
+    "productionInsertions": 2,
+    "testFinalClassAppend": 1,
+    "oldTestMethodCount": 5,
+    "totalNewSourceMethodCount": 9,
+    "newSelectedMethods": [
+      "testPreservationExportRetainsOnlyDeclaredBytesAndNoAuthority",
+      "testPreservationExportKeepsOriginalBytesAndRefusesSubstitutedMemberDescriptor",
+      "testPreservationExportCountsManifestInAggregateLimitBeforeMemberIO",
+      "testPreservationExportRetainsDescriptorAndPrivateMemberGuards"
+    ],
+    "oldFiveMethodNamesPreserved": true,
+    "privateFDReaderUnchanged": true,
+    "forwardWholeBodiesExact": true,
+    "inverseWholeBodiesExact": true,
+    "sourceModuleImported": false,
+    "compilerInvoked": false,
+    "testsRun": false
+  },
+  "checks": [
+    "Manifest remains bounded at16MiB, pinned to the descriptor SHA, and included in the64MiB aggregate before any member read.",
+    "Member declared sizes are nonnegative and compared with maximum minus the bounded accumulated total before I/O; the unchanged FD reader enforces exact count and stable state.",
+    "The original Bundle constructor independently checks each member count and SHA before adding it to verifiedMembers.",
+    "SourceRows accepts declared64MiB under its original512MiB bound and calls the provider immediately; therefore the missing-member test reaches the new aggregate limit guard first.",
+    "The opaque value has no public initializer and requires exact UTF8 declared-member set/count, excludes manifest.json, then checks count/digest/aggregate again.",
+    "capturedMemberData requires original exact UTF8 path/count/digest and returns retained Data; later disk replacement does not become live authority or affect that value.",
+    "Existing loadBundle, entire private FD reader, all five old methods and original helpers are exactly preserved by the full inverse.",
+    "New tests use synthetic private fixtures only; their changed-member, changed-manifest, permission, symlink, parent, descriptor-count, immutable-copy and budget assertions are consistent with the read source."
+  ],
+  "findings": [],
+  "limitations": [
+    "This is source/API review, not Swift parse/compile/runtime acceptance.",
+    "No native capture, source-session authorization, destination import/write permission, actual no-read syscall trace, memory peak or cancellation timing is qualified.",
+    "The closed census is the verified declared member set, not an assertion that unrelated files do not exist in the directory.",
+    "Archive encoded-size checks and the producer's separate live source revalidation remain required.",
+    "No Oracle access, source edit, publication, compiler or native invocation was performed for this review."
+  ],
+  "newSelectedTests": [
+    "testPreservationExportRetainsOnlyDeclaredBytesAndNoAuthority",
+    "testPreservationExportKeepsOriginalBytesAndRefusesSubstitutedMemberDescriptor",
+    "testPreservationExportCountsManifestInAggregateLimitBeforeMemberIO",
+    "testPreservationExportRetainsDescriptorAndPrivateMemberGuards"
+  ],
+  "oldMethodsExcluded": [
+    "testDescriptorRequiresExactCallerIdentityAndUnambiguousCapturedOnlyContract",
+    "testPrivateBundleReadVerifiesAllBytesWithoutPromotingSourceOrDestinationAuthority",
+    "testChangedManifestSourceBytesCountsAndFlagsAreRefused",
+    "testParentEscapeSymlinksAndNonPrivatePermissionsAreRefused",
+    "testOriginalNativeCapturesReadThroughPrivateDescriptorAndKeepTheirSemanticBlockers"
+  ],
+  "preservation": {
+    "kind": "one-public-safe-unreferenced-Git-blob",
+    "requestedBy": "Root for C aggregate producer packet",
+    "standaloneBranchOrCommit": false,
+    "AsanaPublication": false
+  }
+}

@@ -8,6 +8,7 @@ import PinkhaAnyIntegration
 /// transplant source history into target history, or admit unsupported layouts.
 public struct AnyHeartNativeSourcePreservation: Sendable {
     public static let contract = "pinkha-heart-native-source-preservation-v1"
+    public static let capturedContract = "pinkha-heart-native-source-preservation-v2"
     public static let datasetKey = "heart_source_catalog"
     public struct Record: Sendable {
         public let sourceHeadID: String
@@ -17,7 +18,11 @@ public struct AnyHeartNativeSourcePreservation: Sendable {
         public let jsonViewSHA256: String?
     }
     public let bundle: AnyHeartNativeSpaceBundle
-    public let recoveredDefinitions: AnyHeartNativeRecoveredDefinitions
+    public let definitionEvidence: AnyHeartNativeDefinitionEvidence
+    public var recoveredDefinitions: AnyHeartNativeRecoveredDefinitions? { definitionEvidence.recoveredDefinitions }
+    public var preservationContract: String {
+        definitionEvidence.kind == .recoveredOriginal ? Self.contract : Self.capturedContract
+    }
     public let currentContent: AnyHeartNativeContentComposition
     public let archive: AnyHeartNativePreservationArchive
     public let records: [Record]
@@ -36,19 +41,40 @@ public struct AnyHeartNativeSourcePreservation: Sendable {
 
     public init(bundle: AnyHeartNativeSpaceBundle, recoveredDefinitions: AnyHeartNativeRecoveredDefinitions,
                 archive: AnyHeartNativePreservationArchive) throws {
-        let catalog = try AnyHeartNativeDefinitionCatalog(bundle: bundle, recoveredDefinitions: recoveredDefinitions)
-        guard archive.binding == (try .init(bundle: bundle, recovered: recoveredDefinitions)),
+        try self.init(bundle: bundle, definitionEvidence: .recoveredOriginal(recoveredDefinitions), archive: archive)
+    }
+
+    /// Only a complete directly captured descriptor census can use this route.
+    /// It does not construct or relax the historical recovery envelope.
+    public init(capturedBundle bundle: AnyHeartNativeSpaceBundle,
+                archive: AnyHeartNativePreservationArchive) throws {
+        try self.init(bundle: bundle, definitionEvidence: .capturedComplete, archive: archive)
+    }
+
+    public init(bundle: AnyHeartNativeSpaceBundle, definitionEvidence: AnyHeartNativeDefinitionEvidence,
+                archive: AnyHeartNativePreservationArchive) throws {
+        let catalog = try definitionEvidence.catalog(bundle: bundle)
+        let expectedArchive: AnyHeartNativePreservationArchive.Binding
+        switch definitionEvidence {
+        case .recoveredOriginal(let recovered): expectedArchive = try .init(bundle: bundle, recovered: recovered)
+        case .capturedComplete: expectedArchive = try .init(capturedBundle: bundle)
+        }
+        let recovery = definitionEvidence.recoveredDefinitions
+        let contract = definitionEvidence.kind == .recoveredOriginal ? Self.contract : Self.capturedContract
+        guard archive.binding == expectedArchive,
               let context = bundle.nativeStoreContext, let census = context.headCensus,
               context.unmappedCollectionNames.isEmpty, bundle.sourceGaps.isEmpty,
               bundle.resolverUnmapped.isEmpty, bundle.fileVariants.isEmpty, bundle.fileReferences.isEmpty,
               bundle.issues.allSatisfy({
+                  definitionEvidence.kind == .recoveredOriginal &&
                   $0.code == "compiled-definition-descriptors-not-captured" && $0.field == "BundledDefinitionsUsed"
               }) else { throw AnyDestinationMigrationError.invalidPlan("full preservation source contract") }
-        // Reconstruct every member from the actual file, including the original
-        // native witness and the separately qualified recovery evidence.
+        // Reconstruct every member from the actual file. The v1 route includes
+        // independently qualified recovery; the v2 route has capture members only.
         let decoded = try AnyHeartNativePreservationArchive.restore(archive.bytes, expected: archive.binding)
         guard decoded.bundle.manifestBytes == bundle.manifestBytes,
-              decoded.recoveredDefinitions.manifestBytes == recoveredDefinitions.manifestBytes else {
+              decoded.definitionEvidence.kind == definitionEvidence.kind,
+              decoded.recoveredDefinitions?.manifestBytes == recovery?.manifestBytes else {
             throw AnyDestinationMigrationError.changedSource
         }
         let current = try AnyHeartNativeContentComposition(bundle: bundle)
@@ -90,16 +116,19 @@ public struct AnyHeartNativeSourcePreservation: Sendable {
             throw AnyDestinationMigrationError.invalidPlan("source catalog anchor")
         }
         let suffix = AnyContentDigest.sha256(AnyPreparedMigrationPlanBinding.material([
-            Self.contract, bundle.manifestSHA256, recoveredDefinitions.manifestSHA256,
+            contract, bundle.manifestSHA256, recovery?.manifestSHA256 ?? definitionEvidence.kind.rawValue,
         ]))
         let typeKey = "heart-source-catalog-type:" + suffix
         let objectKey = "heart-source-catalog-object:" + suffix
         let fileKey = "heart-source-catalog-file:" + suffix
         let owner = AnyDestinationReference.mapped(sourceKey: typeKey, slot: .objectID, encoding: .rawID)
         let object = AnyDestinationReference.mapped(sourceKey: objectKey, slot: .objectID, encoding: .rawID)
+        let definitionField = definitionEvidence.kind == .recoveredOriginal
+            ? "sourceRecoveryManifestSHA256" : "sourceDefinitionEvidence"
+        let definitionValue = recovery?.manifestSHA256 ?? definitionEvidence.kind.rawValue
         let ordinaryStrings = ["sourceHeadID", "sourceRole", "sourceNativeType", "sourceUniqueKey",
             "sourceTreeJSON", "sourceSnapshotBase64", "sourceViewJSON", "sourceSnapshotSHA256",
-            "sourceViewSHA256", "sourceCaptureManifestSHA256", "sourceRecoveryManifestSHA256", "archiveURI"]
+            "sourceViewSHA256", "sourceCaptureManifestSHA256", definitionField, "archiveURI"]
         let fields: [AnyJSON] = ordinaryStrings.map {
             .object(["key": .string($0), "kind": .string("string"), "required": .bool(true)])
         } + [.object(["key": .string("snapshotPresent"), "kind": .string("boolean"), "required": .bool(true)]),
@@ -109,9 +138,9 @@ public struct AnyHeartNativeSourcePreservation: Sendable {
             .init(sourceKey: typeKey, sourceObjectID: anchor.sourceObjectID, operation: .typeDefinition(.init(
                 xKey: "heart_source_catalog_" + suffix, name: "Original Heart source catalog",
                 description: "Immutable source definitions, context and provenance; unsupported types remain inactive.",
-                meta: .literal(.object(["preservationContract": .string(Self.contract),
+                meta: .literal(.object(["preservationContract": .string(contract),
                     "sourceCaptureManifestSHA256": .string(bundle.manifestSHA256),
-                    "sourceRecoveryManifestSHA256": .string(recoveredDefinitions.manifestSHA256)]))))),
+                    definitionField: .string(definitionValue)]))))),
             .init(sourceKey: typeKey + ":records-part", sourceObjectID: anchor.sourceObjectID,
                 expectedRecordCount: fields.count + 2,
                 operation: .partDefinition(owner: owner, draft: .literal(.object([
@@ -179,7 +208,7 @@ public struct AnyHeartNativeSourcePreservation: Sendable {
                 "sourceSnapshotSHA256": .string(snapshot?.snapshotSHA256 ?? ""),
                 "sourceViewSHA256": .string(snapshot?.viewSHA256 ?? ""),
                 "sourceCaptureManifestSHA256": .string(bundle.manifestSHA256),
-                "sourceRecoveryManifestSHA256": .string(recoveredDefinitions.manifestSHA256),
+                definitionField: .string(definitionValue),
             ]
             // Stay below the existing native immutable-record request bound,
             // including the actual resolved file URI and JSON envelope.
@@ -220,7 +249,8 @@ public struct AnyHeartNativeSourcePreservation: Sendable {
         struct Material: Encodable {
             let contract: String
             let sourceManifestSHA256: String
-            let recoveredManifestSHA256: String
+            let recoveredManifestSHA256: String?
+            let definitionEvidence: String?
             let currentContentSHA256: String
             let archiveSHA256: String
             let unusedDefinitionIDs: [String]
@@ -233,13 +263,14 @@ public struct AnyHeartNativeSourcePreservation: Sendable {
             Data($0.utf8).lexicographicallyPrecedes(Data($1.utf8))
         }
         contexts.sort { Data($0.utf8).lexicographicallyPrecedes(Data($1.utf8)) }
-        let material = try encoder.encode(Material(contract: Self.contract,
-            sourceManifestSHA256: bundle.manifestSHA256, recoveredManifestSHA256: recoveredDefinitions.manifestSHA256,
+        let material = try encoder.encode(Material(contract: contract,
+            sourceManifestSHA256: bundle.manifestSHA256, recoveredManifestSHA256: recovery?.manifestSHA256,
+            definitionEvidence: definitionEvidence.kind == .capturedComplete ? definitionEvidence.kind.rawValue : nil,
             currentContentSHA256: current.contentSHA256, archiveSHA256: archive.sha256,
             unusedDefinitionIDs: unusedIDs, sourceContextIDs: contexts,
             allImportedTypesUsable: false, items: items, coverage: coverage))
         try AnyTorahSourceJSONGuard.validateRoundTrip(original: material, encoded: material)
-        self.bundle = bundle; self.recoveredDefinitions = recoveredDefinitions; currentContent = current
+        self.bundle = bundle; self.definitionEvidence = definitionEvidence; currentContent = current
         self.archive = archive; self.records = records; uninstantiatedDefinitionIDs = unusedIDs
         preservedContextIDs = contexts; self.items = items; self.coverage = coverage
         contentSHA256 = AnyContentDigest.sha256(material)
