@@ -3,17 +3,24 @@
   "status": "SOURCE_ONLY_NOT_COMPILED_NOT_RUN",
   "repository": "davidpovarsky/anytype-swift",
   "parent": {
-    "commit": "242f603b4d0c7f17c26a08e2ab707160425511b1",
-    "tree": "b88de6f857768090aed80f113688fd9692725834"
+    "commit": "be78e787bdd0be2b877f7c6b68850800158b1987",
+    "tree": "c0d2252b7578d3d70f3e14004a2f94d7e114521e"
   },
   "sourceBase": {
     "commit": "d1b04526825ad10b07c59313727629cec35f9559",
     "tree": "b0140be8a4d53766a7e4a221e037b00e9d4c3bb2"
   },
   "prefix": "source-carriers/ordinary14-20261128",
-  "memberCountExcludingThisFile": 31,
-  "bytesExcludingThisFile": 630844,
+  "memberCountExcludingThisFile": 35,
+  "bytesExcludingThisFile": 684625,
   "files": [
+    {
+      "path": "before-tests/NativeOrdinaryPropertySupplementTests-7adad.swift",
+      "bytes": 38303,
+      "sha256": "7adad542d518dca925ee4bd59bce3bc20b699de3a1f8d7ba9805245f42059e73",
+      "gitMode": "100644",
+      "role": "exact second unrun test, before native-reference fixture correction"
+    },
     {
       "path": "before-tests/NativeOrdinaryPropertySupplementTests.swift",
       "bytes": 36969,
@@ -65,10 +72,10 @@
     },
     {
       "path": "BYTE_VALIDATION.json",
-      "bytes": 13426,
-      "sha256": "f1d2a9c11ff69eb80d2ba579f4ebd3bad6a3ff004ffaff50f2be91425cf44355",
+      "bytes": 17526,
+      "sha256": "b9bf03e9b94df08e9c4e1df1d22e6c77a04ec4f7ca9af7934de1e6fc275f4ec3",
       "gitMode": "100644",
-      "role": "actual pure in-memory byte/inverse observations"
+      "role": "actual in-memory exact byte and inverse validation; no compiler or runtime"
     },
     {
       "path": "CONTRACT.md",
@@ -100,10 +107,10 @@
     },
     {
       "path": "INVERSE_MANIFEST.json",
-      "bytes": 4233,
-      "sha256": "7aae93c7c2adadda087592cc7892398525b3f5710ba64edbefb92fe519280bce",
+      "bytes": 5554,
+      "sha256": "5a7c4f27d095f0b1aaca5d31651a0092bf7999f93e624cc0b80421c80de274ea",
       "gitMode": "100644",
-      "role": "full source correspondence and exact restoration manifest"
+      "role": "exact inverse chain including both preserved unrun test predecessors"
     },
     {
       "path": "overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationImportedPropertyNamespace.swift",
@@ -162,11 +169,25 @@
       "role": "complete original source-only publication readback; original source remains historical"
     },
     {
+      "path": "provenance/fixture-native-reference-resolver-correction.patch",
+      "bytes": 1182,
+      "sha256": "592ca35fc52f81ff0a0cacd2c9ca88d78489cee8487945bb6fbef3b2391e67d4",
+      "gitMode": "100644",
+      "role": "source-only native-reference fixture correction patch"
+    },
+    {
       "path": "provenance/NATIVE_ID_FIXTURE_CORRECTION.json",
       "bytes": 2009,
       "sha256": "5ba1619567ea05c5bc511c20e891f3832a182253fecc20375e1d95e9c95cbdea",
       "gitMode": "100644",
       "role": "source-only typed native-ID fixture correction and predecessor proof"
+    },
+    {
+      "path": "provenance/NATIVE_REFERENCE_FIXTURE_CORRECTION.json",
+      "bytes": 2889,
+      "sha256": "e18b6be1b5d65ba498d5d7daf59d42ccd438bee601ff098cae0e8cd531633a6b",
+      "gitMode": "100644",
+      "role": "source-only native-reference fixture correction proof"
     },
     {
       "path": "provenance/native-id-fixture-correction.patch",
@@ -183,18 +204,25 @@
       "role": "exact previously reviewed production-draft contract"
     },
     {
-      "path": "README.md",
-      "bytes": 7460,
-      "sha256": "2aa0d015cf982b3f0583c0576533296c75dfab5dd5bec323a9d4c93ee739823d",
+      "path": "provenance/W3_RESOLVER_FINDING.json",
+      "bytes": 3450,
+      "sha256": "c2cc38c659ba6483f07effa56c1aaacc8a9cd7bf2ece11be56e73269f13dfeac",
       "gitMode": "100644",
-      "role": "source-only handoff, scope and pending functional proof"
+      "role": "exact source-only W3 finding; not a runtime result"
+    },
+    {
+      "path": "README.md",
+      "bytes": 9143,
+      "sha256": "1a6f42f15ebd32387934a80323a9d39b88d518d744a1f6695102622f1ae23efe",
+      "gitMode": "100644",
+      "role": "source-only carrier scope, exact dependencies and preserved fixture corrections"
     },
     {
       "path": "SOURCE_MANIFEST.json",
-      "bytes": 18026,
-      "sha256": "7cd5cb54a9004e9180c325c85531ac64d676b9df5d5f25d2f91e085ef0c7aa4a",
+      "bytes": 18756,
+      "sha256": "09fe355b5f6a744af4d5e2e5ba0d32aaae9b047e56255b8e62d0f9ae964717fb",
       "gitMode": "100644",
-      "role": "complete source, dependency, preimage, test and provenance inventory"
+      "role": "complete current carrier source and separate source-review claims"
     },
     {
       "path": "SOURCE_SELECTION.json",
@@ -226,10 +254,10 @@
     },
     {
       "path": "tests/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryPropertySupplementTests.swift",
-      "bytes": 38303,
-      "sha256": "7adad542d518dca925ee4bd59bce3bc20b699de3a1f8d7ba9805245f42059e73",
+      "bytes": 38426,
+      "sha256": "920ed0227ba82d84a392627f0c8ee2c44eb3c62037af580c1eb9ccee4b572a0a",
       "gitMode": "100644",
-      "role": "eight new synthetic component methods; not compiled or run"
+      "role": "eight source-only fixture methods; native-reference resolver corrected"
     }
   ],
   "selfBoundBy": "enclosing Git tree and independent whole-blob readback"

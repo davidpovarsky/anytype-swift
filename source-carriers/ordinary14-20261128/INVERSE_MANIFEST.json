@@ -67,9 +67,10 @@
       "sha256": "7fc2c543d4785bc2876a221088f16384146f861065a79bb617312b3515c68b32"
     },
     "after": {
-      "path": "tests/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryPropertySupplementTests.swift",
+      "path": "before-tests/NativeOrdinaryPropertySupplementTests-7adad.swift",
       "bytes": 38303,
-      "sha256": "7adad542d518dca925ee4bd59bce3bc20b699de3a1f8d7ba9805245f42059e73"
+      "sha256": "7adad542d518dca925ee4bd59bce3bc20b699de3a1f8d7ba9805245f42059e73",
+      "note": "Historical ASCII successor retained as the exact pre-resolver-correction source; no test was run."
     },
     "patch": {
       "path": "provenance/native-id-fixture-correction.patch",
@@ -83,5 +84,31 @@
     },
     "exactWholeInverseVerified": true,
     "otherSevenMethodBodiesUnchanged": true
+  },
+  "nativeReferenceFixtureCorrection": {
+    "before": {
+      "path": "before-tests/NativeOrdinaryPropertySupplementTests-7adad.swift",
+      "bytes": 38303,
+      "sha256": "7adad542d518dca925ee4bd59bce3bc20b699de3a1f8d7ba9805245f42059e73"
+    },
+    "after": {
+      "path": "tests/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryPropertySupplementTests.swift",
+      "bytes": 38426,
+      "sha256": "920ed0227ba82d84a392627f0c8ee2c44eb3c62037af580c1eb9ccee4b572a0a"
+    },
+    "patch": {
+      "path": "provenance/fixture-native-reference-resolver-correction.patch",
+      "bytes": 1182,
+      "sha256": "592ca35fc52f81ff0a0cacd2c9ca88d78489cee8487945bb6fbef3b2391e67d4"
+    },
+    "primary": {
+      "path": "overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationNativeMigration.swift",
+      "bytes": 24363,
+      "sha256": "b47533f131f3919336c9667d80be1911aedcd131544b5e73ee8910f100d18850",
+      "blobSHA": "f4f23e111468ca494ae661019610463247161df5"
+    },
+    "exactWholeInverseVerified": true,
+    "allEightMethodBodiesUnchanged": true,
+    "inverseOrder": "Reverse this one resolver closure first to the exact 7adad source, then reverse the separately retained native-ID fixture correction to 7fc2."
   }
 }

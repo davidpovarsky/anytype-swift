@@ -1,12 +1,12 @@
 {
-  "schema": "pinkha.ordinary14.source-carrier.v2",
+  "schema": "pinkha.ordinary14.source-carrier.v3",
   "status": "SOURCE_ONLY_NOT_COMPILED_NOT_RUN",
   "repository": "davidpovarsky/anytype-swift",
   "branch": "codex/chatgpt-wave15-w1-ordinary14-source-20261128",
   "prefix": "source-carriers/ordinary14-20261128",
   "parent": {
-    "commit": "242f603b4d0c7f17c26a08e2ab707160425511b1",
-    "tree": "b88de6f857768090aed80f113688fd9692725834"
+    "commit": "be78e787bdd0be2b877f7c6b68850800158b1987",
+    "tree": "c0d2252b7578d3d70f3e14004a2f94d7e114521e"
   },
   "upstreamObservation": {
     "repository": "anyproto/anytype-swift",
@@ -252,8 +252,8 @@
   ],
   "test": {
     "path": "tests/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryPropertySupplementTests.swift",
-    "bytes": 38303,
-    "sha256": "7adad542d518dca925ee4bd59bce3bc20b699de3a1f8d7ba9805245f42059e73",
+    "bytes": 38426,
+    "sha256": "920ed0227ba82d84a392627f0c8ee2c44eb3c62037af580c1eb9ccee4b572a0a",
     "methods": [
       "testOriginal182CanonicalPlanAndNilEncodingStayByteIdentical",
       "testFourteenOriginalDefinitionsRetainExactShapesAndOutsideBlockers",
@@ -270,6 +270,12 @@
       "bytes": 36969,
       "sha256": "7fc2c543d4785bc2876a221088f16384146f861065a79bb617312b3515c68b32",
       "carrierPath": "before-tests/NativeOrdinaryPropertySupplementTests.swift"
+    },
+    "previousASCIIUnrun": {
+      "commit": "be78e787bdd0be2b877f7c6b68850800158b1987",
+      "bytes": 38303,
+      "sha256": "7adad542d518dca925ee4bd59bce3bc20b699de3a1f8d7ba9805245f42059e73",
+      "carrierPath": "before-tests/NativeOrdinaryPropertySupplementTests-7adad.swift"
     }
   },
   "exactSourceCheckpoint": {
@@ -316,11 +322,13 @@
       "scope": "namespace/plan/executor plus all eight new tests and canonical helper",
       "status": "SOURCE_CLEAR_REPORTED_IN_COORDINATION",
       "currentTestSource": {
-        "sha256": "7adad542d518dca925ee4bd59bce3bc20b699de3a1f8d7ba9805245f42059e73",
+        "sha256": "920ed0227ba82d84a392627f0c8ee2c44eb3c62037af580c1eb9ccee4b572a0a",
         "status": "SOURCE_CLEAR_REPORTED_IN_COORDINATION",
-        "scope": "exact one-hunk forward/inverse, other seven unchanged bodies, native-ID primary and typed constructor refusal"
+        "scope": "whole test, exact one-closure inverse, all eight methods unchanged; b475 resolver and 37a executor primary join; mapped reference refusal and immutable owner/intent guard preserved"
       },
-      "priorTestPositiveFixturePreconditionSuperseded": true
+      "priorTestPositiveFixturePreconditionSuperseded": true,
+      "priorTestResolverPreconditionSuperseded": true,
+      "nativeColdAuthority": "NOT_RUN; requires a separately admitted current lease and engine product"
     },
     "runtime": "NOT_RUN"
   },
@@ -338,5 +346,10 @@
     "path": "provenance/NATIVE_ID_FIXTURE_CORRECTION.json",
     "bytes": 2009,
     "sha256": "5ba1619567ea05c5bc511c20e891f3832a182253fecc20375e1d95e9c95cbdea"
+  },
+  "nativeReferenceFixtureCorrection": {
+    "path": "provenance/NATIVE_REFERENCE_FIXTURE_CORRECTION.json",
+    "bytes": 2889,
+    "sha256": "e18b6be1b5d65ba498d5d7daf59d42ccd438bee601ff098cae0e8cd531633a6b"
   }
 }

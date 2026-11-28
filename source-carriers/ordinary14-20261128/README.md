@@ -23,7 +23,7 @@ The keys are **aperture, artist, audioAlbum, audioAlbumTrackNumber, audioGenre, 
 | INVERSE_MANIFEST.json | The complete parent-to-C6-to-C14 source chain and exact restoration images. |
 | FILES.json | Closed inventory of all other carrier members. The enclosing Git tree binds FILES.json itself. |
 
-The original source base is `d1b04526825ad10b07c59313727629cec35f9559`, tree `b0140be8a4d53766a7e4a221e037b00e9d4c3bb2`. This correction is an ordinary child of the initial source-only carrier commit `242f603b4d0c7f17c26a08e2ab707160425511b1`. Parent files were fetched by this fixed commit and compared with their complete held bytes. **The parent does not contain the C6 Executor/Journal changes.** Their full files are included explicitly; do not infer those dependencies from the parent commit or from an installed runner.
+The original source base is `d1b04526825ad10b07c59313727629cec35f9559`, tree `b0140be8a4d53766a7e4a221e037b00e9d4c3bb2`. This resolver correction is an ordinary child of `be78e787bdd0be2b877f7c6b68850800158b1987`; the initial carrier `242f603b4d0c7f17c26a08e2ab707160425511b1` remains in its ancestry. Parent files were fetched by this fixed commit and compared with their complete held bytes. **The parent does not contain the C6 Executor/Journal changes.** Their full files are included explicitly; do not infer those dependencies from the parent commit or from an installed runner.
 
 Git text mode is 100644. Original recorded POSIX modes remain provenance fields in SOURCE_MANIFEST.json; a future physical qualifier must explicitly admit its full source/mode graph. This carrier is not that complete compiler closure.
 
@@ -37,7 +37,7 @@ Each supplemental directory entry retains its own new plan binding and immutable
 
 ## Review and pending proof
 
-Root reviewed the supplement builder, directory, verifier and native-driver boundary. E reviewed the namespace/plan/executor boundary, then independently fetched and read the complete eight-test file and unchanged canonical helper. The source reviews found no blocking issue in those scopes. They are recorded as source-review conclusions, not test results.
+Root reviewed the supplement builder, directory, verifier and native-driver boundary. E reviewed the namespace/plan/executor boundary, then independently fetched and read the complete eight-test file and unchanged canonical helper. The production source reviews remain unchanged. The original test-source reviews missed two fixture preconditions, both explicitly corrected and preserved below. Source review is not a test result.
 
 The eight methods cover legacy encoding, the finite source shapes, foreign bindings, typed receipt/refusal layers, denial before a journal or new writes, namespace drift, synthetic authorization revocation and lost-acknowledgement reconciliation limited to fourteen intents. The cold checkpoint portion is historical mapping validation with no driver effects.
 
@@ -51,6 +51,14 @@ C22, C3/E23, original accounts, source payloads, journals, compiled products and
 
 The initial carrier and unrun test SHA256 `7fc2c543d4785bc2876a221088f16384146f861065a79bb617312b3515c68b32` are retained. E's follow-up review found that method 4's Unicode-positive namespace would fail the original native ID parser before its intended receipt/root checks. The original parser accepts only nonempty printable ASCII identifiers, bounded to 1024 UTF-8 bytes.
 
-The current test is `7adad542d518dca925ee4bd59bce3bc20b699de3a1f8d7ba9805245f42059e73` (38,303 bytes). It uses a valid ASCII positive owner and a distinct valid ASCII negative owner; both composed and decomposed Unicode spellings must fail namespace construction with the exact typed `invalidPlan("original namespace identity")` error. All other seven methods, eight method names, original fixture pins, production sources and native authority requirements are unchanged.
+The first corrected, still-unrun test is `7adad542d518dca925ee4bd59bce3bc20b699de3a1f8d7ba9805245f42059e73` (38,303 bytes). It is preserved at before-tests/NativeOrdinaryPropertySupplementTests-7adad.swift. It uses a valid ASCII positive owner and a distinct valid ASCII negative owner; both composed and decomposed Unicode spellings must fail namespace construction with the exact typed `invalidPlan("original namespace identity")` error. All other seven methods, eight method names, original fixture pins, production sources and native authority requirements are unchanged.
 
-E independently read and verified the exact current whole test, patch and parser primary. The earlier test clearance is superseded only for this corrected positive-fixture precondition. No compiler, test or native execution occurred. The one-hunk patch, original complete test and source-only correction proof are included.
+E independently read and verified that exact first correction, its patch and parser primary. The earlier test clearance is superseded only for this corrected positive-fixture precondition. No compiler, test or native execution occurred. The one-hunk patch, original complete test and source-only correction proof are included.
+
+## Preserved native-reference resolver correction
+
+W3 story 1220965747638051 identified a second source blocker in the unrun 7adad fixture: Ordinary14FixtureDriver supplied a resolver that always threw, while the unchanged production operation.resolved implementation invokes it for already-native property owners too. Four methods would therefore fail during fixture construction. This was a source finding, not an observed runtime result.
+
+The current test is `920ed0227ba82d84a392627f0c8ee2c44eb3c62037af580c1eb9ccee4b572a0a` (38,426 bytes). Only that closure now returns the associated ID from .native and continues to throw unexpectedOperation for .mapped. The following exact expectedOwnerID, immutable-intent and uniqueness checks remain unchanged. All eight method bodies, selectors, original fixture pins and all seven production files are byte-identical to their prior versions.
+
+E independently fetched and hash-verified the complete current test, traced the production resolver and original executor branches, and checked the exact one-closure forward and inverse. The prior broad test-source clearance is superseded for this missed precondition. Both earlier complete tests and both correction proofs remain retained. No Swift parse, compiler, test, native, account or Oracle operation occurred for this correction. All eight methods remain NOT_COMPILED and NOT_RUN, including the separate current native cold-authority obligation.

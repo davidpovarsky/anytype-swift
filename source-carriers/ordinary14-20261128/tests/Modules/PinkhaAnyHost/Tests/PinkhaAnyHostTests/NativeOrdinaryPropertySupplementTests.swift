@@ -527,8 +527,11 @@ private actor Ordinary14FixtureDriver: AnyDestinationNativeDriving {
         namespace = originalNamespace; self.mode = mode; self.afterFirstPrepare = afterFirstPrepare
         var expected: [String: AnyPreparedDefinitionIntent] = [:]
         for item in supplement.plan.items {
-            let operation = try item.operation.resolved(destinationSpaceID: supplement.plan.binding.workspace.spaceID) { _ in
-                throw Ordinary14FixtureFailure.unexpectedOperation
+            let operation = try item.operation.resolved(destinationSpaceID: supplement.plan.binding.workspace.spaceID) { reference in
+                switch reference {
+                case .native(let id): return id
+                case .mapped: throw Ordinary14FixtureFailure.unexpectedOperation
+                }
             }
             guard case .definition(let intent) = try AnyDestinationNativeIntent.make(operation,
                 binding: supplement.plan.binding, sourceKey: item.sourceKey, sequence: nil, inlineContent: nil),

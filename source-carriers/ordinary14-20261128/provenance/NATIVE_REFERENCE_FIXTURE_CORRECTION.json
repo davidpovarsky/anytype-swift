@@ -1,0 +1,61 @@
+{
+  "schema": "pinkha.ordinary14.fixture-native-reference-resolver-correction.v1",
+  "status": "SOURCE_ONLY_NOT_COMPILED_NOT_RUN",
+  "finding": {
+    "task": "1220541349302681",
+    "story": "1220965747638051",
+    "createdAt": "2026-11-28T07:57:31.653Z",
+    "kind": "source blocker; no runtime failure claimed"
+  },
+  "predecessor": {
+    "commit": "be78e787bdd0be2b877f7c6b68850800158b1987",
+    "test": {
+      "bytes": 38303,
+      "sha256": "7adad542d518dca925ee4bd59bce3bc20b699de3a1f8d7ba9805245f42059e73",
+      "blobSHA": "54729982ed109b3857f48c63418f37bb21056b24"
+    }
+  },
+  "current": {
+    "bytes": 38426,
+    "sha256": "920ed0227ba82d84a392627f0c8ee2c44eb3c62037af580c1eb9ccee4b572a0a",
+    "blobSHA": "8c9101d10fe59e3ef9b7d624ec0fe6e21623f399"
+  },
+  "productionPrimary": {
+    "path": "overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationNativeMigration.swift",
+    "bytes": 24363,
+    "sha256": "b47533f131f3919336c9667d80be1911aedcd131544b5e73ee8910f100d18850",
+    "blobSHA": "f4f23e111468ca494ae661019610463247161df5"
+  },
+  "patch": {
+    "bytes": 1182,
+    "sha256": "592ca35fc52f81ff0a0cacd2c9ca88d78489cee8487945bb6fbef3b2391e67d4"
+  },
+  "exactChanges": [
+    {
+      "from": "            let operation = try item.operation.resolved(destinationSpaceID: supplement.plan.binding.workspace.spaceID) { _ in\n                throw Ordinary14FixtureFailure.unexpectedOperation\n            }",
+      "to": "            let operation = try item.operation.resolved(destinationSpaceID: supplement.plan.binding.workspace.spaceID) { reference in\n                switch reference {\n                case .native(let id): return id\n                case .mapped: throw Ordinary14FixtureFailure.unexpectedOperation\n                }\n            }"
+    }
+  ],
+  "exactInverse": true,
+  "unchangedBeforeAndAfterClosure": true,
+  "allEightMethodBodiesUnchanged": true,
+  "methods": [
+    "testOriginal182CanonicalPlanAndNilEncodingStayByteIdentical",
+    "testFourteenOriginalDefinitionsRetainExactShapesAndOutsideBlockers",
+    "testExternalNamespaceRefusesForeignScopeAndArbitraryOwnerInjection",
+    "testNamespaceReceiptUsesOriginalIntentAndExactUTF8Identity",
+    "testMissingObsoleteOrForeignNamespaceRefusesBeforeJournalOrNewWrites",
+    "testNamespaceObservationRefusesRootOrReceiptDriftBetweenReads",
+    "testCurrentAuthorizationRevocationStopsBeforeTheNextDurableEffect",
+    "testLostAcknowledgementResumesOnlyFourteenIntentsAndMergesTheirReceiptBindings"
+  ],
+  "nativeReferenceReturnedWithoutTransform": true,
+  "mappedReferenceStillRejected": true,
+  "followingImmutableOwnerAndIntentGuardUnchanged": true,
+  "productionFilesChanged": 0,
+  "oracleCalls": 0,
+  "compilerCalls": 0,
+  "testCalls": 0,
+  "nativeCalls": 0,
+  "remaining": "Current lease/imported-definition/property reads after cold reopen remain a separate unrun native obligation."
+}
