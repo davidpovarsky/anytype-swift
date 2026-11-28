@@ -1,0 +1,150 @@
+{
+  "schema": "pinkha-root-files-queue-active-retry-source-peer-v1",
+  "status": "CLEAR_SOURCE_AND_TEST_DESIGN_ONLY_COMPONENT_EXECUTION_NOT_RELEASED",
+  "repository": "davidpovarsky/anytype-swift",
+  "source": {
+    "gitBlob": "bb51b481a41a4b4bf36443a804debb08686a3919",
+    "bytes": 16661,
+    "sha256": "1cd616f5a0b6b99c4ea1e39197a971787e69ff9cf73f25206a53405884a16378"
+  },
+  "originalSource": {
+    "gitBlob": "d3709091d751d3d08f8a78dca74c47cb808ac77d",
+    "bytes": 15094,
+    "sha256": "eecc2056e398e2ce31ffa017ca377f5a88b5e34fd650bfc8c677d946f303ce8c"
+  },
+  "originalTests": {
+    "path": ".runtime-artifacts/sdk-source/internal/files/status/queue_test.go",
+    "gitBlob": "1878f37c567acf97efd1d8ace8d09fc08f20878a",
+    "bytes": 14366,
+    "sha256": "e0107a618d626cfa1f06cefea58edbeaad361a77d2313ac21e2d522fd872ffe7"
+  },
+  "newTests": {
+    "path": ".runtime-artifacts/sdk-source/internal/files/status/queue_retry_generation_test.go",
+    "gitBlob": "6f14e1470313235163e52293721b3b01290a0933",
+    "bytes": 8907,
+    "sha256": "78bf66cc15a8a60e399d3500bac9949a494010ea21024adf9b4d3eee9e40c257"
+  },
+  "literalDerivation": {
+    "gitBlob": "a5021c328b65d0dad2fc8a83c293f583a90e3c62",
+    "bytes": 15177,
+    "sha256": "26f30e217f5aec853ec50bbd770f1292eb201b73b08f95ab0a4eb8beb5464b5b",
+    "wholeForwardInverseExact": true,
+    "edits": 15
+  },
+  "testDeclarationJoin": {
+    "sourceWholeForwardInverseExact": true,
+    "literalEdits": 15,
+    "oldTestsWholeUnchanged": true,
+    "newParents": [
+      "TestQueueKickDuringLimitedAttemptKeepsRetryDue",
+      "TestQueueEnqueueDuringFailureKeepsRetryDue",
+      "TestQueueActiveRetryRequestsCoalesce",
+      "TestQueueRemovedAttemptCannotSettleReplacement",
+      "TestQueueAcknowledgedRetrySurvivesReopen",
+      "TestQueueRetryDuringSuccessCompletesOnce"
+    ],
+    "affectedOldParents": [
+      "TestQueueBackoffAndManualKick",
+      "TestQueueLimited",
+      "TestQueueRemoveCancelsRunningJob",
+      "TestQueueRunnerNilAfterJobContextEndedKeepsJob"
+    ],
+    "compiledParentMethods": 20,
+    "selectedParentMethods": 10,
+    "excludedOldMethods": [
+      "TestQueueRunSuccess",
+      "TestQueuePersistsAcrossRestart",
+      "TestQueueListSpaceAndRemove",
+      "TestEnqueueDelayedSchedulesFuture",
+      "TestEnqueueDelayedKeepsExistingSchedule",
+      "TestQueueRestartResetsBackoff",
+      "TestQueueRestartRestartsBackoff",
+      "TestQueueRestartKeepsDelayedSchedule",
+      "TestQueueNoFileNodes",
+      "TestQueueRunsJobsConcurrently"
+    ],
+    "testsExecuted": 0
+  },
+  "reviewedInterleavings": [
+    {
+      "case": "Accepted Retry or Enqueue before older failure",
+      "result": "The existing due=0 row write and private retry marker occur in the same mutex section as settlement; the later failure preserves that due value and records its genuine error, attempt count and LIMITED classification."
+    },
+    {
+      "case": "Retry after settlement but before worker cleanup",
+      "result": "The newer row update remains due=0. The old callback cannot settle twice; the existing running fence persists until worker cleanup and the next dispatch reads the current row."
+    },
+    {
+      "case": "Remove then re-Enqueue while old callback still runs",
+      "result": "Remove marks the old attempt removed only after deletion or not-found, cancels its context and retains both ownership maps. The newer row waits for callback return; old settlement checks pointer identity/removed and cannot change the replacement."
+    },
+    {
+      "case": "Selection while worker capacity is full",
+      "result": "Capacity is acquired before nextDue; current row selection and the running/attempt identity claim now occur under one mutex. The old stale Job snapshot gap between due-row read and slot wait is removed."
+    },
+    {
+      "case": "Success after accepted Retry",
+      "result": "Original terminal success deletes the row once. Retry requests are not a second successful upload authorization."
+    },
+    {
+      "case": "Queue Close and canceled runner returning nil",
+      "result": "Original context-error conversion and closing refusal remain literal. Actual callback return still precedes ownership release; the original cancellation test remains whole and can call the unchanged CancelFunc map."
+    }
+  ],
+  "originalPoliciesPreserved": [
+    "Existing QueueCollection, seven payload field keys and row id; no on-disk schema or public Queue API change.",
+    "Four workers, 64-row due batch, fairness selection, scan interval, all job timeouts and all retry cadences.",
+    "No-file-node classification and nonincremented attempt policy.",
+    "Normal failed work without a newer acknowledged retry keeps original backoff.",
+    "The complete original queue_test.go body, including every assertion, remains unchanged.",
+    "Notifications occur outside the queue mutex."
+  ],
+  "testAssessment": {
+    "exactCompiledParents": 20,
+    "selectedParents": 10,
+    "selectedChildren": 0,
+    "selectedNewParents": [
+      "TestQueueKickDuringLimitedAttemptKeepsRetryDue",
+      "TestQueueEnqueueDuringFailureKeepsRetryDue",
+      "TestQueueActiveRetryRequestsCoalesce",
+      "TestQueueRemovedAttemptCannotSettleReplacement",
+      "TestQueueAcknowledgedRetrySurvivesReopen",
+      "TestQueueRetryDuringSuccessCompletesOnce"
+    ],
+    "selectedAffectedOriginalParents": [
+      "TestQueueBackoffAndManualKick",
+      "TestQueueLimited",
+      "TestQueueRemoveCancelsRunningJob",
+      "TestQueueRunnerNilAfterJobContextEndedKeepsJob"
+    ],
+    "testOnlyProductionHooks": 0,
+    "fakeCurrentNativeReceipts": 0,
+    "realIsolatedAnyStoreDatabases": true,
+    "sameIDMaximumActiveAssertion": true,
+    "callbacksMayRemainBlockedAfterCancellation": true,
+    "cleanupReleasesGatesThenJoinsQueueBeforeClosingDatabase": true,
+    "persistentDueCheckedBeforeReopenedRunCanReset": true,
+    "crashOrPowerLossClaim": false,
+    "negativeControl": {
+      "source": "d3709091d751d3d08f8a78dca74c47cb808ac77d",
+      "test": "6f14e1470313235163e52293721b3b01290a0933",
+      "selectedParent": "TestQueueKickDuringLimitedAttemptKeepsRetryDue",
+      "expected": "FAIL due to acknowledged next=0 being overwritten by the old ErrLimited settlement",
+      "actual": "NOT_RUN"
+    },
+    "negativeControlMustMatchSpecificControlledAssertion": true,
+    "genericSetupBuildTimeoutOrCleanupFailureNotAcceptedAsRegression": true
+  },
+  "boundaries": {
+    "sourceDerivedRaceNotHistoricalQuotaDiagnosis": true,
+    "actualOldSourceRegression": "NOT_RUN",
+    "actualCandidateTenMethods": "NOT_RUN",
+    "formatterOrCompilerInvoked": false,
+    "nativeAccountsOrNetworkInvoked": false,
+    "publishedNative64MapChanged": false,
+    "originalResourceGatesChanged": false,
+    "cacheOwnershipGrantedByThisPeer": false,
+    "sourceManifestDependencyToolchainAndFreshResourceAdmissionRemainRequired": true
+  },
+  "conclusion": "The finite correction is suitable for a separately admitted real component build and the specified regression controls. No runtime or cloud acceptance is inferred from this review."
+}

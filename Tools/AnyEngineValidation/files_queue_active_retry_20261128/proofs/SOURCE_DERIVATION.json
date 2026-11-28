@@ -1,0 +1,151 @@
+{
+  "protocol": "FILES_QUEUE_ACTIVE_RETRY_SOURCE_DERIVATION_V1",
+  "status": "SOURCE_ONLY_NOT_FORMATTED_NOT_COMPILED_NOT_TESTED",
+  "repository": "davidpovarsky/anytype-swift",
+  "base": {
+    "gitBlob": "1bb7c086f3d28a8e7c2aedee26656a2ba40b71b3",
+    "sha256": "3552d6f65350c1eba2e9763c7f9a9daa64ada0335f64020ad585fff4a0e286e4",
+    "files": 1638
+  },
+  "unchangedFinalNative64Map": {
+    "gitBlob": "4387f42b1e4787bc7683c8cfc6e4892dac87ec30",
+    "sha256": "437ded56616ae2c342076aaad30e8bf56c0a6d5e2033a9146de1676985027c66",
+    "files": 1648
+  },
+  "sourcePath": ".runtime-artifacts/sdk-source/internal/files/status/queue.go",
+  "before": {
+    "gitBlob": "d3709091d751d3d08f8a78dca74c47cb808ac77d",
+    "bytes": 15094,
+    "sha256": "eecc2056e398e2ce31ffa017ca377f5a88b5e34fd650bfc8c677d946f303ce8c"
+  },
+  "after": {
+    "gitBlob": "bb51b481a41a4b4bf36443a804debb08686a3919",
+    "bytes": 16661,
+    "sha256": "1cd616f5a0b6b99c4ea1e39197a971787e69ff9cf73f25206a53405884a16378"
+  },
+  "unchangedOriginalTests": {
+    "path": ".runtime-artifacts/sdk-source/internal/files/status/queue_test.go",
+    "gitBlob": "1878f37c567acf97efd1d8ace8d09fc08f20878a",
+    "bytes": 14366,
+    "sha256": "e0107a618d626cfa1f06cefea58edbeaad361a77d2313ac21e2d522fd872ffe7"
+  },
+  "newTest": {
+    "path": ".runtime-artifacts/sdk-source/internal/files/status/queue_retry_generation_test.go",
+    "gitBlob": "6f14e1470313235163e52293721b3b01290a0933",
+    "bytes": 8907,
+    "sha256": "78bf66cc15a8a60e399d3500bac9949a494010ea21024adf9b4d3eee9e40c257"
+  },
+  "orderedLiteralEdits": [
+    {
+      "label": "private per-invocation identity",
+      "oldText": "// Queue is the persistent work queue. One per SDK.\n",
+      "newText": "// queueAttempt is private to one actual runner invocation. Its row may be\n// refreshed or removed while the runner is still returning. All mutable\n// fields, and the running/attempts maps, are protected by Queue.mu.\ntype queueAttempt struct {\n\tjob            Job\n\tctx            context.Context\n\tcancel         context.CancelFunc\n\tretryRequested bool\n\tremoved        bool\n}\n\n// Queue is the persistent work queue. One per SDK.\n"
+    },
+    {
+      "label": "retain CancelFunc map and add private attempt metadata",
+      "oldText": "\tmu       sync.Mutex\n\trunning  map[string]context.CancelFunc // job id → cancel of its attempt\n\tlastKind string\n",
+      "newText": "\tmu       sync.Mutex\n\trunning  map[string]context.CancelFunc // held until the actual runner returns\n\tattempts map[string]*queueAttempt\n\tlastKind string\n"
+    },
+    {
+      "label": "initialize attempt metadata",
+      "oldText": "\t\trunning:  map[string]context.CancelFunc{},\n",
+      "newText": "\t\trunning:  map[string]context.CancelFunc{},\n\t\tattempts: map[string]*queueAttempt{},\n"
+    },
+    {
+      "label": "immediate enqueue refresh",
+      "oldText": "q.upsert(ctx, job, mod);",
+      "newText": "q.upsert(ctx, job, mod, true);"
+    },
+    {
+      "label": "delayed enqueue preserves schedule",
+      "oldText": "return q.upsert(ctx, job, mod)\n",
+      "newText": "return q.upsert(ctx, job, mod, false)\n"
+    },
+    {
+      "label": "serialize accepted refresh against settlement; notify outside lock",
+      "oldText": "func (q *Queue) upsert(ctx context.Context, job Job, mod query.ModifyFunc) error {\n\tif job.Kind != KindDurable && job.Kind != KindPin {\n\t\treturn fmt.Errorf(\"filestatus: unknown job kind %q\", job.Kind)\n\t}\n\tif job.SpaceId == \"\" || job.FileId == \"\" {\n\t\treturn errors.New(\"filestatus: spaceId and fileId required\")\n\t}\n\tif _, err := q.coll.UpsertId(ctx, job.id(), mod); err != nil {\n\t\treturn err\n\t}\n\tq.notify(job, false)\n\treturn nil\n}\n\n",
+      "newText": "func (q *Queue) upsert(ctx context.Context, job Job, mod query.ModifyFunc, retry bool) error {\n\tif job.Kind != KindDurable && job.Kind != KindPin {\n\t\treturn fmt.Errorf(\"filestatus: unknown job kind %q\", job.Kind)\n\t}\n\tif job.SpaceId == \"\" || job.FileId == \"\" {\n\t\treturn errors.New(\"filestatus: spaceId and fileId required\")\n\t}\n\tq.mu.Lock()\n\t_, err := q.coll.UpsertId(ctx, job.id(), mod)\n\tif err == nil && retry {\n\t\tif attempt := q.attempts[job.id()]; attempt != nil && !attempt.removed {\n\t\t\tattempt.retryRequested = true\n\t\t}\n\t}\n\tq.mu.Unlock()\n\tif err != nil {\n\t\treturn err\n\t}\n\tq.notify(job, false)\n\treturn nil\n}\n\n"
+    },
+    {
+      "label": "invalidate removed attempt without releasing drain fence",
+      "oldText": "func (q *Queue) Remove(ctx context.Context, kind, spaceId, fileId string) error {\n\tjob := Job{Kind: kind, SpaceId: spaceId, FileId: fileId}\n\terr := q.coll.DeleteId(ctx, job.id())\n\tq.mu.Lock()\n\tif cancel := q.running[job.id()]; cancel != nil {\n\t\tcancel()\n\t}\n\tq.mu.Unlock()\n\tif err != nil && !errors.Is(err, anystore.ErrDocNotFound) {\n\t\treturn err\n\t}\n\tif err == nil {\n\t\tq.notify(job, true)\n\t}\n\treturn nil\n}\n\n",
+      "newText": "func (q *Queue) Remove(ctx context.Context, kind, spaceId, fileId string) error {\n\tjob := Job{Kind: kind, SpaceId: spaceId, FileId: fileId}\n\tq.mu.Lock()\n\terr := q.coll.DeleteId(ctx, job.id())\n\tif err == nil || errors.Is(err, anystore.ErrDocNotFound) {\n\t\tif attempt := q.attempts[job.id()]; attempt != nil {\n\t\t\t// Keep the running-ID fence until this callback actually returns.\n\t\t\t// A re-enqueued row belongs to later work, not this attempt.\n\t\t\tattempt.removed = true\n\t\t}\n\t}\n\tif cancel := q.running[job.id()]; cancel != nil {\n\t\tcancel()\n\t}\n\tq.mu.Unlock()\n\tif err != nil && !errors.Is(err, anystore.ErrDocNotFound) {\n\t\treturn err\n\t}\n\tif err == nil {\n\t\tq.notify(job, true)\n\t}\n\treturn nil\n}\n\n"
+    },
+    {
+      "label": "acknowledge durable due value and coalesce active retries",
+      "oldText": "func (q *Queue) KickJob(ctx context.Context, kind, spaceId, fileId string) (bool, error) {\n\tid := Job{Kind: kind, SpaceId: spaceId, FileId: fileId}.id()\n\tmod := query.ModifyFunc(func(a *anyenc.Arena, v *anyenc.Value) (*anyenc.Value, bool, error) {\n\t\tv.Set(fieldNext, a.NewNumberFloat64(0))\n\t\tv.Del(fieldLimited)\n\t\treturn v, true, nil\n\t})\n\tif _, err := q.coll.UpdateId(ctx, id, mod); err != nil {\n\t\tif errors.Is(err, anystore.ErrDocNotFound) {\n\t\t\treturn false, nil\n\t\t}\n\t\treturn false, err\n\t}\n\tq.Kick()\n\treturn true, nil\n}\n\n",
+      "newText": "func (q *Queue) KickJob(ctx context.Context, kind, spaceId, fileId string) (bool, error) {\n\tid := Job{Kind: kind, SpaceId: spaceId, FileId: fileId}.id()\n\tmod := query.ModifyFunc(func(a *anyenc.Arena, v *anyenc.Value) (*anyenc.Value, bool, error) {\n\t\tv.Set(fieldNext, a.NewNumberFloat64(0))\n\t\tv.Del(fieldLimited)\n\t\treturn v, true, nil\n\t})\n\tq.mu.Lock()\n\t_, err := q.coll.UpdateId(ctx, id, mod)\n\tif err == nil {\n\t\tif attempt := q.attempts[id]; attempt != nil && !attempt.removed {\n\t\t\tattempt.retryRequested = true\n\t\t}\n\t}\n\tq.mu.Unlock()\n\tif err != nil {\n\t\tif errors.Is(err, anystore.ErrDocNotFound) {\n\t\t\treturn false, nil\n\t\t}\n\t\treturn false, err\n\t}\n\tq.Kick()\n\treturn true, nil\n}\n\n"
+    },
+    {
+      "label": "acquire slot before atomic claim; retain identity through return",
+      "oldText": "// dispatchDue starts due jobs until none is left, waiting for a free\n// worker when all are busy. Each pass re-queries, so a job re-enqueued\n// while running is observed.\nfunc (q *Queue) dispatchDue() {\n\tfor {\n\t\tjob, ok := q.nextDue()\n\t\tif !ok {\n\t\t\treturn\n\t\t}\n\t\tselect {\n\t\tcase q.slots <- struct{}{}:\n\t\tcase <-q.ctx.Done():\n\t\t\treturn\n\t\t}\n\t\tctx, cancel := context.WithTimeout(q.ctx, jobTimeout(job.Kind))\n\t\tq.mu.Lock()\n\t\tq.running[job.id()] = cancel\n\t\tq.lastKind = job.Kind\n\t\tq.mu.Unlock()\n\t\tq.wg.Add(1)\n\t\tgo func() {\n\t\t\tdefer q.wg.Done()\n\t\t\tq.runOne(ctx, job)\n\t\t\tcancel()\n\t\t\tq.mu.Lock()\n\t\t\tdelete(q.running, job.id())\n\t\t\tq.mu.Unlock()\n\t\t\t<-q.slots\n\t\t\tq.Kick()\n\t\t}()\n\t}\n}\n\n",
+      "newText": "// dispatchDue acquires capacity before selecting and claiming current work.\n// A refresh cannot be lost between the due-row read and its running fence.\nfunc (q *Queue) dispatchDue() {\n\tfor {\n\t\tselect {\n\t\tcase q.slots <- struct{}{}:\n\t\tcase <-q.ctx.Done():\n\t\t\treturn\n\t\t}\n\t\tattempt, ok := q.nextDue()\n\t\tif !ok {\n\t\t\t<-q.slots\n\t\t\treturn\n\t\t}\n\t\tq.wg.Add(1)\n\t\tgo func() {\n\t\t\tdefer q.wg.Done()\n\t\t\tq.runOne(attempt)\n\t\t\tattempt.cancel()\n\t\t\tq.mu.Lock()\n\t\t\tif q.attempts[attempt.job.id()] == attempt {\n\t\t\t\tdelete(q.attempts, attempt.job.id())\n\t\t\t\tdelete(q.running, attempt.job.id())\n\t\t\t}\n\t\t\tq.mu.Unlock()\n\t\t\t<-q.slots\n\t\t\tq.Kick()\n\t\t}()\n\t}\n}\n\n"
+    },
+    {
+      "label": "bind current row and running identity under the same mutex",
+      "oldText": "// nextDue picks a due job that is not running. Kinds alternate when\n// both are due, so a backlog of one never starves the other.\nfunc (q *Queue) nextDue() (Job, bool) {\n\t// The read and the running check share one critical section: a\n\t// worker leaves q.running only after its job's row is settled, so a\n\t// job read as due here is either still marked running or truly due.\n\tq.mu.Lock()\n\tdefer q.mu.Unlock()\n\tnow := float64(time.Now().Unix())\n\tfilter := query.Key{Path: []string{fieldNext}, Filter: query.NewComp(query.CompOpLte, now)}\n\titer, err := q.coll.Find(filter).Limit(dueBatch).Iter(q.ctx)\n\tif err != nil {\n\t\treturn Job{}, false\n\t}\n\tvar due []Job\n\tfor iter.Next() {\n\t\tdoc, err := iter.Doc()\n\t\tif err != nil {\n\t\t\tbreak\n\t\t}\n\t\tdue = append(due, jobFromValue(doc.Value()))\n\t}\n\t_ = iter.Close()\n\n\tvar pick *Job\n\tfor i := range due {\n\t\tif _, busy := q.running[due[i].id()]; busy {\n\t\t\tcontinue\n\t\t}\n\t\tif due[i].Kind != q.lastKind {\n\t\t\treturn due[i], true\n\t\t}\n\t\tif pick == nil {\n\t\t\tpick = &due[i]\n\t\t}\n\t}\n\tif pick == nil {\n\t\treturn Job{}, false\n\t}\n\treturn *pick, true\n}\n\n",
+      "newText": "// nextDue selects and claims a current due row in one critical section.\n// Kinds alternate when both are due. The caller already owns a worker slot.\nfunc (q *Queue) nextDue() (*queueAttempt, bool) {\n\tq.mu.Lock()\n\tdefer q.mu.Unlock()\n\tif q.ctx.Err() != nil {\n\t\treturn nil, false\n\t}\n\tnow := float64(time.Now().Unix())\n\tfilter := query.Key{Path: []string{fieldNext}, Filter: query.NewComp(query.CompOpLte, now)}\n\titer, err := q.coll.Find(filter).Limit(dueBatch).Iter(q.ctx)\n\tif err != nil {\n\t\treturn nil, false\n\t}\n\tvar due []Job\n\tfor iter.Next() {\n\t\tdoc, err := iter.Doc()\n\t\tif err != nil {\n\t\t\tbreak\n\t\t}\n\t\tdue = append(due, jobFromValue(doc.Value()))\n\t}\n\t_ = iter.Close()\n\n\tvar pick *Job\n\tfor i := range due {\n\t\tif _, busy := q.running[due[i].id()]; busy {\n\t\t\tcontinue\n\t\t}\n\t\tif due[i].Kind != q.lastKind {\n\t\t\tpick = &due[i]\n\t\t\tbreak\n\t\t}\n\t\tif pick == nil {\n\t\t\tpick = &due[i]\n\t\t}\n\t}\n\tif pick == nil {\n\t\treturn nil, false\n\t}\n\tctx, cancel := context.WithTimeout(q.ctx, jobTimeout(pick.Kind))\n\tattempt := &queueAttempt{job: *pick, ctx: ctx, cancel: cancel}\n\tq.running[pick.id()] = cancel\n\tq.attempts[pick.id()] = attempt\n\tq.lastKind = pick.Kind\n\treturn attempt, true\n}\n\n"
+    },
+    {
+      "label": "carry actual invocation identity into settlement",
+      "oldText": "func (q *Queue) runOne(ctx context.Context, job Job) {\n",
+      "newText": "func (q *Queue) runOne(attempt *queueAttempt) {\n\tctx, job := attempt.ctx, attempt.job\n"
+    },
+    {
+      "label": "refuse stale or removed settlement",
+      "oldText": "\tsettleCtx := context.WithoutCancel(q.ctx)\n\tif err == nil {",
+      "newText": "\tsettleCtx := context.WithoutCancel(q.ctx)\n\tq.mu.Lock()\n\tif q.attempts[job.id()] != attempt || attempt.removed {\n\t\tq.mu.Unlock()\n\t\treturn\n\t}\n\tif err == nil {"
+    },
+    {
+      "label": "terminal success still satisfies an acknowledged retry",
+      "oldText": "\t\tq.notify(job, true)\n\t\treturn\n\t}\n\tjob.LastErr",
+      "newText": "\t\tq.mu.Unlock()\n\t\tq.notify(job, true)\n\t\treturn\n\t}\n\tjob.LastErr"
+    },
+    {
+      "label": "preserve due retry while recording the actual failure",
+      "oldText": "\tjob.NextAt = time.Now().Add(delay)\n",
+      "newText": "\tjob.NextAt = time.Now().Add(delay)\n\tif attempt.retryRequested {\n\t\t// Record the actual failure, including quota classification, but do\n\t\t// not overwrite a newer acknowledged retry with its old backoff.\n\t\t// The due value was already durable before Retry/Enqueue returned.\n\t\tjob.NextAt = time.Unix(0, 0)\n\t}\n"
+    },
+    {
+      "label": "release settlement lock before notification",
+      "oldText": "\tq.notify(job, false)\n}\n\nfunc (q *Queue) notify",
+      "newText": "\tq.mu.Unlock()\n\tq.notify(job, false)\n}\n\nfunc (q *Queue) notify"
+    }
+  ],
+  "wholeInverseExact": true,
+  "selectedNewParents": [
+    "TestQueueKickDuringLimitedAttemptKeepsRetryDue",
+    "TestQueueEnqueueDuringFailureKeepsRetryDue",
+    "TestQueueActiveRetryRequestsCoalesce",
+    "TestQueueRemovedAttemptCannotSettleReplacement",
+    "TestQueueAcknowledgedRetrySurvivesReopen",
+    "TestQueueRetryDuringSuccessCompletesOnce"
+  ],
+  "selectedAffectedOriginalParents": [
+    "TestQueueBackoffAndManualKick",
+    "TestQueueLimited",
+    "TestQueueRemoveCancelsRunningJob",
+    "TestQueueRunnerNilAfterJobContextEndedKeepsJob"
+  ],
+  "exactSelectedParentCount": 10,
+  "exactSelectedChildCount": 0,
+  "originalNegativeControl": {
+    "source": "d3709091d751d3d08f8a78dca74c47cb808ac77d",
+    "test": "6f14e1470313235163e52293721b3b01290a0933",
+    "selectedParent": "TestQueueKickDuringLimitedAttemptKeepsRetryDue",
+    "expected": "FAIL due to acknowledged next=0 being overwritten by the old ErrLimited settlement",
+    "actual": "NOT_RUN"
+  },
+  "boundaries": [
+    "The running CancelFunc map and all original tests are retained.",
+    "Attempt identity is private memory; accepted Retry/Enqueue still persists the existing next=0 row before return.",
+    "Slot acquisition precedes current due-row selection and running-ID claim under one mutex.",
+    "Remove invalidates settlement but retains the same-ID drain fence until the old callback has actually returned.",
+    "A failed attempt records its real attempts/error/LIMITED classification; a newer accepted retry prevents only stale backoff.",
+    "Repeated active retry signals coalesce. Success remains terminal; Retry is not authorization for a duplicate successful upload.",
+    "The reopen control checks persisted next=0 before the reopened queue's Run can reset anything. It is orderly close/reopen, not injected process-crash acceptance.",
+    "Fake callbacks can ignore attempt cancellation while gated, but every private gate is released before Queue.Close joins and DB closure.",
+    "No active account, native executable, network request, cloud upload, quota answer, or cloud-recovery acceptance.",
+    "The published native64 source, E cache ownership/release, and full native/Files runtime gates remain unchanged."
+  ]
+}
