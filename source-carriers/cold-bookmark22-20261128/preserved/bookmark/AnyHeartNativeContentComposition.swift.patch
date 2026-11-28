@@ -1,0 +1,72 @@
+--- /mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeContentComposition.swift
++++ /mnt/development/projects/evidence/pinkha-w1-bookmark-family-preparation-20261128-draft1/AnyHeartNativeContentComposition.swift
+@@ -10,6 +10,7 @@
+     public let selection: AnyHeartNativeContentSelection
+     public let definitions: AnyHeartNativeDefinitionPlan
+     public let pages: [AnyHeartNativePageComposition]
++    public let bookmarks: [AnyHeartNativeBookmarkComposition]
+     public let items: [AnyDestinationMigrationItem]
+     public let coverage: [AnyDestinationCoverage]
+     public let contentSHA256: String
+@@ -24,15 +25,28 @@
+                 destinationSourceKey: AnyHeartNativePageComposition.objectSourceKey(
+                     spaceID: bundle.sourceSpaceID, objectID: $0.sourceObjectID))
+         }
+-        let pages = try selection.objects.map {
+-            try AnyHeartNativePageComposition(bundle: bundle, sourceObjectID: $0.sourceObjectID,
+-                                               definitions: definitions, objects: objects)
++        var pages: [AnyHeartNativePageComposition] = []
++        var bookmarks: [AnyHeartNativeBookmarkComposition] = []
++        var objectItems: [AnyDestinationMigrationItem] = []
++        for selected in selection.objects {
++            guard let type = definitions.types.first(where: {
++                $0.definition.objectID.utf8.elementsEqual(selected.typeObjectID.utf8)
++            }) else { throw AnyHeartNativePageCompositionError.typeBinding }
++            if type.definition.recommendedLayout == 11 {
++                let bookmark = try AnyHeartNativeBookmarkComposition(bundle: bundle,
++                    sourceObjectID: selected.sourceObjectID, definitions: definitions, objects: objects)
++                bookmarks.append(bookmark); objectItems.append(contentsOf: bookmark.items)
++            } else {
++                let page = try AnyHeartNativePageComposition(bundle: bundle,
++                    sourceObjectID: selected.sourceObjectID, definitions: definitions, objects: objects)
++                pages.append(page); objectItems.append(contentsOf: page.items)
++            }
+         }
+         // Keep the existing native plan phases: all identities before bodies,
+         // then files/references, then immutable source facts. Stable ordering
+         // within a phase retains schema dependencies and parser-owned body
+         // hierarchy. The plan still rejects every unresolved earlier owner.
+-        let unsorted = definitions.schemaItems + pages.flatMap(\.items)
++        let unsorted = definitions.schemaItems + objectItems
+         let items = unsorted.enumerated().sorted {
+             let lhs = $0.element.operation.phase, rhs = $1.element.operation.phase
+             return lhs == rhs ? $0.offset < $1.offset : lhs < rhs
+@@ -57,6 +71,7 @@
+             let retainedCompiledDefinitionIDs: [String]
+             let retainedWholeSourceIssues: [String]
+             let pageSHA256: [String]
++            let bookmarkSHA256: [String]?
+             let items: [AnyDestinationMigrationItem]
+             let coverage: [AnyDestinationCoverage]
+         }
+@@ -68,10 +83,11 @@
+             retainedAbsentDeclarations: selection.retainedAbsentDeclarations,
+             retainedCompiledDefinitionIDs: selection.retainedCompiledDefinitionIDs,
+             retainedWholeSourceIssues: selection.retainedWholeSourceIssues, pageSHA256: pages.map(\.contentSHA256),
++            bookmarkSHA256: bookmarks.isEmpty ? nil : bookmarks.map(\.contentSHA256),
+             items: items, coverage: coverage))
+         try AnyTorahSourceJSONGuard.validateRoundTrip(original: bytes, encoded: bytes)
+         self.bundle = bundle; self.selection = selection; self.definitions = definitions
+-        self.pages = pages; self.items = items; self.coverage = coverage
++        self.pages = pages; self.bookmarks = bookmarks; self.items = items; self.coverage = coverage
+         contentSHA256 = AnyContentDigest.sha256(bytes)
+     }
+ 
+@@ -82,6 +98,7 @@
+                                    planID: String) throws -> AnyDestinationMigrationPlan {
+         _ = try definitions.admittedSchemaItems()
+         for page in pages { _ = try page.admittedSelectedItems(selection) }
++        for bookmark in bookmarks { _ = try bookmark.admittedSelectedItems(selection) }
+         let source = try AnyDestinationSourceBinding(bundle: bundle, semanticPlanSHA256: contentSHA256,
+                                                      sourceObjectIDs: selection.executedSourceObjectIDs)
+         return try .init(source: source, workspace: workspace, storeID: storeID, planID: planID,

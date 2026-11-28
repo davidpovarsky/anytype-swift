@@ -1,0 +1,12 @@
+--- /mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativePageComposition.swift
++++ /mnt/development/projects/evidence/pinkha-w1-bookmark-family-preparation-20261128-draft1/AnyHeartNativePageComposition.swift
+@@ -51,7 +51,8 @@
+         for binding in objects {
+             guard let object = sourceObjects[Data(binding.sourceObjectID.utf8)],
+                   object.nativeType == 16, object.objectTypes.count == 1,
+-                  definitions.type(sourceURL: object.objectTypes[0])?.definition.recommendedLayout == 0 else {
++                  let layout = definitions.type(sourceURL: object.objectTypes[0])?.definition.recommendedLayout,
++                  layout == 0 || layout == 11 else {
+                 throw AnyHeartNativePageCompositionError.objectBindings
+             }
+         }

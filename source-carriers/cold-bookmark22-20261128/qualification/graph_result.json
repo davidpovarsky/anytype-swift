@@ -1,0 +1,145 @@
+{
+  "accountFilesRead": 0,
+  "children": 0,
+  "compilerInvocations": 0,
+  "completionErrors": [],
+  "counts": {
+    "addedProductionFiles": 5,
+    "affectedPageRegressionMethods": 2,
+    "compileOnlyEarlierCanonicalMethods": 3,
+    "modifiedProductionFiles": 7,
+    "nativeAccounts": 0,
+    "nativeHTTPRequests": 0,
+    "newBookmarkSemanticMethods": 6,
+    "newColdCheckpointAndLocatorMethods": 9,
+    "newContentCorrespondenceMethods": 5,
+    "productionFiles": 112,
+    "selectedMethods": 22,
+    "testFiles": 6,
+    "unselectedOriginalPageMethods": 2,
+    "wholeSwiftFiles": 118
+  },
+  "errors": [],
+  "graph": {
+    "bytes": 101601,
+    "mode": 384,
+    "path": "/mnt/development/projects/evidence/pinkha-c-cold-bookmark22-graph-preparation-20261128-attempt1/SOURCE_GRAPH.json",
+    "sha256": "be001f4ecebd9143580fc6d67b21dd60e6c6c65698382c8e1be521145cc01867"
+  },
+  "inputLedger": {
+    "bytes": 71614,
+    "mode": 384,
+    "path": "/mnt/development/projects/evidence/pinkha-c-cold-bookmark22-graph-preparation-20261128-attempt1/PUBLIC_INPUTS.json",
+    "sha256": "b41c7e2e0b80ee25c63b0e1eb08376b62e496729b8c9171a05bcb8e552440666"
+  },
+  "methods": {
+    "NativeBookmarkCompositionTests": {
+      "declared": [
+        "testBoundBookmarkHeaderKeepsDescriptionAndOrderedBodySeparate",
+        "testBookmarkCompositionKeepsExactURLAndDistinctReferenceCycles",
+        "testBodylessBookmarkPreservesAbsentAndExplicitEmptyDescriptionAndURL",
+        "testChangedHeaderBindingsAndObjectSpecificFeaturedOverridesAreRefused",
+        "testBookmarkNeverDropsUnsupportedDetailsMetadataOrBody",
+        "testExactTypeCanonicalDescriptionAndReferenceIdentityRemainMandatory"
+      ],
+      "selected": [
+        "testBoundBookmarkHeaderKeepsDescriptionAndOrderedBodySeparate",
+        "testBookmarkCompositionKeepsExactURLAndDistinctReferenceCycles",
+        "testBodylessBookmarkPreservesAbsentAndExplicitEmptyDescriptionAndURL",
+        "testChangedHeaderBindingsAndObjectSpecificFeaturedOverridesAreRefused",
+        "testBookmarkNeverDropsUnsupportedDetailsMetadataOrBody",
+        "testExactTypeCanonicalDescriptionAndReferenceIdentityRemainMandatory"
+      ],
+      "unselected": []
+    },
+    "NativeImportedCheckpointTests": {
+      "declared": [
+        "testCompletedCheckpointColdReadsKeepExactMappingsAndDoNotCallTheDriver",
+        "testMissingAndIncompleteCheckpointNeverCreatesOrReconcilesJournalEntries",
+        "testOriginalExclusiveWriterAndSharedColdReaderUseOneLockWithoutWrites",
+        "testChangedReceiptIdentityRefusesEvenWhenItsJournalEnvelopeIsValid",
+        "testExactBindingRejectsUnicodeAliasAndChangedPlanWithoutRepair",
+        "testAliasAndReplacedOwnerLockRefuseBeforeColdDelivery",
+        "testCancelledColdReadLeavesCompletedCheckpointAndDriverUntouched"
+      ],
+      "selected": [
+        "testCompletedCheckpointColdReadsKeepExactMappingsAndDoNotCallTheDriver",
+        "testMissingAndIncompleteCheckpointNeverCreatesOrReconcilesJournalEntries",
+        "testOriginalExclusiveWriterAndSharedColdReaderUseOneLockWithoutWrites",
+        "testChangedReceiptIdentityRefusesEvenWhenItsJournalEnvelopeIsValid",
+        "testExactBindingRejectsUnicodeAliasAndChangedPlanWithoutRepair",
+        "testAliasAndReplacedOwnerLockRefuseBeforeColdDelivery",
+        "testCancelledColdReadLeavesCompletedCheckpointAndDriverUntouched"
+      ],
+      "unselected": []
+    },
+    "NativeImportedContentContextTests": {
+      "declared": [
+        "testOriginalCompletedPlanRoutesBothEditablePagesWithoutCatalogCarrierFallback",
+        "testDocumentProjectionRejectsCarrierSubstitutionAndChangedOperationIdentity",
+        "testEditedDocumentCreationReceiptRetainsIdentityAndRefusesDeletedOrForeignState",
+        "testClosedContentLocatorBindsTheSameWholeCheckpointAndExactPreservationBytes",
+        "testOwnerRefusesForeignRetiredAndChangedRunBeforeOpeningPrivateInputs"
+      ],
+      "selected": [
+        "testOriginalCompletedPlanRoutesBothEditablePagesWithoutCatalogCarrierFallback",
+        "testDocumentProjectionRejectsCarrierSubstitutionAndChangedOperationIdentity",
+        "testEditedDocumentCreationReceiptRetainsIdentityAndRefusesDeletedOrForeignState",
+        "testClosedContentLocatorBindsTheSameWholeCheckpointAndExactPreservationBytes",
+        "testOwnerRefusesForeignRetiredAndChangedRunBeforeOpeningPrivateInputs"
+      ],
+      "unselected": []
+    },
+    "NativeImportedContextReferenceTests": {
+      "declared": [
+        "testClosedReferenceWireRejectsMissingExtraDuplicateAndMalformedFields",
+        "testReferenceBindingKeepsOpaqueUTF8AndNeverAuthenticatesAChangedCheckpointHash"
+      ],
+      "selected": [
+        "testClosedReferenceWireRejectsMissingExtraDuplicateAndMalformedFields",
+        "testReferenceBindingKeepsOpaqueUTF8AndNeverAuthenticatesAChangedCheckpointHash"
+      ],
+      "unselected": []
+    },
+    "NativePageCompositionTests": {
+      "declared": [
+        "testPageCompositionKeepsOneTitleAndDefersExactReferenceCycles",
+        "testUnaccountedDetailsSourceMetadataAndAmbiguousIdentitiesAreRefused",
+        "testOriginalCapturedPageComposesCurrentStateAndRetainsSourceBlockers",
+        "testOriginalCustomCapturePreservesBothPagesAllValuesAndDistinctIdentities"
+      ],
+      "selected": [
+        "testPageCompositionKeepsOneTitleAndDefersExactReferenceCycles",
+        "testUnaccountedDetailsSourceMetadataAndAmbiguousIdentitiesAreRefused"
+      ],
+      "unselected": [
+        "testOriginalCapturedPageComposesCurrentStateAndRetainsSourceBlockers",
+        "testOriginalCustomCapturePreservesBothPagesAllValuesAndDistinctIdentities"
+      ]
+    }
+  },
+  "nativeInvocations": 0,
+  "rawLexicalNamesForReview": [
+    "AnyBlock",
+    "AnyDestinationMigrationV1",
+    "AnyEmbeddedRuntime",
+    "NativeBinarySHA256",
+    "NativeIdentityBoundUnderTreeLock",
+    "NativeJSONView",
+    "NativeOriginalPath",
+    "NativeTrees",
+    "NativeType",
+    "PinkhaAnyEngine",
+    "PinkhaAnyHost",
+    "PinkhaAnyIntegration",
+    "PinkhaKit",
+    "TorahInspectorCore",
+    "TorahInspectorNotesDidChangeNotification",
+    "TorahInspectorRelatedDocumentsAccessDidChangeNotification"
+  ],
+  "seconds": 0.310926,
+  "sourceBytes": 1435258,
+  "status": "PASS_SOURCE_GRAPH_ONLY_NOT_COMPILED_NOT_RUN",
+  "testInvocations": 0,
+  "unchangedInputs": true
+}

@@ -1,0 +1,34 @@
+--- /mnt/development/projects/evidence/pinkha-c-imported-context-preparation-20261128-draft5/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift
++++ /mnt/development/projects/evidence/pinkha-c-imported-context-preparation-20261128-draft6/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift
+@@ -398,11 +398,7 @@
+         let raw = try await client.requestJSON(method: "GET",
+             path: ["v1", "spaces", lease.workspace.spaceID, "objects", entry.objectID],
+             maximumResponseBytes: 8 * 1024 * 1024, authorize: { try await validate() })
+-        let record = try AnyDestinationMigrationVerifier.objectRecord(
+-            raw, id: entry.objectID, spaceID: lease.workspace.spaceID)
+-        guard record["any"]?["type"]?.string.map({ Data($0.utf8) }) == Data(entry.nativeTypeID.utf8) else {
+-            throw AnyNativeImportedContentContextError.changedDocument(entry.objectID)
+-        }
++        try entry.requireCurrentObject(raw)
+         let after = try await migration.status(entry.intent, authorize: { try await validate() })
+         try entry.requireCurrentReceipt(after)
+         guard before == after else {
+--- /mnt/development/projects/evidence/pinkha-c-imported-context-preparation-20261128-draft5/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContentContext.swift
++++ /mnt/development/projects/evidence/pinkha-c-imported-context-preparation-20261128-draft6/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContentContext.swift
+@@ -140,6 +140,16 @@
+     public var grantsNativeAuthority: Bool { false }
+     let intent: AnyPreparedMigrationIntent
+     let mapping: AnyDestinationMigrationMapping
++
++    /// Identity checks on a read response. The caller still owns current native
++    /// READ and run/lease admission; parsing this value grants no authority.
++    func requireCurrentObject(_ response: AnyJSON) throws {
++        let record = try AnyDestinationMigrationVerifier.objectRecord(
++            response, id: objectID, spaceID: intent.binding.workspace.spaceID)
++        guard record["any"]?["type"]?.string.map({ Data($0.utf8) }) == Data(nativeTypeID.utf8) else {
++            throw AnyNativeImportedContentContextError.changedDocument(objectID)
++        }
++    }
+ 
+     func requireCurrentReceipt(_ receipt: AnyPreparedMigrationReceipt) throws {
+         // Editable content may differ from its original values. Its immutable
