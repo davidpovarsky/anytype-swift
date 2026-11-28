@@ -1,0 +1,67 @@
+{
+  "activeApplicationFilesChanged": 0,
+  "actualCompilerInvocations": 0,
+  "actualNativeInvocations": 0,
+  "actualTestInvocations": 0,
+  "files": [
+    {
+      "action": "replace",
+      "after": {
+        "bytes": 16440,
+        "nativeMode": 384,
+        "sha256": "7e04af3c356e2b7596540e69b54b7b1e390d00610e2cf2202e8356b1e17a9154"
+      },
+      "before": {
+        "bytes": 15885,
+        "nativeMode": 384,
+        "sha256": "3b734dd4b3d05c51c4afec4e914d3c637d41e34c9545fd7749bc1aba8b09ae82"
+      },
+      "carrierCommit": "THIS_COMMIT",
+      "carrierPath": "Tools/AnyEngineValidation/native_embedded_lifecycle_20261128/overlay/any/internal/embedded/embedded.go",
+      "kind": "production",
+      "sourceRelativePath": "internal/embedded/embedded.go",
+      "stage": "embedded-lifecycle"
+    },
+    {
+      "action": "add",
+      "after": {
+        "bytes": 19960,
+        "nativeMode": 420,
+        "sha256": "e92092ec1469323c9a0631dfd01cbad1973a6f1a54ab0deabb9c4ed8768ad026"
+      },
+      "before": null,
+      "carrierCommit": "THIS_COMMIT",
+      "carrierPath": "Tools/AnyEngineValidation/native_embedded_lifecycle_20261128/overlay/any/internal/embedded/lifecycle_reservation_test.go",
+      "kind": "test",
+      "sourceRelativePath": "internal/embedded/lifecycle_reservation_test.go",
+      "stage": "embedded-lifecycle"
+    }
+  ],
+  "independentPeer": {
+    "bytes": 4763,
+    "path": "Tools/AnyEngineValidation/native_embedded_lifecycle_20261128/reviews/independent-peer.json",
+    "sha256": "de103245ed45fa24e710c9c1bc0ffc0dfde36cc621e3537fb241335bb72b2d34"
+  },
+  "legacyExportsAndCLayoutsChanged": 0,
+  "nativeModes": "Preserve the exact existing mode for replacement. New source/test paths use explicit0644 in the prospective materialization; these maps are specifications, not physical filesystem observations.",
+  "newPublicABIExportsInThisSuccessor": 0,
+  "originalFinding": {
+    "asanaStory": "1220965191752036",
+    "description": "Concurrent native starts had an unreserved pre-Ready interval; graceful stop did not retain the teardown barrier."
+  },
+  "parent": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+  "parentBootPacketUnchanged": true,
+  "protocol": "pinkha-embedded-lifecycle-source-delivery-v1",
+  "repository": "davidpovarsky/anytype-swift",
+  "requiredComposition": {
+    "bootCommit": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+    "n24Commit": "94fd763d459210b496557894628333d466abae73",
+    "order": [
+      "original Runtime18 base",
+      "exact N24 source overlay",
+      "exact seven-file boot source overlay",
+      "this two-file lifecycle overlay"
+    ]
+  },
+  "status": "SOURCE_ONLY_NOT_COMPILED_NOT_RUN"
+}

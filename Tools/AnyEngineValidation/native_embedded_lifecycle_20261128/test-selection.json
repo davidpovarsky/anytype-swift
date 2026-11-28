@@ -1,0 +1,151 @@
+{
+  "admission": "The qualification owner must bind the exact full physical source, toolchain, selected runner identifiers, resources, deadlines, child custody and final source witness before execution. This file authorizes no execution and relaxes no resource gate.",
+  "affectedExistingParents": [
+    "TestStartAddressStop",
+    "TestDoubleStartIsAlreadyRunning",
+    "TestBadDataDirIsBadDirError",
+    "TestStartStopRestartNoLeak"
+  ],
+  "affectedExistingSource": {
+    "bytes": 10883,
+    "sha256": "44270ad3062652ef091a0808eb1d247202e7b55dc4c935099293e7dfe9796b32",
+    "sourceRelativePath": "internal/embedded/embedded_test.go"
+  },
+  "apple": "NOT_RUN",
+  "bootParentsByPackage": {
+    "internal/embedded": [
+      "TestBoundNetworkOfficialUsesNativeParserAndPreservesDefaults",
+      "TestBoundNetworkCustomPreservesExactIdentityAndConfiguration",
+      "TestBoundNetworkRejectsUnrepresentableIdentityBeforeFilesystem",
+      "TestBoundStartCapturesExactBootAndCannotBorrowRunningIdentity"
+    ],
+    "mobile/android": [
+      "TestBoundMobileResultCarriesExactIdentityAndClearsFailure"
+    ],
+    "mobile/ios": [
+      "TestBoundCArchiveCoreCarriesExactIdentityAndClearsFailure"
+    ]
+  },
+  "bootSourceCommit": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+  "combinedWithExactN24": {
+    "childEvents": 31,
+    "executedEvents": 0,
+    "notAnExecutionPlan": true,
+    "parentEvents": 26,
+    "selectionPath": "Tools/AnyEngineValidation/native_bound_http_source_20261128/test-selection.json",
+    "selectionSHA256": "87d1ca5bf68563f50d7557b350ffd15e0ffcd496db62d67ac3eba07111fb0590",
+    "sourceCommit": "94fd763d459210b496557894628333d466abae73",
+    "totalEvents": 57
+  },
+  "compilation": "NOT_RUN",
+  "exactParentMethods": [
+    "TestLifecycleReservationCoversPendingLegacyAndBoundStarts",
+    "TestLifecycleCancelledPendingStartCannotSkipPreviousDrain",
+    "TestLifecycleGracefulStopFencesNextGeneration",
+    "TestLifecycleGracefulStopWaitsAfterStopNow",
+    "TestLifecycleLateReadyCannotRepublishStoppedGeneration",
+    "TestLifecycleFailedStartReleasesReservation",
+    "TestConcurrentLegacyAndBoundStartsShareOneManagedRuntime",
+    "TestBoundNetworkOfficialUsesNativeParserAndPreservesDefaults",
+    "TestBoundNetworkCustomPreservesExactIdentityAndConfiguration",
+    "TestBoundNetworkRejectsUnrepresentableIdentityBeforeFilesystem",
+    "TestBoundStartCapturesExactBootAndCannotBorrowRunningIdentity",
+    "TestBoundMobileResultCarriesExactIdentityAndClearsFailure",
+    "TestBoundCArchiveCoreCarriesExactIdentityAndClearsFailure",
+    "TestStartAddressStop",
+    "TestDoubleStartIsAlreadyRunning",
+    "TestBadDataDirIsBadDirError",
+    "TestStartStopRestartNoLeak"
+  ],
+  "expectedChildEvents": 16,
+  "expectedChildren": [
+    "TestLifecycleReservationCoversPendingLegacyAndBoundStarts/legacy-core",
+    "TestLifecycleReservationCoversPendingLegacyAndBoundStarts/bound-core",
+    "TestLifecycleFailedStartReleasesReservation/empty-directory",
+    "TestLifecycleFailedStartReleasesReservation/invalid-mode",
+    "TestLifecycleFailedStartReleasesReservation/bound-network",
+    "TestLifecycleFailedStartReleasesReservation/runner-failure",
+    "TestBoundNetworkRejectsUnrepresentableIdentityBeforeFilesystem/missing",
+    "TestBoundNetworkRejectsUnrepresentableIdentityBeforeFilesystem/malformed",
+    "TestBoundNetworkRejectsUnrepresentableIdentityBeforeFilesystem/duplicate",
+    "TestBoundNetworkRejectsUnrepresentableIdentityBeforeFilesystem/empty",
+    "TestBoundNetworkRejectsUnrepresentableIdentityBeforeFilesystem/space",
+    "TestBoundNetworkRejectsUnrepresentableIdentityBeforeFilesystem/tab",
+    "TestBoundNetworkRejectsUnrepresentableIdentityBeforeFilesystem/nul",
+    "TestBoundNetworkRejectsUnrepresentableIdentityBeforeFilesystem/del",
+    "TestBoundNetworkRejectsUnrepresentableIdentityBeforeFilesystem/long_ascii",
+    "TestBoundNetworkRejectsUnrepresentableIdentityBeforeFilesystem/long_utf8"
+  ],
+  "expectedParentEvents": 17,
+  "expectedTotalRunAndPassEvents": 33,
+  "generatedABI": "NOT_PRODUCED",
+  "newLifecycle": {
+    "explicitChildren": [
+      "TestLifecycleReservationCoversPendingLegacyAndBoundStarts/legacy-core",
+      "TestLifecycleReservationCoversPendingLegacyAndBoundStarts/bound-core",
+      "TestLifecycleFailedStartReleasesReservation/empty-directory",
+      "TestLifecycleFailedStartReleasesReservation/invalid-mode",
+      "TestLifecycleFailedStartReleasesReservation/bound-network",
+      "TestLifecycleFailedStartReleasesReservation/runner-failure"
+    ],
+    "parents": [
+      "TestLifecycleReservationCoversPendingLegacyAndBoundStarts",
+      "TestLifecycleCancelledPendingStartCannotSkipPreviousDrain",
+      "TestLifecycleGracefulStopFencesNextGeneration",
+      "TestLifecycleGracefulStopWaitsAfterStopNow",
+      "TestLifecycleLateReadyCannotRepublishStoppedGeneration",
+      "TestLifecycleFailedStartReleasesReservation",
+      "TestConcurrentLegacyAndBoundStartsShareOneManagedRuntime"
+    ],
+    "privateControlledRunnerParentCount": 6,
+    "realExportManagedAccountFreeParentCount": 1
+  },
+  "noUntouchedMigrationNetworkOrFilesReplay": true,
+  "originalStartAddressStopDeduplicatedAcrossBootAndLifecycle": true,
+  "packages": [
+    {
+      "parents": [
+        "TestLifecycleReservationCoversPendingLegacyAndBoundStarts",
+        "TestLifecycleCancelledPendingStartCannotSkipPreviousDrain",
+        "TestLifecycleGracefulStopFencesNextGeneration",
+        "TestLifecycleGracefulStopWaitsAfterStopNow",
+        "TestLifecycleLateReadyCannotRepublishStoppedGeneration",
+        "TestLifecycleFailedStartReleasesReservation",
+        "TestConcurrentLegacyAndBoundStartsShareOneManagedRuntime",
+        "TestBoundNetworkOfficialUsesNativeParserAndPreservesDefaults",
+        "TestBoundNetworkCustomPreservesExactIdentityAndConfiguration",
+        "TestBoundNetworkRejectsUnrepresentableIdentityBeforeFilesystem",
+        "TestBoundStartCapturesExactBootAndCannotBorrowRunningIdentity",
+        "TestStartAddressStop",
+        "TestDoubleStartIsAlreadyRunning",
+        "TestBadDataDirIsBadDirError",
+        "TestStartStopRestartNoLeak"
+      ],
+      "path": "./internal/embedded",
+      "tags": []
+    },
+    {
+      "parents": [
+        "TestBoundMobileResultCarriesExactIdentityAndClearsFailure"
+      ],
+      "path": "./mobile/android",
+      "tags": [
+        "gomobile"
+      ]
+    },
+    {
+      "limitation": "Linux core/shim test does not qualify generated Apple C ABI or a framework.",
+      "parents": [
+        "TestBoundCArchiveCoreCarriesExactIdentityAndClearsFailure"
+      ],
+      "path": "./mobile/ios",
+      "requiresCGO": true,
+      "tags": []
+    }
+  ],
+  "protocol": "pinkha-embedded-lifecycle-and-boot-source-selection-v1",
+  "sourceOnly": true,
+  "status": "NOT_RUN",
+  "swiftAffectedMethod": "AnyEmbeddedRuntimeTests.testRealManagedRuntimeLifecycleAndControlBoundary",
+  "swiftTestsRun": 0
+}

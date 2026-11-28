@@ -1,0 +1,114 @@
+Read-only line correspondence; not an applyable patch.
+...
+   61   61 
+   62   62 func lifecycleOptions(t *testing.T, name string) Options {
+   63   63 	t.Helper()
++       64 	return lifecycleOptionsAt(t.TempDir(), name)
++       65 }
++       66 
++       67 func lifecycleOptionsAt(root, name string) Options {
+   64   68 	disabled := false
+   65   69 	return Options{
++       70 		DataDir: filepath.Join(root, name), ListenAddr: "127.0.0.1:0",
+-  66      		DataDir: filepath.Join(t.TempDir(), name), ListenAddr: "127.0.0.1:0",
+   67   71 		NodeconfYAML: "networkId: pinkha-lifecycle-fence\nnodes: []\n",
+   68   72 		Mode:         "managed", ControlToken: "lifecycle-test-capability",
+   69   73 		LocalDiscovery: &disabled, GlobalP2PEnabled: &disabled,
+...
+  447  451 }
+  448  452 
+  449  453 func TestConcurrentLegacyAndBoundStartsShareOneManagedRuntime(t *testing.T) {
++      454 	resetState(t)
++      455 	previousLimit := debug.SetMemoryLimit(-1)
+- 450      	setupLifecycle(t)
+  451  456 	const count = 8
++      457 	// This root has no automatic TempDir cleanup: on a failed cohort join
++      458 	// it must remain intact for the still-owned caller and failure evidence.
++      459 	root, err := os.MkdirTemp("", "pinkha-embedded-lifecycle-")
++      460 	if err != nil {
++      461 		t.Fatal(err)
++      462 	}
+- 452      	root := t.TempDir()
+  453  463 	options := make([]Options, count)
+  454  464 	for i := range options {
++      465 		options[i] = lifecycleOptionsAt(root, fmt.Sprintf("export-%d", i))
+- 455      		options[i] = lifecycleOptions(t, "unused-parent")
+- 456      		options[i].DataDir = filepath.Join(root, fmt.Sprintf("export-%d", i))
+  457  466 	}
+  458  467 	type exportedOutcome struct {
+  459  468 		index int
+...
+  461  470 		value lifecycleOutcome
+  462  471 	}
+  463  472 	results := make(chan exportedOutcome, count)
++      473 	start := &lifecycleGate{done: make(chan struct{})}
++      474 	var ready, returned sync.WaitGroup
+- 464      	start := make(chan struct{})
+- 465      	var ready sync.WaitGroup
+  466  475 	ready.Add(count)
++      476 	returned.Add(count)
++      477 	allReturned := make(chan struct{})
++      478 	go func() { returned.Wait(); close(allReturned) }()
++      479 	t.Cleanup(func() {
++      480 		defer debug.SetMemoryLimit(previousLimit)
++      481 		start.release()
++      482 		deadline := time.NewTimer(20 * time.Second)
++      483 		defer deadline.Stop()
++      484 		tick := time.NewTicker(10 * time.Millisecond)
++      485 		defer tick.Stop()
++      486 		// Stop may observe only one admitted generation. Keep cancelling
++      487 		// until every launched export caller has returned; none can then
++      488 		// enter Start after the final drain or after its directory is removed.
++      489 		joined := false
++      490 		for !joined {
++      491 			StopNow()
++      492 			select {
++      493 			case <-allReturned:
++      494 				joined = true
++      495 			case <-tick.C:
++      496 			case <-deadline.C:
++      497 				t.Errorf("export callers did not drain; retained root %s", root)
++      498 				panic("lifecycle caller custody incomplete")
++      499 			}
++      500 		}
++      501 		StopNow()
++      502 		_, _, drain := lifecycleState()
++      503 		if drain != nil {
++      504 			select {
++      505 			case <-drain:
++      506 			case <-deadline.C:
++      507 				t.Errorf("export engine did not drain; retained root %s", root)
++      508 				panic("lifecycle engine custody incomplete")
++      509 			}
++      510 		}
++      511 		current, address, pending := lifecycleState()
++      512 		if current != nil || address != "" || pending != nil {
++      513 			t.Errorf("joined export cohort retained state; retained root %s", root)
++      514 			panic("lifecycle final state is not closed")
++      515 		}
++      516 		if t.Failed() {
++      517 			t.Logf("retained failed export fixture after complete drain: %s", root)
++      518 			return
++      519 		}
++      520 		if err := os.RemoveAll(root); err != nil {
++      521 			t.Errorf("remove drained export fixture: %v", err)
++      522 		}
++      523 	})
+  467  524 	for i := 0; i < count; i++ {
+  468  525 		go func(index int) {
++      526 			defer returned.Done()
+  469  527 			ready.Done()
++      528 			<-start.done
+- 470      			<-start
+  471  529 			value := lifecycleOutcome{}
+  472  530 			bound := index%2 == 1
+  473  531 			if bound {
+...
+  480  538 		}(i)
+  481  539 	}
+  482  540 	ready.Wait()
++      541 	start.release()
+- 483      	close(start)
+  484  542 	winners := 0
+  485  543 	var winner exportedOutcome
+  486  544 	timer := time.NewTimer(20 * time.Second)

@@ -1,0 +1,135 @@
+{
+  "instructions": "Apply rows in this exact order to the corresponding prospective qualification map; omit test rows for the production map. Check complete current bytes/hash/mode first. Restore before-images or delete only declared additions. This is a specification, not an executed filesystem mutation.",
+  "ownRepositoryInverse": "Remove only the two new carrier/document subtrees introduced by this commit. All f372 parent entries, including its old boot packet and active Swift sources, must remain byte-identical.",
+  "protocol": "pinkha-embedded-lifecycle-boot-inverse-v1",
+  "status": "SOURCE_MAP_INVERSE_VERIFIED_IN_MEMORY",
+  "thenToRuntime18": {
+    "commit": "94fd763d459210b496557894628333d466abae73",
+    "path": "Tools/AnyEngineValidation/native_bound_http_source_20261128/inverse-manifest.json",
+    "sha256": "d577cf15224c3d361de259bb27c235827c611eca87ef8275c32230f2352bca36"
+  },
+  "toExactN24Maps": [
+    {
+      "expectedCurrent": {
+        "bytes": 19960,
+        "nativeMode": 420,
+        "sha256": "e92092ec1469323c9a0631dfd01cbad1973a6f1a54ab0deabb9c4ed8768ad026"
+      },
+      "kind": "test",
+      "restore": null,
+      "restoreBody": null,
+      "sourceRelativePath": "internal/embedded/lifecycle_reservation_test.go",
+      "stage": "embedded-lifecycle"
+    },
+    {
+      "expectedCurrent": {
+        "bytes": 16440,
+        "nativeMode": 384,
+        "sha256": "7e04af3c356e2b7596540e69b54b7b1e390d00610e2cf2202e8356b1e17a9154"
+      },
+      "kind": "production",
+      "restore": {
+        "bytes": 15885,
+        "nativeMode": 384,
+        "sha256": "3b734dd4b3d05c51c4afec4e914d3c637d41e34c9545fd7749bc1aba8b09ae82"
+      },
+      "restoreBody": {
+        "carrier": "this publication",
+        "path": "Tools/AnyEngineValidation/native_embedded_lifecycle_20261128/originals/f372/any/internal/embedded/embedded.go"
+      },
+      "sourceRelativePath": "internal/embedded/embedded.go",
+      "stage": "embedded-lifecycle"
+    },
+    {
+      "expectedCurrent": {
+        "bytes": 1007,
+        "nativeMode": 420,
+        "sha256": "ce1c00f8bcd2746c6d5f13775004fa9352a6340c7d3e69880d7a00924a301b21"
+      },
+      "kind": "test",
+      "restore": null,
+      "restoreBody": null,
+      "sourceRelativePath": "mobile/ios/anylib_binding_test.go",
+      "stage": "boot-binding"
+    },
+    {
+      "expectedCurrent": {
+        "bytes": 1966,
+        "nativeMode": 420,
+        "sha256": "9ec543d57dfd550aedff75c561f55e1297d37d4d43f8a177a6e12e53d3442ec5"
+      },
+      "kind": "production",
+      "restore": null,
+      "restoreBody": null,
+      "sourceRelativePath": "mobile/ios/anylib_binding.go",
+      "stage": "boot-binding"
+    },
+    {
+      "expectedCurrent": {
+        "bytes": 1106,
+        "nativeMode": 420,
+        "sha256": "3eee3e3661d30c483f5952036ab9737e81186da8862d4a7eb896b5ce564117e5"
+      },
+      "kind": "test",
+      "restore": null,
+      "restoreBody": null,
+      "sourceRelativePath": "mobile/android/network_binding_test.go",
+      "stage": "boot-binding"
+    },
+    {
+      "expectedCurrent": {
+        "bytes": 1137,
+        "nativeMode": 420,
+        "sha256": "6850eb04ff0ae46c7a14da7495047d1f58aa399964d8baf97aa74ec4ef7c3e21"
+      },
+      "kind": "production",
+      "restore": null,
+      "restoreBody": null,
+      "sourceRelativePath": "mobile/android/network_binding.go",
+      "stage": "boot-binding"
+    },
+    {
+      "expectedCurrent": {
+        "bytes": 6426,
+        "nativeMode": 420,
+        "sha256": "9346d49093706e152fd0da02b571fd037974c9ecbbc41871c2193df50c425740"
+      },
+      "kind": "test",
+      "restore": null,
+      "restoreBody": null,
+      "sourceRelativePath": "internal/embedded/network_binding_test.go",
+      "stage": "boot-binding"
+    },
+    {
+      "expectedCurrent": {
+        "bytes": 2162,
+        "nativeMode": 420,
+        "sha256": "df3e4bdd15dfedbda827cf53f6b65c1179a6b63a3c74617302b8ae91432992a6"
+      },
+      "kind": "production",
+      "restore": null,
+      "restoreBody": null,
+      "sourceRelativePath": "internal/embedded/network_binding.go",
+      "stage": "boot-binding"
+    },
+    {
+      "expectedCurrent": {
+        "bytes": 15885,
+        "nativeMode": 384,
+        "sha256": "3b734dd4b3d05c51c4afec4e914d3c637d41e34c9545fd7749bc1aba8b09ae82"
+      },
+      "kind": "production",
+      "restore": {
+        "bytes": 15460,
+        "nativeMode": 384,
+        "sha256": "a1b52dda8a4232d544242f27bf13bc8a6f4b4832be5d90be2baf0ffa222c2088"
+      },
+      "restoreBody": {
+        "commit": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+        "path": "Tools/AnyEngineValidation/native_boot_network_binding_20261128/originals/any/internal/embedded/embedded.go"
+      },
+      "sourceRelativePath": "internal/embedded/embedded.go",
+      "stage": "boot-binding"
+    }
+  ]
+}
