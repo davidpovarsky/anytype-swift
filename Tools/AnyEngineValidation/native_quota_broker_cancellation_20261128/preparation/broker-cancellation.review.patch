@@ -1,0 +1,70 @@
+--- a/.runtime-artifacts/sdk-source/internal/files/broker/broker.go
++++ b/.runtime-artifacts/sdk-source/internal/files/broker/broker.go
+@@ -218,34 +218,39 @@
+ 	ask func(ctx context.Context, peerId string) (*fileprotov2.SpaceQuota, error),
+ 	usable func(*fileprotov2.SpaceQuota) bool,
+ ) (*fileprotov2.SpaceQuota, string, error) {
+-	ctx, cancel := context.WithCancel(ctx)
+-	defer cancel()
+-	type answer struct {
+-		peerId string
+-		quota  *fileprotov2.SpaceQuota
+-		err    error
+-	}
+-	answers := make(chan answer, len(peers))
+-	asked := 0
+-	askNext := func() {
+-		peerId := peers[asked]
+-		asked++
+-		go func() {
+-			quota, err := ask(ctx, peerId)
+-			answers <- answer{peerId, quota, err}
+-		}()
+-	}
+-	askNext()
+-	timer := time.NewTimer(hedge)
+-	defer timer.Stop()
+-
+-	var (
+-		unusable     *fileprotov2.SpaceQuota
+-		unusablePeer string
+-		failure      error
+-	)
+-	for answered := 0; answered < len(peers); {
+-		select {
++	if err := ctx.Err(); err != nil {
++		return nil, "", err
++	}
++	ctx, cancel := context.WithCancel(ctx)
++	defer cancel()
++	type answer struct {
++		peerId string
++		quota  *fileprotov2.SpaceQuota
++		err    error
++	}
++	answers := make(chan answer, len(peers))
++	asked := 0
++	askNext := func() {
++		peerId := peers[asked]
++		asked++
++		go func() {
++			quota, err := ask(ctx, peerId)
++			answers <- answer{peerId, quota, err}
++		}()
++	}
++	askNext()
++	timer := time.NewTimer(hedge)
++	defer timer.Stop()
++
++	var (
++		unusable     *fileprotov2.SpaceQuota
++		unusablePeer string
++		failure      error
++	)
++	for answered := 0; answered < len(peers); {
++		select {
++		case <-ctx.Done():
++			return nil, "", ctx.Err()
+ 		case a := <-answers:
+ 			answered++
+ 			switch {
