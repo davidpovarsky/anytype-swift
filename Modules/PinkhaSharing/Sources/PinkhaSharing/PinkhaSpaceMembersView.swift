@@ -112,9 +112,11 @@ public struct PinkhaSpaceMembersView: View {
                     Section {
                         Text(LocalizedStringKey(problem), bundle: .module)
                             .foregroundStyle(.secondary)
+                            .accessibilityIdentifier("pinkha.sharing.members.error")
                         Button { Task { await model.refresh() } } label: {
                             Text("Refresh", bundle: .module)
                         }
+                        .accessibilityIdentifier("pinkha.sharing.members.refresh")
                     }
                 }
                 if let state = model.state {
@@ -143,8 +145,10 @@ public struct PinkhaSpaceMembersView: View {
                                     Button(role: .destructive) { propose(.revokeInvitation(id: invitation.id)) } label: {
                                         Text("Revoke invitation", bundle: .module)
                                     }
+                                    .accessibilityIdentifier("pinkha.sharing.invitation.revoke.\(invitation.id)")
                                 }
                             }
+                            .accessibilityIdentifier("pinkha.sharing.invitation.row.\(invitation.id)")
                         }
                         if state.capabilities.canCreateInvitation {
                             Button {
@@ -174,6 +178,7 @@ public struct PinkhaSpaceMembersView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button { dismiss() } label: { Text("Close", bundle: .module) }
+                        .accessibilityIdentifier("pinkha.sharing.members.close")
                 }
             }
             .refreshable { await model.refresh() }
@@ -181,12 +186,14 @@ public struct PinkhaSpaceMembersView: View {
                 Button(role: .cancel) { proposed = nil; createProposed = false } label: {
                     Text("Cancel", bundle: .module)
                 }
+                .accessibilityIdentifier("pinkha.sharing.confirmation.cancel")
                 Button {
                     if createProposed { model.apply(nil) }
                     else if let proposed { model.apply(proposed) }
                     proposed = nil
                     createProposed = false
                 } label: { Text("Confirm", bundle: .module) }
+                .accessibilityIdentifier("pinkha.sharing.confirmation.confirm")
             } message: {
                 confirmationText
             }
@@ -203,8 +210,10 @@ public struct PinkhaSpaceMembersView: View {
                     .textSelection(.enabled)
                 HStack {
                     Text(LocalizedStringKey(member.role.rawValue), bundle: .module)
+                        .accessibilityIdentifier("pinkha.sharing.member.role.\(member.id)")
                     if member.status != .active {
                         Text(LocalizedStringKey(member.status.rawValue), bundle: .module)
+                            .accessibilityIdentifier("pinkha.sharing.member.status.\(member.id)")
                     }
                     if member.id == state.currentIdentity { Text("You", bundle: .module) }
                 }
@@ -219,17 +228,21 @@ public struct PinkhaSpaceMembersView: View {
                             Button { propose(.changeRole(identity: member.id, role: role)) } label: {
                                 Text(LocalizedStringKey(role.rawValue), bundle: .module)
                             }
+                            .accessibilityIdentifier("pinkha.sharing.member.changeRole.\(member.id).\(role.rawValue)")
                         }
                     }
                     if state.capabilities.removableMemberIDs.contains(member.id) {
                         Button(role: .destructive) { propose(.remove(identity: member.id)) } label: {
                             Text("Remove member", bundle: .module)
                         }
+                        .accessibilityIdentifier("pinkha.sharing.member.remove.\(member.id)")
                     }
                 } label: { Image(systemName: "ellipsis.circle") }
                 .accessibilityLabel(Text("Change access", bundle: .module))
+                .accessibilityIdentifier("pinkha.sharing.member.actions.\(member.id)")
             }
         }
+        .accessibilityIdentifier("pinkha.sharing.member.row.\(member.id)")
     }
 
     private func requestRow(_ member: PinkhaSharingMember, state: PinkhaSharingSnapshot) -> some View {
@@ -242,14 +255,18 @@ public struct PinkhaSpaceMembersView: View {
                             Button { propose(.approve(identity: member.id, requestID: requestID, role: role)) } label: {
                                 Text(LocalizedStringKey(role.rawValue), bundle: .module)
                             }
+                            .accessibilityIdentifier("pinkha.sharing.request.approveAs.\(member.id).\(role.rawValue)")
                         }
                     } label: { Text("Approve as", bundle: .module) }
+                    .accessibilityIdentifier("pinkha.sharing.request.approve.\(member.id)")
                     Button(role: .destructive) { propose(.decline(identity: member.id)) } label: {
                         Text("Decline", bundle: .module)
                     }
+                    .accessibilityIdentifier("pinkha.sharing.request.decline.\(member.id)")
                 }
             }
         }
+        .accessibilityIdentifier("pinkha.sharing.request.row.\(member.id)")
     }
 
     private var confirmationText: Text {
@@ -309,8 +326,11 @@ public struct PinkhaJoinSpaceView: View {
                 if let result {
                     switch result.status {
                     case .active: Text("You have joined the space.", bundle: .module)
+                        .accessibilityIdentifier("pinkha.sharing.join.result.active")
                     case .awaitingApproval: Text("Your request was sent. Waiting for approval.", bundle: .module)
+                        .accessibilityIdentifier("pinkha.sharing.join.result.awaitingApproval")
                     case .loading: Text("The space is loading. Refresh the space list to continue.", bundle: .module)
+                        .accessibilityIdentifier("pinkha.sharing.join.result.loading")
                     }
                 } else {
                     Section {
@@ -325,6 +345,7 @@ public struct PinkhaJoinSpaceView: View {
                         if work != nil { ProgressView() }
                         if failed {
                             Text("The request could not be confirmed. Check the space list before trying again.", bundle: .module)
+                                .accessibilityIdentifier("pinkha.sharing.join.error")
                         }
                     }
                 }
@@ -333,6 +354,7 @@ public struct PinkhaJoinSpaceView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button { dismiss() } label: { Text("Close", bundle: .module) }
+                        .accessibilityIdentifier("pinkha.sharing.join.close")
                 }
             }
             .onDisappear {
@@ -342,6 +364,7 @@ public struct PinkhaJoinSpaceView: View {
                 invitation = ""
             }
         }
+        .accessibilityIdentifier("pinkha.sharing.join.screen")
     }
 
     private func submit() {

@@ -1,0 +1,94 @@
+[
+  {
+    "before": "                        Text(LocalizedStringKey(problem), bundle: .module)\n                            .foregroundStyle(.secondary)",
+    "after": "                        Text(LocalizedStringKey(problem), bundle: .module)\n                            .foregroundStyle(.secondary)\n                            .accessibilityIdentifier(\"pinkha.sharing.members.error\")"
+  },
+  {
+    "before": "                        Button { Task { await model.refresh() } } label: {\n                            Text(\"Refresh\", bundle: .module)\n                        }",
+    "after": "                        Button { Task { await model.refresh() } } label: {\n                            Text(\"Refresh\", bundle: .module)\n                        }\n                        .accessibilityIdentifier(\"pinkha.sharing.members.refresh\")"
+  },
+  {
+    "before": "                                    Button(role: .destructive) { propose(.revokeInvitation(id: invitation.id)) } label: {\n                                        Text(\"Revoke invitation\", bundle: .module)\n                                    }",
+    "after": "                                    Button(role: .destructive) { propose(.revokeInvitation(id: invitation.id)) } label: {\n                                        Text(\"Revoke invitation\", bundle: .module)\n                                    }\n                                    .accessibilityIdentifier(\"pinkha.sharing.invitation.revoke.\\(invitation.id)\")"
+  },
+  {
+    "before": "                                }\n                            }\n                        }\n                        if state.capabilities.canCreateInvitation {",
+    "after": "                                }\n                            }\n                            .accessibilityIdentifier(\"pinkha.sharing.invitation.row.\\(invitation.id)\")\n                        }\n                        if state.capabilities.canCreateInvitation {"
+  },
+  {
+    "before": "                    Button { dismiss() } label: { Text(\"Close\", bundle: .module) }\n                }\n            }\n            .refreshable",
+    "after": "                    Button { dismiss() } label: { Text(\"Close\", bundle: .module) }\n                        .accessibilityIdentifier(\"pinkha.sharing.members.close\")\n                }\n            }\n            .refreshable"
+  },
+  {
+    "before": "                Button(role: .cancel) { proposed = nil; createProposed = false } label: {\n                    Text(\"Cancel\", bundle: .module)\n                }",
+    "after": "                Button(role: .cancel) { proposed = nil; createProposed = false } label: {\n                    Text(\"Cancel\", bundle: .module)\n                }\n                .accessibilityIdentifier(\"pinkha.sharing.confirmation.cancel\")"
+  },
+  {
+    "before": "                } label: { Text(\"Confirm\", bundle: .module) }\n            } message: {",
+    "after": "                } label: { Text(\"Confirm\", bundle: .module) }\n                .accessibilityIdentifier(\"pinkha.sharing.confirmation.confirm\")\n            } message: {"
+  },
+  {
+    "before": "                    Text(LocalizedStringKey(member.role.rawValue), bundle: .module)",
+    "after": "                    Text(LocalizedStringKey(member.role.rawValue), bundle: .module)\n                        .accessibilityIdentifier(\"pinkha.sharing.member.role.\\(member.id)\")"
+  },
+  {
+    "before": "                        Text(LocalizedStringKey(member.status.rawValue), bundle: .module)",
+    "after": "                        Text(LocalizedStringKey(member.status.rawValue), bundle: .module)\n                            .accessibilityIdentifier(\"pinkha.sharing.member.status.\\(member.id)\")"
+  },
+  {
+    "before": "                            Button { propose(.changeRole(identity: member.id, role: role)) } label: {\n                                Text(LocalizedStringKey(role.rawValue), bundle: .module)\n                            }",
+    "after": "                            Button { propose(.changeRole(identity: member.id, role: role)) } label: {\n                                Text(LocalizedStringKey(role.rawValue), bundle: .module)\n                            }\n                            .accessibilityIdentifier(\"pinkha.sharing.member.changeRole.\\(member.id).\\(role.rawValue)\")"
+  },
+  {
+    "before": "                .accessibilityLabel(Text(\"Change access\", bundle: .module))",
+    "after": "                .accessibilityLabel(Text(\"Change access\", bundle: .module))\n                .accessibilityIdentifier(\"pinkha.sharing.member.actions.\\(member.id)\")"
+  },
+  {
+    "before": "            }\n        }\n    }\n\n    private func requestRow",
+    "after": "            }\n        }\n        .accessibilityIdentifier(\"pinkha.sharing.member.row.\\(member.id)\")\n    }\n\n    private func requestRow"
+  },
+  {
+    "before": "                            Button { propose(.approve(identity: member.id, requestID: requestID, role: role)) } label: {\n                                Text(LocalizedStringKey(role.rawValue), bundle: .module)\n                            }",
+    "after": "                            Button { propose(.approve(identity: member.id, requestID: requestID, role: role)) } label: {\n                                Text(LocalizedStringKey(role.rawValue), bundle: .module)\n                            }\n                            .accessibilityIdentifier(\"pinkha.sharing.request.approveAs.\\(member.id).\\(role.rawValue)\")"
+  },
+  {
+    "before": "                    } label: { Text(\"Approve as\", bundle: .module) }",
+    "after": "                    } label: { Text(\"Approve as\", bundle: .module) }\n                    .accessibilityIdentifier(\"pinkha.sharing.request.approve.\\(member.id)\")"
+  },
+  {
+    "before": "                    Button(role: .destructive) { propose(.decline(identity: member.id)) } label: {\n                        Text(\"Decline\", bundle: .module)\n                    }",
+    "after": "                    Button(role: .destructive) { propose(.decline(identity: member.id)) } label: {\n                        Text(\"Decline\", bundle: .module)\n                    }\n                    .accessibilityIdentifier(\"pinkha.sharing.request.decline.\\(member.id)\")"
+  },
+  {
+    "before": "                }\n            }\n        }\n    }\n\n    private var confirmationText",
+    "after": "                }\n            }\n        }\n        .accessibilityIdentifier(\"pinkha.sharing.request.row.\\(member.id)\")\n    }\n\n    private var confirmationText"
+  },
+  {
+    "before": "                    case .active: Text(\"You have joined the space.\", bundle: .module)",
+    "after": "                    case .active: Text(\"You have joined the space.\", bundle: .module)\n                        .accessibilityIdentifier(\"pinkha.sharing.join.result.active\")"
+  },
+  {
+    "before": "                    case .awaitingApproval: Text(\"Your request was sent. Waiting for approval.\", bundle: .module)",
+    "after": "                    case .awaitingApproval: Text(\"Your request was sent. Waiting for approval.\", bundle: .module)\n                        .accessibilityIdentifier(\"pinkha.sharing.join.result.awaitingApproval\")"
+  },
+  {
+    "before": "                    case .loading: Text(\"The space is loading. Refresh the space list to continue.\", bundle: .module)",
+    "after": "                    case .loading: Text(\"The space is loading. Refresh the space list to continue.\", bundle: .module)\n                        .accessibilityIdentifier(\"pinkha.sharing.join.result.loading\")"
+  },
+  {
+    "before": "                            Text(\"The request could not be confirmed. Check the space list before trying again.\", bundle: .module)",
+    "after": "                            Text(\"The request could not be confirmed. Check the space list before trying again.\", bundle: .module)\n                                .accessibilityIdentifier(\"pinkha.sharing.join.error\")"
+  },
+  {
+    "before": "                    Button { dismiss() } label: { Text(\"Close\", bundle: .module) }\n                }\n            }\n            .onDisappear",
+    "after": "                    Button { dismiss() } label: { Text(\"Close\", bundle: .module) }\n                        .accessibilityIdentifier(\"pinkha.sharing.join.close\")\n                }\n            }\n            .onDisappear"
+  },
+  {
+    "before": "                invitation = \"\"\n            }\n        }\n    }\n\n    private func submit()",
+    "after": "                invitation = \"\"\n            }\n        }\n        .accessibilityIdentifier(\"pinkha.sharing.join.screen\")\n    }\n\n    private func submit()"
+  },
+  {
+    "before": "                        Button(role: .destructive) { propose(.remove(identity: member.id)) } label: {\n                            Text(\"Remove member\", bundle: .module)\n                        }",
+    "after": "                        Button(role: .destructive) { propose(.remove(identity: member.id)) } label: {\n                            Text(\"Remove member\", bundle: .module)\n                        }\n                        .accessibilityIdentifier(\"pinkha.sharing.member.remove.\\(member.id)\")"
+  }
+]
