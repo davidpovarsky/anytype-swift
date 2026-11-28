@@ -1,0 +1,156 @@
+--- a/PRESERVED_ATTEMPT1/qualify_native24.py
++++ b/REFERENCE_ONLY/qualify_native24_with_embedded33.py
+@@ -229,8 +229,10 @@
+     parser.add_argument('--e-native-receipt-sha256', required=True)
+     parser.add_argument('--e-swift-receipt-sha256', required=True)
+     parser.add_argument('--root-cache-release-confirmed', action='store_true', required=True)
++    parser.add_argument('--embedded-extension-plan-sha256', required=True)
+     args = parser.parse_args()
++    for value in (args.self_sha256, args.e_native_receipt_sha256, args.e_swift_receipt_sha256,
++                  args.embedded_extension_plan_sha256):
+-    for value in (args.self_sha256, args.e_native_receipt_sha256, args.e_swift_receipt_sha256):
+         require(re.fullmatch(r'[0-9a-f]{64}', value), 'exact caller-supplied SHA256 required')
+     require(os.geteuid() == 0 and os.uname().nodename == 'torah-social', 'authorized Oracle host')
+     require(HERE == PREPARATION and OUTPUT.parent == PARENT and OUTPUT.name == 'attempt8',
+@@ -248,11 +250,13 @@
+     admitted = {str(own): {'identity': identity(own_raw), 'maximum': 4*MIB,
+                            'mode': stat.S_IMODE(physical(own).st_mode)}}
+     result = {
++        'protocol': 'pinkha-bound-http-native24-and-embedded33-qualification-v1', 'status': 'RUNNING',
+-        'protocol': 'pinkha-bound-http-native24-qualification-v1', 'status': 'RUNNING',
+         'controller': identity(own_raw), 'processes': [], 'errors': [], 'completionErrors': [], 'mutations': [],
++        'retainedC13Runtime18TestMethodsReexecuted': 0, 'retainedPrivateAccountInputs': 0, 'privateRecordExports': 0,
++        'affectedExistingEmbeddedParentSelections': 4,
+-        'priorTestMethodsReexecuted': 0, 'retainedPrivateAccountInputs': 0, 'privateRecordExports': 0,
+         'C313SourceWrites': 0, 'C3CacheWrites': 0, 'nativeCLIAccountProcesses': 0, 'nativeProductBuilds': 0,
++        'newRequiredEvents': {'originalUnrunBoundObligations': 17, 'addedTypedACLErrorObligations': 7,
++            'embeddedBootLifecycleSelectedEvents': 33, 'total': 57},
+-        'newRequiredEvents': {'originalUnrunBoundObligations': 17, 'addedTypedACLErrorObligations': 7, 'total': 24},
+         'freshHTTPProofScope': 'IN_PROCESS_ORIGINAL_HANDLERS_WITH_FRESH_SDK_UNDER_OS_NETWORK_DENIAL',
+         'liveCLIHTTPProof': 'NOT_RUN_BY_THIS_CONTROLLER',
+         'boundLocalOwner': 'any', 'dynamicDefinitionOwnerAtomicity': 'UNSUPPORTED',
+@@ -268,7 +272,7 @@
+             'finalVerificationSeconds': FINAL_SECONDS, 'requiredOuterSeconds': 1050,
+             'goWorkers': 2, 'goMemoryLimit': '1GiB', 'memoryAdmissionBytes': 3*GIB,
+             'allocationCensusMinimumIntervalSeconds': 1,
++            'estimateBasis': 'Actual Runtime18 owned peak265449472B and cache growth276299776B. Combined57 source/test/product peak on the separately released E cache is unmeasured; the original caps and deadline still stop the run.'}}
+-            'estimateBasis': 'Actual Runtime18 owned peak265449472B and cache growth276299776B. New24 source/test/product peak on the separately released E cache is unmeasured.'}}
+ 
+     def save_json(path, value):
+         nonlocal serial
+@@ -456,6 +460,28 @@
+ 
+         admitted_source = inputs.admit_sources(plan, pin, require, normal, identity,
+                                                 source_inventory, checkpoint, parse_events, result)
++        extension_root = HERE/'embedded-boot-lifecycle'
++        extension_plan_raw = pin(extension_root/'EXTENSION_PLAN.json',
++                                 args.embedded_extension_plan_sha256, 128*1024, mode=0o600)
++        extension_plan = json.loads(extension_plan_raw)
++        require(extension_plan['protocol'] == 'pinkha-embedded-boot-lifecycle-extension-plan-v1' and
++                extension_plan['status'] == 'SOURCE_ONLY_REQUIRES_N_OWNER_ADOPTION_AND_REVIEW' and
++                extension_plan['module'] == {'file': 'embedded_boot_lifecycle.py', 'bytes': 35333,
++                    'sha256': '33b529935d3e179e4e33a49b6e185faf15722167491ed856df64d5958e541a51', 'mode': 0o600} and
++                extension_plan['scope']['extensionEvents'] == 33 and
++                extension_plan['scope']['combinedEvents'] == 57 and
++                extension_plan['scope']['combinedOwnedCommands'] == 9,
++                'explicit caller-pinned source-only extension proposal, not a runtime grant')
++        extension_raw = pin(extension_root/'embedded_boot_lifecycle.py',
++                            '33b529935d3e179e4e33a49b6e185faf15722167491ed856df64d5958e541a51', 64*1024, mode=0o600)
++        require(len(extension_raw) == 35333, 'complete exact import-only extension source')
++        extension = types.ModuleType('embedded_boot_lifecycle')
++        exec(compile(extension_raw, str(extension_root/'embedded_boot_lifecycle.py'), 'exec'), extension.__dict__)
++        admitted_source = extension.admit_composition(admitted_source, extension_root, pin, identity, result)
++        result['embeddedExtensionPlan'] = {'path': str(extension_root/'EXTENSION_PLAN.json'),
++                                          **identity(extension_plan_raw)}
++        result['embeddedExtensionModule'] = {'path': str(extension_root/'embedded_boot_lifecycle.py'),
++                                            **identity(extension_raw)}
+         prior = admitted_source['prior']
+         base_before = admitted_source['baseBefore']
+         base_metadata = admitted_source['baseModule']
+@@ -465,7 +491,7 @@
+         overlay = admitted_source['overlay']
+         expected, expected_modes = candidate['files'], candidate['modes']
+         mkdir_owned(source)
++        result['mutations'].append({'operation': 'compose-new-1656-public-source', 'state': 'dispatching'})
+-        result['mutations'].append({'operation': 'compose-new-1649-public-source', 'state': 'dispatching'})
+         save()
+         for name, wanted in sorted(expected.items()):
+             checkpoint()
+@@ -492,15 +518,16 @@
+             pin(output/filename, identity(raw)['sha256'])
+         result['formattedSourceManifestSHA256'] = plan['formatted']['manifest']['sha256']
+         result['sourceRoot'] = str(source)
++        result['sourceFiles'], result['sdkSourceFiles'] = 1656, 756
++        result['productionFiles'], result['sdkProductionFiles'] = 1648, 755
+-        result['sourceFiles'], result['sdkSourceFiles'] = 1649, 756
+-        result['productionFiles'], result['sdkProductionFiles'] = 1645, 755
+         result['sourceComposition'] = {'baseFiles': 1638, 'baseSDKFiles': 750,
++            'productionChanges': 20, 'productionAdditions': 10, 'productionReplacements': 10,
++            'newTestFiles': 8, 'qualifiedFiles': 1656, 'qualifiedSDKFiles': 756,
++            'oldC13OrRuntime18MethodsReexecuted': 0, 'affectedExistingEmbeddedParentsSelected': 4}
++        original_n24_manifest = admitted_source['originalN24Manifest']
++        result['wireContract'] = original_n24_manifest['wire']
++        result['localBuiltin'] = original_n24_manifest['localBuiltin']
++        result['typedACLConsumedRecordContract'] = original_n24_manifest['aclConsumedRecordContract']
+-            'productionChanges': 16, 'productionAdditions': 7, 'productionReplacements': 9,
+-            'newTestFiles': 4, 'qualifiedFiles': 1649, 'qualifiedSDKFiles': 756,
+-            'oldC13OrRuntime18MethodsReexecuted': 0}
+-        result['wireContract'] = manifest['wire']
+-        result['localBuiltin'] = manifest['localBuiltin']
+-        result['typedACLConsumedRecordContract'] = manifest['aclConsumedRecordContract']
+         result['mutations'][-1]['state'] = 'completed'
+ 
+         helper = pin(OWNED, OWNED_SHA)
+@@ -597,6 +624,12 @@
+             'typedACLNewObligations': {'parents': 1, 'subcases': 6, 'events': 7}}
+         result['actualFreshOSDenialVerified'] = True
+         result['controllerReadFreshPrivatePayloads'] = False
++        extension.run_selected(source, source_before, driver, python, OFFLINE, environment,
++            command=command, source_inventory=source_inventory, checkpoint=checkpoint,
++            frozen=frozen, identity=identity, parse_events=parse_events, normal=normal,
++            result=result, save=save)
++        require(fixture_directories() == plan['fixtureMethodDirectories'],
++                'extension cannot add, replace or read the four original N24 private fixture roots')
+         binary = output/'any'
+         result['mutations'].append({'operation': 'build-one-coherent-native-product', 'state': 'dispatching'})
+         save()
+@@ -619,7 +652,8 @@
+         result['binaryModuleMetadata'] = identity(module)
+         pin(module_log, identity(module)['sha256'], 65536)
+         result['standaloneAnySDKProducerNotEmbeddedHeart'] = True
++        extension.finalize_combined(result, normal)
++        result['status'] = 'PASS_NATIVE57_N24_AND_EMBEDDED_BOOT_LIFECYCLE_ONE_STANDALONE_PRODUCT_NOT_APPLE'
+-        result['status'] = 'PASS_NATIVE24_BOUND_HTTP_AND_TYPED_ACL_ERRORS_ONE_STANDALONE_PRODUCT'
+     except BaseException as error:
+         result['status'] = 'FAIL_NATIVE24_QUALIFICATION_PRESERVED'
+         result['errors'].append({'type': type(error).__name__, 'message': str(error)})
+@@ -656,12 +690,15 @@
+             result['immutableInputManifest'] = {
+                 name: dict(wanted['identity'], mode=wanted['mode']) for name, wanted in admitted.items()}
+             if result['status'].startswith('PASS_'):
++                require(len(result['processes']) == 9 and all(normal(row) for row in result['processes']) and
+-                require(len(result['processes']) == 6 and all(normal(row) for row in result['processes']) and
+                         result['allOwnedGroupsPositivelyAbsent'] is True and
+                         all(value is True for value in result['finalIntegrity'].values()) and
+                         result['nativeProductBuilds'] == 1 and result['errors'] == result['completionErrors'] == [] and
++                        result['actualMethods']['runs'] == result['actualMethods']['passes'] == 24 and
++                        result['embeddedBootLifecycle']['actualRuns'] ==
++                            result['embeddedBootLifecycle']['actualPasses'] == 33 and
++                        result['combinedActualMethods']['runs'] == result['combinedActualMethods']['passes'] == 57,
++                        'nine normal owned commands, separate24+33 events and complete source/product finalization')
+-                        result['actualMethods']['runs'] == result['actualMethods']['passes'] == 24,
+-                        'six normal owned commands,24 exact events and complete source/product finalization')
+         except BaseException as error:
+             result['status'] = 'FAIL_NATIVE24_QUALIFICATION_PRESERVED'
+             result['completionErrors'].append({'scope': 'final-resources-and-closure',
+@@ -684,7 +721,9 @@
+         require(json.loads(raw) == result, 'final retained receipt exact readback')
+         print(json.dumps({'path': str(output/'result.json'), 'status': result['status'], **identity(raw),
+             'allOwnedGroupsPositivelyAbsent': result['allOwnedGroupsPositivelyAbsent'],
++            'newRunPassEvents': result.get('combinedActualMethods'),
++            'n24Events': result.get('actualMethods'),
++            'embeddedEvents': result.get('embeddedBootLifecycle'), 'errors': result['errors'],
+-            'newRunPassEvents': result.get('actualMethods'), 'errors': result['errors'],
+             'completionErrors': result['completionErrors']}, sort_keys=True), flush=True)
+         return 0 if result['status'].startswith('PASS_') else 1
+     except BaseException as error:
