@@ -38,7 +38,8 @@ public struct AnyHeartNativePageComposition: Sendable {
     public init(bundle: AnyHeartNativeSpaceBundle, sourceObjectID: String,
                 definitions: AnyHeartNativeDefinitionPlan,
                 objects: [AnyHeartNativeDefinitionPlan.ObjectBinding],
-                files: [AnyHeartNativeFileBinding] = []) throws {
+                files: [AnyHeartNativeFileBinding] = [],
+                capturedFiles: AnyHeartNativeCapturedFilePlan? = nil) throws {
         let catalog = definitions.catalog
         guard Data(bundle.sourceAccountID.utf8) == Data(catalog.sourceAccountID.utf8),
               Data(bundle.sourceSpaceID.utf8) == Data(catalog.sourceSpaceID.utf8),
@@ -68,7 +69,7 @@ public struct AnyHeartNativePageComposition: Sendable {
             sourceIssues.append("unmapped-native-collections")
         }
         try self.init(snapshot: snapshot, definitions: definitions, objects: objects,
-                      files: files, sourceIssues: sourceIssues)
+                      files: files, capturedFiles: capturedFiles, sourceIssues: sourceIssues)
     }
 
     /// Internal pure semantic control boundary; detached fixtures cannot be
@@ -76,6 +77,7 @@ public struct AnyHeartNativePageComposition: Sendable {
     init(snapshot: AnyHeartNativeSnapshotView, definitions: AnyHeartNativeDefinitionPlan,
          objects: [AnyHeartNativeDefinitionPlan.ObjectBinding],
          files: [AnyHeartNativeFileBinding] = [],
+         capturedFiles: AnyHeartNativeCapturedFilePlan? = nil,
          sourceIssues: [String] = ["detached-semantic-control"]) throws {
         let catalog = definitions.catalog
         guard Data(snapshot.sourceSpaceID.utf8) == Data(catalog.sourceSpaceID.utf8) else {
@@ -134,7 +136,8 @@ public struct AnyHeartNativePageComposition: Sendable {
         }) else { throw AnyHeartNativePageCompositionError.objectBindings }
         let detailKeys = snapshot.details.keys.sorted { Data($0.utf8).lexicographicallyPrecedes(Data($1.utf8)) }
         // Every present detail is consumed; there is no caller-selected subset.
-        let values = try definitions.values(snapshot: snapshot, relationKeys: detailKeys, objects: objects, files: files)
+        let values = try definitions.values(snapshot: snapshot, relationKeys: detailKeys, objects: objects, files: files,
+                                            capturedFiles: capturedFiles)
         // The scoped current-content schema actually owns an immutable facts
         // dataset. Historical fields count as consumed only when the concrete
         // source-fact operation is constructed and included below.

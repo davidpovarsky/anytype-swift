@@ -1,0 +1,56 @@
+{
+  "schema": "pinkha-captured-file-variant-source-join-v1",
+  "status": "SOURCE_ONLY",
+  "source": {
+    "path": "heart/core/files/native_capture.go",
+    "blob": "c17a4deb6705246a93755d7a5c618aa9d0077f8e",
+    "bytes": 16148,
+    "sha256": "f80985eef11d427fb460b0a2801a392c902f026430fad761c795b31002d31165"
+  },
+  "manifestSHA256": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b",
+  "observation": {
+    "O_NOATIME": true,
+    "O_NOFOLLOWEveryComponent": true,
+    "bytes": 16148,
+    "children": 0,
+    "compilerInvocations": 0,
+    "directoryEnumeration": 0,
+    "identity": [
+      2064,
+      822962,
+      33188,
+      1,
+      0,
+      1002,
+      16148,
+      "1795809818638970545",
+      "1795787740860836375",
+      "1795809395247515512"
+    ],
+    "identityUnchanged": true,
+    "manifestSHA256": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b",
+    "nativeInvocations": 0,
+    "path": "/mnt/development/projects/evidence/pinkha-e-final-engine-20261127/source-attempt3/source/heart/core/files/native_capture.go",
+    "schema": "pinkha-exact-native-file-variant-source-read-v1",
+    "seconds": 0.0012414474040269852,
+    "sha256": "f80985eef11d427fb460b0a2801a392c902f026430fad761c795b31002d31165",
+    "sourceOrCacheWrites": 0,
+    "status": "PASS_PUBLIC_SOURCE_READ_ONLY"
+  },
+  "tool": {
+    "command": [
+      "python3",
+      "/var/lib/sentinelx/uploads/.sentinelx_uploads/script_job_50d8d1710ee8411d82e5d680b433c50c/script.py"
+    ],
+    "duration": 0.05,
+    "returncode": 0
+  },
+  "findings": [
+    "ContentID is contentLink.Cid.String(); native metadata meta.Hash must equal that exact content CID before capture.",
+    "NativeChecksum is meta.Checksum; SourceChecksum is meta.Source. The head constructor copies those exact fields into fileVariantChecksums and fileSourceChecksum.",
+    "PlaintextSHA256 independently hashes all decrypted bytes. NativeChecksum uses base32 SHA256 with an appended mode byte; it is not the same representation as plaintext hex SHA256.",
+    "UploadChecksumMatches means original path plus verified native checksum plus nonempty SourceChecksum equal NativeChecksum. A false value alone does not negate a complete plaintext capture; it remains preserved metadata and cannot be used as a guessed equality to plaintext SHA.",
+    "Only /0/ and the exact OriginalImagePath are classified original; the finite generic-file closure will require /0/ in addition to its FileObject/layout/self-block proof.",
+    "Capture walks all local DAG branches, validates content/metadata CIDs, decrypts using exactly the captured FileInfo keys, verifies size and declared checksum, rejects unused keys and requires exactly one original."
+  ]
+}

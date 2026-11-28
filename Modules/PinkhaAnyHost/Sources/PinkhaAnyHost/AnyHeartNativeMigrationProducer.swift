@@ -287,6 +287,10 @@ public actor AnyHeartNativeMigrationProducer {
             journalParent: request.journalParent, payloadParent: request.payloadParent,
             planBinding: plan.binding)
         let payload = try storage.materialize(archive)
+        let attachmentPayloads: [Data: URL]
+        if let files = preservation.currentContent.capturedFiles {
+            attachmentPayloads = try storage.materializeCapturedFiles(files, captured: captured)
+        } else { attachmentPayloads = [:] }
         try requireActive(ticket)
 
         let sourceKey = preservation.archiveItemSourceKey
@@ -302,10 +306,11 @@ public actor AnyHeartNativeMigrationProducer {
         }
         let executor = AnyDestinationMigrationExecutor(client: client, journalDirectory: request.journalParent)
         let progress = try await executor.execute(plan: plan, payloads: { key in
-            guard Data(key.utf8) == Data(sourceKey.utf8) else {
+            if Data(key.utf8) == Data(sourceKey.utf8) { return payload }
+            guard let attachment = attachmentPayloads[Data(key.utf8)] else {
                 throw AnyDestinationMigrationError.payloadMismatch(key)
             }
-            return payload
+            return attachment
         }, verifySource: verify, authorize: authorize)
         let verification = try await AnyDestinationMigrationVerifier(client: client).verify(
             plan: plan, progress: progress, verifySource: verify, authorize: authorize)

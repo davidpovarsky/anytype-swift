@@ -1,0 +1,144 @@
+{
+  "schema": "pinkha-captured-file-integration-controls-v1",
+  "status": "SOURCE_ONLY_NOT_PARSED_COMPILED_OR_RUN",
+  "current": {
+    "name": "NativeCapturedFilePlanTests.swift",
+    "key": "c_captured_file_plan_and_integration_tests_source_draft2",
+    "blob": "8a02b19051ce32cad1fa355fb19b94bff0039019",
+    "bytes": 66525,
+    "sha256": "5c840036c455e4952e797c771816eb507d816fac68563d416f11f8145e6d444c"
+  },
+  "predecessors": [
+    {
+      "name": "NativeCapturedFilePlanTests.swift",
+      "key": "c_captured_file_plan_tests_source_draft2",
+      "blob": "9a0823bccc115795e3006baa8f16451a73fb0471",
+      "bytes": 30532,
+      "sha256": "1b554624e30628ff6756b23ebef06bc52ca92894a42435d5312d16415a86cf73"
+    },
+    {
+      "name": "NativeCapturedFilePlanTests.integration-draft1.swift",
+      "key": "c_captured_file_plan_and_integration_tests_source_draft1",
+      "blob": "703da8e3d3ee1cb5784fc278791705670056b56b",
+      "bytes": 66448,
+      "sha256": "3b49151a274e67917f3eaacfd7622d49e62982af3a75729be2c7610387c4c135"
+    }
+  ],
+  "twoLiteralCorrections": [
+    {
+      "old": "        XCTAssertEqual(plan.canonicalBytes, f.planBytes)\n",
+      "new": "        XCTAssertEqual(plan.canonicalBytes, f.plan.canonicalBytes)\n        XCTAssertEqual(plan.binding.planSHA256, f.plan.binding.planSHA256)\n"
+    },
+    {
+      "old": "private extension FilePlanFixture {\n",
+      "new": "extension FilePlanFixture {\n"
+    }
+  ],
+  "earlierEightTestBodiesAndFixtureUnchanged": true,
+  "appendedIntegrationMethods": [
+    "testFullBundleCreatesOwnerThenFileThenPropertyAndRetainsEveryFileHead",
+    "testTypedValuesPreserveOrderAndOriginalSchemaRefusals",
+    "testArchiveColdReconstructionKeepsPayloadAndRefusesMissingReference",
+    "testRetainedZeroFileV1PlanIsUnchangedByTheNewAttachmentHooks",
+    "testPrivatePayloadDispatchUsesExactMembersAndPreservesInlineFullBoundary"
+  ],
+  "totalSelectedNewMethods": 13,
+  "integrationChanges": {
+    "blob": "85d73001a8ee0b64510b5ce4380a5ed14aa443d2",
+    "bytes": 28489,
+    "sha256": "21a6bc09f775475552b74ceb77c21cb43ae7ad6ba1dcc10b3eeea35fdaf640c0"
+  },
+  "pureFixturePeer": "cd8e9796011c7c80ea8275c693fb8143818d88da",
+  "constructorPrimaries": [
+    {
+      "path": "AnyHeartNativeSpaceBundle.swift",
+      "blob": "cb510177ce69cc1cc5a50475d5c1eddbb91bf6ec"
+    },
+    {
+      "path": "AnyHeartNativeStoreContext.swift",
+      "blob": "08cf92897e729a93452a1cc9f31cad6d0e47fbab"
+    },
+    {
+      "path": "AnyDestinationDefinitionCoverage.swift",
+      "blob": "fbfbd74f9062dd723aca77afba3c59255919f2be"
+    },
+    {
+      "path": "AnyDestinationMigrationPlan.swift",
+      "blob": "df49d5572d0a91a68a48bee7f88882703ad2ad5c"
+    }
+  ],
+  "fixturePolicy": {
+    "synthetic": "Complete wire-shaped source bundle, opaque synthetic PB/metadata/native witness values and fixture receipt booleans. No real capture or authority is inferred. Native head/payload/document identities remain distinct.",
+    "nativeCalls": 0,
+    "original182Operations": 0,
+    "expectedOriginalFixtureInputs": {
+      "count": 2,
+      "totalBytes": 3458499,
+      "actualInputAdmissionProof": {
+        "blob": "a454802f6b3afaf6e9a74b3855f38554c4db859a",
+        "bytes": 3809,
+        "sha256": "8fb7eb0e6ac3e57c81943050f3337c61cdc6d8ec084fb7f11ad1c3fec505cd9f"
+      },
+      "originalResult": {
+        "path": "/var/lib/pinkha-c-native-preservation-20261126/linux-resume-attempt1/result.json",
+        "bytes": 7510,
+        "sha256": "f7f4a5b34465907c3285229a266a488229a92eb1c3a7c04c5b4cdd162ed1b32b"
+      },
+      "files": [
+        {
+          "role": "retained-v1-archive",
+          "path": "/var/lib/pinkha-c-native-preservation-20261126/linux-resume-attempt1/private-work/original-source.pinkha-heart-source",
+          "bytes": 1634696,
+          "sha256": "5d72e36849884da3da3fe9ddde0a01f49a03cde3b417f49456e3558bea8db463",
+          "environment": "PINKHA_CAPTURE_PRODUCER_RETAINED_V1_ARCHIVE"
+        },
+        {
+          "role": "retained-accepted-plan",
+          "path": "/var/lib/pinkha-c-native-preservation-20261126/linux-resume-attempt1/private-work/source-preservation-plan.json",
+          "bytes": 1823803,
+          "sha256": "4a61914d5dbd3ccb4874f81444e4d0770c9e7e2dfe4259b8b93f15796accb930",
+          "environment": "PINKHA_CAPTURE_PRODUCER_RETAINED_V1_PLAN"
+        }
+      ],
+      "futureQualificationPolicy": "The eventual controller must O_NOATIME/O_NOFOLLOW-admit the two exact original files and stable full metadata, create only its owned immutable input copies, bind the two environment variables to those copies, and recheck originals/copies before final success. All thirteen selected methods are mandatory, including testRetainedZeroFileV1PlanIsUnchangedByTheNewAttachmentHooks; any missing input, skipped method or absent start/pass fails this cohort. No private input bytes are published.",
+      "noOriginalOperationsExecuted": true,
+      "noLooseOriginal156PayloadCopies": true,
+      "syntheticDerivative": "The inherited C20 synthetic recovered-descriptor derivative is not selected here. Only testRetainedZeroFileV1PlanIsUnchangedByTheNewAttachmentHooks reads these two retained original inputs. The other twelve selected methods use detached or complete wire-shaped synthetic fixtures; they do not establish a real nonempty Heart capture or native migration.",
+      "earlierUnavailableLocator": {
+        "proofBlob": "d8cb35d5a4c0ed6678d4635321ac2a888c8e6d5c",
+        "status": "PRESERVED_FAILED_PATH_OBSERVATION_NOT_RETRIED"
+      }
+    },
+    "legacyHelper": {
+      "sourceBlob": "a52f10dfc99e00cb3df1a4bb3329862caf7ec99b",
+      "bytes": 5780,
+      "sha256": "a03d4bc206fac9397172e1b76dbf71a752b68ad47ca4611369cef20e03173e0c",
+      "wholeBlockUnchanged": true
+    },
+    "selectedSkip": "FAIL, including unavailable mandatory original archive/plan. No success credit for skipped methods.",
+    "privateStorage": "One owned synthetic private namespace; no mount/fsync fault/crash or actual native prepared upload. File mode/inode/readback/reuse and mismatched-capture preeffect refusal only."
+  },
+  "limits": [
+    "All source only; no Swift parser, semantic compiler, test runner, native account, cloud or current owner acceptance.",
+    "The old8 pure test source and its E peer remain attributed separately from these five new public-constructor/storage tests.",
+    "No historical C20/C7/C8 selection; current integration graph is not yet frozen."
+  ],
+  "metadataPredecessor": {
+    "blob": "ad588ef2f4e762de9c650fb0102314e3df8eb42a",
+    "bytes": 6180,
+    "sha256": "bfa716397bbeeed0c06e148f1bfc61c32d36cb3c7ee5f1dc8cfefa27e681c1da",
+    "reason": "Two inherited C20 fixture-policy descriptions were stale; only metadata is corrected. All thirteen method bodies, helpers, constructor pins, source inverses and current source identity are unchanged."
+  },
+  "metadataCorrections": [
+    {
+      "path": "fixturePolicy.expectedOriginalFixtureInputs.futureQualificationPolicy",
+      "before": "The controller must O_NOATIME/O_NOFOLLOW-admit exact original bytes and stable full metadata, create only its owned immutable input copies, bind environment to those copies, and recheck originals/copies before final success. No private input bytes are published. Both original/synthetic methods are mandatory if this twenty-method selection is run; any skip is failure.",
+      "after": "The eventual controller must O_NOATIME/O_NOFOLLOW-admit the two exact original files and stable full metadata, create only its owned immutable input copies, bind the two environment variables to those copies, and recheck originals/copies before final success. All thirteen selected methods are mandatory, including testRetainedZeroFileV1PlanIsUnchangedByTheNewAttachmentHooks; any missing input, skipped method or absent start/pass fails this cohort. No private input bytes are published."
+    },
+    {
+      "path": "fixturePolicy.expectedOriginalFixtureInputs.syntheticDerivative",
+      "before": "Original recovered descriptor bytes are declared as captured members only inside a clearly synthetic derivative. It is not an actual App capture, native migration, completed checkpoint or authority proof.",
+      "after": "The inherited C20 synthetic recovered-descriptor derivative is not selected here. Only testRetainedZeroFileV1PlanIsUnchangedByTheNewAttachmentHooks reads these two retained original inputs. The other twelve selected methods use detached or complete wire-shaped synthetic fixtures; they do not establish a real nonempty Heart capture or native migration."
+    }
+  ]
+}

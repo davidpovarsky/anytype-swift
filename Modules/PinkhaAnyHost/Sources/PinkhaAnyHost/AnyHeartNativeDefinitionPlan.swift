@@ -412,8 +412,15 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
     /// of every unrequested field; selection does not grant whole-object
     /// coverage. Unknown/ambiguous keys and nulls never become guessed values.
     public func values(snapshot: AnyHeartNativeSnapshotView, relationKeys: [String],
-                       objects: [ObjectBinding], files: [AnyHeartNativeFileBinding] = []) throws -> Values {
+                       objects: [ObjectBinding], files: [AnyHeartNativeFileBinding] = [],
+                       capturedFiles: AnyHeartNativeCapturedFilePlan? = nil) throws -> Values {
         try contentSelection?.require(snapshot)
+        // The captured head/payload projection is distinct from the historical
+        // caller-supplied file-ID adapter. Never combine their identity spaces.
+        guard capturedFiles == nil || files.isEmpty else {
+            throw AnyHeartNativeDefinitionPlanError.wrongSource
+        }
+        try capturedFiles?.require(catalog: catalog)
         guard Data(snapshot.sourceSpaceID.utf8) == Data(catalog.sourceSpaceID.utf8),
               Set(relationKeys.map { Data($0.utf8) }).count == relationKeys.count else {
             throw AnyHeartNativeDefinitionPlanError.wrongSource
@@ -481,7 +488,19 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
                     snapshotSHA256: snapshot.snapshotSHA256, jsonViewSHA256: snapshot.viewSHA256))
                 continue
             }
-            let mapped = try map(value, property: binding, targets: targets, files: fileTargets)
+            let mapped: AnyDestinationValue
+            if binding.relation.format == .file, let capturedFiles {
+                let rows = value.string.map { [AnyJSON.string($0)] } ?? value.array
+                guard let rows, rows.count <= 20_000 else {
+                    throw AnyHeartNativeDefinitionPlanError.invalidValue(key,
+                        "captured file scalar or bounded array required")
+                }
+                let maximum = binding.relation.maximumCount ?? 0
+                guard maximum <= 0 || rows.count <= maximum else {
+                    throw AnyHeartNativeDefinitionPlanError.invalidValue(key, "source file cardinality exceeded")
+                }
+                mapped = try capturedFiles.value(snapshot: snapshot, relationKey: key, original: value)
+            } else { mapped = try map(value, property: binding, targets: targets, files: fileTargets) }
             let field = AnyDestinationField(key: binding.record, value: mapped)
             if binding.relation.format == .object || binding.relation.format == .file {
                 try append(field, owner: binding.owner, key: key, to: &deferred); deferredKeys.append(key)

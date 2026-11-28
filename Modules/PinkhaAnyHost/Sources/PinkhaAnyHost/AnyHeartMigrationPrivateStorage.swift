@@ -102,6 +102,62 @@ final class AnyHeartMigrationPrivateStorage: @unchecked Sendable {
             throw AnyHeartNativeMigrationProducerError.privateStorage
         }
         let name = "captured-source-" + archive.sha256 + ".pinkha-heart-source"
+        return try materialize(bytes: archive.bytes, expectedSHA256: archive.sha256, name: name)
+    }
+
+    /// Dispatch only exact captured payload members admitted by the typed plan.
+    /// Names bind source keys as well as the plan; equal bytes are not permission
+    /// to merge different file identities or owners. Original capture files stay
+    /// read-only, and metadata remains in the complete preservation archive.
+    func materializeCapturedFiles(_ plan: AnyHeartNativeCapturedFilePlan,
+                                  captured: AnyHeartNativeCapturedPreservationSource) throws -> [Data: URL] {
+        try validate()
+        let bundle = captured.bundle
+        guard Data(plan.sourceAccountID.utf8) == Data(bundle.sourceAccountID.utf8),
+              Data(plan.sourceSpaceID.utf8) == Data(bundle.sourceSpaceID.utf8),
+              plan.captureManifestSHA256 == bundle.manifestSHA256,
+              plan.sourceWitnessSHA256 == bundle.sourceWitnessSHA256 else {
+            throw AnyHeartNativeMigrationProducerError.privateStorage
+        }
+        var payloads: [Data: URL] = [:]
+        for entry in plan.entries {
+            try Task.checkCancellation()
+            let matches = bundle.fileVariants.filter {
+                Data($0.fileID.utf8) == Data(entry.sourcePayloadID.utf8) &&
+                    Data($0.variantPath.utf8) == Data(entry.variantPath.utf8)
+            }
+            guard matches.count == 1, let variant = matches.first, variant.isNativeOriginal,
+                  Data(variant.payload.path.utf8) == Data(entry.payloadPath.utf8),
+                  variant.payload.sha256 == entry.payloadSHA256,
+                  Int64(variant.payload.byteCount) == entry.size,
+                  variant.metadata.sha256 == entry.metadataSHA256,
+                  Data(variant.name.utf8) == Data(entry.name.utf8),
+                  Data(variant.mimeType.utf8) == Data(entry.mimeType.utf8),
+                  payloads[Data(entry.sourceKey.utf8)] == nil else {
+                throw AnyHeartNativeMigrationProducerError.privateStorage
+            }
+            let bytes = try captured.capturedMemberData(variant.payload)
+            let suffix = AnyContentDigest.sha256(AnyPreparedMigrationPlanBinding.material([
+                AnyHeartNativeCapturedFilePlan.contract, plan.contentSHA256, entry.sourceKey
+            ]))
+            let url = try materialize(bytes: bytes, expectedSHA256: entry.payloadSHA256,
+                                      name: "captured-file-" + suffix + ".payload")
+            payloads[Data(entry.sourceKey.utf8)] = url
+        }
+        try validate()
+        return payloads
+    }
+
+    /// Both archive and attachment bytes use the same exclusive creation,
+    /// verified reuse, retained-FD durability and replacement-detection path.
+    private func materialize(bytes: Data, expectedSHA256: String, name: String) throws -> URL {
+        try validate()
+        guard bytes.count <= AnyHeartNativePreservationArchive.maximumBytes,
+              AnyContentDigest.sha256(bytes) == expectedSHA256,
+              !name.isEmpty, name.utf8.count <= 255, !name.contains("/"), !name.contains("\\"),
+              name != ".", name != "..", !name.utf8.contains(0) else {
+            throw AnyHeartNativeMigrationProducerError.privateStorage
+        }
         let url = payloadParent.appendingPathComponent(name, isDirectory: false)
         let output = openat(payloadFD, name, O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW | O_CLOEXEC, mode_t(0o600))
         if output >= 0 {
@@ -113,14 +169,14 @@ final class AnyHeartMigrationPrivateStorage: @unchecked Sendable {
             }
             try Self.requireNamed(output, parentFD: payloadFD, name: name)
             try validate()
-            try handle.write(contentsOf: archive.bytes)
+            try handle.write(contentsOf: bytes)
             guard fsync(output) == 0, fchmod(output, mode_t(0o400)) == 0, fsync(output) == 0 else {
                 throw AnyHeartNativeMigrationProducerError.privateStorage
             }
             var final = stat()
             guard fstat(output, &final) == 0, Self.regular(final, mode: 0o400),
                   final.st_dev == initial.st_dev, final.st_ino == initial.st_ino,
-                  final.st_size == Int64(archive.bytes.count) else {
+                  final.st_size == Int64(bytes.count) else {
                 throw AnyHeartNativeMigrationProducerError.privateStorage
             }
             try Self.requireNamed(output, parentFD: payloadFD, name: name)
@@ -133,7 +189,7 @@ final class AnyHeartMigrationPrivateStorage: @unchecked Sendable {
         // Both branches perform full readback plus checked fsync on that same
         // verified file FD and the retained output parent. A prior fsync failure
         // cannot be converted into successful reuse merely by matching bytes.
-        try verifyAndSynchronize(name: name, expected: archive.bytes, expectedSHA256: archive.sha256)
+        try verifyAndSynchronize(name: name, expected: bytes, expectedSHA256: expectedSHA256)
         try validate()
         return url
     }

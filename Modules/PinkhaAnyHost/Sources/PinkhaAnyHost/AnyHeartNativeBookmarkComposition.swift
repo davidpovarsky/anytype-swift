@@ -33,7 +33,8 @@ public struct AnyHeartNativeBookmarkComposition: Sendable {
     public init(bundle: AnyHeartNativeSpaceBundle, sourceObjectID: String,
                 definitions: AnyHeartNativeDefinitionPlan,
                 objects: [AnyHeartNativeDefinitionPlan.ObjectBinding],
-                files: [AnyHeartNativeFileBinding] = []) throws {
+                files: [AnyHeartNativeFileBinding] = [],
+                capturedFiles: AnyHeartNativeCapturedFilePlan? = nil) throws {
         let catalog = definitions.catalog
         guard Data(bundle.sourceAccountID.utf8) == Data(catalog.sourceAccountID.utf8),
               Data(bundle.sourceSpaceID.utf8) == Data(catalog.sourceSpaceID.utf8),
@@ -63,7 +64,7 @@ public struct AnyHeartNativeBookmarkComposition: Sendable {
             sourceIssues.append("unmapped-native-collections")
         }
         try self.init(snapshot: snapshot, definitions: definitions, objects: objects,
-                      files: files, sourceIssues: sourceIssues)
+                      files: files, capturedFiles: capturedFiles, sourceIssues: sourceIssues)
     }
 
     /// Internal pure semantic control boundary; detached fixtures cannot be
@@ -71,6 +72,7 @@ public struct AnyHeartNativeBookmarkComposition: Sendable {
     init(snapshot: AnyHeartNativeSnapshotView, definitions: AnyHeartNativeDefinitionPlan,
          objects: [AnyHeartNativeDefinitionPlan.ObjectBinding],
          files: [AnyHeartNativeFileBinding] = [],
+         capturedFiles: AnyHeartNativeCapturedFilePlan? = nil,
          sourceIssues: [String] = ["detached-semantic-control"]) throws {
         let catalog = definitions.catalog
         guard Data(snapshot.sourceSpaceID.utf8) == Data(catalog.sourceSpaceID.utf8) else {
@@ -138,7 +140,8 @@ public struct AnyHeartNativeBookmarkComposition: Sendable {
         // property. Its original bytes remain in the source-facts record.
         let structuralKeys = Set(layout.structuralDetailKeys)
         let valueKeys = detailKeys.filter { !structuralKeys.contains($0) }
-        let values = try definitions.values(snapshot: snapshot, relationKeys: valueKeys, objects: objects, files: files)
+        let values = try definitions.values(snapshot: snapshot, relationKeys: valueKeys, objects: objects, files: files,
+                                            capturedFiles: capturedFiles)
         // The scoped current-content schema actually owns an immutable facts
         // dataset. Historical fields count as consumed only when the concrete
         // source-fact operation is constructed and included below.

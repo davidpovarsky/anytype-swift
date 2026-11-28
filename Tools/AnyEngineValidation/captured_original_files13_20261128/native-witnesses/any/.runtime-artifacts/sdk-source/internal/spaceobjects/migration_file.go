@@ -1,0 +1,193 @@
+package spaceobjects
+
+import (
+	"bytes"
+	"context"
+	"errors"
+	"slices"
+	"time"
+
+	"github.com/anyproto/any-sync-sdk/internal/commitguard"
+	"github.com/anyproto/any-sync-sdk/internal/crdt"
+	"github.com/anyproto/any-sync-sdk/internal/migrationintent"
+	"github.com/anyproto/any-sync-sdk/internal/object"
+	"github.com/anyproto/any-sync-sdk/internal/payloads"
+	"github.com/anyproto/any-sync/commonspace/object/acl/list"
+	"github.com/anyproto/any-sync/commonspace/object/tree/objecttree"
+	"github.com/anyproto/any-sync/commonspace/object/tree/treechangeproto"
+	"github.com/anyproto/any-sync/commonspace/object/tree/treestorage"
+	"github.com/anyproto/any-sync/util/crypto"
+)
+
+func (s *Store) PrepareMigrationFile(ctx context.Context, journal *migrationintent.Store, proposed *migrationintent.File, spec migrationintent.FileSpec) (*migrationintent.File, error) {
+	if journal == nil || proposed == nil || spec.Validate() != nil {
+		return nil, migrationintent.ErrScope
+	}
+	root, err := commitguard.InlineFileRoot(s.spaceId, spec.OwnerObjectID)
+	if err != nil {
+		return nil, err
+	}
+	var result *migrationintent.File
+	err = s.withInlineFileObjects(ctx, spec.OwnerObjectID, root.Id, func(owner, carrier *object.Object) error {
+		heads := []string{root.Id}
+		if carrier != nil {
+			if !bytes.Equal(carrier.Tree().Header().RawChange, root.RawChange) {
+				return migrationintent.ErrCollision
+			}
+			heads = slices.Clone(carrier.Tree().Heads())
+		}
+		acl := owner.Tree().AclList()
+		var raw *treechangeproto.RawTreeChangeWithId
+		entry := *proposed
+		entry.ObjectID, entry.RootRaw, entry.OwnerObjectID = root.Id, bytes.Clone(root.RawChange), spec.OwnerObjectID
+		entry.ContentSHA256, entry.Size, entry.Timestamp = spec.ContentSHA256, spec.Size, time.Now().Unix()
+		// No registration, append, watcher or publish callback is invoked here.
+		err := func() error {
+			acl.RLock()
+			defer acl.RUnlock()
+			if err := ctx.Err(); err != nil {
+				return err
+			}
+			if !acl.AclState().Permissions(s.signKey.GetPublic()).CanWrite() {
+				return list.ErrInsufficientPermissions
+			}
+			if acl.Head() == nil {
+				return commitguard.ErrNativeCommitGuard
+			}
+			entry.ReadKeyID, entry.ACLHeadID = acl.AclState().CurrentReadKeyId(), acl.Head().Id
+			readKey, err := acl.AclState().CurrentReadKey()
+			if err != nil {
+				return err
+			}
+			key, err := payloads.DeriveEncKey(readKey)
+			if err != nil {
+				return err
+			}
+			entry.Payload, err = object.BuildMigrationFilePayload(spec, entry.Staged, entry.ReadKeyID, key)
+			if err != nil {
+				return err
+			}
+			_, raw, err = objecttree.NewChangeBuilder(crypto.NewKeyStorage(), root).Build(objecttree.BuilderContent{
+				TreeHeadIds: heads, AclHeadId: entry.ACLHeadID, SnapshotBaseId: root.Id,
+				Unencrypted: true, PrivKey: s.signKey, Content: entry.Payload, Timestamp: entry.Timestamp, DataType: payloads.Dataset,
+			})
+			return err
+		}()
+		if err != nil {
+			return err
+		}
+		entry.ChangeID, entry.Raw = raw.Id, bytes.Clone(raw.RawChange)
+		ch, err := object.NewCodec().Decode(entry.Payload)
+		if err != nil {
+			return err
+		}
+		ch.ChangeId = entry.ChangeID
+		entry.RecordIDs, err = crdt.ResolveRecordIds(ch)
+		if err != nil {
+			return err
+		}
+		entry.Dependencies = map[string][]string{spec.OwnerObjectID: slices.Clone(owner.Tree().Heads()), root.Id: heads}
+		if _, err = object.CheckMigrationFile(ctx, acl, s.signKey.GetPublic(), &entry, true); err != nil {
+			return err
+		}
+		if carrier != nil {
+			row, err := carrier.Controller().GuardLookup(ctx, payloads.Dataset, entry.RecordIDs[0])
+			if err != nil {
+				return err
+			}
+			if row != nil {
+				return migrationintent.ErrCollision
+			}
+		}
+		result, err = journal.ReserveFile(ctx, &entry)
+		return err
+	})
+	return result, err
+}
+
+// MigrationFileState advances at most one native durable stage. Native
+// CID/history and materialized row determine recovery; a host receipt does not.
+func (s *Store) MigrationFileState(ctx context.Context, e *migrationintent.File, commit bool) (stage, outcome string, err error) {
+	if e == nil {
+		return "", "", migrationintent.ErrCorrupt
+	}
+	stage, outcome = "file-prepared", "prepared"
+	err = s.withInlineFileObjects(ctx, e.OwnerObjectID, e.ObjectID, func(owner, carrier *object.Object) error {
+		if carrier != nil {
+			stage = "file-root-committed"
+			var err error
+			outcome, err = carrier.MigrationFileLocked(ctx, e, false)
+			if err != nil {
+				return err
+			}
+			if outcome != "prepared" {
+				if outcome == "committed" || outcome == "committed_deleted" || outcome == "committed_modified" {
+					stage = "file-row-committed"
+				}
+				return nil
+			}
+		} else {
+			if _, err := object.CheckMigrationFile(ctx, owner.Tree().AclList(), s.signKey.GetPublic(), e, true); err != nil {
+				return err
+			}
+		}
+		if !inlineSameHeads(owner.Tree().Heads(), e.Dependencies[e.OwnerObjectID]) {
+			return migrationintent.ErrObsolete
+		}
+		if !commit {
+			return nil
+		}
+		if carrier != nil {
+			outcome, err = carrier.MigrationFileLocked(ctx, e, true)
+			if err == nil && outcome != "obsolete" {
+				stage = "file-row-committed"
+			}
+			return err
+		}
+		if !inlineSameHeads(e.Dependencies[e.ObjectID], []string{e.ObjectID}) {
+			return migrationintent.ErrObsolete
+		}
+		if _, err := s.CheckDeriveParent(ctx, e.ObjectID, e.OwnerObjectID); err != nil {
+			return err
+		}
+		handle, err := s.app.GetSpace(ctx, s.spaceId)
+		if err != nil {
+			return err
+		}
+		err = commitguard.StorePreparedFileRoot(ctx, handle.Inner().Storage(), owner.Tree().AclList(), s.signKey.GetPublic(),
+			&treechangeproto.RawTreeChangeWithId{Id: e.ObjectID, RawChange: e.RootRaw}, &treechangeproto.RawTreeChangeWithId{Id: e.ChangeID, RawChange: e.Raw}, object.MigrationFileProof(e))
+		if errors.Is(err, treestorage.ErrTreeExists) {
+			return migrationintent.ErrObsolete
+		}
+		if err != nil {
+			return err
+		}
+		stage = "file-root-committed"
+		return nil
+	})
+	if errors.Is(err, migrationintent.ErrObsolete) || errors.Is(err, commitguard.ErrNativeACLChanged) {
+		return stage, "obsolete", nil
+	}
+	return stage, outcome, err
+}
+
+// Adoption runs while the same live owner/carrier native locks still protect
+// the exact original row. Queue wake-up is asynchronous and appends no row here.
+func (s *Store) AdoptMigrationFile(ctx context.Context, e *migrationintent.File, adopt func() error) error {
+	if e == nil || adopt == nil {
+		return migrationintent.ErrScope
+	}
+	return s.withInlineFileObjects(ctx, e.OwnerObjectID, e.ObjectID, func(owner, carrier *object.Object) error {
+		if carrier == nil {
+			return migrationintent.ErrObsolete
+		}
+		state, err := carrier.MigrationFileLocked(ctx, e, false)
+		if err != nil {
+			return err
+		}
+		if state != "committed" {
+			return migrationintent.ErrObsolete
+		}
+		return adopt()
+	})
+}

@@ -1,0 +1,288 @@
+{
+  "schema": "pinkha-captured-file-integration-source-v1",
+  "status": "DRAFT_SOURCE_ONLY_NOT_PARSED_COMPILED_OR_RUN",
+  "base": "c4f938bdf74de0d6313e489cad332e6ed635b8d0",
+  "contract": {
+    "blob": "59e7ed12457b98524713cd3057651281aa57a684",
+    "bytes": 16513,
+    "sha256": "32c7c15593dec2946797de4ab6240e2fd82254b88dcd76e9b76cdf42d0fc4319"
+  },
+  "purePlan": {
+    "name": "AnyHeartNativeCapturedFilePlan.swift",
+    "key": "c_captured_file_plan_source_draft2",
+    "blob": "f0dda7ea6242a660b0762c036aa6ef79e47799f8",
+    "bytes": 34601,
+    "sha256": "95f73f2edbd5cca0750da499cb5a8028bfeb676228b6f0cac732f439542b2e78"
+  },
+  "rows": [
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeDefinitionPlan.swift",
+      "key": "c_captured_file_hooks_AnyHeartNativeDefinitionPlan.swift_draft1",
+      "before": {
+        "blob": "e78e16fc3d18e8515db89600ab88a9074c34b28c",
+        "bytes": 38683,
+        "sha256": "66cebc79a53506c6a34cbc12801706f7eb1dc73ce5a1a915953ffc6e444b90e4",
+        "commit": "c4f938bdf74de0d6313e489cad332e6ed635b8d0"
+      },
+      "after": {
+        "blob": "180674baded6c30e969d4330d7098cf23dd9dc80",
+        "bytes": 39909,
+        "sha256": "bb4d68d98ef9ba6084e11b76dd855d69469934dd6f992ead68f3aa3b60b0d2d6"
+      },
+      "edits": [
+        {
+          "old": "                       objects: [ObjectBinding], files: [AnyHeartNativeFileBinding] = []) throws -> Values {\n        try contentSelection?.require(snapshot)",
+          "new": "                       objects: [ObjectBinding], files: [AnyHeartNativeFileBinding] = [],\n                       capturedFiles: AnyHeartNativeCapturedFilePlan? = nil) throws -> Values {\n        try contentSelection?.require(snapshot)\n        // The captured head/payload projection is distinct from the historical\n        // caller-supplied file-ID adapter. Never combine their identity spaces.\n        guard capturedFiles == nil || files.isEmpty else {\n            throw AnyHeartNativeDefinitionPlanError.wrongSource\n        }\n        try capturedFiles?.require(catalog: catalog)"
+        },
+        {
+          "old": "            let mapped = try map(value, property: binding, targets: targets, files: fileTargets)",
+          "new": "            let mapped: AnyDestinationValue\n            if binding.relation.format == .file, let capturedFiles {\n                let rows = value.string.map { [AnyJSON.string($0)] } ?? value.array\n                guard let rows, rows.count <= 20_000 else {\n                    throw AnyHeartNativeDefinitionPlanError.invalidValue(key,\n                        \"captured file scalar or bounded array required\")\n                }\n                let maximum = binding.relation.maximumCount ?? 0\n                guard maximum <= 0 || rows.count <= maximum else {\n                    throw AnyHeartNativeDefinitionPlanError.invalidValue(key, \"source file cardinality exceeded\")\n                }\n                mapped = try capturedFiles.value(snapshot: snapshot, relationKey: key, original: value)\n            } else { mapped = try map(value, property: binding, targets: targets, files: fileTargets) }"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativePageComposition.swift",
+      "key": "c_captured_file_hooks_AnyHeartNativePageComposition.swift_draft1",
+      "before": {
+        "blob": "ccc1900e42779fddce9b367276cc70710e4c3fd5",
+        "bytes": 13296,
+        "sha256": "bbd81ee8d2fc7cb762b3583830e59c3ad39b27dac47eac46e80627abfa73b1a0",
+        "commit": "c4f938bdf74de0d6313e489cad332e6ed635b8d0"
+      },
+      "after": {
+        "blob": "4f7bbc186911f8c43f1322f8149b5cbfdabfe848",
+        "bytes": 13533,
+        "sha256": "fb0415d4f0640e61b13849946b9ebc0547e1655c438999c5857d6d15cbfebc24"
+      },
+      "edits": [
+        {
+          "old": "                files: [AnyHeartNativeFileBinding] = []) throws {",
+          "new": "                files: [AnyHeartNativeFileBinding] = [],\n                capturedFiles: AnyHeartNativeCapturedFilePlan? = nil) throws {"
+        },
+        {
+          "old": "                      files: files, sourceIssues: sourceIssues)",
+          "new": "                      files: files, capturedFiles: capturedFiles, sourceIssues: sourceIssues)"
+        },
+        {
+          "old": "         files: [AnyHeartNativeFileBinding] = [],\n         sourceIssues:",
+          "new": "         files: [AnyHeartNativeFileBinding] = [],\n         capturedFiles: AnyHeartNativeCapturedFilePlan? = nil,\n         sourceIssues:"
+        },
+        {
+          "old": "objects: objects, files: files)",
+          "new": "objects: objects, files: files,\n                                            capturedFiles: capturedFiles)"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeBookmarkComposition.swift",
+      "key": "c_captured_file_hooks_AnyHeartNativeBookmarkComposition.swift_draft1",
+      "before": {
+        "blob": "c046011ab09b165f2c39ab5d9fab22d05095ee16",
+        "bytes": 13872,
+        "sha256": "ae6ba66142c227b24a75ecc40de780e409dc15bfe6774c58b5a74e069c1ab6a8",
+        "commit": "c4f938bdf74de0d6313e489cad332e6ed635b8d0"
+      },
+      "after": {
+        "blob": "b98e4d547239d7d46281aa6f01d0f618aee42eec",
+        "bytes": 14109,
+        "sha256": "71f335bd0021f034f5409a2e3d366a189ea45b78094833b206e548a32dc998be"
+      },
+      "edits": [
+        {
+          "old": "                files: [AnyHeartNativeFileBinding] = []) throws {",
+          "new": "                files: [AnyHeartNativeFileBinding] = [],\n                capturedFiles: AnyHeartNativeCapturedFilePlan? = nil) throws {"
+        },
+        {
+          "old": "                      files: files, sourceIssues: sourceIssues)",
+          "new": "                      files: files, capturedFiles: capturedFiles, sourceIssues: sourceIssues)"
+        },
+        {
+          "old": "         files: [AnyHeartNativeFileBinding] = [],\n         sourceIssues:",
+          "new": "         files: [AnyHeartNativeFileBinding] = [],\n         capturedFiles: AnyHeartNativeCapturedFilePlan? = nil,\n         sourceIssues:"
+        },
+        {
+          "old": "objects: objects, files: files)",
+          "new": "objects: objects, files: files,\n                                            capturedFiles: capturedFiles)"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeContentComposition.swift",
+      "key": "c_captured_file_hooks_AnyHeartNativeContentComposition.swift_draft1",
+      "before": {
+        "blob": "d26703ec0f510b849c98498cab11682899a7d95e",
+        "bytes": 6771,
+        "sha256": "0890a16d2d9a6d8074db7d02d88eaea33186ee5be9069693e62e12938936ec1f",
+        "commit": "c4f938bdf74de0d6313e489cad332e6ed635b8d0"
+      },
+      "after": {
+        "blob": "d055442bcf7c9d245916ad83cb251f90ea1e0d6f",
+        "bytes": 7525,
+        "sha256": "14f75ebf5ff69f842708fb13746e4e1273863432d36426cc98be31cee98cf8ed"
+      },
+      "edits": [
+        {
+          "old": "    public let definitions: AnyHeartNativeDefinitionPlan\n",
+          "new": "    public let definitions: AnyHeartNativeDefinitionPlan\n    /// nil preserves the original zero-file composition and encoded material.\n    public let capturedFiles: AnyHeartNativeCapturedFilePlan?\n"
+        },
+        {
+          "old": "        let definitions = try AnyHeartNativeDefinitionPlan(catalog: catalog, contentSelection: selection)\n",
+          "new": "        let definitions = try AnyHeartNativeDefinitionPlan(catalog: catalog, contentSelection: selection)\n        let capturedFiles: AnyHeartNativeCapturedFilePlan?\n        if bundle.fileVariants.isEmpty && bundle.fileReferences.isEmpty { capturedFiles = nil }\n        else { capturedFiles = try .init(bundle: bundle, catalog: catalog, selection: selection) }\n"
+        },
+        {
+          "old": "sourceObjectID: selected.sourceObjectID, definitions: definitions, objects: objects)",
+          "new": "sourceObjectID: selected.sourceObjectID, definitions: definitions, objects: objects,\n                    capturedFiles: capturedFiles)",
+          "count": 2
+        },
+        {
+          "old": "        let unsorted = definitions.schemaItems + objectItems",
+          "new": "        let unsorted = definitions.schemaItems + objectItems + (capturedFiles?.entries.map(\\.item) ?? [])"
+        },
+        {
+          "old": "            let bookmarkSHA256: [String]?\n",
+          "new": "            let bookmarkSHA256: [String]?\n            let capturedFileSHA256: String?\n"
+        },
+        {
+          "old": "            bookmarkSHA256: bookmarks.isEmpty ? nil : bookmarks.map(\\.contentSHA256),\n",
+          "new": "            bookmarkSHA256: bookmarks.isEmpty ? nil : bookmarks.map(\\.contentSHA256),\n            capturedFileSHA256: capturedFiles?.contentSHA256,\n"
+        },
+        {
+          "old": "        self.bundle = bundle; self.selection = selection; self.definitions = definitions\n",
+          "new": "        self.bundle = bundle; self.selection = selection; self.definitions = definitions\n        self.capturedFiles = capturedFiles\n"
+        },
+        {
+          "old": "        _ = try definitions.admittedSchemaItems()\n",
+          "new": "        _ = try definitions.admittedSchemaItems()\n        try capturedFiles?.require(catalog: definitions.catalog)\n"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourcePreservation.swift",
+      "key": "c_captured_file_hooks_AnyHeartNativeSourcePreservation.swift_draft1",
+      "before": {
+        "blob": "6f59b8fb49546d9f2cc42971a73863c0756b8e8e",
+        "bytes": 19633,
+        "sha256": "c9560ed1180340391944b01b66386b9bc56d7f9b4e559aaf0229293f9bc8e175",
+        "commit": "c4f938bdf74de0d6313e489cad332e6ed635b8d0"
+      },
+      "after": {
+        "blob": "75858128d74918f826bdc48bad478a7bd2260e3c",
+        "bytes": 21048,
+        "sha256": "16223ae2abbe31cfddc39b08246ea4d398fd1e80acee1dba0fd574c4b6ddf738"
+      },
+      "edits": [
+        {
+          "old": "    public let preservedContextIDs: [String]\n",
+          "new": "    public let preservedContextIDs: [String]\n    /// Retained heads/schema never become editable native File-Type objects.\n    public let retainedFileHeadIDs: [String]\n    public let retainedFileSchemaIDs: [String]\n"
+        },
+        {
+          "old": "              bundle.resolverUnmapped.isEmpty, bundle.fileVariants.isEmpty, bundle.fileReferences.isEmpty,\n",
+          "new": "              bundle.resolverUnmapped.isEmpty,\n              definitionEvidence.kind == .capturedComplete ||\n                (bundle.fileVariants.isEmpty && bundle.fileReferences.isEmpty),\n"
+        },
+        {
+          "old": "        let unused = definitionIDs.subtracting(activeIDs)\n",
+          "new": "        let fileHeadIDs = Set((current.capturedFiles?.entries.map(\\.sourceHeadID) ?? []).map { Data($0.utf8) })\n        let fileSchemaOnly = Set((current.capturedFiles?.fileSchemaObjectIDs ?? []).map { Data($0.utf8) })\n            .subtracting(activeIDs)\n        guard fileHeadIDs.isDisjoint(with: definitionIDs.union(contentIDs)),\n              fileSchemaOnly.isSubset(of: definitionIDs) else {\n            throw AnyDestinationMigrationError.invalidPlan(\"captured file role overlap\")\n        }\n        let unused = definitionIDs.subtracting(activeIDs).subtracting(fileSchemaOnly)\n"
+        },
+        {
+          "old": "            if definitionIDs.contains(id) || contentIDs.contains(id) { continue }",
+          "new": "            if definitionIDs.contains(id) || contentIDs.contains(id) || fileHeadIDs.contains(id) { continue }"
+        },
+        {
+          "old": "                    role = (unused.contains(rawID) ? \"uninstantiated-\" : \"active-schema-\") + base\n",
+          "new": "                    if activeIDs.contains(rawID) { role = \"active-schema-\" + base }\n                    else if fileSchemaOnly.contains(rawID) { role = \"retained-file-schema-\" + base }\n                    else { role = \"uninstantiated-\" + base }\n"
+        },
+        {
+          "old": "                } else if contexts.contains(where: { Data($0.utf8) == rawID }) {\n",
+          "new": "                } else if fileHeadIDs.contains(rawID) {\n                    role = \"retained-file-attachment-head\"\n                } else if contexts.contains(where: { Data($0.utf8) == rawID }) {\n"
+        },
+        {
+          "old": "        preservedContextIDs = contexts; self.items = items; self.coverage = coverage\n",
+          "new": "        preservedContextIDs = contexts; self.items = items; self.coverage = coverage\n        retainedFileHeadIDs = fileHeadIDs.map { String(decoding: $0, as: UTF8.self) }.sorted {\n            Data($0.utf8).lexicographicallyPrecedes(Data($1.utf8))\n        }\n        retainedFileSchemaIDs = fileSchemaOnly.map { String(decoding: $0, as: UTF8.self) }.sorted {\n            Data($0.utf8).lexicographicallyPrecedes(Data($1.utf8))\n        }\n"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartMigrationPrivateStorage.swift",
+      "key": "c_captured_file_hooks_AnyHeartMigrationPrivateStorage.swift_draft1",
+      "before": {
+        "blob": "854de837370b8e280ab109da5a99276db75426bf",
+        "bytes": 18809,
+        "sha256": "5822ead21af2235459f73670ad37f92fcfe2f1fe4f619a04f11a2cb90edd7dfe",
+        "commit": "c4f938bdf74de0d6313e489cad332e6ed635b8d0"
+      },
+      "after": {
+        "blob": "d5073dd9d94684e75fb9af6d1468a83db9c552df",
+        "bytes": 22086,
+        "sha256": "a14e246e185042ff728b7bc4bb976aab903a265587f48e35415fd89fa97a0daf"
+      },
+      "edits": [
+        {
+          "old": "        let name = \"captured-source-\" + archive.sha256 + \".pinkha-heart-source\"\n        let url = payloadParent.appendingPathComponent(name, isDirectory: false)\n        let output = openat(payloadFD, name, O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW | O_CLOEXEC, mode_t(0o600))\n        if output >= 0 {\n            let handle = FileHandle(fileDescriptor: output, closeOnDealloc: true)\n            defer { try? handle.close() }\n            var initial = stat()\n            guard fstat(output, &initial) == 0, Self.regular(initial, mode: 0o600), initial.st_size == 0 else {\n                throw AnyHeartNativeMigrationProducerError.privateStorage\n            }\n            try Self.requireNamed(output, parentFD: payloadFD, name: name)\n            try validate()\n            try handle.write(contentsOf: archive.bytes)\n            guard fsync(output) == 0, fchmod(output, mode_t(0o400)) == 0, fsync(output) == 0 else {\n                throw AnyHeartNativeMigrationProducerError.privateStorage\n            }\n            var final = stat()\n            guard fstat(output, &final) == 0, Self.regular(final, mode: 0o400),\n                  final.st_dev == initial.st_dev, final.st_ino == initial.st_ino,\n                  final.st_size == Int64(archive.bytes.count) else {\n                throw AnyHeartNativeMigrationProducerError.privateStorage\n            }\n            try Self.requireNamed(output, parentFD: payloadFD, name: name)\n            try validate()\n            guard fsync(payloadFD) == 0 else { throw AnyHeartNativeMigrationProducerError.privateStorage }\n            try handle.close()\n        } else {\n            guard errno == EEXIST else { throw AnyHeartNativeMigrationProducerError.privateStorage }\n        }\n        // Both branches perform full readback plus checked fsync on that same\n        // verified file FD and the retained output parent. A prior fsync failure\n        // cannot be converted into successful reuse merely by matching bytes.\n        try verifyAndSynchronize(name: name, expected: archive.bytes, expectedSHA256: archive.sha256)\n        try validate()\n        return url\n    }\n",
+          "new": "        let name = \"captured-source-\" + archive.sha256 + \".pinkha-heart-source\"\n        return try materialize(bytes: archive.bytes, expectedSHA256: archive.sha256, name: name)\n    }\n\n    /// Dispatch only exact captured payload members admitted by the typed plan.\n    /// Names bind source keys as well as the plan; equal bytes are not permission\n    /// to merge different file identities or owners. Original capture files stay\n    /// read-only, and metadata remains in the complete preservation archive.\n    func materializeCapturedFiles(_ plan: AnyHeartNativeCapturedFilePlan,\n                                  captured: AnyHeartNativeCapturedPreservationSource) throws -> [Data: URL] {\n        try validate()\n        let bundle = captured.bundle\n        guard Data(plan.sourceAccountID.utf8) == Data(bundle.sourceAccountID.utf8),\n              Data(plan.sourceSpaceID.utf8) == Data(bundle.sourceSpaceID.utf8),\n              plan.captureManifestSHA256 == bundle.manifestSHA256,\n              plan.sourceWitnessSHA256 == bundle.sourceWitnessSHA256 else {\n            throw AnyHeartNativeMigrationProducerError.privateStorage\n        }\n        var payloads: [Data: URL] = [:]\n        for entry in plan.entries {\n            try Task.checkCancellation()\n            let matches = bundle.fileVariants.filter {\n                Data($0.fileID.utf8) == Data(entry.sourcePayloadID.utf8) &&\n                    Data($0.variantPath.utf8) == Data(entry.variantPath.utf8)\n            }\n            guard matches.count == 1, let variant = matches.first, variant.isNativeOriginal,\n                  Data(variant.payload.path.utf8) == Data(entry.payloadPath.utf8),\n                  variant.payload.sha256 == entry.payloadSHA256,\n                  Int64(variant.payload.byteCount) == entry.size,\n                  variant.metadata.sha256 == entry.metadataSHA256,\n                  Data(variant.name.utf8) == Data(entry.name.utf8),\n                  Data(variant.mimeType.utf8) == Data(entry.mimeType.utf8),\n                  payloads[Data(entry.sourceKey.utf8)] == nil else {\n                throw AnyHeartNativeMigrationProducerError.privateStorage\n            }\n            let bytes = try captured.capturedMemberData(variant.payload)\n            let suffix = AnyContentDigest.sha256(AnyPreparedMigrationPlanBinding.material([\n                AnyHeartNativeCapturedFilePlan.contract, plan.contentSHA256, entry.sourceKey\n            ]))\n            let url = try materialize(bytes: bytes, expectedSHA256: entry.payloadSHA256,\n                                      name: \"captured-file-\" + suffix + \".payload\")\n            payloads[Data(entry.sourceKey.utf8)] = url\n        }\n        try validate()\n        return payloads\n    }\n\n    /// Both archive and attachment bytes use the same exclusive creation,\n    /// verified reuse, retained-FD durability and replacement-detection path.\n    private func materialize(bytes: Data, expectedSHA256: String, name: String) throws -> URL {\n        try validate()\n        guard bytes.count <= AnyHeartNativePreservationArchive.maximumBytes,\n              AnyContentDigest.sha256(bytes) == expectedSHA256,\n              !name.isEmpty, name.utf8.count <= 255, !name.contains(\"/\"), !name.contains(\"\\\\\"),\n              name != \".\", name != \"..\", !name.utf8.contains(0) else {\n            throw AnyHeartNativeMigrationProducerError.privateStorage\n        }\n        let url = payloadParent.appendingPathComponent(name, isDirectory: false)\n        let output = openat(payloadFD, name, O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW | O_CLOEXEC, mode_t(0o600))\n        if output >= 0 {\n            let handle = FileHandle(fileDescriptor: output, closeOnDealloc: true)\n            defer { try? handle.close() }\n            var initial = stat()\n            guard fstat(output, &initial) == 0, Self.regular(initial, mode: 0o600), initial.st_size == 0 else {\n                throw AnyHeartNativeMigrationProducerError.privateStorage\n            }\n            try Self.requireNamed(output, parentFD: payloadFD, name: name)\n            try validate()\n            try handle.write(contentsOf: bytes)\n            guard fsync(output) == 0, fchmod(output, mode_t(0o400)) == 0, fsync(output) == 0 else {\n                throw AnyHeartNativeMigrationProducerError.privateStorage\n            }\n            var final = stat()\n            guard fstat(output, &final) == 0, Self.regular(final, mode: 0o400),\n                  final.st_dev == initial.st_dev, final.st_ino == initial.st_ino,\n                  final.st_size == Int64(bytes.count) else {\n                throw AnyHeartNativeMigrationProducerError.privateStorage\n            }\n            try Self.requireNamed(output, parentFD: payloadFD, name: name)\n            try validate()\n            guard fsync(payloadFD) == 0 else { throw AnyHeartNativeMigrationProducerError.privateStorage }\n            try handle.close()\n        } else {\n            guard errno == EEXIST else { throw AnyHeartNativeMigrationProducerError.privateStorage }\n        }\n        // Both branches perform full readback plus checked fsync on that same\n        // verified file FD and the retained output parent. A prior fsync failure\n        // cannot be converted into successful reuse merely by matching bytes.\n        try verifyAndSynchronize(name: name, expected: bytes, expectedSHA256: expectedSHA256)\n        try validate()\n        return url\n    }\n"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+      "key": "c_captured_file_hooks_AnyHeartNativeMigrationProducer.swift_draft1",
+      "before": {
+        "blob": "44f934e77ba85730a3c136a144c6eebeef63edab",
+        "bytes": 35352,
+        "sha256": "014ef0ee8268783b574b5e76ab8c945b95545f0ef6a1822ec874a1443a85bfa3",
+        "commit": "c4f938bdf74de0d6313e489cad332e6ed635b8d0"
+      },
+      "after": {
+        "blob": "31ba7704def9c2f9c48cfff1e117c2606f2dc1c5",
+        "bytes": 35693,
+        "sha256": "8f6f987b099beab83a615482955d9b473a803fba09d48b3c83ce6d6b279ab482"
+      },
+      "edits": [
+        {
+          "old": "        let payload = try storage.materialize(archive)\n        try requireActive(ticket)\n\n        let sourceKey = preservation.archiveItemSourceKey\n",
+          "new": "        let payload = try storage.materialize(archive)\n        let attachmentPayloads: [Data: URL]\n        if let files = preservation.currentContent.capturedFiles {\n            attachmentPayloads = try storage.materializeCapturedFiles(files, captured: captured)\n        } else { attachmentPayloads = [:] }\n        try requireActive(ticket)\n\n        let sourceKey = preservation.archiveItemSourceKey\n"
+        },
+        {
+          "old": "            guard Data(key.utf8) == Data(sourceKey.utf8) else {\n                throw AnyDestinationMigrationError.payloadMismatch(key)\n            }\n            return payload\n",
+          "new": "            if Data(key.utf8) == Data(sourceKey.utf8) { return payload }\n            guard let attachment = attachmentPayloads[Data(key.utf8)] else {\n                throw AnyDestinationMigrationError.payloadMismatch(key)\n            }\n            return attachment\n"
+        }
+      ]
+    }
+  ],
+  "fullForwardAndInverse": true,
+  "sourceChanges": 7,
+  "independentContractPeer": {
+    "blob": "b0d39545a76a357acfd5ca7c03ef8b43cb49b0fb",
+    "bytes": 15170,
+    "sha256": "2396b43cd7bbdf07b41d9dd52cae3fbb0eadbd538d1f0b08c373cfbb1fea0b8b"
+  },
+  "pureFixturePeer": {
+    "blob": "cd8e9796011c7c80ea8275c693fb8143818d88da",
+    "bytes": 8910,
+    "sha256": "76d1d4d855cb9410337586aae67168dac9a61df451cd64295e3a1a1e7aa07e38"
+  },
+  "storageAlgorithm": {
+    "oldBody": "        let url = payloadParent.appendingPathComponent(name, isDirectory: false)\n        let output = openat(payloadFD, name, O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW | O_CLOEXEC, mode_t(0o600))\n        if output >= 0 {\n            let handle = FileHandle(fileDescriptor: output, closeOnDealloc: true)\n            defer { try? handle.close() }\n            var initial = stat()\n            guard fstat(output, &initial) == 0, Self.regular(initial, mode: 0o600), initial.st_size == 0 else {\n                throw AnyHeartNativeMigrationProducerError.privateStorage\n            }\n            try Self.requireNamed(output, parentFD: payloadFD, name: name)\n            try validate()\n            try handle.write(contentsOf: archive.bytes)\n            guard fsync(output) == 0, fchmod(output, mode_t(0o400)) == 0, fsync(output) == 0 else {\n                throw AnyHeartNativeMigrationProducerError.privateStorage\n            }\n            var final = stat()\n            guard fstat(output, &final) == 0, Self.regular(final, mode: 0o400),\n                  final.st_dev == initial.st_dev, final.st_ino == initial.st_ino,\n                  final.st_size == Int64(archive.bytes.count) else {\n                throw AnyHeartNativeMigrationProducerError.privateStorage\n            }\n            try Self.requireNamed(output, parentFD: payloadFD, name: name)\n            try validate()\n            guard fsync(payloadFD) == 0 else { throw AnyHeartNativeMigrationProducerError.privateStorage }\n            try handle.close()\n        } else {\n            guard errno == EEXIST else { throw AnyHeartNativeMigrationProducerError.privateStorage }\n        }\n        // Both branches perform full readback plus checked fsync on that same\n        // verified file FD and the retained output parent. A prior fsync failure\n        // cannot be converted into successful reuse merely by matching bytes.\n        try verifyAndSynchronize(name: name, expected: archive.bytes, expectedSHA256: archive.sha256)\n        try validate()\n        return url\n    }\n",
+    "newBody": "        let url = payloadParent.appendingPathComponent(name, isDirectory: false)\n        let output = openat(payloadFD, name, O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW | O_CLOEXEC, mode_t(0o600))\n        if output >= 0 {\n            let handle = FileHandle(fileDescriptor: output, closeOnDealloc: true)\n            defer { try? handle.close() }\n            var initial = stat()\n            guard fstat(output, &initial) == 0, Self.regular(initial, mode: 0o600), initial.st_size == 0 else {\n                throw AnyHeartNativeMigrationProducerError.privateStorage\n            }\n            try Self.requireNamed(output, parentFD: payloadFD, name: name)\n            try validate()\n            try handle.write(contentsOf: bytes)\n            guard fsync(output) == 0, fchmod(output, mode_t(0o400)) == 0, fsync(output) == 0 else {\n                throw AnyHeartNativeMigrationProducerError.privateStorage\n            }\n            var final = stat()\n            guard fstat(output, &final) == 0, Self.regular(final, mode: 0o400),\n                  final.st_dev == initial.st_dev, final.st_ino == initial.st_ino,\n                  final.st_size == Int64(bytes.count) else {\n                throw AnyHeartNativeMigrationProducerError.privateStorage\n            }\n            try Self.requireNamed(output, parentFD: payloadFD, name: name)\n            try validate()\n            guard fsync(payloadFD) == 0 else { throw AnyHeartNativeMigrationProducerError.privateStorage }\n            try handle.close()\n        } else {\n            guard errno == EEXIST else { throw AnyHeartNativeMigrationProducerError.privateStorage }\n        }\n        // Both branches perform full readback plus checked fsync on that same\n        // verified file FD and the retained output parent. A prior fsync failure\n        // cannot be converted into successful reuse merely by matching bytes.\n        try verifyAndSynchronize(name: name, expected: bytes, expectedSHA256: expectedSHA256)\n        try validate()\n        return url\n    }\n",
+    "normalization": [
+      [
+        "archive.bytes",
+        "bytes"
+      ],
+      [
+        "archive.sha256",
+        "expectedSHA256"
+      ]
+    ],
+    "equal": true
+  },
+  "limits": {
+    "integrationControls": "NOT_PREPARED_OR_RUN",
+    "nativeNonemptyCapture": "NOT_RUN",
+    "originalV1ByteRegression": "NOT_RUN",
+    "frozen131Unchanged": true,
+    "C15Unchanged": true,
+    "noExecutorJournalNativeDriverDirectoryEdits": true,
+    "noFileTypeActivation": true,
+    "noNewAuthority": true
+  }
+}

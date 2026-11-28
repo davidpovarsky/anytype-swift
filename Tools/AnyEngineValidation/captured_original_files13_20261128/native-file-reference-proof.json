@@ -1,0 +1,45 @@
+{
+  "O_NOATIME": true,
+  "O_NOFOLLOWEveryComponent": true,
+  "bytes": 5675,
+  "children": 0,
+  "compilerInvocations": 0,
+  "directoryEnumeration": 0,
+  "identity": [
+    2064,
+    822037,
+    33188,
+    1,
+    0,
+    1002,
+    5675,
+    "1795810223526326336",
+    "1795787739699276915",
+    "1795809392619114389"
+  ],
+  "identityUnchanged": true,
+  "manifestSHA256": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b",
+  "nativeInvocations": 0,
+  "path": "/mnt/development/projects/evidence/pinkha-e-final-engine-20261127/source-attempt3/source/heart/core/block/export/native_file_references.go",
+  "schema": "pinkha-exact-native-file-reference-source-read-v1",
+  "seconds": 0.009607696905732155,
+  "sha256": "f966230a46fa0b7b6ee0cb05f6c73f134061e103ba8877f603d6991a2f657409",
+  "sourceOrCacheWrites": 0,
+  "status": "PASS_PUBLIC_SOURCE_READ_ONLY",
+  "text": "//go:build pinkha_loaded_account_witness\n\npackage export\n\nimport (\n\t\"fmt\"\n\t\"sort\"\n\n\t\"github.com/gogo/protobuf/proto\"\n\t\"github.com/ipfs/go-cid\"\n\n\t\"github.com/anyproto/anytype-heart/core/domain\"\n\t\"github.com/anyproto/anytype-heart/pkg/lib/bundle\"\n\t\"github.com/anyproto/anytype-heart/pkg/lib/pb/model\"\n)\n\n// NativeFileReference records the exact raw snapshot owner and field. Legacy\n// direct file IDs remain distinguishable from native file-object references.\ntype NativeFileReference struct {\n\tOwnerObjectID  string\n\tField          string\n\tTargetObjectID string\n\tFileID         string\n\tLegacyFileID   bool\n}\n\nfunc (w *NativeRawObject) FileInfo() (*model.FileInfo, error) {\n\trow, err := w.capturedRow()\n\tif err != nil {\n\t\treturn nil, err\n\t}\n\tif row.Snapshot.FileInfo == nil {\n\t\treturn nil, nil\n\t}\n\treturn proto.Clone(row.Snapshot.FileInfo).(*model.FileInfo), nil\n}\n\n// FileReferences enumerates every file location supported by the native\n// current-state schema. It deliberately does not invoke State.FileRelationKeys,\n// whose error behavior skips unknown property formats. Missing formats and\n// unresolved object/file IDs become explicit closed-resolver entries.\nfunc (r *NativeCapturedResolver) FileReferences() ([]NativeFileReference, error) {\n\tif r == nil || r.resolver == nil {\n\t\treturn nil, ErrNativeObjectWitness\n\t}\n\tids := make([]string, 0, len(r.objects))\n\tfileOwners := map[string][]string{}\n\tfor id, object := range r.objects {\n\t\tids = append(ids, id)\n\t\tinfo, err := object.FileInfo()\n\t\tif err != nil {\n\t\t\treturn nil, err\n\t\t}\n\t\tif info != nil && info.FileId != \"\" {\n\t\t\tfileOwners[info.FileId] = append(fileOwners[info.FileId], id)\n\t\t}\n\t}\n\tsort.Strings(ids)\n\tvar refs []NativeFileReference\n\tfor _, id := range ids {\n\t\trow, err := r.objects[id].capturedRow()\n\t\tif err != nil {\n\t\t\treturn nil, err\n\t\t}\n\t\tadd := func(field, target string, legacy bool) {\n\t\t\tif target == \"\" {\n\t\t\t\treturn\n\t\t\t}\n\t\t\tref := NativeFileReference{OwnerObjectID: id, Field: field, LegacyFileID: legacy}\n\t\t\tif legacy {\n\t\t\t\tref.FileID = target\n\t\t\t\tif len(fileOwners[target]) == 0 {\n\t\t\t\t\tr.resolver.RecordUnmapped(id, field, target, \"legacy-file-without-captured-native-file-info\")\n\t\t\t\t}\n\t\t\t} else {\n\t\t\t\tref.TargetObjectID = target\n\t\t\t\ttargetObject := r.objects[target]\n\t\t\t\tif targetObject != nil {\n\t\t\t\t\tinfo, infoErr := targetObject.FileInfo()\n\t\t\t\t\tif infoErr == nil && info != nil {\n\t\t\t\t\t\tref.FileID = info.FileId\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tif ref.FileID == \"\" {\n\t\t\t\t\t// Historical bookmark/icon fields may still contain direct native CIDs.\n\t\t\t\t\tif len(fileOwners[target]) > 0 {\n\t\t\t\t\t\tref.FileID, ref.LegacyFileID = target, true\n\t\t\t\t\t} else {\n\t\t\t\t\t\tr.resolver.RecordUnmapped(id, field, target, \"file-reference-without-captured-native-file-info\")\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t\trefs = append(refs, ref)\n\t\t}\n\t\tif info := row.Snapshot.FileInfo; info != nil {\n\t\t\tif info.FileId == \"\" {\n\t\t\t\tr.resolver.RecordUnmapped(id, \"fileInfo.fileId\", \"\", \"empty-native-file-id\")\n\t\t\t} else {\n\t\t\t\trefs = append(refs, NativeFileReference{OwnerObjectID: id, Field: \"fileInfo.fileId\", TargetObjectID: id, FileID: info.FileId})\n\t\t\t}\n\t\t}\n\t\t// Legacy snapshot FileKeys are not discarded even when current FileInfo\n\t\t// admission is unavailable. Native history keys remain in the raw witness.\n\t\tif row.Snapshot.FileKeys != nil && len(row.Snapshot.FileKeys.Fields) > 0 {\n\t\t\tr.resolver.RecordUnmapped(id, \"fileKeys\", \"\", \"legacy-snapshot-file-keys-require-native-history-admission\")\n\t\t}\n\t\tfor index, block := range row.Snapshot.Blocks {\n\t\t\tif block == nil {\n\t\t\t\tr.resolver.RecordUnmapped(id, fmt.Sprintf(\"blocks[%d]\", index), \"\", \"nil-native-block\")\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\tprefix := fmt.Sprintf(\"blocks[%d](%s)\", index, block.Id)\n\t\t\tif file := block.GetFile(); file != nil {\n\t\t\t\tadd(prefix+\".file.targetObjectId\", file.TargetObjectId, false)\n\t\t\t\t// Keep an obsolete direct hash explicitly; it may name a distinct retained\n\t\t\t\t// payload. A target object's presence must not erase the older native ID.\n\t\t\t\tif file.Hash != \"\" {\n\t\t\t\t\tadd(prefix+\".file.hash\", file.Hash, true)\n\t\t\t\t}\n\t\t\t}\n\t\t\tif mark := block.GetBookmark(); mark != nil {\n\t\t\t\tadd(prefix+\".bookmark.imageHash\", mark.ImageHash, false)\n\t\t\t\tadd(prefix+\".bookmark.faviconHash\", mark.FaviconHash, false)\n\t\t\t}\n\t\t\tif text := block.GetText(); text != nil {\n\t\t\t\tadd(prefix+\".text.iconImage\", text.IconImage, false)\n\t\t\t}\n\t\t}\n\t\topts, err := r.resolver.OptionsForObject(id)\n\t\tif err != nil {\n\t\t\treturn nil, err\n\t\t}\n\t\tdetails := domain.NewDetailsFromProto(row.Snapshot.Details)\n\t\tfor key := range details.IterateKeys() {\n\t\t\tif key == bundle.RelationKeyCoverId {\n\t\t\t\tkind := details.GetInt64(bundle.RelationKeyCoverType)\n\t\t\t\tif kind == 1 || kind == 4 || kind == 5 {\n\t\t\t\t\tvalue := details.GetString(key)\n\t\t\t\t\tif _, err := cid.Decode(value); err == nil {\n\t\t\t\t\t\tadd(\"details.\"+string(key), value, false)\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\tformat, ok := opts.ResolveFormat(key)\n\t\t\tif !ok {\n\t\t\t\tcontinue\n\t\t\t} // The closed resolver records this exact missing key.\n\t\t\tif format != model.RelationFormat_file {\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\tvalue := details.Get(key)\n\t\t\tif _, ok := value.TryString(); !ok {\n\t\t\t\tif _, ok := value.TryStringList(); !ok {\n\t\t\t\t\tr.resolver.RecordUnmapped(id, \"details.\"+string(key), \"\", \"unsupported-file-reference-value\")\n\t\t\t\t\tcontinue\n\t\t\t\t}\n\t\t\t}\n\t\t\tfor index, target := range details.WrapToStringList(key) {\n\t\t\t\tadd(fmt.Sprintf(\"details.%s[%d]\", key, index), target, false)\n\t\t\t}\n\t\t}\n\t}\n\tsort.Slice(refs, func(i, j int) bool {\n\t\tif refs[i].OwnerObjectID != refs[j].OwnerObjectID {\n\t\t\treturn refs[i].OwnerObjectID < refs[j].OwnerObjectID\n\t\t}\n\t\tif refs[i].Field != refs[j].Field {\n\t\t\treturn refs[i].Field < refs[j].Field\n\t\t}\n\t\treturn refs[i].FileID < refs[j].FileID\n\t})\n\treturn refs, nil\n}\n",
+  "sourceBlob": "802c8c9270bf0e1eaa11c5729119e527efe60bee",
+  "readTool": {
+    "command": [
+      "python3",
+      "/var/lib/sentinelx/uploads/.sentinelx_uploads/script_job_e0c1b95a5e5b45f1ac1e1bfb4b34a1be/read_exact_native_file_reference.py"
+    ],
+    "returncode": 0,
+    "duration": 0.05
+  },
+  "exact8acManifest": {
+    "blob": "fd8ce48cd3e51ac2693238420cb35902eb597255",
+    "bytes": 818991,
+    "sha256": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b"
+  },
+  "claim": "Only this public member was read and compared to8ac. No complete source3/8ac equality or actual nonempty file capture is inferred."
+}

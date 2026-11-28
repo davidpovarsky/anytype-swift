@@ -28,6 +28,9 @@ public struct AnyHeartNativeSourcePreservation: Sendable {
     public let records: [Record]
     public let uninstantiatedDefinitionIDs: [String]
     public let preservedContextIDs: [String]
+    /// Retained heads/schema never become editable native File-Type objects.
+    public let retainedFileHeadIDs: [String]
+    public let retainedFileSchemaIDs: [String]
     public let items: [AnyDestinationMigrationItem]
     public let coverage: [AnyDestinationCoverage]
     public let contentSHA256: String
@@ -64,7 +67,9 @@ public struct AnyHeartNativeSourcePreservation: Sendable {
         guard archive.binding == expectedArchive,
               let context = bundle.nativeStoreContext, let census = context.headCensus,
               context.unmappedCollectionNames.isEmpty, bundle.sourceGaps.isEmpty,
-              bundle.resolverUnmapped.isEmpty, bundle.fileVariants.isEmpty, bundle.fileReferences.isEmpty,
+              bundle.resolverUnmapped.isEmpty,
+              definitionEvidence.kind == .capturedComplete ||
+                (bundle.fileVariants.isEmpty && bundle.fileReferences.isEmpty),
               bundle.issues.allSatisfy({
                   definitionEvidence.kind == .recoveredOriginal &&
                   $0.code == "compiled-definition-descriptors-not-captured" && $0.field == "BundledDefinitionsUsed"
@@ -87,7 +92,14 @@ public struct AnyHeartNativeSourcePreservation: Sendable {
         let trees = Dictionary(uniqueKeysWithValues: bundle.trees.map { (Data($0.objectID.utf8), $0) })
         let definitionIDs = Set((catalog.types.map(\.objectID) + catalog.relations.map(\.objectID) +
                                  catalog.options.map(\.objectID)).map { Data($0.utf8) })
-        let unused = definitionIDs.subtracting(activeIDs)
+        let fileHeadIDs = Set((current.capturedFiles?.entries.map(\.sourceHeadID) ?? []).map { Data($0.utf8) })
+        let fileSchemaOnly = Set((current.capturedFiles?.fileSchemaObjectIDs ?? []).map { Data($0.utf8) })
+            .subtracting(activeIDs)
+        guard fileHeadIDs.isDisjoint(with: definitionIDs.union(contentIDs)),
+              fileSchemaOnly.isSubset(of: definitionIDs) else {
+            throw AnyDestinationMigrationError.invalidPlan("captured file role overlap")
+        }
+        let unused = definitionIDs.subtracting(activeIDs).subtracting(fileSchemaOnly)
         // Only actual content instances participate in this proof. Definition
         // objects use their own meta-types; empty Home/Archive/Workspace/Widgets
         // are preserved as source context, never invented destination objects.
@@ -103,7 +115,7 @@ public struct AnyHeartNativeSourcePreservation: Sendable {
         var contexts: [String] = []
         for object in bundle.objects {
             let id = Data(object.sourceObjectID.utf8)
-            if definitionIDs.contains(id) || contentIDs.contains(id) { continue }
+            if definitionIDs.contains(id) || contentIDs.contains(id) || fileHeadIDs.contains(id) { continue }
             let known: [Int64: String] = [32: "home", 48: "archive", 518: "ws", 112: "widget"]
             guard known[object.nativeType].map({ Data($0.utf8) == Data(object.uniqueKey.utf8) }) == true,
                   object.blocks.count == 1, object.blocks[0].contentKind == "smartblock",
@@ -180,7 +192,11 @@ public struct AnyHeartNativeSourcePreservation: Sendable {
                     case 529: base = "relation-option"
                     default: throw AnyDestinationMigrationError.invalidPlan("definition native kind")
                     }
-                    role = (unused.contains(rawID) ? "uninstantiated-" : "active-schema-") + base
+                    if activeIDs.contains(rawID) { role = "active-schema-" + base }
+                    else if fileSchemaOnly.contains(rawID) { role = "retained-file-schema-" + base }
+                    else { role = "uninstantiated-" + base }
+                } else if fileHeadIDs.contains(rawID) {
+                    role = "retained-file-attachment-head"
                 } else if contexts.contains(where: { Data($0.utf8) == rawID }) {
                     role = "source-context"
                 } else { throw AnyDestinationMigrationError.incompleteCoverage(id) }
@@ -273,6 +289,12 @@ public struct AnyHeartNativeSourcePreservation: Sendable {
         self.bundle = bundle; self.definitionEvidence = definitionEvidence; currentContent = current
         self.archive = archive; self.records = records; uninstantiatedDefinitionIDs = unusedIDs
         preservedContextIDs = contexts; self.items = items; self.coverage = coverage
+        retainedFileHeadIDs = fileHeadIDs.map { String(decoding: $0, as: UTF8.self) }.sorted {
+            Data($0.utf8).lexicographicallyPrecedes(Data($1.utf8))
+        }
+        retainedFileSchemaIDs = fileSchemaOnly.map { String(decoding: $0, as: UTF8.self) }.sorted {
+            Data($0.utf8).lexicographicallyPrecedes(Data($1.utf8))
+        }
         contentSHA256 = AnyContentDigest.sha256(material)
         archiveItemSourceKey = fileKey; catalogObjectSourceKey = objectKey; catalogTypeSourceKey = typeKey
     }

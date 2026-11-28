@@ -1,0 +1,138 @@
+{
+  "schema": "pinkha-c-captured-original-file-implementation-handoff-v1",
+  "status": "SOURCE_IMPLEMENTED_AND_PEER_REVIEWED_NOT_COMPILED_OR_RUN",
+  "repository": "davidpovarsky/anytype-swift",
+  "sourceBasis": {
+    "currentApplicationCommit": "c4f938bdf74de0d6313e489cad332e6ed635b8d0",
+    "currentApplicationTree": "ded909789ea21ed961cd3360618764e4056aa04f",
+    "preferredCurrentC15Graph": {
+      "blob": "2f05cf9be1fe89f4b565646415c75bf112a9b544",
+      "bytes": 221494,
+      "sha256": "7f81ae8eca793f33251dc16c59d7165d45e3cd80019dfeb8f894b99aefa621aa"
+    },
+    "C15Publication": "3d3a018d98aa92f173b99f2df9d4626933261db5",
+    "scope": "Distinct proposed135 source composition; C15/C20/frozen131 remain unchanged."
+  },
+  "sourceGraph": {
+    "blob": "fe5f68255387044a7c42ba0a08efcc1c83303956",
+    "bytes": 239247,
+    "sha256": "1509f3ee2ae67f8ce569b97d931841e4ace1761b2cc76ed3932544b9445c3a82"
+  },
+  "capabilityContract": {
+    "blob": "59e7ed12457b98524713cd3057651281aa57a684",
+    "bytes": 16513,
+    "sha256": "32c7c15593dec2946797de4ab6240e2fd82254b88dcd76e9b76cdf42d0fc4319"
+  },
+  "implementation": {
+    "publicProducerAPIs": "The existing execute and executeWithOrdinaryProperties APIs retain their signatures and ownership contract. Both use the shared preservation producer, whose existing file callback now resolves the original archive key or an exact new captured-file source key.",
+    "admittedSource": "Captured-complete evidence only; native generic File533 with layout6, one verified native-original variant at /0/, exact closed generated head/metadata shape, and one selected Page or Bookmark document owner.",
+    "identity": "Source file-head ID, captured payload FileID, source document owner, destination owner mapping, file source key and native file URI remain distinct. Payload identity or equal bytes cannot substitute for a captured head or ownership.",
+    "referenceClosure": "Every variant/head must have the exact self FileInfo row, the generated self-file block row at its actual raw array index, and the exact scalar or indexed detail-reference rows. Legacy, duplicated, extra, missing, shared or unowned references fail closed.",
+    "values": "The typed adapter preserves original scalar or array shape semantics, array order and repeated references within the same owner while resolving file references through the existing destination plan. The prior caller-supplied file binding adapter and all original schema gates remain separate.",
+    "operationOrder": "Existing stable phases create the admitted document before its prepared file operation and the later property update. Each captured file item is admitted by the unchanged plan's ownership, source coverage and reference-kind checks.",
+    "retention": "Every captured file head and declared payload/metadata member remains in the exact source archive and immutable catalog. File heads get retained-file-attachment-head; file-only schema gets retained-file-schema-*; active Page/Bookmark schema takes precedence. A destination File Type is not activated by this change.",
+    "privateMaterialization": "The existing exclusive private writer is reused after exact closed-map member lookup and byte/hash checks. The archive retains its original lower bound; ordinary payloads retain exact size and the original inline/full threshold. Fresh and reused files keep the existing verified-descriptor durability barriers and retained-partial refusal.",
+    "nativeDispatch": "The existing prepared native file APIs, native owner admission, source verifier, current account/run/session checks, journal, executor and verifier are used. No new route, arbitrary owner injection, native authority or retry policy is added.",
+    "zeroFileCompatibility": "Empty file/reference lists keep capturedFiles nil and omit the new optional material digest. The recovered-original v1 route still refuses any file list. Actual original v1 archive and canonical182 plan equality are required by a new selected regression; they have not been rerun."
+  },
+  "unchangedAuthority": {
+    "executor": "37a827ab",
+    "journal": "f0846218",
+    "nativeDriver": "b47533f1",
+    "currentImportedDefinitionDirectory": "ca3c57dedb7388d6b10a44a39778b9a1339b36f6dbcf52d67fbb572cc5cbc2b4",
+    "scope": "Exact whole pins are in SOURCE_GRAPH.json. Source/run/lease/Writer observations remain sequential. App namespace ownership must prevent moves/mounts/removal until the full outer operation drains; descriptor checks alone do not create a namespace lock."
+  },
+  "bounds": {
+    "maximumVariants": 4096,
+    "maximumReferencesAndHeads": 100000,
+    "maximumAggregatePayloadBytes": 67108864,
+    "completeArchiveMaximumBytes": 67108864,
+    "archiveOverhead": "The complete archive also contains capture metadata and descriptors, so the payload aggregate ceiling does not promise that a full64MiB payload plus metadata can fit.",
+    "inlineFullBoundaryBytes": 4096,
+    "originalSchemaGates": "Read-only/default qualification, unsupported target-Type semantics, cardinality restrictions, unknown fields, required definitions and canonical Name semantics remain enforced."
+  },
+  "explicitUnsupported": [
+    "Images, audio, video, PDF or other non-generic native file head families.",
+    "Legacy raw payload references, shared file heads or payload ownership across documents, orphan/unreferenced heads, additional unknown file-head metadata or representations.",
+    "Document block attachments, arbitrary cross-owner reuse, file-specific editable Type activation, dimensions or other file-derived property providers.",
+    "Automatic broader schema/default/cardinality support, generic custom-type completion, history replay, or new cloud quota/durability guarantees."
+  ],
+  "qualification": {
+    "target": "CapturedFileContractTests",
+    "selectedMethods": 13,
+    "attribution": {
+      "pureSynthetic": 8,
+      "fullBundleOrPrivateStorageSynthetic": 4,
+      "retainedOriginalV1Regression": 1
+    },
+    "testSource": {
+      "blob": "8a02b19051ce32cad1fa355fb19b94bff0039019",
+      "bytes": 66525,
+      "sha256": "5c840036c455e4952e797c771816eb507d816fac68563d416f11f8145e6d444c"
+    },
+    "allMandatoryNoSkip": true,
+    "originalInputs": {
+      "count": 2,
+      "totalBytes": 3458499,
+      "actualInputAdmissionProof": {
+        "blob": "a454802f6b3afaf6e9a74b3855f38554c4db859a",
+        "bytes": 3809,
+        "sha256": "8fb7eb0e6ac3e57c81943050f3337c61cdc6d8ec084fb7f11ad1c3fec505cd9f"
+      },
+      "originalResult": {
+        "path": "/var/lib/pinkha-c-native-preservation-20261126/linux-resume-attempt1/result.json",
+        "bytes": 7510,
+        "sha256": "f7f4a5b34465907c3285229a266a488229a92eb1c3a7c04c5b4cdd162ed1b32b"
+      },
+      "files": [
+        {
+          "role": "retained-v1-archive",
+          "path": "/var/lib/pinkha-c-native-preservation-20261126/linux-resume-attempt1/private-work/original-source.pinkha-heart-source",
+          "bytes": 1634696,
+          "sha256": "5d72e36849884da3da3fe9ddde0a01f49a03cde3b417f49456e3558bea8db463",
+          "environment": "PINKHA_CAPTURE_PRODUCER_RETAINED_V1_ARCHIVE"
+        },
+        {
+          "role": "retained-accepted-plan",
+          "path": "/var/lib/pinkha-c-native-preservation-20261126/linux-resume-attempt1/private-work/source-preservation-plan.json",
+          "bytes": 1823803,
+          "sha256": "4a61914d5dbd3ccb4874f81444e4d0770c9e7e2dfe4259b8b93f15796accb930",
+          "environment": "PINKHA_CAPTURE_PRODUCER_RETAINED_V1_PLAN"
+        }
+      ],
+      "futureQualificationPolicy": "The eventual controller must O_NOATIME/O_NOFOLLOW-admit the two exact original files and stable full metadata, create only its owned immutable input copies, bind the two environment variables to those copies, and recheck originals/copies before final success. All thirteen selected methods are mandatory, including testRetainedZeroFileV1PlanIsUnchangedByTheNewAttachmentHooks; any missing input, skipped method or absent start/pass fails this cohort. No private input bytes are published.",
+      "noOriginalOperationsExecuted": true,
+      "noLooseOriginal156PayloadCopies": true,
+      "syntheticDerivative": "The inherited C20 synthetic recovered-descriptor derivative is not selected here. Only testRetainedZeroFileV1PlanIsUnchangedByTheNewAttachmentHooks reads these two retained original inputs. The other twelve selected methods use detached or complete wire-shaped synthetic fixtures; they do not establish a real nonempty Heart capture or native migration.",
+      "earlierUnavailableLocator": {
+        "proofBlob": "d8cb35d5a4c0ed6678d4635321ac2a888c8e6d5c",
+        "status": "PRESERVED_FAILED_PATH_OBSERVATION_NOT_RETRIED"
+      }
+    },
+    "sourcePeers": {
+      "contract": "b0d39545a76a357acfd5ca7c03ef8b43cb49b0fb",
+      "pure": "cd8e9796011c7c80ea8275c693fb8143818d88da",
+      "integration": {
+        "blob": "af341ec4481db5766f6dd64aa75548244726c24a",
+        "bytes": 16171,
+        "sha256": "a20f82bc42401821a9c1f4182e427110d15f4ed8ef7be431ee81057b57be387d"
+      },
+      "storage": {
+        "blob": "54b1983cd7ef95ac39ed9fd9fc43ece0c0e4737d",
+        "bytes": 9349,
+        "sha256": "57798f7629e066a8231a99947b2f5dc28a2bad9e36028e8502bb377b8a0b117d"
+      }
+    },
+    "completed": "Immutable whole-source publication, exact literal source inverses, scoped source/API/constructor reviews and finite graph correspondence only.",
+    "notCompleted": "Swift syntax/typechecking, executable component tests, actual original-v1 regression, genuine nonempty capture, complete producer/executor native operation, restart/reopen or cloud verification.",
+    "separateAcceptedScope": "The corrected historical C20 20-method acceptance is retained separately and supplies no acceptance for these13 new methods. C15's independent15-method obligation is not selected here.",
+    "futureNative": "Use an independently admitted genuine nonempty capture and exact current native product. Qualify owner creation, prepared payload result and ordered property readback, retained head/archive correspondence, cold reopen and current lease/Writer refusal without replaying accepted original182."
+  },
+  "publicationScope": {
+    "ownedBranch": "codex/chatgpt-wave15-w1-direct-capture-producer-20261128",
+    "knownOwnedParent": "3d3a018d98aa92f173b99f2df9d4626933261db5",
+    "activeChanges": "Seven exact existing Host successors plus one new Host planner and one new13-method test file. Do not overwrite unrelated current App source, Directoryca3c or any final integration ref.",
+    "graphMeaning": "The finite qualification graph binds current c4f938 selected dependencies plus these explicit successors. It is not a claim that every dependency at the owned publication parent's tree equals the current integrated App.",
+    "runtime": "No compiler, native, account, resource-floor change, cache mutation or runtime controller grant."
+  }
+}
