@@ -1,0 +1,32 @@
+{
+  "schema": "pinkha-ordinary15-exact-selection-v1",
+  "status": "NOT_RUN",
+  "target": "OrdinaryMigrationContractTests",
+  "counts": {
+    "C7": 7,
+    "C8": 8,
+    "total": 15
+  },
+  "methods": [
+    "NativeOrdinaryMigrationProducerTests/testExactSubsetReturnsTheUnmodifiedCompleteSourceBinding",
+    "NativeOrdinaryMigrationProducerTests/testChangedOrForeignSubsetIsRefusedAtTheCorrespondenceBoundary",
+    "NativeOrdinaryMigrationProducerTests/testCanonicallyEquivalentUnicodeStillRequiresExactSourceBytes",
+    "NativeOrdinaryMigrationProducerTests/testExactCheckpointComparisonRetainsOnlyHistoricalEvidence",
+    "NativeOrdinaryMigrationProducerTests/testSelfConsistentChangedMappingPlanOrReferenceCannotReplaceTheCheckpoint",
+    "NativeOrdinaryMigrationProducerTests/testMissingOrSubstitutedIntentIsRefusedEvenWithUnchangedPlanAndMappings",
+    "NativeOrdinaryMigrationProducerTests/testCancellationRefusesBothPureDeliveries",
+    "NativeOrdinaryPropertyPartitionTests/testAllNewKeepsExactLegacyPlanAndClosedV1ReferenceBytes",
+    "NativeOrdinaryPropertyPartitionTests/testPartialOverlapImportsOnlyMissingAndPreservesOriginalCreationBindings",
+    "NativeOrdinaryPropertyPartitionTests/testAllPresentKeepsOriginalCheckpointAndHasNoSecondPlanOrCompletion",
+    "NativeOrdinaryPropertyPartitionTests/testReusedMappingIntentAndExactDescriptorProvenanceCannotBeSubstituted",
+    "NativeOrdinaryPropertyPartitionTests/testColdPartialReferenceReconstructsBothExactBindingsAndRejectsChangedPartition",
+    "NativeOrdinaryPropertyPartitionTests/testColdAllPresentUsesOnlyOriginalCheckpointAndRejectsForeignBinding",
+    "NativeOrdinaryPropertyPartitionTests/testPartitionCodecRefusesDuplicatesUnknownFieldsAndLegacyFieldInjection",
+    "NativeOrdinaryPropertyPartitionTests/testCancellationRefusesPartitionBeforeReturningHistoricalCorrespondence"
+  ],
+  "expectedUniqueStarts": 15,
+  "expectedUniquePasses": 15,
+  "expectedFailures": 0,
+  "selectedSkipIsFailure": true,
+  "oldC20MethodsSelected": 0
+}

@@ -1,0 +1,648 @@
+{
+  "schema": "pinkha-n-independent-current-c15-source-graph-peer-v1",
+  "status": "CLEAR_SCOPED_SOURCE_GRAPH_SELECTION_AND_CURRENT_CORRESPONDENCE_NOT_COMPILED_NOT_RUN",
+  "reviewer": "N network/Files owner",
+  "repository": "davidpovarsky/anytype-swift",
+  "inputs": {
+    "currentGraph": {
+      "blob": "2f05cf9be1fe89f4b565646415c75bf112a9b544",
+      "bytes": 221494,
+      "sha256": "7f81ae8eca793f33251dc16c59d7165d45e3cd80019dfeb8f894b99aefa621aa"
+    },
+    "selection": {
+      "blob": "05c40b95a3461e4327e3af7c4c8f693edffbe8fd",
+      "bytes": 2002,
+      "sha256": "1bc7169f2f8a0f70bf9f63de6fb04e3032f935ea2aab01e7f86939e8abc0ab37"
+    },
+    "completeHistoricalDelta": {
+      "blob": "2f713d7ebd8363a57bbad69a0d7976c3c0c3d66a",
+      "bytes": 197463,
+      "sha256": "ee3b4ecd12b6b0b0c138bba1fded086489f3db1150d5e30e4013f7099d5d142c"
+    },
+    "sourcePreparationPreserved": {
+      "blob": "51ef5ebda4f04cc1132b37fd89835aebe6b42936",
+      "bytes": 142514,
+      "sha256": "71776de64e5b91faf2c142600c3ad9fddd4b31d0adc6ea174c25db1f19355fca"
+    },
+    "sourcePreparationCurrentClarification": {
+      "blob": "edbcd603bf22b48deacc2a6541fca480ae58ad19",
+      "bytes": 144237,
+      "sha256": "107fede1b95eb180be0beeb8f09afe7d08e3449116cdc61059eb5e5416c7aaff"
+    },
+    "readme": {
+      "blob": "1ec31ab9327fc00fad10426b36a92a1111fb35cd",
+      "bytes": 3789,
+      "sha256": "62ea720a17c50dac46204918e8bc5afd15e3413f49e1d04df44972f028aee6ac"
+    },
+    "correctedHistoricalC20": {
+      "blob": "f201be38ce769e5d6c5aec9ba59eba87bd42eef7",
+      "bytes": 138877,
+      "sha256": "e038ff584135e63fa5cc1eb521a8c72539df0cd398ea29f9dcae27a0e6e2c632"
+    },
+    "ordinary129": {
+      "blob": "ab2fa69e478fd51eb41280fb5a4b88b6f20b55e9",
+      "bytes": 114220,
+      "sha256": "39fb791d8b76ec69aad793686d5e45af3671b6427c0756f09793e76b9442da19"
+    },
+    "compilerPackagingDonor": {
+      "blob": "25cd83239a9bbd179d645ea358029f399b0addc7",
+      "bytes": 44501,
+      "sha256": "b9d7e0748231ba9f34362f68508f27958abd6922eb5ea5e68cb01d093ca8d5e7"
+    }
+  },
+  "scope": [
+    "Independent complete source-row, current Git tree, historical delta and selected-method correspondence.",
+    "Whole changed/additional source bodies retrieved by exact immutable Git blobs and joined to their byte counts/SHA256/Git SHA1. Semantic review focused on the two current ObjectCreator/PropertyStore substitutions, five newly needed dependencies, and preserved C7/C8 API correspondence.",
+    "Previously reviewed unchanged source semantics are retained; no duplicate full review of the 122 unchanged corrected-C20 production bodies or eight external dependency bodies.",
+    "Source-only. No Oracle, Mac, private fixture payload, source materialization, Python/Swift compiler, test, native/account, cache, or resource observation."
+  ],
+  "currentRepositoryJoin": {
+    "commit": "c4f938bdf74de0d6313e489cad332e6ed635b8d0",
+    "tree": "ded909789ea21ed961cd3360618764e4056aa04f",
+    "commitTreeChecked": true,
+    "rootModulesTreeChecked": true,
+    "modulesTree": "2dd5875de8fef289bba289807fdd6fefb18aa8f4",
+    "moduleSubtrees": [
+      {
+        "module": "PinkhaAnyEngine",
+        "sha": "ae823a9ccb141182df1bc418938924ce5aac97de",
+        "rows": 94,
+        "truncated": false,
+        "independentlyFetched": true
+      },
+      {
+        "module": "PinkhaAnyHost",
+        "sha": "24a0039931e02cb62047b80cce7fd1e985075d06",
+        "rows": 181,
+        "truncated": false,
+        "independentlyFetched": true
+      },
+      {
+        "module": "PinkhaAnyIntegration",
+        "sha": "dc5ad218fa53d4857ee9d6ea6680b8ae283ad0c0",
+        "rows": 66,
+        "truncated": false,
+        "independentlyFetched": true
+      },
+      {
+        "module": "PinkhaKit",
+        "sha": "32f75294ee291e4ed446f87f5fa5f9844aff58f1",
+        "rows": 137,
+        "truncated": false,
+        "independentlyFetched": true
+      }
+    ],
+    "exactCurrentRepositoryRows": 127,
+    "currentProductionRows": 125,
+    "currentTestRows": 2,
+    "checkedFields": [
+      "repositoryPath",
+      "gitBlobSHA",
+      "bytes",
+      "repositoryMode",
+      "currentCommit",
+      "logicalPath/isolatedPath/source-row correspondence"
+    ],
+    "externalTorahCoreRows": 8,
+    "externalWholeHistoricalRowEquality": true,
+    "externalScope": "Existing qualified whole source inputs, not newly Git-supplied or a new physical admission. W3 must match their actual source/compile-input closure.",
+    "sourceBindingsAreAuthoritativeForMaterialization": true,
+    "historicalSourcePathIsNotCurrentMacPresence": true
+  },
+  "completeComparison": {
+    "counts": {
+      "wholeSwiftFiles": 135,
+      "productionFiles": 133,
+      "testFiles": 2,
+      "productionSourceBytes": 1687596,
+      "testSourceBytes": 48433,
+      "sourceBytes": 1736029
+    },
+    "derivedDelta": {
+      "production-unchanged-whole-body": 122,
+      "production-added": 6,
+      "production-replaced-whole-body": 5,
+      "test-excluded": 4,
+      "test-added": 2
+    },
+    "completeUnionRows": 139,
+    "currentTreeJoined": 127,
+    "externalExactWholeRows": 8,
+    "actualMethods": [
+      "NativeOrdinaryMigrationProducerTests/testExactSubsetReturnsTheUnmodifiedCompleteSourceBinding",
+      "NativeOrdinaryMigrationProducerTests/testChangedOrForeignSubsetIsRefusedAtTheCorrespondenceBoundary",
+      "NativeOrdinaryMigrationProducerTests/testCanonicallyEquivalentUnicodeStillRequiresExactSourceBytes",
+      "NativeOrdinaryMigrationProducerTests/testExactCheckpointComparisonRetainsOnlyHistoricalEvidence",
+      "NativeOrdinaryMigrationProducerTests/testSelfConsistentChangedMappingPlanOrReferenceCannotReplaceTheCheckpoint",
+      "NativeOrdinaryMigrationProducerTests/testMissingOrSubstitutedIntentIsRefusedEvenWithUnchangedPlanAndMappings",
+      "NativeOrdinaryMigrationProducerTests/testCancellationRefusesBothPureDeliveries",
+      "NativeOrdinaryPropertyPartitionTests/testAllNewKeepsExactLegacyPlanAndClosedV1ReferenceBytes",
+      "NativeOrdinaryPropertyPartitionTests/testPartialOverlapImportsOnlyMissingAndPreservesOriginalCreationBindings",
+      "NativeOrdinaryPropertyPartitionTests/testAllPresentKeepsOriginalCheckpointAndHasNoSecondPlanOrCompletion",
+      "NativeOrdinaryPropertyPartitionTests/testReusedMappingIntentAndExactDescriptorProvenanceCannotBeSubstituted",
+      "NativeOrdinaryPropertyPartitionTests/testColdPartialReferenceReconstructsBothExactBindingsAndRejectsChangedPartition",
+      "NativeOrdinaryPropertyPartitionTests/testColdAllPresentUsesOnlyOriginalCheckpointAndRejectsForeignBinding",
+      "NativeOrdinaryPropertyPartitionTests/testPartitionCodecRefusesDuplicatesUnknownFieldsAndLegacyFieldInjection",
+      "NativeOrdinaryPropertyPartitionTests/testCancellationRefusesPartitionBeforeReturningHistoricalCorrespondence"
+    ],
+    "oldC20Methods": 20,
+    "oldMethodOverlap": [],
+    "errors": [],
+    "ordinary129": {
+      "unchangedWholeJSON": 125,
+      "unchangedProduction": 125,
+      "changed": [
+        {
+          "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedDefinitionDirectory.swift",
+          "kind": "production",
+          "changedFields": [
+            "role",
+            "bytes",
+            "sha256",
+            "sourcePin",
+            "sourceMode",
+            "physicalAdmission",
+            "proposedPreparedMode"
+          ],
+          "old": {
+            "bytes": 22948,
+            "sha256": "f8706b054757b2601a1e094558989c2a66d44b7a9ddcaee94a543563db38ff27",
+            "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeImportedDefinitionDirectory.swift"
+          },
+          "now": {
+            "bytes": 22974,
+            "sha256": "ca3c57dedb7388d6b10a44a39778b9a1339b36f6dbcf52d67fbb572cc5cbc2b4",
+            "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeImportedDefinitionDirectory.swift"
+          }
+        },
+        {
+          "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+          "kind": "production",
+          "changedFields": [
+            "bytes",
+            "role",
+            "sha256",
+            "sourcePin",
+            "sourceMode",
+            "proposedPreparedMode",
+            "physicalAdmission"
+          ],
+          "old": {
+            "bytes": 14656,
+            "sha256": "0273ca566d58456569eeff7d90e6e582791fcf33aa2c6b2e48c280fe53dcb723",
+            "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift"
+          },
+          "now": {
+            "bytes": 19634,
+            "sha256": "ae8faf092774401c595a63e389517aa2777fa83c9b2b9ffa31cc054355ed02f6",
+            "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift"
+          }
+        },
+        {
+          "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+          "kind": "production",
+          "changedFields": [
+            "bytes",
+            "role",
+            "sha256",
+            "sourcePin",
+            "sourceMode",
+            "proposedPreparedMode",
+            "physicalAdmission"
+          ],
+          "old": {
+            "bytes": 43999,
+            "sha256": "bd78d4bed9ff005d05317a0f6eff1f40bc6b9bbe3495608ed1e4edd830b11a0c",
+            "isolatedPath": "Sources/PinkhaAnyHost/AnyNativePropertyStore.swift"
+          },
+          "now": {
+            "bytes": 53698,
+            "sha256": "b91ed64c54ec552caa68a3b49c272ff8f008722b3a41fc76d9eadf4eaf9ef93b",
+            "isolatedPath": "Sources/PinkhaAnyHost/AnyNativePropertyStore.swift"
+          }
+        },
+        {
+          "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryPropertyPartitionTests.swift",
+          "kind": "test",
+          "changedFields": [
+            "isolatedPath",
+            "target",
+            "proposedPreparedRelativePath"
+          ],
+          "old": {
+            "bytes": 34534,
+            "sha256": "80cf96ad5403db7bec9070bf6982685b72c5d768179e7cd464e171d085ac7380",
+            "isolatedPath": "Tests/OrdinaryPartitionContractTests/NativeOrdinaryPropertyPartitionTests.swift"
+          },
+          "now": {
+            "bytes": 34534,
+            "sha256": "80cf96ad5403db7bec9070bf6982685b72c5d768179e7cd464e171d085ac7380",
+            "isolatedPath": "Tests/OrdinaryMigrationContractTests/NativeOrdinaryPropertyPartitionTests.swift"
+          }
+        }
+      ],
+      "missing": [],
+      "added": [
+        {
+          "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploader.swift",
+          "bytes": 14691,
+          "kind": "production"
+        },
+        {
+          "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploadResponse.swift",
+          "bytes": 9648,
+          "kind": "production"
+        },
+        {
+          "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploadStaging.swift",
+          "bytes": 15355,
+          "kind": "production"
+        },
+        {
+          "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeBookmarkCreationFrame.swift",
+          "bytes": 10591,
+          "kind": "production"
+        },
+        {
+          "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFileAttachmentCreator.swift",
+          "bytes": 23257,
+          "kind": "production"
+        },
+        {
+          "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryMigrationProducerTests.swift",
+          "bytes": 13899,
+          "kind": "test"
+        }
+      ],
+      "oldC8SelectionRetained": true,
+      "oldC8Count": 8
+    },
+    "historicalUnionOperation": "Independently constructed the sorted union of 131 before and 135 after isolated paths and matched every normalized before/after row and classification against the complete declared 139-row preferred-current map.",
+    "wholeSubstitutionInverses": [
+      {
+        "key": "objectCreator",
+        "hunks": 20,
+        "bytes": 14656,
+        "sha256": "0273ca566d58456569eeff7d90e6e582791fcf33aa2c6b2e48c280fe53dcb723",
+        "gitBlobSHA": "aa28d864b8fd55805e4717917779750b20514df0",
+        "wholeInverseAndForward": true
+      },
+      {
+        "key": "propertyStore",
+        "hunks": 8,
+        "bytes": 43999,
+        "sha256": "bd78d4bed9ff005d05317a0f6eff1f40bc6b9bbe3495608ed1e4edd830b11a0c",
+        "gitBlobSHA": "7fee8b7ae36c626dd921e14024a6a5a0466d3a2d",
+        "wholeInverseAndForward": true
+      }
+    ]
+  },
+  "affectedWholeSourcePins": [
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploader.swift",
+      "logicalPath": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploader.swift",
+      "isolatedPath": "Sources/PinkhaAnyEngine/AnyNativeFileUploader.swift",
+      "blob": "35cb7c1827bc9a846534997c1de3d6066b838871",
+      "bytes": 14691,
+      "sha256": "83e4618ee93a04ce407a62926a0bffbb1752756a59b38e6e5e5d636bad9138a6"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploadResponse.swift",
+      "logicalPath": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploadResponse.swift",
+      "isolatedPath": "Sources/PinkhaAnyEngine/AnyNativeFileUploadResponse.swift",
+      "blob": "4b9aa812ebcd19f94856fb3ce6a25ac05a73c36f",
+      "bytes": 9648,
+      "sha256": "08635cd324835923b713674c359694a380005585cadd1de3075270f41ed0f6d2"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploadStaging.swift",
+      "logicalPath": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploadStaging.swift",
+      "isolatedPath": "Sources/PinkhaAnyEngine/AnyNativeFileUploadStaging.swift",
+      "blob": "33820e91ce26e23bc109c8c7df349f38d698e2e3",
+      "bytes": 15355,
+      "sha256": "d0a02b1be20973b87c9be01bbf04e40f734f9ccddc39d0c4e61b83d1212bc349"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+      "logicalPath": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+      "blob": "44f934e77ba85730a3c136a144c6eebeef63edab",
+      "bytes": 35352,
+      "sha256": "014ef0ee8268783b574b5e76ab8c945b95545f0ef6a1822ec874a1443a85bfa3"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeOrdinaryPropertyCompletionPlan.swift",
+      "logicalPath": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeOrdinaryPropertyCompletionPlan.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeOrdinaryPropertyCompletionPlan.swift",
+      "blob": "c238cb671f83ddcc81d9b150175b3a160ec181f6",
+      "bytes": 21263,
+      "sha256": "13ba01cc3beaa236495ab72496b3f91c9529070aae416c65a5b15ad1ae440858"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeBookmarkCreationFrame.swift",
+      "logicalPath": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeBookmarkCreationFrame.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeBookmarkCreationFrame.swift",
+      "blob": "1f6f13693a26511f25febd85e02d4bbd948e2a62",
+      "bytes": 10591,
+      "sha256": "498f37384519cc638a16b23d5c1f2b615d3228abb109dd7677a8006e15a9b116"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFileAttachmentCreator.swift",
+      "logicalPath": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFileAttachmentCreator.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeFileAttachmentCreator.swift",
+      "blob": "bd134e85ef9924b19be0f1e6d65a211fa5b85a8d",
+      "bytes": 23257,
+      "sha256": "704a3a50613129d966729e56491bdf17349bcbb9e0f977d5666867f39bf2d010"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift",
+      "logicalPath": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift",
+      "blob": "8b412c87c407a022c728ace30954775479e53f38",
+      "bytes": 36792,
+      "sha256": "1e8fc76310e4a34d93ab72491a003e652c0b8792e723f519a53c8c6356ae4623"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedOrdinaryPropertyContext.swift",
+      "logicalPath": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedOrdinaryPropertyContext.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeImportedOrdinaryPropertyContext.swift",
+      "blob": "dd5df2fa60acf37488129e0ce3cc81f6e2eac773",
+      "bytes": 24927,
+      "sha256": "d0222574ec452b039f17608bc5896ed09106c5838d85f032e094482a004dcda9"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+      "logicalPath": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+      "blob": "2dd759fe5f70feead52b536e81520f4c27460a1e",
+      "bytes": 19634,
+      "sha256": "ae8faf092774401c595a63e389517aa2777fa83c9b2b9ffa31cc054355ed02f6"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "logicalPath": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "blob": "b8de5482053e5f7e3bf6798608f09a98d291281a",
+      "bytes": 53698,
+      "sha256": "b91ed64c54ec552caa68a3b49c272ff8f008722b3a41fc76d9eadf4eaf9ef93b"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryMigrationProducerTests.swift",
+      "logicalPath": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryMigrationProducerTests.swift",
+      "isolatedPath": "Tests/OrdinaryMigrationContractTests/NativeOrdinaryMigrationProducerTests.swift",
+      "blob": "b576c085c8dfd5f02a8643073ce3be866fa16e16",
+      "bytes": 13899,
+      "sha256": "7fad6aac645aca2e37c3c1dcfa5a30f7d0357881dc87a2e56132f84922d8ce3b"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryPropertyPartitionTests.swift",
+      "logicalPath": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryPropertyPartitionTests.swift",
+      "isolatedPath": "Tests/OrdinaryMigrationContractTests/NativeOrdinaryPropertyPartitionTests.swift",
+      "blob": "bcec972ee80374440061f84b470efbe5adce280c",
+      "bytes": 34534,
+      "sha256": "80cf96ad5403db7bec9070bf6982685b72c5d768179e7cd464e171d085ac7380"
+    }
+  ],
+  "currentDependencyReview": {
+    "newWholeDependencies": [
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeBookmarkCreationFrame.swift",
+        "blob": "1f6f13693a26511f25febd85e02d4bbd948e2a62",
+        "bytes": 10591,
+        "sha256": "498f37384519cc638a16b23d5c1f2b615d3228abb109dd7677a8006e15a9b116"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFileAttachmentCreator.swift",
+        "blob": "bd134e85ef9924b19be0f1e6d65a211fa5b85a8d",
+        "bytes": 23257,
+        "sha256": "704a3a50613129d966729e56491bdf17349bcbb9e0f977d5666867f39bf2d010"
+      },
+      {
+        "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploadResponse.swift",
+        "blob": "4b9aa812ebcd19f94856fb3ce6a25ac05a73c36f",
+        "bytes": 9648,
+        "sha256": "08635cd324835923b713674c359694a380005585cadd1de3075270f41ed0f6d2"
+      },
+      {
+        "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploadStaging.swift",
+        "blob": "33820e91ce26e23bc109c8c7df349f38d698e2e3",
+        "bytes": 15355,
+        "sha256": "d0a02b1be20973b87c9be01bbf04e40f734f9ccddc39d0c4e61b83d1212bc349"
+      },
+      {
+        "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploader.swift",
+        "blob": "35cb7c1827bc9a846534997c1de3d6066b838871",
+        "bytes": 14691,
+        "sha256": "83e4618ee93a04ce407a62926a0bffbb1752756a59b38e6e5e5d636bad9138a6"
+      }
+    ],
+    "edges": [
+      {
+        "from": "AnyNativeObjectCreator",
+        "to": [
+          "AnyNativeBookmarkCreationFrame",
+          "AnyNativeFileAttachmentCreator"
+        ]
+      },
+      {
+        "from": "AnyNativePropertyStore",
+        "to": [
+          "AnyNativeBookmarkCreationFrame"
+        ]
+      },
+      {
+        "from": "AnyNativeFileAttachmentCreator",
+        "to": [
+          "AnyNativeFileUploader"
+        ]
+      },
+      {
+        "from": "AnyNativeFileUploader",
+        "to": [
+          "AnyNativeFileUploadResponse",
+          "AnyNativeFileUploadStaging",
+          "existing AnyNativeFileDurability DTOs",
+          "existing AnyHTTPClient"
+        ]
+      }
+    ],
+    "externalModulesAdded": 0,
+    "finding": "The five whole current dependencies close the explicitly introduced Bookmark/file-attachment type chain. Imported Foundation/FoundationNetworking, Darwin/Glibc, Crypto and project modules are already within the declared platform/dependency policy. This is source correspondence and API review, not proof of Swift typechecking or native upload/Bookmark behavior.",
+    "currentObjectCreatorAndPropertyStoreWereNotReplacedByHistoricalFallback": true,
+    "fallbackNotPreferredAndNotQualifiedAsCurrentApp": true
+  },
+  "C7": {
+    "testPin": {
+      "repository": "davidpovarsky/anytype-swift",
+      "gitBlobSHA": "b576c085c8dfd5f02a8643073ce3be866fa16e16",
+      "bytes": 13899,
+      "sha256": "7fad6aac645aca2e37c3c1dcfa5a30f7d0357881dc87a2e56132f84922d8ce3b"
+    },
+    "priorProducer": {
+      "blob": "63b61c3adc6b7f8eb9f4c5914bab3c1945ca47d0",
+      "bytes": 34082,
+      "sha256": "8f20637c4f856f00f8e1b05f45195cb6f65d3dff659e72c64e73a0380fb12404"
+    },
+    "currentProducer": {
+      "blob": "44f934e77ba85730a3c136a144c6eebeef63edab",
+      "bytes": 35352,
+      "sha256": "014ef0ee8268783b574b5e76ab8c945b95545f0ef6a1822ec874a1443a85bfa3"
+    },
+    "independentlyEqualPureSpans": [
+      {
+        "function": "static func completeCaptureSource(",
+        "bytes": 522,
+        "sha256": "75d54febf94ddb9f91f5ce55623d07e4914fddc2080b21f61109897f0afb19e2",
+        "exact": true,
+        "verified": true
+      },
+      {
+        "function": "static func requireSameCheckpoint(",
+        "bytes": 1267,
+        "sha256": "0b3a70904799415abaddbc781ab1db20fbc5c78d22b60a25063210851c2ede22",
+        "exact": true,
+        "verified": true
+      }
+    ],
+    "directCallBoundary": "The seven unchanged methods invoke AnyHeartNativeOrdinaryExecutionStage.completeCaptureSource and requireSameCheckpoint through existing DTO constructors. They do not invoke the changed stage initializer, missingPlan, a native Completion or executor.",
+    "priorConstructorAndRefusalPeerReused": true,
+    "actualMethodsNOT_RUN": true
+  },
+  "C8": {
+    "testPin": {
+      "repository": "davidpovarsky/anytype-swift",
+      "gitBlobSHA": "bcec972ee80374440061f84b470efbe5adce280c",
+      "bytes": 34534,
+      "sha256": "80cf96ad5403db7bec9070bf6982685b72c5d768179e7cd464e171d085ac7380"
+    },
+    "wholeBodyEqualToReviewedOrdinary129": true,
+    "onlyTestPlacementChanged": [
+      "isolatedPath",
+      "target",
+      "proposedPreparedRelativePath"
+    ],
+    "retainedInputPins": [
+      {
+        "role": "retained-v1-archive",
+        "bytes": 1634696,
+        "sha256": "5d72e36849884da3da3fe9ddde0a01f49a03cde3b417f49456e3558bea8db463",
+        "environment": "PINKHA_CAPTURE_PRODUCER_RETAINED_V1_ARCHIVE"
+      },
+      {
+        "role": "retained-accepted-plan",
+        "bytes": 1823803,
+        "sha256": "4a61914d5dbd3ccb4874f81444e4d0770c9e7e2dfe4259b8b93f15796accb930",
+        "environment": "PINKHA_CAPTURE_PRODUCER_RETAINED_V1_PLAN"
+      }
+    ],
+    "retainedInputsReadByThisPeer": false,
+    "sourceFixtureBoundary": "The original restored bundle supplies the selected 14 captured descriptors; destination carriers/plans/mappings/intents/locators are explicitly synthetic. No loose 317-member copy or original 182-operation replay. All-present performs no fabricated second completion.",
+    "allEightSelectedAndSkipIsFailure": true,
+    "actualMethodsNOT_RUN": true
+  },
+  "resolvedPackagingClarification": {
+    "preservedProof": {
+      "blob": "51ef5ebda4f04cc1132b37fd89835aebe6b42936",
+      "bytes": 142514,
+      "sha256": "71776de64e5b91faf2c142600c3ad9fddd4b31d0adc6ea174c25db1f19355fca"
+    },
+    "currentProof": {
+      "blob": "edbcd603bf22b48deacc2a6541fca480ae58ad19",
+      "bytes": 144237,
+      "sha256": "107fede1b95eb180be0beeb8f09afe7d08e3449116cdc61059eb5e5416c7aaff"
+    },
+    "onlyAddedFields": [
+      "moduleDependencyScope",
+      "externalCryptoAdmission",
+      "metadataClarification"
+    ],
+    "wholeJSONAndByteSerializationInverse": true,
+    "independentDonorSource": "package_text(flags, links) declares project-only target dependencies and applies the same .unsafeFlags(compile_flags) to every production target and the test target; the test linker receives links + ['-lstdc++']. Main calls it with reused['compilerFlags'] and reused['linkObjects'].",
+    "consequence": "Engine dependencies=[] is not a claim that Crypto is absent or optional. Actual compilation must retain W3's separately admitted platform/C3 module, C object and linker closure.",
+    "sourceGraphOrSelectorChanged": false
+  },
+  "selection": {
+    "exactMethods": [
+      "NativeOrdinaryMigrationProducerTests/testExactSubsetReturnsTheUnmodifiedCompleteSourceBinding",
+      "NativeOrdinaryMigrationProducerTests/testChangedOrForeignSubsetIsRefusedAtTheCorrespondenceBoundary",
+      "NativeOrdinaryMigrationProducerTests/testCanonicallyEquivalentUnicodeStillRequiresExactSourceBytes",
+      "NativeOrdinaryMigrationProducerTests/testExactCheckpointComparisonRetainsOnlyHistoricalEvidence",
+      "NativeOrdinaryMigrationProducerTests/testSelfConsistentChangedMappingPlanOrReferenceCannotReplaceTheCheckpoint",
+      "NativeOrdinaryMigrationProducerTests/testMissingOrSubstitutedIntentIsRefusedEvenWithUnchangedPlanAndMappings",
+      "NativeOrdinaryMigrationProducerTests/testCancellationRefusesBothPureDeliveries",
+      "NativeOrdinaryPropertyPartitionTests/testAllNewKeepsExactLegacyPlanAndClosedV1ReferenceBytes",
+      "NativeOrdinaryPropertyPartitionTests/testPartialOverlapImportsOnlyMissingAndPreservesOriginalCreationBindings",
+      "NativeOrdinaryPropertyPartitionTests/testAllPresentKeepsOriginalCheckpointAndHasNoSecondPlanOrCompletion",
+      "NativeOrdinaryPropertyPartitionTests/testReusedMappingIntentAndExactDescriptorProvenanceCannotBeSubstituted",
+      "NativeOrdinaryPropertyPartitionTests/testColdPartialReferenceReconstructsBothExactBindingsAndRejectsChangedPartition",
+      "NativeOrdinaryPropertyPartitionTests/testColdAllPresentUsesOnlyOriginalCheckpointAndRejectsForeignBinding",
+      "NativeOrdinaryPropertyPartitionTests/testPartitionCodecRefusesDuplicatesUnknownFieldsAndLegacyFieldInjection",
+      "NativeOrdinaryPropertyPartitionTests/testCancellationRefusesPartitionBeforeReturningHistoricalCorrespondence"
+    ],
+    "actualWholeTestDeclarationCount": 15,
+    "uniqueMethods": 15,
+    "C7": 7,
+    "C8": 8,
+    "expectedUniqueStarts": 15,
+    "expectedUniquePasses": 15,
+    "selectedSkipIsFailure": true,
+    "oldC20MethodOverlap": [],
+    "oldC20TestFilesExcluded": 4,
+    "oldEventCredit": 0,
+    "currentCapturePlannerOrUnfinishedAttachmentHooksIncluded": false
+  },
+  "resourceAndAcceptanceBoundary": {
+    "sourceGraphIsNotAnExecutionGrant": true,
+    "concreteRuntimeControllerOwnedBy": "W3 under Root release",
+    "retainedHistoricalResourceProposal": {
+      "status": "HISTORICAL_DONOR_POLICY_RETAINED_NO_RUNTIME_GRANT",
+      "rootAdmissionBytes": 2181038080,
+      "developmentAdmissionBytes": 973078528,
+      "minimumAvailableMemoryBytes": 3221225472,
+      "ownedOutputCapBytes": 402653184,
+      "mainSeconds": 900,
+      "finalSeconds": 120,
+      "outerSeconds": 1080,
+      "policy": "Keep the newer component donor floors/caps unchanged. A different root policy is not justified merely by placing outputs in DEV.",
+      "isolation": "Fresh owned DEV package, output, scratch/cache/config/security/TMP; original C3 Crypto remains read-only. No E97/Swift23 cache mutation, native runtime, account opening or Native159/Nav3 Products.",
+      "workingSetLimitation": "The complete source graph is finite; successful compiler working-set fit within the unchanged cap has not been observed.",
+      "currentMacController": "W3 owns concrete Mac controller/admission; this source graph neither lowers those limits nor authorizes execution."
+    },
+    "futurePhysicalSourceCopyModeDependencyAdmissionRequired": true,
+    "fullInputsAndSourcesBeforeFinalAuditRequired": true,
+    "ownedFailureRetentionAndCoreDumpZeroRequired": true,
+    "noCurrentQuotaCloudResumeDurabilityClaim": true,
+    "noWholeAppReleaseOrNativeAcceptance": true,
+    "all15ActualMethodObligationsPending": true
+  },
+  "reviewDiagnostics": [
+    {
+      "status": "FAILED_PURE_REVIEW_BEFORE_REPORT",
+      "error": "TypeError while treating every current repository path as Modules/<module>; no source mutation, execution or acceptance",
+      "effects": 0
+    },
+    {
+      "status": "CORRECTED_PURE_REVIEW_CHECKER",
+      "correction": "Use explicit sourceBindings.repositoryPath for current Git-tree lookup; eleven retained logical paths intentionally remain historical Sources/* aliases.",
+      "all127RowsSubsequentlyJoined": true
+    },
+    {
+      "status": "FAILED_PURE_HELPER_SLICE_MATCH",
+      "error": "The initial C7 helper extraction assumed leading indentation and closing-newline layout inconsistent with the proof slice; full source bodies retained unchanged, no target execution.",
+      "effects": 0
+    },
+    {
+      "status": "CORRECTED_PURE_REVIEW_SLICE",
+      "correction": "Proof's exact C7 span starts at static and includes the two following newlines; both declared whole spans independently match before/after bytes and SHA256.",
+      "sourceOrRuntimeEffects": 0
+    }
+  ],
+  "openFindings": [],
+  "limits": [
+    "Whole Git readback and source correspondence do not establish a successful compiler, XCTest, runtime or platform result.",
+    "Static dependency inspection cannot replace W3's actual compiler/import/link admission.",
+    "Existing current App substitutions are reviewed as source inputs for this finite C15 cohort; their unrelated Bookmark/upload behavior gains no new acceptance.",
+    "Corrected historical C20 acceptance cannot supply any of C7/C8's required 15 observations.",
+    "The current graph remains distinct from the untouched native64 graph and its original gates."
+  ]
+}
