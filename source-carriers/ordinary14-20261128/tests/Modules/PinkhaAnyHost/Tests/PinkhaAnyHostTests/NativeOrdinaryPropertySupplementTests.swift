@@ -187,26 +187,49 @@ final class NativeOrdinaryPropertySupplementTests: XCTestCase, @unchecked Sendab
                 Ordinary14Wire.replacing(committed, key, .string(replacement))), key)
         }
 
-        // Construct a synthetic mapping only for the exact-byte negative control.
-        // It is not accepted as a real namespace or native creation proof.
+        // Native IDs are printable ASCII. Use a valid synthetic owner for the
+        // positive receipt/root checks; this is not native creation evidence.
         var wire = try XCTUnwrap(Ordinary14Wire.json(namespace).object)
         var row = try XCTUnwrap(wire["mapping"]?.object)
-        row["objectID"] = .string("namespace-\u{e9}")
-        row["recordIDs"] = .array([.string("namespace-\u{e9}")])
+        row["objectID"] = .string("namespace-owner")
+        row["recordIDs"] = .array([.string("namespace-owner")])
         wire["mapping"] = .object(row)
+        XCTAssertTrue(AnyEditorBlock.validID("namespace-owner"))
         let synthetic = try JSONDecoder().decode(AnyDestinationImportedPropertyNamespace.self,
             from: Ordinary14Wire.encode(AnyJSON.object(wire)))
         let exact = try Ordinary14Fixture.namespaceReceipt(synthetic)
         XCTAssertNoThrow(try synthetic.requireCurrentReceipt(exact))
         var alias = try XCTUnwrap(exact.object)
-        alias["objectId"] = .string("namespace-e\u{301}")
-        alias["recordIds"] = .array([.string("namespace-e\u{301}")])
-        XCTAssertNotEqual(Data("namespace-\u{e9}".utf8), Data("namespace-e\u{301}".utf8))
+        alias["objectId"] = .string("namespace-Owner")
+        alias["recordIds"] = .array([.string("namespace-Owner")])
+        XCTAssertTrue(AnyEditorBlock.validID("namespace-Owner"))
+        XCTAssertNotEqual(Data("namespace-owner".utf8), Data("namespace-Owner".utf8))
         XCTAssertThrowsError(try synthetic.requireCurrentReceipt(.object(alias)))
         let root = try Ordinary14Fixture.root(synthetic)
         XCTAssertNoThrow(try synthetic.requireCurrentRoot(root))
         XCTAssertThrowsError(try synthetic.requireCurrentRoot(
-            Ordinary14Wire.replacing(root, "id", .string("namespace-e\u{301}"))))
+            Ordinary14Wire.replacing(root, "id", .string("namespace-Owner"))))
+
+        // Both Unicode spellings fail the original ID parser before a namespace
+        // can be constructed. Neither is a valid positive native-ID fixture.
+        let composed = "namespace-\u{e9}", decomposed = "namespace-e\u{301}"
+        XCTAssertNotEqual(Data(composed.utf8), Data(decomposed.utf8))
+        for invalidID in [composed, decomposed] {
+            XCTAssertFalse(AnyEditorBlock.validID(invalidID))
+            var invalidWire = wire
+            var invalidRow = row
+            invalidRow["objectID"] = .string(invalidID)
+            invalidRow["recordIDs"] = .array([.string(invalidID)])
+            invalidWire["mapping"] = .object(invalidRow)
+            XCTAssertThrowsError(try JSONDecoder().decode(AnyDestinationImportedPropertyNamespace.self,
+                from: Ordinary14Wire.encode(AnyJSON.object(invalidWire)))) { error in
+                guard let migrationError = error as? AnyDestinationMigrationError,
+                      case .invalidPlan(let reason) = migrationError else {
+                    return XCTFail("The original native ID guard must reject the fixture.")
+                }
+                XCTAssertEqual(reason, "original namespace identity")
+            }
+        }
         try fixture.retained.requireRetainedInputsUnchanged()
     }
 

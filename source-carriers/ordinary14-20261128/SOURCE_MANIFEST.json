@@ -1,12 +1,12 @@
 {
-  "schema": "pinkha.ordinary14.source-carrier.v1",
+  "schema": "pinkha.ordinary14.source-carrier.v2",
   "status": "SOURCE_ONLY_NOT_COMPILED_NOT_RUN",
   "repository": "davidpovarsky/anytype-swift",
   "branch": "codex/chatgpt-wave15-w1-ordinary14-source-20261128",
   "prefix": "source-carriers/ordinary14-20261128",
   "parent": {
-    "commit": "d1b04526825ad10b07c59313727629cec35f9559",
-    "tree": "b0140be8a4d53766a7e4a221e037b00e9d4c3bb2"
+    "commit": "242f603b4d0c7f17c26a08e2ab707160425511b1",
+    "tree": "b88de6f857768090aed80f113688fd9692725834"
   },
   "upstreamObservation": {
     "repository": "anyproto/anytype-swift",
@@ -240,12 +240,20 @@
       "parentCommit": "d1b04526825ad10b07c59313727629cec35f9559",
       "knownGitBlobSHA": "e78e16fc3d18e8515db89600ab88a9074c34b28c",
       "sourceMode": 420
+    },
+    {
+      "path": "support/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorSnapshot.swift",
+      "bytes": 8318,
+      "sha256": "d2956d5e698631a7ab90c039b2647ac518da2dea224f4e01c59dd4ca0cf9ea9f",
+      "gitMode": "100644",
+      "role": "unchanged native-ID parser primary source; exact parent bytes",
+      "knownGitBlobSHA": "566b6ece7bb01570b1f2f0278becbeebb43dbd53"
     }
   ],
   "test": {
     "path": "tests/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryPropertySupplementTests.swift",
-    "bytes": 36969,
-    "sha256": "7fc2c543d4785bc2876a221088f16384146f861065a79bb617312b3515c68b32",
+    "bytes": 38303,
+    "sha256": "7adad542d518dca925ee4bd59bce3bc20b699de3a1f8d7ba9805245f42059e73",
     "methods": [
       "testOriginal182CanonicalPlanAndNilEncodingStayByteIdentical",
       "testFourteenOriginalDefinitionsRetainExactShapesAndOutsideBlockers",
@@ -256,7 +264,13 @@
       "testCurrentAuthorizationRevocationStopsBeforeTheNextDurableEffect",
       "testLostAcknowledgementResumesOnlyFourteenIntentsAndMergesTheirReceiptBindings"
     ],
-    "status": "NOT_COMPILED_NOT_RUN"
+    "status": "NOT_COMPILED_NOT_RUN",
+    "previousUnrun": {
+      "commit": "242f603b4d0c7f17c26a08e2ab707160425511b1",
+      "bytes": 36969,
+      "sha256": "7fc2c543d4785bc2876a221088f16384146f861065a79bb617312b3515c68b32",
+      "carrierPath": "before-tests/NativeOrdinaryPropertySupplementTests.swift"
+    }
   },
   "exactSourceCheckpoint": {
     "root": "/mnt/development/projects/evidence/pinkha-c-ordinary14-namespace-preparation-20261128-draft1",
@@ -300,7 +314,13 @@
     "peer": {
       "agent": "cutover",
       "scope": "namespace/plan/executor plus all eight new tests and canonical helper",
-      "status": "SOURCE_CLEAR_REPORTED_IN_COORDINATION"
+      "status": "SOURCE_CLEAR_REPORTED_IN_COORDINATION",
+      "currentTestSource": {
+        "sha256": "7adad542d518dca925ee4bd59bce3bc20b699de3a1f8d7ba9805245f42059e73",
+        "status": "SOURCE_CLEAR_REPORTED_IN_COORDINATION",
+        "scope": "exact one-hunk forward/inverse, other seven unchanged bodies, native-ID primary and typed constructor refusal"
+      },
+      "priorTestPositiveFixturePreconditionSuperseded": true
     },
     "runtime": "NOT_RUN"
   },
@@ -309,5 +329,14 @@
     "Exact fourteen native signed definition results and current ordinary readback",
     "Fresh property values and native edit/schema enforcement",
     "Exact qualified engine physical source/product admission"
-  ]
+  ],
+  "sourceBase": {
+    "commit": "d1b04526825ad10b07c59313727629cec35f9559",
+    "tree": "b0140be8a4d53766a7e4a221e037b00e9d4c3bb2"
+  },
+  "fixtureCorrection": {
+    "path": "provenance/NATIVE_ID_FIXTURE_CORRECTION.json",
+    "bytes": 2009,
+    "sha256": "5ba1619567ea05c5bc511c20e891f3832a182253fecc20375e1d95e9c95cbdea"
+  }
 }

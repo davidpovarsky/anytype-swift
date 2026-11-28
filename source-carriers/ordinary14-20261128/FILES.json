@@ -3,13 +3,24 @@
   "status": "SOURCE_ONLY_NOT_COMPILED_NOT_RUN",
   "repository": "davidpovarsky/anytype-swift",
   "parent": {
+    "commit": "242f603b4d0c7f17c26a08e2ab707160425511b1",
+    "tree": "b88de6f857768090aed80f113688fd9692725834"
+  },
+  "sourceBase": {
     "commit": "d1b04526825ad10b07c59313727629cec35f9559",
     "tree": "b0140be8a4d53766a7e4a221e037b00e9d4c3bb2"
   },
   "prefix": "source-carriers/ordinary14-20261128",
-  "memberCountExcludingThisFile": 26,
-  "bytesExcludingThisFile": 560338,
+  "memberCountExcludingThisFile": 31,
+  "bytesExcludingThisFile": 630844,
   "files": [
+    {
+      "path": "before-tests/NativeOrdinaryPropertySupplementTests.swift",
+      "bytes": 36969,
+      "sha256": "7fc2c543d4785bc2876a221088f16384146f861065a79bb617312b3515c68b32",
+      "gitMode": "100644",
+      "role": "exact initial published unrun test before its native-ID fixture correction"
+    },
     {
       "path": "before/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationExecutor.swift",
       "bytes": 19745,
@@ -54,8 +65,8 @@
     },
     {
       "path": "BYTE_VALIDATION.json",
-      "bytes": 9991,
-      "sha256": "372f13c9884b967284a183c0177bea953fafb6aa1da5dc6d47d0e77b25bc3b7b",
+      "bytes": 13426,
+      "sha256": "f1d2a9c11ff69eb80d2ba579f4ebd3bad6a3ff004ffaff50f2be91425cf44355",
       "gitMode": "100644",
       "role": "actual pure in-memory byte/inverse observations"
     },
@@ -89,8 +100,8 @@
     },
     {
       "path": "INVERSE_MANIFEST.json",
-      "bytes": 3263,
-      "sha256": "65181ca98de31a12ee6ff75bfad60a19a7879b0847b9a29601d1d07fd3efb64f",
+      "bytes": 4233,
+      "sha256": "7aae93c7c2adadda087592cc7892398525b3f5710ba64edbefb92fe519280bce",
       "gitMode": "100644",
       "role": "full source correspondence and exact restoration manifest"
     },
@@ -144,6 +155,27 @@
       "role": "reviewed C14 production source"
     },
     {
+      "path": "provenance/FIRST_PUBLICATION_READBACK.json",
+      "bytes": 10424,
+      "sha256": "f2eb084c8cb4f52a4e9533d8e38a8418b6df7bcd9b98def282116fd2fdc67e13",
+      "gitMode": "100644",
+      "role": "complete original source-only publication readback; original source remains historical"
+    },
+    {
+      "path": "provenance/NATIVE_ID_FIXTURE_CORRECTION.json",
+      "bytes": 2009,
+      "sha256": "5ba1619567ea05c5bc511c20e891f3832a182253fecc20375e1d95e9c95cbdea",
+      "gitMode": "100644",
+      "role": "source-only typed native-ID fixture correction and predecessor proof"
+    },
+    {
+      "path": "provenance/native-id-fixture-correction.patch",
+      "bytes": 4339,
+      "sha256": "9d641345940e543ada2b623c22659aefaed2c147db6b2111862fafc48b1cb966",
+      "gitMode": "100644",
+      "role": "one test-method fixture correction; exact inverse to initial published test"
+    },
+    {
       "path": "provenance/ORIGINAL_API_CONTRACT.md",
       "bytes": 3674,
       "sha256": "bc7a95b9104704ee89b383f07aab0a6d1bde60fa47ff04301c99c8d15a56e23a",
@@ -152,15 +184,15 @@
     },
     {
       "path": "README.md",
-      "bytes": 6113,
-      "sha256": "64a3c5e18c00bb022d36e19c5ce7c5b56a57e7391e6010fb4e56a5437ce86c12",
+      "bytes": 7460,
+      "sha256": "2aa0d015cf982b3f0583c0576533296c75dfab5dd5bec323a9d4c93ee739823d",
       "gitMode": "100644",
       "role": "source-only handoff, scope and pending functional proof"
     },
     {
       "path": "SOURCE_MANIFEST.json",
-      "bytes": 16665,
-      "sha256": "8fdaac5546f3d85d7b06a94474427f79d85726ca5fbba277a634b55df30104b7",
+      "bytes": 18026,
+      "sha256": "7cd5cb54a9004e9180c325c85531ac64d676b9df5d5f25d2f91e085ef0c7aa4a",
       "gitMode": "100644",
       "role": "complete source, dependency, preimage, test and provenance inventory"
     },
@@ -170,6 +202,13 @@
       "sha256": "4c9764a07eb42e43430cd062376432aa41beda293a6cd26700bd3514d66289cc",
       "gitMode": "100644",
       "role": "fourteen exact original public definition identities and attribution"
+    },
+    {
+      "path": "support/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorSnapshot.swift",
+      "bytes": 8318,
+      "sha256": "d2956d5e698631a7ab90c039b2647ac518da2dea224f4e01c59dd4ca0cf9ea9f",
+      "gitMode": "100644",
+      "role": "unchanged native-ID parser primary source; exact parent bytes"
     },
     {
       "path": "support/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeDefinitionPlan.swift",
@@ -187,8 +226,8 @@
     },
     {
       "path": "tests/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryPropertySupplementTests.swift",
-      "bytes": 36969,
-      "sha256": "7fc2c543d4785bc2876a221088f16384146f861065a79bb617312b3515c68b32",
+      "bytes": 38303,
+      "sha256": "7adad542d518dca925ee4bd59bce3bc20b699de3a1f8d7ba9805245f42059e73",
       "gitMode": "100644",
       "role": "eight new synthetic component methods; not compiled or run"
     }

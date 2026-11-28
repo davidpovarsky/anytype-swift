@@ -59,5 +59,29 @@
     "Remove only the exact two new C14 production files and new test file in an independently admitted integration worktree."
   ],
   "execution": "No application or reversal of these changes occurred in this publication.",
-  "modes": "Git stores text files as 100644; original declared POSIX modes are separately recorded. Future physical qualification must admit and restore its own exact modes."
+  "modes": "Git stores text files as 100644; original declared POSIX modes are separately recorded. Future physical qualification must admit and restore its own exact modes.",
+  "testFixtureCorrection": {
+    "before": {
+      "path": "before-tests/NativeOrdinaryPropertySupplementTests.swift",
+      "bytes": 36969,
+      "sha256": "7fc2c543d4785bc2876a221088f16384146f861065a79bb617312b3515c68b32"
+    },
+    "after": {
+      "path": "tests/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryPropertySupplementTests.swift",
+      "bytes": 38303,
+      "sha256": "7adad542d518dca925ee4bd59bce3bc20b699de3a1f8d7ba9805245f42059e73"
+    },
+    "patch": {
+      "path": "provenance/native-id-fixture-correction.patch",
+      "bytes": 4339,
+      "sha256": "9d641345940e543ada2b623c22659aefaed2c147db6b2111862fafc48b1cb966"
+    },
+    "primary": {
+      "path": "support/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorSnapshot.swift",
+      "bytes": 8318,
+      "sha256": "d2956d5e698631a7ab90c039b2647ac518da2dea224f4e01c59dd4ca0cf9ea9f"
+    },
+    "exactWholeInverseVerified": true,
+    "otherSevenMethodBodiesUnchanged": true
+  }
 }

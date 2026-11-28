@@ -23,7 +23,7 @@ The keys are **aperture, artist, audioAlbum, audioAlbumTrackNumber, audioGenre, 
 | INVERSE_MANIFEST.json | The complete parent-to-C6-to-C14 source chain and exact restoration images. |
 | FILES.json | Closed inventory of all other carrier members. The enclosing Git tree binds FILES.json itself. |
 
-The ordinary parent is `d1b04526825ad10b07c59313727629cec35f9559`, tree `b0140be8a4d53766a7e4a221e037b00e9d4c3bb2`. Parent files were fetched by this fixed commit and compared with their complete held bytes. **The parent does not contain the C6 Executor/Journal changes.** Their full files are included explicitly; do not infer those dependencies from the parent commit or from an installed runner.
+The original source base is `d1b04526825ad10b07c59313727629cec35f9559`, tree `b0140be8a4d53766a7e4a221e037b00e9d4c3bb2`. This correction is an ordinary child of the initial source-only carrier commit `242f603b4d0c7f17c26a08e2ab707160425511b1`. Parent files were fetched by this fixed commit and compared with their complete held bytes. **The parent does not contain the C6 Executor/Journal changes.** Their full files are included explicitly; do not infer those dependencies from the parent commit or from an installed runner.
 
 Git text mode is 100644. Original recorded POSIX modes remain provenance fields in SOURCE_MANIFEST.json; a future physical qualifier must explicitly admit its full source/mode graph. This carrier is not that complete compiler closure.
 
@@ -46,3 +46,11 @@ The eight methods cover legacy encoding, the finite source shapes, foreign bindi
 No qualified C14 compiled runner is established. A later native consumer must explicitly admit its engine product. Any use of the old 1dc product requires exact restoration if archived and a new physical admission; a newer product requires its own reviewed source/API equivalence.
 
 C22, C3/E23, original accounts, source payloads, journals, compiled products and runtime resource gates are unchanged by this Git operation. The missing historical Ordinary14 local packet is not claimed recovered. This is a new, explicitly identified source package.
+
+## Preserved source-only fixture correction
+
+The initial carrier and unrun test SHA256 `7fc2c543d4785bc2876a221088f16384146f861065a79bb617312b3515c68b32` are retained. E's follow-up review found that method 4's Unicode-positive namespace would fail the original native ID parser before its intended receipt/root checks. The original parser accepts only nonempty printable ASCII identifiers, bounded to 1024 UTF-8 bytes.
+
+The current test is `7adad542d518dca925ee4bd59bce3bc20b699de3a1f8d7ba9805245f42059e73` (38,303 bytes). It uses a valid ASCII positive owner and a distinct valid ASCII negative owner; both composed and decomposed Unicode spellings must fail namespace construction with the exact typed `invalidPlan("original namespace identity")` error. All other seven methods, eight method names, original fixture pins, production sources and native authority requirements are unchanged.
+
+E independently read and verified the exact current whole test, patch and parser primary. The earlier test clearance is superseded only for this corrected positive-fixture precondition. No compiler, test or native execution occurred. The one-hunk patch, original complete test and source-only correction proof are included.

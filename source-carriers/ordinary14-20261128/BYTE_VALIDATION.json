@@ -1,5 +1,5 @@
 {
-  "schema": "pinkha.ordinary14.carrier-byte-validation.v1",
+  "schema": "pinkha.ordinary14.carrier-byte-validation.v2",
   "status": "PASS_IN_MEMORY_BYTES_ONLY",
   "validatedMembers": [
     {
@@ -39,8 +39,8 @@
     },
     {
       "path": "tests/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryPropertySupplementTests.swift",
-      "bytes": 36969,
-      "sha256": "7fc2c543d4785bc2876a221088f16384146f861065a79bb617312b3515c68b32"
+      "bytes": 38303,
+      "sha256": "7adad542d518dca925ee4bd59bce3bc20b699de3a1f8d7ba9805245f42059e73"
     },
     {
       "path": "dependencies/cold6/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationExecutor.swift",
@@ -99,8 +99,8 @@
     },
     {
       "path": "INVERSE_MANIFEST.json",
-      "bytes": 3263,
-      "sha256": "65181ca98de31a12ee6ff75bfad60a19a7879b0847b9a29601d1d07fd3efb64f"
+      "bytes": 4233,
+      "sha256": "7aae93c7c2adadda087592cc7892398525b3f5710ba64edbefb92fe519280bce"
     },
     {
       "path": "provenance/ORIGINAL_API_CONTRACT.md",
@@ -114,8 +114,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 6113,
-      "sha256": "64a3c5e18c00bb022d36e19c5ce7c5b56a57e7391e6010fb4e56a5437ce86c12"
+      "bytes": 7460,
+      "sha256": "2aa0d015cf982b3f0583c0576533296c75dfab5dd5bec323a9d4c93ee739823d"
     },
     {
       "path": "CONTRACT.md",
@@ -124,8 +124,33 @@
     },
     {
       "path": "SOURCE_MANIFEST.json",
-      "bytes": 16665,
-      "sha256": "8fdaac5546f3d85d7b06a94474427f79d85726ca5fbba277a634b55df30104b7"
+      "bytes": 18026,
+      "sha256": "7cd5cb54a9004e9180c325c85531ac64d676b9df5d5f25d2f91e085ef0c7aa4a"
+    },
+    {
+      "path": "before-tests/NativeOrdinaryPropertySupplementTests.swift",
+      "bytes": 36969,
+      "sha256": "7fc2c543d4785bc2876a221088f16384146f861065a79bb617312b3515c68b32"
+    },
+    {
+      "path": "support/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorSnapshot.swift",
+      "bytes": 8318,
+      "sha256": "d2956d5e698631a7ab90c039b2647ac518da2dea224f4e01c59dd4ca0cf9ea9f"
+    },
+    {
+      "path": "provenance/native-id-fixture-correction.patch",
+      "bytes": 4339,
+      "sha256": "9d641345940e543ada2b623c22659aefaed2c147db6b2111862fafc48b1cb966"
+    },
+    {
+      "path": "provenance/NATIVE_ID_FIXTURE_CORRECTION.json",
+      "bytes": 2009,
+      "sha256": "5ba1619567ea05c5bc511c20e891f3832a182253fecc20375e1d95e9c95cbdea"
+    },
+    {
+      "path": "provenance/FIRST_PUBLICATION_READBACK.json",
+      "bytes": 10424,
+      "sha256": "f2eb084c8cb4f52a4e9533d8e38a8418b6df7bcd9b98def282116fd2fdc67e13"
     }
   ],
   "sourceTransforms": [
@@ -241,5 +266,58 @@
   "compilerCalls": 0,
   "nativeCalls": 0,
   "oracleCalls": 0,
-  "note": "Actual pure SHA-256, exact literal forward/inverse and method-name checks in V8 memory. No Swift parse/typecheck/test or native source execution."
+  "note": "Actual pure SHA-256, exact literal forward/inverse and method-name checks in V8 memory. No Swift parse/typecheck/test or native source execution.",
+  "nativeIDFixtureCorrection": {
+    "schema": "pinkha.ordinary14.native-id-fixture-source-correction.v1",
+    "status": "SOURCE_ONLY_NOT_COMPILED_NOT_RUN",
+    "publishedPredecessor": {
+      "commit": "242f603b4d0c7f17c26a08e2ab707160425511b1",
+      "test": {
+        "bytes": 36969,
+        "sha256": "7fc2c543d4785bc2876a221088f16384146f861065a79bb617312b3515c68b32"
+      }
+    },
+    "source": {
+      "bytes": 38303,
+      "sha256": "7adad542d518dca925ee4bd59bce3bc20b699de3a1f8d7ba9805245f42059e73"
+    },
+    "patch": {
+      "bytes": 4339,
+      "sha256": "9d641345940e543ada2b623c22659aefaed2c147db6b2111862fafc48b1cb966"
+    },
+    "primary": {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorSnapshot.swift",
+      "ref": "d1b04526825ad10b07c59313727629cec35f9559",
+      "bytes": 8318,
+      "sha256": "d2956d5e698631a7ab90c039b2647ac518da2dea224f4e01c59dd4ca0cf9ea9f",
+      "blobSHA": "566b6ece7bb01570b1f2f0278becbeebb43dbd53",
+      "predicate": "Nonempty; at most 1024 UTF-8 bytes; every byte between 0x21 and 0x7e inclusive"
+    },
+    "changedMethod": "testNamespaceReceiptUsesOriginalIntentAndExactUTF8Identity",
+    "exactInverseToOriginal": true,
+    "otherSevenMethodsUnchanged": true,
+    "methods": [
+      "testOriginal182CanonicalPlanAndNilEncodingStayByteIdentical",
+      "testFourteenOriginalDefinitionsRetainExactShapesAndOutsideBlockers",
+      "testExternalNamespaceRefusesForeignScopeAndArbitraryOwnerInjection",
+      "testNamespaceReceiptUsesOriginalIntentAndExactUTF8Identity",
+      "testMissingObsoleteOrForeignNamespaceRefusesBeforeJournalOrNewWrites",
+      "testNamespaceObservationRefusesRootOrReceiptDriftBetweenReads",
+      "testCurrentAuthorizationRevocationStopsBeforeTheNextDurableEffect",
+      "testLostAcknowledgementResumesOnlyFourteenIntentsAndMergesTheirReceiptBindings"
+    ],
+    "productionFilesChanged": 0,
+    "compilerInvocations": 0,
+    "testInvocations": 0,
+    "oracleCalls": 0,
+    "reason": "Old precomposed Unicode positive was invalid under the original native-ID parser and would throw before its intended receipt/root assertion."
+  },
+  "gitCurrentTestBlobReadback": {
+    "name": "test",
+    "sha": "54729982ed109b3857f48c63418f37bb21056b24",
+    "bytes": 38303,
+    "sha256": "7adad542d518dca925ee4bd59bce3bc20b699de3a1f8d7ba9805245f42059e73",
+    "wholeContentEqual": true
+  },
+  "gitTestBlobReadbackScope": "Historical initial 7fc2 source-only blob; current test correction readback is separate."
 }
