@@ -399,6 +399,21 @@ public actor AnyNativeApplication {
         }
     }
 
+    /// Read-only routing metadata for the exact already-open presentation.
+    /// The actual embedded runtime supplies its network identity. This value
+    /// authorizes no native operation and does not start or reopen an account.
+    func selectedDestinationNetworkID(expectedSession: AnyApplicationSession) throws -> String {
+        try Task.checkCancellation()
+        guard !closing, shutdown == nil, calls.isEmpty else { throw AnyNativeApplicationError.busy }
+        guard let owner = workspaceOwner, owner.session === expectedSession,
+              let embedded, let account else { throw AnyNativeApplicationError.closed }
+        guard Data(owner.workspace.accountID.utf8) == Data(account.id.utf8),
+              Data(owner.client.expectedAccountID.utf8) == Data(account.id.utf8) else {
+            throw AnyNativeApplicationError.wrongAccount
+        }
+        return embedded.expectedNetworkID
+    }
+
     private func accountClient(requireBackup: Bool) throws -> AnyHTTPClient {
         guard !closing, let embedded, let account else { throw AnyNativeApplicationError.signedOut }
         guard !requireBackup || !account.needsRecoveryBackup else {

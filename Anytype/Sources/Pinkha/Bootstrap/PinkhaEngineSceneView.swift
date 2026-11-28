@@ -56,7 +56,7 @@ final class PinkhaEngineSceneOwner {
             return
         }
         guard let selected = PinkhaHeartSourceSelection.current() else {
-            problem = "יש לפתוח מרחב בחשבון Heart לפני בדיקת המקור להעברה."
+            problem = PinkhaMigrationText.text("Open a Space in your Heart account before reviewing a migration source.")
             return
         }
         do {
@@ -86,14 +86,14 @@ final class PinkhaEngineSceneOwner {
                 sourceReview = review
             } catch {
                 guard sourceTicket == ticket else { return }
-                sourceProblem = "לא ניתן להשלים את בדיקת המקור. הנתונים המקוריים נשמרו. סגור את הבדיקה ונסה שוב."
+                sourceProblem = PinkhaMigrationText.text("The source review could not be completed. Your original data is retained. Close the review and try again.")
             }
             if sourceTicket == ticket {
                 sourceCaptureTask = nil
                 sourceCapturing = false
             }
         } catch {
-            sourceProblem = "לא ניתן לפתוח את בדיקת המקור כעת."
+            sourceProblem = PinkhaMigrationText.text("The source review cannot be opened right now.")
             problem = sourceProblem
         }
     }
@@ -145,7 +145,7 @@ final class PinkhaEngineSceneOwner {
             sourceWindow = nil
         } catch {
             sourceReview = nil
-            sourceProblem = "לא ניתן לסגור כעת את הרשאת המקור. הפעולה נשמרה לסגירה חוזרת; לא בוצעה העברה למנוע האחר."
+            sourceProblem = PinkhaMigrationText.text("The source session could not be closed. It is retained for another close attempt; the engine switch did not complete.")
             throw error
         }
     }
@@ -249,7 +249,7 @@ final class PinkhaEngineSceneOwner {
         } catch {
             // Never reinterpret an incomplete transition as a successful engine switch.
             // Data and native account credentials stay in their existing private stores.
-            problem = "לא ניתן להשלים את המעבר כעת. המתן לסיום הפעולה ונסה שוב."
+            problem = PinkhaMigrationText.text("The engine switch could not be completed. Wait for the operation to finish and try again.")
             if engine == .heart {
                 try? await resumeHeartServices()
             } else {
@@ -316,16 +316,16 @@ struct PinkhaEngineSceneView<HeartContent: View>: View {
                         VStack(spacing: 16) {
                             if owner.sourceCapturing || owner.sourceClosing { ProgressView() }
                             Text(owner.sourceSpaceName).font(.headline)
-                            Text(owner.sourceProblem ?? "נקראים נתוני המקור וההרשאות המקוריות. לא מתבצעת כתיבה ליעד.")
+                            Text(owner.sourceProblem ?? PinkhaMigrationText.text("Reading the source data and its original permissions. No destination data is being written."))
                                 .multilineTextAlignment(.center)
                         }
                         .padding()
                     }
                 }
-                .navigationTitle("בדיקת מקור Heart")
+                .navigationTitle(PinkhaMigrationText.text("Review Heart source"))
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button(owner.sourceCapturing ? "ביטול" : "סגירה") {
+                        Button(owner.sourceCapturing ? PinkhaMigrationText.text("Cancel") : PinkhaMigrationText.text("Close review")) {
                             Task { await owner.dismissSourceReview() }
                         }
                         .disabled(owner.sourceClosing)
@@ -338,7 +338,7 @@ struct PinkhaEngineSceneView<HeartContent: View>: View {
         .alert("Pinkha", isPresented: Binding(
             get: { owner.problem != nil }, set: { if !$0 { owner.problem = nil } }
         )) {
-            Button("סגור", role: .cancel) { owner.problem = nil }
+            Button(PinkhaMigrationText.text("Close"), role: .cancel) { owner.problem = nil }
         } message: { Text(owner.problem ?? "") }
         .task { await owner.restore(for: scene) }
         .task { await owner.observeHeartAccount() }
@@ -365,9 +365,9 @@ struct PinkhaEngineSceneView<HeartContent: View>: View {
                     PinkhaEmbeddedAnyRootView(session: presentation)
                 } else {
                     ContentUnavailableView {
-                        Label("המרחב פתוח בחלון אחר", systemImage: "rectangle.on.rectangle")
+                        Label(PinkhaMigrationText.text("This Space is open in another window"), systemImage: "rectangle.on.rectangle")
                     } actions: {
-                        Button("פתיחה בחלון הזה") { Task { await owner.select(.any, for: scene) } }
+                        Button(PinkhaMigrationText.text("Open in this window")) { Task { await owner.select(.any, for: scene) } }
                             .accessibilityIdentifier("pinkha.engine.claim-window")
                     }
                 }
@@ -391,7 +391,7 @@ struct PinkhaEngineSceneView<HeartContent: View>: View {
                 }
                 if owner.engine == .heart {
                     Divider()
-                    Button("סקירת מקור להעברה", systemImage: "doc.text.magnifyingglass") {
+                    Button(PinkhaMigrationText.text("Review migration source"), systemImage: "doc.text.magnifyingglass") {
                         Task { await owner.captureSource(for: scene) }
                     }
                     .accessibilityIdentifier("pinkha.engine.migration.review-source")
@@ -400,7 +400,7 @@ struct PinkhaEngineSceneView<HeartContent: View>: View {
             } label: {
                 Label(owner.engine.name, systemImage: "arrow.triangle.2.circlepath")
             }
-            .accessibilityLabel("מנוע")
+            .accessibilityLabel(PinkhaMigrationText.text("Engine"))
             .accessibilityValue(owner.engine.name)
             .accessibilityIdentifier("pinkha.engine.selector")
             .disabled(owner.switching)

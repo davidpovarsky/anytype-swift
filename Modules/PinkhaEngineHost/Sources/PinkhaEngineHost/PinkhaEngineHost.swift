@@ -29,6 +29,17 @@ public struct PinkhaEmbeddedAnyLaunchConfiguration: Sendable {
     }
 }
 
+/// Non-authority routing metadata from the currently mounted native owner.
+/// An empty displayName means that no current cached title was available;
+/// destination selection and execution always use the exact opaque IDs.
+public struct PinkhaEmbeddedAnyDestinationSelection: Sendable {
+    public let accountID: String
+    public let spaceID: String
+    public let displayName: String
+    public let networkID: String
+    public var grantsNativeAuthority: Bool { false }
+}
+
 /// Lifecycle methods forward to the same original native presentation owner.
 @MainActor
 public final class PinkhaEmbeddedAnyPresentation {
@@ -39,6 +50,12 @@ public final class PinkhaEmbeddedAnyPresentation {
     }
 
     public func resume() { session.resume() }
+
+    public func selectedDestination() async throws -> PinkhaEmbeddedAnyDestinationSelection {
+        let selected = try await session.selectedDestination()
+        return .init(accountID: selected.accountID, spaceID: selected.spaceID,
+            displayName: selected.displayName, networkID: selected.networkID)
+    }
 
     /// Forwards into the same presentation owner used by the mounted Any view.
     public func performDestinationOperation<Value: Sendable>(

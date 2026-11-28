@@ -7,6 +7,16 @@ import PinkhaAnyHost
 import PinkhaAnyEngine
 import PinkhaSharing
 
+/// An observation of the currently selected destination, never a native lease.
+/// Account and Space IDs stay explicit even when cached display metadata is absent.
+public struct AnyNativeDestinationSelection: Sendable {
+    public let accountID: String
+    public let spaceID: String
+    public let displayName: String
+    public let networkID: String
+    public var grantsNativeAuthority: Bool { false }
+}
+
 /// A scene keeps this owner while switching engines. Suspension waits for real
 /// document/AI work and native shutdown before another scene can use the engine.
 @MainActor
@@ -18,6 +28,10 @@ public final class AnyNativePresentationSession {
     }
 
     public func resume() { model.resume() }
+
+    public func selectedDestination() async throws -> AnyNativeDestinationSelection {
+        try await model.selectedDestination()
+    }
 
     /// Runs against this presentation's actual destination owner. The caller
     /// supplies its expected account/Space and awaits all work in the operation.
@@ -394,6 +408,35 @@ fileprivate final class AnyNativeRootModel {
     }
 
     func refreshSpaces() { execute { try await self.loadSpaces() } }
+
+    /// Observe the mounted owner before and after the application actor read.
+    /// A snapshot may be displayed or retained as a locator; execution still
+    /// enters performDestinationOperation and all original live validation.
+    func selectedDestination() async throws -> AnyNativeDestinationSelection {
+        try Task.checkCancellation()
+        guard operation == nil, suspension == nil, joining == nil else {
+            throw AnyNativeApplicationError.busy
+        }
+        guard let owner = workspace, let lifetime = presentationLifetime else {
+            throw AnyHostError.sessionClosed
+        }
+        let ticket = epoch
+        let selected = owner.workspace
+        try requireDestinationOwner(owner, lifetime: lifetime, ticket: ticket,
+            expectedAccountID: selected.accountID, expectedSpaceID: selected.spaceID)
+        let networkID = try await application.selectedDestinationNetworkID(expectedSession: owner.session)
+        try Task.checkCancellation()
+        guard operation == nil, suspension == nil, joining == nil else {
+            throw AnyNativeApplicationError.busy
+        }
+        try requireDestinationOwner(owner, lifetime: lifetime, ticket: ticket,
+            expectedAccountID: selected.accountID, expectedSpaceID: selected.spaceID)
+        let displayName = spaces.first {
+            Data($0.id.utf8) == Data(selected.spaceID.utf8)
+        }?.name ?? ""
+        return .init(accountID: selected.accountID, spaceID: selected.spaceID,
+            displayName: displayName, networkID: networkID)
+    }
 
     /// Reserves the same slot as account/Space UI operations. Suspension cancels
     /// the typed task and waits until this call has delivered or refused its
