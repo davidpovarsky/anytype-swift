@@ -1,0 +1,100 @@
+{
+  "AppleCalls": 0,
+  "actualToolchainExecutable": {
+    "bytes": 35095592,
+    "physicalPath": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-driver",
+    "requestedPath": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift",
+    "sha256": "39d41b0dc9eba623b0e37cea42c3145720168214ba4349d6fa3bd9db9b1e651a",
+    "versionAndTargetAuthority": "Actual verbose compiler output is qualified after execution."
+  },
+  "budget": {
+    "admissionMarginBytes": 33554432,
+    "commandSeconds": 300,
+    "developmentFloorBytes": 536870912,
+    "finalEvidenceReserveWithinCapBytes": 1048576,
+    "jobs": 2,
+    "memoryFloorBytes": 536870912,
+    "ownedAllocationCapBytes": 268435456,
+    "rootFloorBytes": 2147483648
+  },
+  "command": {
+    "argv": [
+      "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift",
+      "test",
+      "--package-path",
+      "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/component",
+      "--scratch-path",
+      "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build",
+      "--cache-path",
+      "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/swift-cache",
+      "--config-path",
+      "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/swift-config",
+      "--security-path",
+      "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/swift-security",
+      "--disable-automatic-resolution",
+      "--jobs",
+      "2",
+      "--no-parallel",
+      "-v",
+      "--filter",
+      "(?:testBookmarkCreationRetainsEmptyNameAndOneExactMappedURL|testBookmarkCreationRefusesHiddenManagedAndChangedBindings|testBookmarkCreationReadbackRequiresExactSourceAndOriginalIdentity|testBookmarkCreationRefusesFramesOutsideTheSelectedBinding|creationOverrideRejectsAnotherWorkspaceBeforeDispatch|creationOverrideAndDefaultCreatorShareTheExistingMutationQueue)(?:\\(\\))?$"
+    ],
+    "cwd": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/component",
+    "environmentOverrides": {
+      "CLANG_MODULE_CACHE_PATH": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/clang-module-cache",
+      "GIT_TERMINAL_PROMPT": "0",
+      "PATH": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin:/usr/bin:/bin",
+      "PWD": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "SWIFTPM_MODULECACHE_OVERRIDE": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/swift-module-cache",
+      "TMPDIR": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/tmp",
+      "XDG_CACHE_HOME": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/xdg-cache",
+      "XDG_CONFIG_HOME": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/xdg-config"
+    }
+  },
+  "controllerSHA256": "3729eed7d91e3400c19137420df96465d4785c0bd9587d81553864e1041f176c",
+  "declaredControlledOutputBytesOnRoot": 0,
+  "errors": [
+    {
+      "phase": "actual-component",
+      "traceback": "Traceback (most recent call last):\n  File \"/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/inputs/run_component.py\", line 568, in main\n    receipt['testResult'] = mixed_test_result(log)\n                            ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/inputs/run_component.py\", line 442, in mixed_test_result\n    assert set(swift_starts) == set(swift_passes) == set(SWIFT_TESTING_METHODS), 'Both selected Swift Testing cases must pass'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Both selected Swift Testing cases must pass\n",
+      "type": "AssertionError"
+    }
+  ],
+  "finishedAtUTC": "2026-11-27T22:37:21.691441+00:00",
+  "maximumOwnedAllocatedBytes": 216399872,
+  "minimumDevelopmentFreeBytes": 1120194560,
+  "minimumRootFreeBytes": 2243969024,
+  "nativeCalls": 0,
+  "noGlobalRootWriteAuditClaim": true,
+  "outerGroupAtExit": {
+    "atUTC": "2026-11-27T22:37:21.190723+00:00",
+    "errno": 3,
+    "error": "[Errno 3] No such process",
+    "processGroup": 2634766,
+    "signal": 0,
+    "status": "ABSENT_ESRCH"
+  },
+  "ownedCleanup": {
+    "absenceEvidence": {
+      "atUTC": "2026-11-27T22:37:21.190723+00:00",
+      "errno": 3,
+      "error": "[Errno 3] No such process",
+      "processGroup": 2634766,
+      "signal": 0,
+      "status": "ABSENT_ESRCH"
+    },
+    "historicalGroupReprobed": false,
+    "processGroup": 2634766,
+    "status": "PASS_OWNED_GROUP_ABSENT"
+  },
+  "processExit": 0,
+  "productCommit": "3d2abbf8b1017204e2b93b53ea83ff6f053e67b3",
+  "runtimeSlotGrantedByThisScript": false,
+  "safeToReleaseRuntimeSlot": true,
+  "schema": "pinkha-bookmark-six-component/v1",
+  "seconds": 56.665,
+  "sourceBodiesModifiedForComponent": 0,
+  "startedAtUTC": "2026-11-27T22:36:25.026796+00:00",
+  "status": "FAIL"
+}

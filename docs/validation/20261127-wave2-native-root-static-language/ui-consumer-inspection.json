@@ -1,0 +1,448 @@
+{
+  "schema": "native-root-static-ui-consumer-inspection/v1",
+  "status": "SOURCE_INSPECTION_PENDING_CONTEXT_CLASSIFICATION",
+  "nativeRef": "d99a9b7869ecc58f3e29f260a6109f59375ccaf2",
+  "combinedStage1Ref": "a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd",
+  "rootStableIdentifiers": [
+    "any-native-account-create",
+    "any-native-account-restore",
+    "any-native-account-restore-phrase",
+    "any-native-account-sign-out",
+    "any-native-backup-acknowledged",
+    "any-native-backup-continue",
+    "any-native-backup-show-phrase",
+    "any-native-saved-account",
+    "any-native-space-create",
+    "any-native-space-join",
+    "any-native-space-name"
+  ],
+  "files": [
+    {
+      "path": "NativeApp/UITests/NativeLaunchTests.swift",
+      "ref": "d99a9b7869ecc58f3e29f260a6109f59375ccaf2",
+      "local": "wave2-native-bookmark-mounted/candidate/NativeApp/UITests/NativeLaunchTests.swift",
+      "expectedGitBlob": "b0cb22635c7b908b27b9013c7615926790308bad",
+      "bytes": 319986,
+      "sha256": "e06c55a6ed9dd6153f8aabd528f0c225246ec08da96bb515431477c234bdc03c",
+      "gitBlob": "b0cb22635c7b908b27b9013c7615926790308bad",
+      "exactHebrewLabelLiterals": [],
+      "stableRootIdentifierReferences": [
+        {
+          "line": 17,
+          "identifier": "any-native-account-create",
+          "context": "waitUntilEnabled(app.buttons[\"any-native-account-create\"])",
+          "enclosingFunctionApproximate": "testFreshNativeExecutableShowsAccountAndRecoveryEntryPoints"
+        },
+        {
+          "line": 18,
+          "identifier": "any-native-account-restore-phrase",
+          "context": "XCTAssertTrue(app.secureTextFields[\"any-native-account-restore-phrase\"].exists)",
+          "enclosingFunctionApproximate": "testFreshNativeExecutableShowsAccountAndRecoveryEntryPoints"
+        },
+        {
+          "line": 19,
+          "identifier": "any-native-account-restore",
+          "context": "XCTAssertTrue(app.buttons[\"any-native-account-restore\"].exists)",
+          "enclosingFunctionApproximate": "testFreshNativeExecutableShowsAccountAndRecoveryEntryPoints"
+        },
+        {
+          "line": 20,
+          "identifier": "any-native-account-restore",
+          "context": "XCTAssertFalse(app.buttons[\"any-native-account-restore\"].isEnabled)",
+          "enclosingFunctionApproximate": "testFreshNativeExecutableShowsAccountAndRecoveryEntryPoints"
+        },
+        {
+          "line": 27,
+          "identifier": "any-native-account-create",
+          "context": "waitUntilEnabled(app.buttons[\"any-native-account-create\"])",
+          "enclosingFunctionApproximate": "testBackgroundAndForegroundReopenTheOwnedRuntime"
+        },
+        {
+          "line": 31,
+          "identifier": "any-native-account-create",
+          "context": "waitUntilEnabled(app.buttons[\"any-native-account-create\"])",
+          "enclosingFunctionApproximate": "testBackgroundAndForegroundReopenTheOwnedRuntime"
+        },
+        {
+          "line": 32,
+          "identifier": "any-native-account-restore-phrase",
+          "context": "XCTAssertTrue(app.secureTextFields[\"any-native-account-restore-phrase\"].exists)",
+          "enclosingFunctionApproximate": "testBackgroundAndForegroundReopenTheOwnedRuntime"
+        },
+        {
+          "line": 110,
+          "identifier": "any-native-saved-account",
+          "context": "tapWhenEnabled(app.buttons[\"any-native-saved-account\"].firstMatch, timeout: 60)",
+          "enclosingFunctionApproximate": "testCreateEditHanlinConsentBackgroundAndColdReopen"
+        },
+        {
+          "line": 164,
+          "identifier": "any-native-account-create",
+          "context": "tapWhenEnabled(app.buttons[\"any-native-account-create\"])",
+          "enclosingFunctionApproximate": "state"
+        },
+        {
+          "line": 165,
+          "identifier": "any-native-backup-acknowledged",
+          "context": "let backup = app.switches[\"any-native-backup-acknowledged\"]",
+          "enclosingFunctionApproximate": "state"
+        },
+        {
+          "line": 192,
+          "identifier": "any-native-backup-continue",
+          "context": "tapWhenEnabled(app.buttons[\"any-native-backup-continue\"])",
+          "enclosingFunctionApproximate": "state"
+        },
+        {
+          "line": 193,
+          "identifier": "any-native-space-name",
+          "context": "let spaceNameField = app.textFields[\"any-native-space-name\"]",
+          "enclosingFunctionApproximate": "state"
+        },
+        {
+          "line": 197,
+          "identifier": "any-native-space-create",
+          "context": "tapWhenEnabled(app.buttons[\"any-native-space-create\"])",
+          "enclosingFunctionApproximate": "state"
+        },
+        {
+          "line": 1259,
+          "identifier": "any-native-account-create",
+          "context": "!app.buttons[\"any-native-account-create\"].exists,",
+          "enclosingFunctionApproximate": "requireArchiveObservationPastOnboarding"
+        },
+        {
+          "line": 1260,
+          "identifier": "any-native-backup-acknowledged",
+          "context": "!app.switches[\"any-native-backup-acknowledged\"].exists,",
+          "enclosingFunctionApproximate": "requireArchiveObservationPastOnboarding"
+        },
+        {
+          "line": 1261,
+          "identifier": "any-native-backup-continue",
+          "context": "!app.buttons[\"any-native-backup-continue\"].exists,",
+          "enclosingFunctionApproximate": "requireArchiveObservationPastOnboarding"
+        },
+        {
+          "line": 1262,
+          "identifier": "any-native-account-restore-phrase",
+          "context": "!app.secureTextFields[\"any-native-account-restore-phrase\"].exists else {",
+          "enclosingFunctionApproximate": "requireArchiveObservationPastOnboarding"
+        },
+        {
+          "line": 1400,
+          "identifier": "any-native-account-create",
+          "context": "tapWhenEnabled(app.buttons[\"any-native-account-create\"])",
+          "enclosingFunctionApproximate": "createOwnedWorkspace"
+        },
+        {
+          "line": 1401,
+          "identifier": "any-native-backup-acknowledged",
+          "context": "let backup = app.switches[\"any-native-backup-acknowledged\"]",
+          "enclosingFunctionApproximate": "createOwnedWorkspace"
+        },
+        {
+          "line": 1405,
+          "identifier": "any-native-backup-continue",
+          "context": "tapWhenEnabled(app.buttons[\"any-native-backup-continue\"])",
+          "enclosingFunctionApproximate": "createOwnedWorkspace"
+        },
+        {
+          "line": 1406,
+          "identifier": "any-native-space-name",
+          "context": "let spaceNameField = app.textFields[\"any-native-space-name\"]",
+          "enclosingFunctionApproximate": "createOwnedWorkspace"
+        },
+        {
+          "line": 1410,
+          "identifier": "any-native-space-create",
+          "context": "tapWhenEnabled(app.buttons[\"any-native-space-create\"])",
+          "enclosingFunctionApproximate": "createOwnedWorkspace"
+        },
+        {
+          "line": 1746,
+          "identifier": "any-native-saved-account",
+          "context": "tapWhenEnabled(app.buttons[\"any-native-saved-account\"].firstMatch, timeout: 60)",
+          "enclosingFunctionApproximate": "reopenOwnedWorkspace"
+        },
+        {
+          "line": 2294,
+          "identifier": "any-native-saved-account",
+          "context": "tapWhenEnabled(app.buttons[\"any-native-saved-account\"].firstMatch, timeout: 60)",
+          "enclosingFunctionApproximate": "saved"
+        },
+        {
+          "line": 3628,
+          "identifier": "any-native-saved-account",
+          "context": "let saved = app.buttons.matching(identifier: \"any-native-saved-account\")",
+          "enclosingFunctionApproximate": "openSavedAccountAndSpace"
+        },
+        {
+          "line": 3673,
+          "identifier": "any-native-account-create",
+          "context": "waitUntilEnabled(app.buttons[\"any-native-account-create\"], timeout: 60)",
+          "enclosingFunctionApproximate": "roundTrip"
+        },
+        {
+          "line": 3674,
+          "identifier": "any-native-saved-account",
+          "context": "XCTAssertEqual(app.buttons.matching(identifier: \"any-native-saved-account\").count, 0)",
+          "enclosingFunctionApproximate": "roundTrip"
+        },
+        {
+          "line": 4984,
+          "identifier": "any-native-backup-continue",
+          "context": "!app.buttons[\"any-native-backup-continue\"].exists,",
+          "enclosingFunctionApproximate": "capture"
+        },
+        {
+          "line": 4985,
+          "identifier": "any-native-account-restore-phrase",
+          "context": "!app.secureTextFields[\"any-native-account-restore-phrase\"].exists else {",
+          "enclosingFunctionApproximate": "capture"
+        },
+        {
+          "line": 5020,
+          "identifier": "any-native-backup-continue",
+          "context": "!app.buttons[\"any-native-backup-continue\"].exists &&",
+          "enclosingFunctionApproximate": "capture"
+        },
+        {
+          "line": 5021,
+          "identifier": "any-native-account-restore-phrase",
+          "context": "!app.secureTextFields[\"any-native-account-restore-phrase\"].exists {",
+          "enclosingFunctionApproximate": "capture"
+        },
+        {
+          "line": 5163,
+          "identifier": "any-native-backup-continue",
+          "context": "!app.buttons[\"any-native-backup-continue\"].exists,",
+          "enclosingFunctionApproximate": "safeCapture"
+        },
+        {
+          "line": 5164,
+          "identifier": "any-native-account-restore-phrase",
+          "context": "!app.secureTextFields[\"any-native-account-restore-phrase\"].exists else { throw JourneyError.capture }",
+          "enclosingFunctionApproximate": "safeCapture"
+        },
+        {
+          "line": 5319,
+          "identifier": "any-native-backup-continue",
+          "context": "!app.buttons[\"any-native-backup-continue\"].exists &&",
+          "enclosingFunctionApproximate": "edit"
+        },
+        {
+          "line": 5320,
+          "identifier": "any-native-account-restore-phrase",
+          "context": "!app.secureTextFields[\"any-native-account-restore-phrase\"].exists {",
+          "enclosingFunctionApproximate": "edit"
+        },
+        {
+          "line": 5464,
+          "identifier": "any-native-saved-account",
+          "context": "tapWhenEnabled(app.buttons[\"any-native-saved-account\"].firstMatch, timeout: 60)",
+          "enclosingFunctionApproximate": "edit"
+        }
+      ],
+      "proposedEnglishLiteralReferences": [
+        {
+          "line": 3453,
+          "literal": "Close",
+          "context": "let closeLabels = [\"סגירה\", \"Close\"]",
+          "enclosingFunctionApproximate": "labels"
+        }
+      ]
+    },
+    {
+      "path": "PinkhaStage1Acceptance/Tests/AnytypeComprehensiveAcceptanceUITests.swift",
+      "ref": "a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd",
+      "local": "torah-acceptance-prep/word-unlink-ui/AnytypeComprehensiveAcceptanceUITests.swift",
+      "expectedGitBlob": "a11cbeb6e19d1ba3ab02478575e4f3881665b1c5",
+      "bytes": 78853,
+      "sha256": "d7e512cb695695ea88e14bf8527d0051aeb9b315e40a7a52289a8f0b0323d6f3",
+      "gitBlob": "a11cbeb6e19d1ba3ab02478575e4f3881665b1c5",
+      "exactHebrewLabelLiterals": [],
+      "stableRootIdentifierReferences": [],
+      "proposedEnglishLiteralReferences": []
+    },
+    {
+      "path": "PinkhaStage1Acceptance/Tests/HanlinNativeAcceptanceUITests.swift",
+      "ref": "a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd",
+      "local": "wave2-native-root-static-language-audit/source/PinkhaStage1Acceptance/Tests/HanlinNativeAcceptanceUITests.swift",
+      "expectedGitBlob": "6cded2ba5f1b3a568094b73d884e2da619441349",
+      "bytes": 26662,
+      "sha256": "8af3eea788ab5383d754bd8fdd8ca8443e9cbf44cde34eb5ae2323bd90849824",
+      "gitBlob": "6cded2ba5f1b3a568094b73d884e2da619441349",
+      "exactHebrewLabelLiterals": [],
+      "stableRootIdentifierReferences": [],
+      "proposedEnglishLiteralReferences": [
+        {
+          "line": 253,
+          "literal": "Close",
+          "context": "try chatButton(identifier: \"pinkha.hanlin.close\", label: \"Close\").tap()",
+          "enclosingFunctionApproximate": "verifyBackgroundAndPendingConsent"
+        }
+      ]
+    },
+    {
+      "path": "PinkhaStage1Acceptance/Tests/HanlinSaveMessageAcceptanceUITests.swift",
+      "ref": "a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd",
+      "local": "wave2-native-root-static-language-audit/source/PinkhaStage1Acceptance/Tests/HanlinSaveMessageAcceptanceUITests.swift",
+      "expectedGitBlob": "6e923be96d7b4d2f4d88cc5263c08a582ca4d836",
+      "bytes": 21950,
+      "sha256": "5e692b4d5e09004add0dc8b4e882af620381cd61d830e54e2d6e60ae23704512",
+      "gitBlob": "6e923be96d7b4d2f4d88cc5263c08a582ca4d836",
+      "exactHebrewLabelLiterals": [],
+      "stableRootIdentifierReferences": [],
+      "proposedEnglishLiteralReferences": []
+    },
+    {
+      "path": "PinkhaStage1Acceptance/Tests/HanlinSelectionAcceptanceUITests.swift",
+      "ref": "a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd",
+      "local": "wave2-native-root-static-language-audit/source/PinkhaStage1Acceptance/Tests/HanlinSelectionAcceptanceUITests.swift",
+      "expectedGitBlob": "9c026676965d86f425aa0e9a372ded25454e9294",
+      "bytes": 13939,
+      "sha256": "5136113b10452d86ed5befcf46cb35b7262fc123268b6249421441aa6209cb61",
+      "gitBlob": "9c026676965d86f425aa0e9a372ded25454e9294",
+      "exactHebrewLabelLiterals": [],
+      "stableRootIdentifierReferences": [],
+      "proposedEnglishLiteralReferences": []
+    },
+    {
+      "path": "PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift",
+      "ref": "a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd",
+      "local": "torah-acceptance-prep/gap-audit/source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift",
+      "expectedGitBlob": "f9575e98c11bd7a7f1832227441deaef355962f5",
+      "bytes": 16081,
+      "sha256": "d8296d08ce03c4756c43e821116f244d4b26c26988134c8457f8dc4c55f6f03d",
+      "gitBlob": "f9575e98c11bd7a7f1832227441deaef355962f5",
+      "exactHebrewLabelLiterals": [],
+      "stableRootIdentifierReferences": [],
+      "proposedEnglishLiteralReferences": []
+    },
+    {
+      "path": "PinkhaStage1Acceptance/Tests/MiniAppsNativeAcceptanceUITests.swift",
+      "ref": "a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd",
+      "local": "wave2-native-root-static-language-audit/source/PinkhaStage1Acceptance/Tests/MiniAppsNativeAcceptanceUITests.swift",
+      "expectedGitBlob": "cc4d2ba69709f1796ced5997465652e3af2ba14f",
+      "bytes": 45103,
+      "sha256": "53f5f9789b8f646c221b93cc92817cd8afa742d80a8c3531b9f1e9ee0f0b3ec1",
+      "gitBlob": "cc4d2ba69709f1796ced5997465652e3af2ba14f",
+      "exactHebrewLabelLiterals": [],
+      "stableRootIdentifierReferences": [
+        {
+          "line": 495,
+          "identifier": "any-native-account-create",
+          "context": "try isolationTap(source.buttons[\"any-native-account-create\"], timeout: 90)",
+          "enclosingFunctionApproximate": "isolationCreateAnyDocument"
+        },
+        {
+          "line": 496,
+          "identifier": "any-native-backup-acknowledged",
+          "context": "let row = source.switches[\"any-native-backup-acknowledged\"]",
+          "enclosingFunctionApproximate": "isolationCreateAnyDocument"
+        },
+        {
+          "line": 504,
+          "identifier": "any-native-backup-continue",
+          "context": "try isolationTap(source.buttons[\"any-native-backup-continue\"])",
+          "enclosingFunctionApproximate": "isolationCreateAnyDocument"
+        },
+        {
+          "line": 505,
+          "identifier": "any-native-space-name",
+          "context": "let name = source.textFields[\"any-native-space-name\"]",
+          "enclosingFunctionApproximate": "isolationCreateAnyDocument"
+        },
+        {
+          "line": 507,
+          "identifier": "any-native-space-create",
+          "context": "try isolationTap(source.buttons[\"any-native-space-create\"])",
+          "enclosingFunctionApproximate": "isolationCreateAnyDocument"
+        },
+        {
+          "line": 533,
+          "identifier": "any-native-account-sign-out",
+          "context": "try isolationTap(source.buttons[\"any-native-account-sign-out\"])",
+          "enclosingFunctionApproximate": "isolationSignOutAny"
+        },
+        {
+          "line": 535,
+          "identifier": "any-native-account-create",
+          "context": "self.source.buttons[\"any-native-account-create\"].exists",
+          "enclosingFunctionApproximate": "isolationSignOutAny"
+        },
+        {
+          "line": 536,
+          "identifier": "any-native-account-create",
+          "context": "&& self.source.buttons[\"any-native-account-create\"].isEnabled",
+          "enclosingFunctionApproximate": "isolationSignOutAny"
+        },
+        {
+          "line": 541,
+          "identifier": "any-native-saved-account",
+          "context": "let accounts = source.buttons.matching(identifier: \"any-native-saved-account\")",
+          "enclosingFunctionApproximate": "isolationOpenAny"
+        }
+      ],
+      "proposedEnglishLiteralReferences": []
+    },
+    {
+      "path": "PinkhaStage1Acceptance/Tests/PinkhaStage1AcceptanceUITests.swift",
+      "ref": "a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd",
+      "local": "wave2-editor-rtl/coverage-audit/PinkhaStage1AcceptanceUITests.swift",
+      "expectedGitBlob": "9e1766d81529f1716f13ffb8a5f146dc4ade8e43",
+      "bytes": 103720,
+      "sha256": "c1e37371ce061cfec1ec6d30fc2f55a0df0e477f9727ffd96d635f46e91e0906",
+      "gitBlob": "9e1766d81529f1716f13ffb8a5f146dc4ade8e43",
+      "exactHebrewLabelLiterals": [],
+      "stableRootIdentifierReferences": [
+        {
+          "line": 1079,
+          "identifier": "any-native-account-create",
+          "context": "let nativeAccount = app.buttons[\"any-native-account-create\"]",
+          "enclosingFunctionApproximate": "testUnifiedEngineSwitchRetainsHeartDocumentAndColdReopen"
+        }
+      ],
+      "proposedEnglishLiteralReferences": []
+    },
+    {
+      "path": "PinkhaStage1Acceptance/Tests/PinkhaT5NativeAcceptanceUITests.swift",
+      "ref": "a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd",
+      "local": "torah-acceptance-prep/t5-r08-warning/candidate/PinkhaT5NativeAcceptanceUITests.swift",
+      "expectedGitBlob": "d4a15a8c318880c379c83a8ee2631e2fd6fa7568",
+      "bytes": 34629,
+      "sha256": "b43f97b3c1283f05b728b15cc9871bfecc1692ca55563f1e2c1f1886ecd38d5e",
+      "gitBlob": "d4a15a8c318880c379c83a8ee2631e2fd6fa7568",
+      "exactHebrewLabelLiterals": [],
+      "stableRootIdentifierReferences": [],
+      "proposedEnglishLiteralReferences": []
+    },
+    {
+      "path": "PinkhaStage1Acceptance/Tests/PinkhaTorahQuoteAcceptanceUITests.swift",
+      "ref": "a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd",
+      "local": "torah-acceptance-prep/patch/PinkhaStage1Acceptance/Tests/PinkhaTorahQuoteAcceptanceUITests.swift",
+      "expectedGitBlob": "1d4abf8ff2ae2afbb9369f2f9b72173fe19c9a70",
+      "bytes": 18333,
+      "sha256": "66c18c084ed66baf9b58d45b094e985127e77f8b627fc924f67be7201125f219",
+      "gitBlob": "1d4abf8ff2ae2afbb9369f2f9b72173fe19c9a70",
+      "exactHebrewLabelLiterals": [],
+      "stableRootIdentifierReferences": [],
+      "proposedEnglishLiteralReferences": []
+    },
+    {
+      "path": "PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift",
+      "ref": "a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd",
+      "local": "torah-acceptance-prep/t5-page154-readiness-refresh/source/SemanticAnchorPage154MountedUITests.swift",
+      "expectedGitBlob": "02b43ee8331da6875d19055314ef61d0be2ad5af",
+      "bytes": 46056,
+      "sha256": "8834541f5a47da80b460ecb96b20c930813b743d94f285fc1efba8a93f65ee4d",
+      "gitBlob": "02b43ee8331da6875d19055314ef61d0be2ad5af",
+      "exactHebrewLabelLiterals": [],
+      "stableRootIdentifierReferences": [],
+      "proposedEnglishLiteralReferences": []
+    }
+  ],
+  "runtimeActions": 0,
+  "testOrControllerChanges": 0
+}

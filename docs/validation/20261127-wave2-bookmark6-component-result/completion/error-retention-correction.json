@@ -1,0 +1,13 @@
+{
+  "finding": "Traceback formatting may lazily open a source file after the deadline; retain bounded code-frame metadata without I/O so the first timeout/qualification failure remains primary.",
+  "fullReverseVerified": true,
+  "newFunction": "def failure_record(phase, error):\n    # Never ask linecache to open source while retaining a timeout/I/O failure.\n    frames = []\n    cursor = error.__traceback__\n    while cursor is not None and len(frames) < 32:\n        code = cursor.tb_frame.f_code\n        frames.append({'file': code.co_filename, 'function': code.co_name, 'line': cursor.tb_lineno})\n        cursor = cursor.tb_next\n    return {'phase': phase, 'type': type(error).__name__, 'message': str(error)[:8192],\n            'tracebackFrames': frames, 'additionalFramesOmitted': cursor is not None}",
+  "newSHA256": "c628aee892a5cff15bd80f2473f64cffaf831f816d51412a54e142f7e7c410a5",
+  "oldFunction": "def failure_record(phase, error):\n    return {'phase': phase, 'type': type(error).__name__, 'message': str(error)[:8192],\n            'traceback': ''.join(traceback.format_exception(type(error), error, error.__traceback__))[-32768:]}",
+  "oldSHA256": "b6beca6833856bd279d20af90713e620a318d22eb33567fbf9901564c7ad9ef3",
+  "removedImport": "import traceback\n",
+  "runtimeFailure": false,
+  "schema": "bookmark6-completion-error-retention-correction/v1",
+  "status": "SOURCE_CORRECTION_NO_EXECUTION",
+  "testsExecuted": false
+}

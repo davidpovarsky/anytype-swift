@@ -1,0 +1,11 @@
+{
+  "link_id": "link_6b037fa8537081919acb0c7a2cb11e3e",
+  "host_id": "host_299cf75f6b338ecd",
+  "interpreter": "python3",
+  "content": "import hashlib, os, stat\np = '/var/lib/sentinelx/uploads/pinkha-wave2-bookmark6-readonly-completion-c628aee892a5cff1.py'\nfd = os.open(p, os.O_RDONLY | os.O_NOFOLLOW)\ntry:\n    info = os.fstat(fd)\n    assert stat.S_ISREG(info.st_mode) and info.st_size == 63597\n    raw = os.read(fd, 63598)\n    assert len(raw) == 63597 and hashlib.sha256(raw).hexdigest() == 'c628aee892a5cff15bd80f2473f64cffaf831f816d51412a54e142f7e7c410a5'\nfinally:\n    os.close(fd)\nos.execv('/usr/bin/python3', ['/usr/bin/python3', '-I', '-B', p, '--qualify-original-attempt1'])\n",
+  "cwd": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127",
+  "timeout": 60,
+  "background": false,
+  "notify_telegram": false,
+  "notify_resend": false
+}

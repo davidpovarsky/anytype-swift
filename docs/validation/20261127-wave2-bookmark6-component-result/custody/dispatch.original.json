@@ -1,0 +1,18 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"ok\":true,\"job_id\":\"job_81ac11c248c8\",\"status\":\"running\",\"tool\":\"script_run\",\"host\":\"host_299cf75f6b338ecd\",\"message\":\"Task started in background as job_81ac11c248c8. It will not block. When you next need its result — or when the user asks if it finished — call notifications_check to see completed jobs, then notifications_get(job_id=\\\"job_81ac11c248c8\\\") for the full output. IMPORTANT: this is event-driven, NOT a polling loop — check when the user asks or when you actually need the result, never repeatedly in a loop (each check is a full turn and there is no sleep between checks, so looping just burns turns for nothing). If you want to be pinged the moment it finishes, relaunch with notify_telegram.\",\"poll_hint\":\"notifications_check\"}"
+    }
+  ],
+  "structuredContent": {
+    "ok": true,
+    "job_id": "job_81ac11c248c8",
+    "status": "running",
+    "tool": "script_run",
+    "host": "host_299cf75f6b338ecd",
+    "message": "Task started in background as job_81ac11c248c8. It will not block. When you next need its result — or when the user asks if it finished — call notifications_check to see completed jobs, then notifications_get(job_id=\"job_81ac11c248c8\") for the full output. IMPORTANT: this is event-driven, NOT a polling loop — check when the user asks or when you actually need the result, never repeatedly in a loop (each check is a full turn and there is no sleep between checks, so looping just burns turns for nothing). If you want to be pinged the moment it finishes, relaunch with notify_telegram.",
+    "poll_hint": "notifications_check"
+  },
+  "isError": false
+}

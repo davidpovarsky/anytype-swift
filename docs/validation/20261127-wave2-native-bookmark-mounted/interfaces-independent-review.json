@@ -1,0 +1,241 @@
+{
+  "schema": "interfaces-independent-standalone-bookmark-source-review-v1",
+  "reviewer": "/root/interfaces",
+  "recordedAtUTC": "2026-11-27T23:28:47.714678+00:00",
+  "status": "PASS_SOURCE_REVIEW_ONLY_RUNTIME_NOT_RUN",
+  "repository": "davidpovarsky/anytype-swift",
+  "baseCommit": "5a45fe4af2c4601faad181f81d391057c1237654",
+  "candidateManifest": {
+    "path": "candidate-manifest.json",
+    "bytes": 6536,
+    "sha256": "49f1c78ba4d09db091af9798b0655092316dcb1f8ad88e8cc6cb9ea14992f59d",
+    "gitBlob": "463b2993302ddafbf7edfd83a12569f528b04df0"
+  },
+  "sourceInverse": {
+    "path": "source-inverse.json",
+    "bytes": 5190,
+    "sha256": "94980e1d4fd593e313d1f9725d11fdf8ac13bcf012ece7d1010eb54ddf80baa2",
+    "gitBlob": "03f7cdd4ee68fd4a72cdcd4983239379331f742b"
+  },
+  "sourceBindings": {
+    "path": "source-bindings.json",
+    "bytes": 21540,
+    "sha256": "d0dc41bb8d7f74b4ea84ef45ca9ee23e34819b4865312e627cae133f384c7b71",
+    "gitBlob": "d4b79708b40b4f91f746faeda90c4ed56fb9ccef"
+  },
+  "readme": {
+    "path": "README.md",
+    "bytes": 11430,
+    "sha256": "e8a6ec7888cbc512ec0eb75222ffccd20c0e3141a97b2ab19fb2ce955e0963cf",
+    "gitBlob": "746efbb7df3ca53905d33fe074ce97a114f15a98"
+  },
+  "completeSourceRestorations": [
+    {
+      "path": "NativeApp/Sources/NativeCustomTypeFixture.swift",
+      "original": {
+        "path": "originals/NativeApp/Sources/NativeCustomTypeFixture.swift",
+        "bytes": 16673,
+        "sha256": "d7ead5cc94576fb2b116d6d498e03bfa6a853df4134fbb052838004512212c36",
+        "gitBlob": "1b57652427b9b2ad188aeb9a3673c077b555f165"
+      },
+      "candidate": {
+        "path": "candidate/NativeApp/Sources/NativeCustomTypeFixture.swift",
+        "bytes": 55393,
+        "sha256": "fdac35c51f6a2af10c75230360c3c2c5032e9a2c9c898625f78afc405778aab6",
+        "gitBlob": "fe9074dded02e833bc8eea5af9697e89c9bc9a26"
+      },
+      "completeForwardAndInverse": "MATCH"
+    },
+    {
+      "path": "NativeApp/UITests/NativeLaunchTests.swift",
+      "original": {
+        "path": "originals/NativeApp/UITests/NativeLaunchTests.swift",
+        "bytes": 295880,
+        "sha256": "e2979e777dd61f7eb8be06bd38028b15cc6f7e2d944fe6adce9603a3f7817358",
+        "gitBlob": "83fd25121f27f789dcce4cde088dd29e3df738a2"
+      },
+      "candidate": {
+        "path": "candidate/NativeApp/UITests/NativeLaunchTests.swift",
+        "bytes": 319986,
+        "sha256": "e06c55a6ed9dd6153f8aabd528f0c225246ec08da96bb515431477c234bdc03c",
+        "gitBlob": "b0cb22635c7b908b27b9013c7615926790308bad"
+      },
+      "completeForwardAndInverse": "MATCH"
+    },
+    {
+      "path": "NativeApp/Sources/AnyNativeApp.swift",
+      "original": {
+        "path": "originals/NativeApp/Sources/AnyNativeApp.swift",
+        "bytes": 2308,
+        "sha256": "bd77a7572651c4c9d9e11f9337b9a2f7aa28c0c4db6fa6b662b01460930ce77a",
+        "gitBlob": "f9acbcbb434489e60198cee9b012bcceab66817a"
+      },
+      "candidate": {
+        "path": "candidate/NativeApp/Sources/AnyNativeApp.swift",
+        "bytes": 3768,
+        "sha256": "081230a8b5b2c4c032f379a03e7a29076d4c7c3f044e1d6361d52e3cd48065e0",
+        "gitBlob": "5ccd7d976a41079e6dbd4b89f0364d482d6df1db"
+      },
+      "completeForwardAndInverse": "MATCH"
+    }
+  ],
+  "predecessorCorrections": {
+    "app": {
+      "predecessorSHA256": "a5f195ea7f487aa536a974969ce2950389aeef511475b052220d076f009f5532",
+      "correction": {
+        "path": "app-initialization-correction.json",
+        "bytes": 1409,
+        "sha256": "c283f6fb12c1bb3f6413d86718c0f2acc2c076eac731e5e836971a2b062e3ee9",
+        "gitBlob": "d8de92714c5da4fe6f8ee7aa003b44d033890343"
+      },
+      "fullForwardAndInverse": "MATCH",
+      "assessment": "Both throwing fixture configurations finish into local values before either stored fixture let is assigned; catch initializes the unassigned properties. This closes the source initialization finding without claiming a compiler result."
+    },
+    "ui": {
+      "predecessorSHA256": "b05173b654d60d31bd9a72aec81af6af8780ee64ac4cc32c6a5f355125a414d8",
+      "correction": {
+        "path": "external-evidence-order-correction.json",
+        "bytes": 4444,
+        "sha256": "7a495bd9f973a360a7fbc772f2a282cf38438b59b31ce8ab07bc19bbbc8462f1",
+        "gitBlob": "1a2896c04c57c11d33eede73b11c1421dcf25547"
+      },
+      "fullForwardAndInverse": "MATCH",
+      "assessment": "Four exact replacements preserve the strict address predicate and deadlines while recording external-transition and bounded address evidence before assertions under continueAfterFailure=false."
+    }
+  },
+  "reviewedSourceScope": [
+    "Complete new 532-line fixture suffix and 368-line UI suffix, complete App hook, original helper implementations actually called by the appended test.",
+    "Retained C13 five-definition setup, member/Properties/editor-query/document-target/Markdown shapes; current owner API and relevant Library, Properties and wiki-store source bodies; existing standalone PBX membership.",
+    "Independently matched all three complete original/candidate hashes and Git blobs, eight current dependency whole-body identities, original 16673-byte fixture prefix and 295880-byte Native26 prefix. No claim that every unchanged dependency body was re-reviewed."
+  ],
+  "findings": [],
+  "positiveSourceFindings": [
+    {
+      "area": "Public Native contract",
+      "result": "Exactly five prepare writes use existing types, editor-part, collection, synced URL-property and layout PATCH routes. Required acknowledgements are 201/201/201/201/204. Actual returned IDs populate the synthetic descriptor. Audits use native responses; the fixture neither requests/injects a creation frame nor creates an object, body or membership."
+    },
+    {
+      "area": "Actor and operation ownership",
+      "result": "MainActor observable state is latched before suspension. Mode/scope/flags are fixed; duplicate preparation and checkpoints are refused. AnyNativeWorkspaceOwner is the existing Sendable value holding the original client/session. Native calls run through session.perform with lease checks; scope/account/Space/current session are rechecked before publication. Counter actor bounds attempted definition writes and cold has no preparation branch."
+    },
+    {
+      "area": "Checkpoint and cold authority",
+      "result": "Warm observations are exclusive bounded files chained by their actual encoded bytes. Cold validates the original seed/attempt and all six warm files, re-reads real current Native state, requires the same account/Space/object plus a different PID and generation, and refuses missing/stale/incomplete evidence. Warm owner renewal is permitted only in the same actual account/Space. This is cold-process source coverage, not crash-durability or no-App-write proof."
+    },
+    {
+      "area": "Complete finite census",
+      "result": "objects/query requests129 and accepts at most128 unique IDs only with total equal to returned count and hasNext=false. Cancelled equals baseline including decoded record digests. Created has exactly one new object; old records remain unchanged. Edited retains ID/type/membership/body. Returned and cold require the entire observed readback unchanged. Larger/partial Spaces fail rather than receive pagination credit."
+    },
+    {
+      "area": "Actual object values/body",
+      "result": "Properties Name and source URL are retained as decoded strings and explicit UTF8 byte arrays. Expected query/fragment URLs compare by bytes; created Name is empty. Actual editor query requires zero records and Markdown is empty with repeat-stable version. Bodyless observation is not synthesized from UI absence."
+    },
+    {
+      "area": "Real UI flow",
+      "result": "Existing create menu, optional actual type picker, URL field, Cancel/Create, Properties Name/Source Save, Link and object-ID hierarchy row match current source. Preparation uses the original owned account/Space helpers, and refresh leaves catalog/frame/object creation with the Library. Exactly one normal Create tap follows cancellation. Same actual object is opened after cold launch; old26 methods remain byte-identical."
+    },
+    {
+      "area": "External browser evidence",
+      "result": "The actual Link must put Safari in foreground and App in background. Command-L exposes rather than sets the browser URL. One exact UTF8 address with owned query+fragment is required, then URLComponents checks scheme/host/query/fragment. Transition and bounded observed-field evidence precede assertion. Only a scoped address field is retained verbatim/screen-captured; unrelated field values contribute length/hash. Return must show exact Properties values and unchanged Native readback."
+    },
+    {
+      "area": "Existing source registration",
+      "result": "App/fixture already belong to PinkhaAnyNativeApp and NativeLaunchTests to PinkhaAnyNativeUITests in exact b7ee3f PBX. Debug defines DEBUG and Swift6 strict concurrency. No new file or Package/PBX edit is needed by this source proposal; actual compiler FileLists and enumeration are still required."
+    }
+  ],
+  "declarations": {
+    "originalMethods": 26,
+    "candidateMethods": 27,
+    "newMethods": 1,
+    "newUnparameterizedCases": 1,
+    "selector": "NativeLaunchTests/testNativeBookmarkCancelCreateEditOpenAndColdReopen",
+    "newExecutionTimeAllowanceOverride": null
+  },
+  "remainingAcceptance": [
+    "Matching standalone Native/App product, exact three-file compiler witnesses and new-method enumeration.",
+    "Apple Swift compilation/typecheck and actual UI execution, including accessibility shape, keyboard/Command-L support, Safari foreground/background/address/return and site behavior.",
+    "Actual creation/metadata edits/cold Native readback/bodyless mounted/visual/physical acceptance. This source review and prior Linux C13 evidence do not establish these.",
+    "Original nineteen-Type migration is not qualified by synthetic definitions; combined-host hook is explicitly unqualified and the test refuses that host.",
+    "Exact browser address proves the intended Link destination only when executed; it does not itself prove remote page content loaded or metadata/preview fetched.",
+    "Cancellation census is not a zero-HTTP-request claim; fixture-local counter is not an App request counter. Decoded JSON hashes are not HTTP-wire-byte claims."
+  ],
+  "sourceAuthorities": {
+    "C13Setup": {
+      "path": "source-c13-setup.py",
+      "bytes": 55299,
+      "sha256": "590d1e38f67ca3f07499518199c7224a50d9aafdfad5c550c5433dba6af9b8f4",
+      "gitBlob": "c3d7d754177f4cfd5d724aace44ec2db4f91f3ec"
+    },
+    "currentDependencies": [
+      {
+        "path": "source/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeBookmarkCreationFrame.swift",
+        "bytes": 10591,
+        "sha256": "498f37384519cc638a16b23d5c1f2b615d3228abb109dd7677a8006e15a9b116",
+        "gitBlob": "1f6f13693a26511f25febd85e02d4bbd948e2a62"
+      },
+      {
+        "path": "source/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHTTPHierarchyRecordStore.swift",
+        "bytes": 11318,
+        "sha256": "7ede044c02fffbd4c0d9c9f81b78993af2ffce12ee9816e5703264200d82e963",
+        "gitBlob": "77ac68bdcf1fea26ab55f17cb74ca3465a859d3d"
+      },
+      {
+        "path": "source/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHierarchyModels.swift",
+        "bytes": 16048,
+        "sha256": "0a594737c72b9f065cd4e70aff425f521a6d7ff86ce7b1ebd21dd1221d150700",
+        "gitBlob": "c951d43c3d67988b807f05a21ce21b9f77183488"
+      },
+      {
+        "path": "source/Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeApplication.swift",
+        "bytes": 23564,
+        "sha256": "c5474020ad3bababfef8fc43ea8624ecf0b9b8e80bfacfa5eb5caeb09142b40c",
+        "gitBlob": "110de501e91665280e4751da7b7b6a8392a47913"
+      },
+      {
+        "path": "source/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+        "bytes": 36414,
+        "sha256": "31f5200514b239b777679568c215a0ddb89fb0af9c41987d178deb2a06c408db",
+        "gitBlob": "44418e9710c16412d3dced2e8ce53ae94eb264cc"
+      },
+      {
+        "path": "source/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+        "bytes": 34388,
+        "sha256": "a5252e690004cb50ea4bb0cad6d101b0427a80b37e3ef641db0ed703e312f90e",
+        "gitBlob": "138fdcfcd61dfe59700e38751887ee61647b0c03"
+      },
+      {
+        "path": "source/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift",
+        "bytes": 25348,
+        "sha256": "47e04a0dedaebe5a0d6dc35e4b8d30b58a5f0c8eda0cb44fea6283ecf801465d",
+        "gitBlob": "333cf9157b49853526fc1e5edee963b272423e60"
+      },
+      {
+        "path": "source/NativeApp/AnyNative.xcodeproj/project.pbxproj",
+        "bytes": 23165,
+        "sha256": "7a149b93087e0ebc14416b184708de4897e39c183d05e2f02241d5e59dd858ea",
+        "gitBlob": "b7ee3fb02db7059d132c1804cda91630abf80c74"
+      }
+    ],
+    "supplementalExistingSessionSource": "wave2-bookmark6-component/execution-preparation/inputs/component/Sources/PinkhaAnyHost/AnyApplicationSession.swift"
+  },
+  "inspectionNotes": [
+    "An initial combined display exceeded tool output capacity; source was reread in bounded chunks. No candidate failure or runtime result was produced.",
+    "One read-only rg lookup initially used PinkhaAnyIntegration for AnyApplicationSession; rg --files located the existing PinkhaAnyHost source. This was a reviewer path assumption only."
+  ],
+  "actions": {
+    "candidateSourceEdits": 0,
+    "SwiftCompilerOrTypecheck": 0,
+    "candidateImportsOrExecution": 0,
+    "testsOrControls": 0,
+    "NativeHTTPCalls": 0,
+    "hostOrDeviceCalls": 0,
+    "processQueriesOrSignals": 0,
+    "GitOrPublicationWrites": 0,
+    "reviewArtifactOnly": true
+  },
+  "originalFirstAppleOrderUnchanged": [
+    "original22methods34cases",
+    "originalRealApplicationPreparation",
+    "original4UIselectors"
+  ]
+}

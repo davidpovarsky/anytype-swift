@@ -1,0 +1,232 @@
+{
+  "actualSingleTargetFormatReferencesRehashed": [
+    {
+      "bytes": 283810,
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/receipt.json",
+      "sha256": "42d6a0b7b5bd09bf253fcabb814120397da615fc6db8647b633c4ba677cf8266"
+    },
+    {
+      "bytes": 146679,
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/stderr.original.log",
+      "sha256": "b0014ec10c3dc09948ae103395f360fe4aef4952d945208ad3fde1a26f402235"
+    },
+    {
+      "bytes": 370302,
+      "path": "wave2-property-unicode-audit/runtime-attempt1-root-custody/original-attempt/receipt.json",
+      "sha256": "e025fbaf18eb23442d5bceba216874422795fabd34d9eb1eb0a0f28cac830d28"
+    },
+    {
+      "bytes": 3491,
+      "path": "wave2-reader-audit/component/actual-run/attempt1/stdout.original.log",
+      "sha256": "1bd5482cfc960df1c319b13786ffcd12eb452238a9a1a69cff79cf4c2731e92f"
+    }
+  ],
+  "all84WholeSwiftBodiesEqualOwnFrozenClosure": true,
+  "all90InputFilesExact": true,
+  "candidateFunctionCalls": 0,
+  "completeSourcePinsEqual": true,
+  "controlsReplayed": 0,
+  "fullInverse": [
+    {
+      "candidate": {
+        "bytes": 47967,
+        "gitBlob": "00c1cdf562f9175035f98ce48c5862a288a68031",
+        "path": "wave2-bookmark6-component/execution-preparation/inputs/run_component.py",
+        "sha256": "937530b3497bf26f0a6a10e99390e7e7b4f3a95ae0b61c419b034e0eeea0df22"
+      },
+      "kind": "Runner",
+      "literalRows": 31,
+      "restored": {
+        "bytes": 36251,
+        "gitBlob": "b9f0658339f5a2a47faf2e3d30d13c7feff76c72",
+        "path": "wave2-hierarchy-rename-component/execution-preparation/inputs/run_component.py",
+        "sha256": "f63adbdfde8bfa5d1779371e1c046f196e617f2f286181dc6c8c7768414e3628"
+      }
+    },
+    {
+      "candidate": {
+        "bytes": 6987,
+        "gitBlob": "735685e09fb81dc65d1f60f5930d19b21214f785",
+        "path": "wave2-bookmark6-component/execution-preparation/inputs/component/Package.swift",
+        "sha256": "e030600787c19dee1002c8223b34fe499e5832d213259c8796eb164fb3ed83be"
+      },
+      "kind": "Package",
+      "literalRows": 1,
+      "restored": {
+        "bytes": 4958,
+        "gitBlob": "9813859a445c9b96da9c284d17bbb0f84e4bc2e9",
+        "path": "wave2-hierarchy-rename-component/execution-preparation/inputs/component/Package.swift",
+        "sha256": "bf6b4e867ea96c9fe8a51fb148867c33885b2c5ee335c07070cacb53d3ac305c"
+      }
+    }
+  ],
+  "host11SourceMethodsMatchExpectedDiscovery": true,
+  "inputBytes": 1344039,
+  "inspectionStops": [
+    {
+      "actual": "toolchain-source/PackagePIFBuilder.swift.primary.json",
+      "attempted": "toolchain-source/PackagePIFBuilder.primary.json",
+      "candidateMutation": false,
+      "exception": "FileNotFoundError",
+      "kind": "reviewer-only wrong filename",
+      "runtime": false
+    },
+    {
+      "candidateMutation": false,
+      "cause": "Review script included terminal newline while original recorded AST source segment excludes it. Complete original/candidate function bytes were equal.",
+      "exception": "AssertionError before writing a review",
+      "kind": "reviewer-only function extraction hash convention",
+      "resolved": "Use ast.get_source_segment for identical recorded hash convention.",
+      "runtime": false
+    }
+  ],
+  "mainTextDelta": [
+    "--- ",
+    "+++ ",
+    "@@ -17,7 +17,7 @@",
+    "     pinned(INPUTS / 'retained-crypto-closure.json', CRYPTO_SHA)",
+    "     initial = resource_sample(); require_budget(initial, admission=True)",
+    "     private_directory(EVIDENCE)",
+    "-    receipt = {'schema': 'pinkha-hierarchy-raw-title-component/v1', 'status': 'FAIL',",
+    "+    receipt = {'schema': 'pinkha-bookmark-six-component/v1', 'status': 'FAIL',",
+    "                'startedAtUTC': owned_process.now(), 'productCommit': PRODUCT_COMMIT,",
+    "                'controllerSHA256': sha(Path(__file__).read_bytes()), 'sourceBodiesModifiedForComponent': 0,",
+    "                'nativeCalls': 0, 'AppleCalls': 0, 'runtimeSlotGrantedByThisScript': False,",
+    "@@ -62,7 +62,7 @@",
+    "             while process.poll() is None:",
+    "                 sample = resource_sample(); samples.append(sample); require_budget(sample)",
+    "                 if time.monotonic() >= deadline:",
+    "-                    raise TimeoutError('Owned hierarchy rename command exceeded 300 seconds')",
+    "+                    raise TimeoutError('Owned Bookmark six-method command exceeded 300 seconds')",
+    "                 try:",
+    "                     process.wait(timeout=1)",
+    "                 except subprocess.TimeoutExpired:",
+    "@@ -77,9 +77,9 @@",
+    "         write(EVIDENCE / 'source-inputs-after.json', after)",
+    "         log = (EVIDENCE / 'stdout.original.log').read_text(errors='replace') + '\\n' + (EVIDENCE / 'stderr.original.log').read_text(errors='replace')",
+    "         assert process.returncode == 0, 'Actual Swift compiler/test command failed'",
+    "-        receipt['testResult'] = swift_testing_result(log)",
+    "+        receipt['testResult'] = mixed_test_result(log)",
+    "         receipt['compilerInputs'] = compiler_inputs(log)",
+    "-        receipt['status'] = 'PASS_FOUR_SWIFT_TESTING_METHODS_EIGHT_ARGUMENT_CASES_HIERARCHY_COMPONENT_ONLY'",
+    "+        receipt['status'] = 'PASS_FOUR_XCTEST_AND_TWO_SWIFT_TESTING_CASES_BOOKMARK_COMPONENT_ONLY'",
+    "     except BaseException as error:",
+    "         first = error",
+    "         receipt['errors'].append({'phase': 'actual-component', 'type': type(error).__name__, 'traceback': traceback.format_exc()})"
+  ],
+  "metadataPrecision": {
+    "actualBytes": 36172,
+    "actualGitBlobMatches": true,
+    "field": "originalUTF8Bytes",
+    "file": "PackagePIFBuilder.swift.primary.json",
+    "recorded": 36142
+  },
+  "packet": {
+    "bytes": 28662,
+    "gitBlob": "c3e36dcc38613e864dba2f66cd343563d3bdc612",
+    "path": "wave2-bookmark6-component/execution-preparation/input-packet.json",
+    "sha256": "6f120769bd969a23521f92bcf88ae32ff42aaaf61cb216df6c0a9679ec433357"
+  },
+  "primarySwiftPMGitBlobsRecomputed": [
+    {
+      "bytes": 81546,
+      "gitBlob": "005f230468c196171775d2ffd5df29c15a3d1af5",
+      "path": "wave2-bookmark6-component/execution-preparation/toolchain-source/PackageBuilder.swift",
+      "sha256": "a1f0d5bd1198cafccb937d59d4f121362bbd4dee3773130ad099054b05b12611"
+    },
+    {
+      "bytes": 36172,
+      "gitBlob": "e505e3cddebe0421877a162e19d8d1efbb906a0e",
+      "path": "wave2-bookmark6-component/execution-preparation/toolchain-source/PackagePIFBuilder.swift",
+      "sha256": "0a216a3fe771bc5057f899f1e64473eb0833d044a1beb93c2118c0a2486eca38"
+    },
+    {
+      "bytes": 53033,
+      "gitBlob": "ab4ee7610e1a1223abb61c436993d6ad35717cfd",
+      "path": "wave2-bookmark6-component/execution-preparation/toolchain-source/PackagePIFProjectBuilder+Modules.swift",
+      "sha256": "3973aaadd68b751f631f86107713b21ddc0df310205e0dc1beb5a11e688c24c1"
+    },
+    {
+      "bytes": 62152,
+      "gitBlob": "5c2ba8d6b35999ebdaf2914ff9d2f6d7d58f510c",
+      "path": "wave2-bookmark6-component/execution-preparation/toolchain-source/PackagePIFProjectBuilder+Products.swift",
+      "sha256": "a8a160b8e244d306eee8c54112170ce88e866151459eb24e7c88bb50a9251da7"
+    },
+    {
+      "bytes": 72589,
+      "gitBlob": "4c953734a98ea78597071dff92ad8d06b673b7c4",
+      "path": "wave2-bookmark6-component/execution-preparation/toolchain-source/SwiftBuildSystem.swift",
+      "sha256": "db990e0b36a4da98473ee10c2703957b5ac4c450f43257ce4159d28dbf8992c2"
+    },
+    {
+      "bytes": 62788,
+      "gitBlob": "409c9f346410639325098905f14a9c1c615d0ea5",
+      "path": "wave2-bookmark6-component/execution-preparation/toolchain-source/SwiftCommandState.swift",
+      "sha256": "b55c403ec0577b3084b6da08d9aea405f3d7baee632937c11cfe2ff60c2de36a"
+    },
+    {
+      "bytes": 87123,
+      "gitBlob": "19d3cffbbfe5f45c63638aa0baa172d3204c8ccd",
+      "path": "wave2-bookmark6-component/execution-preparation/toolchain-source/SwiftTestCommand.swift",
+      "sha256": "1e51f46b52df6ad9fde0982b6d180b16c3c9e7a016eeb4050b077b34faccfee3"
+    }
+  ],
+  "reviewer": "/root/torah_continue",
+  "runnerImports": 0,
+  "runtimeInvocations": 0,
+  "schema": "bookmark6-independent-static-source-custody/v1",
+  "sourceInverse": {
+    "bytes": 64331,
+    "gitBlob": "64ca2f1e924cdf16c9703dc8dc0650ff60b6fa7e",
+    "path": "wave2-bookmark6-component/execution-preparation/source-inverse.json",
+    "sha256": "3c9d9f4984bd8a3c12ffc0ec823b55657ee05ae752a7547dfbd38cc6ab82f6f8"
+  },
+  "status": "STATIC_SOURCE_CUSTODY_CHECKED_NO_RUNTIME",
+  "unchangedFunctions": [
+    {
+      "name": "sha",
+      "sha256": "166ad903d6d1b4f98706f40c535e6a84f4a6268f81640d32bb1d0f02c6857de1"
+    },
+    {
+      "name": "write",
+      "sha256": "63cb2c721e5123e19a3e433d79f78eec533eec0f9fead99691056c8bdf064682"
+    },
+    {
+      "name": "pinned",
+      "sha256": "6cdc427d4660b21b4046aef1f106c2834a0504e25c1cfa17124140f7d590e767"
+    },
+    {
+      "name": "source_inventory",
+      "sha256": "d6a578cef064e1ae21726630e07f105a2b929c8bd8006156e2230b48f32d334a"
+    },
+    {
+      "name": "cleanup_custody",
+      "sha256": "2f568150bd84f02be92350b5a6ffc44f89f55b07d42366b09424e0429b4bf66a"
+    },
+    {
+      "name": "allocated_bytes",
+      "sha256": "2bbd4e653ae2420617571253aedd17c509225315da536d67af8b8e493c27b88b"
+    },
+    {
+      "name": "resource_sample",
+      "sha256": "cc02a74739da1b6a481bd2ce9cb5575924afff9cb5fb6a86135a7c0ee30947f4"
+    },
+    {
+      "name": "require_budget",
+      "sha256": "18b166a27f874329deba696d8961f64e12ed091a09306837b6fc7afe21be6ff3"
+    },
+    {
+      "name": "private_directory",
+      "sha256": "d0634ce119baf4e39b11672d16ab95dc4b3c1cc5e6b5c036837bcfb09c2eddac"
+    },
+    {
+      "name": "copy_crypto",
+      "sha256": "ccf9751329111442c078d259f456029e916da13774b7bb5baab8527d51ba04b8"
+    },
+    {
+      "name": "verify_crypto",
+      "sha256": "bedf311323a1a87a8433d694da2db5337aa31d8ded1df230252e448e137f9f09"
+    }
+  ],
+  "wholeSwiftBytes": 980531
+}

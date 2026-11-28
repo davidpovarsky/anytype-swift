@@ -45,7 +45,7 @@ public struct AnyNativeRootView: View {
         Group {
             switch model.page {
             case .starting:
-                ProgressView("פותחים את המרחב שלך")
+                ProgressView(AnyUIErrorText.text("פותחים את המרחב שלך", "Opening your Space"))
             case .accounts:
                 accountView
             case .backup:
@@ -66,11 +66,11 @@ public struct AnyNativeRootView: View {
             }
         }
         .disabled(model.busy && model.page != .workspace)
-        .alert("לא ניתן להשלים את הפעולה", isPresented: Binding(
+        .alert(AnyUIErrorText.text("לא ניתן להשלים את הפעולה", "Unable to complete the operation"), isPresented: Binding(
             get: { model.errorMessage != nil },
             set: { if !$0 { model.errorMessage = nil } }
         )) {
-            Button("סגור", role: .cancel) { model.errorMessage = nil }
+            Button(AnyUIErrorText.text("סגור", "Close"), role: .cancel) { model.errorMessage = nil }
         } message: { Text(model.errorMessage ?? "") }
         .sheet(isPresented: Binding(get: { model.showingMembers },
                                    set: { model.showingMembers = $0 })) {
@@ -101,11 +101,11 @@ public struct AnyNativeRootView: View {
             Form {
                 if !model.runtimeReady {
                     Section {
-                        Button("הפעל מחדש את המנוע", systemImage: "arrow.clockwise") { model.resume() }
+                        Button(AnyUIErrorText.text("הפעל מחדש את המנוע", "Restart the engine"), systemImage: "arrow.clockwise") { model.resume() }
                     }
                 }
                 if !model.savedAccounts.isEmpty {
-                    Section("החשבונות במכשיר") {
+                    Section(AnyUIErrorText.text("החשבונות במכשיר", "Accounts on this device")) {
                         ForEach(model.savedAccounts) { account in
                             Button {
                                 model.open(account)
@@ -118,27 +118,27 @@ public struct AnyNativeRootView: View {
                     }
                 }
                 Section {
-                    Button("יצירת חשבון חדש", systemImage: "person.badge.plus") { model.createAccount() }
+                    Button(AnyUIErrorText.text("יצירת חשבון חדש", "Create a new account"), systemImage: "person.badge.plus") { model.createAccount() }
                         .accessibilityIdentifier("any-native-account-create")
                         .disabled(!model.runtimeReady)
                 }
                 Section {
-                    SecureField("ביטוי שחזור", text: $model.restorePhrase)
+                    SecureField(AnyUIErrorText.text("ביטוי שחזור", "Recovery phrase"), text: $model.restorePhrase)
                         .accessibilityIdentifier("any-native-account-restore-phrase")
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .privacySensitive()
-                    Picker("מקור החשבון", selection: $model.restoreIndex) {
+                    Picker(AnyUIErrorText.text("מקור החשבון", "Account source"), selection: $model.restoreIndex) {
                         Text("Any").tag(UInt32(1))
-                        Text("חשבון Anytype קודם").tag(UInt32(0))
+                        Text(AnyUIErrorText.text("חשבון Anytype קודם", "Previous Anytype account")).tag(UInt32(0))
                     }
-                    Button("שחזור") { model.restoreAccount() }
+                    Button(AnyUIErrorText.text("שחזור", "Restore")) { model.restoreAccount() }
                         .accessibilityIdentifier("any-native-account-restore")
                         .disabled(!model.runtimeReady || model.restorePhrase.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 } header: {
-                    Text("שחזור חשבון")
+                    Text(AnyUIErrorText.text("שחזור חשבון", "Restore account"))
                 } footer: {
-                    Text("שחזור החשבון פותח את הזהות שלך. העברת מסמכים מהגרסה הקודמת נעשית בתהליך ייבוא נפרד.")
+                    Text(AnyUIErrorText.text("שחזור החשבון פותח את הזהות שלך. העברת מסמכים מהגרסה הקודמת נעשית בתהליך ייבוא נפרד.", "Restoring your account restores access to your identity. Documents from the previous version are transferred through a separate import process."))
                 }
             }
             .navigationTitle("Pinkha")
@@ -149,7 +149,7 @@ public struct AnyNativeRootView: View {
         NavigationStack {
             Form {
                 Section {
-                    Text("שמור את ביטוי השחזור במקום פרטי. הוא מאפשר לשחזר את החשבון אם המכשיר אבד.")
+                    Text(AnyUIErrorText.text("שמור את ביטוי השחזור במקום פרטי. הוא מאפשר לשחזר את החשבון אם המכשיר אבד.", "Keep your recovery phrase in a private place. You can use it to restore your account if your device is lost."))
                     if !model.recoveryText.isEmpty {
                         Text(model.recoveryText)
                             .font(.body.monospaced())
@@ -157,54 +157,54 @@ public struct AnyNativeRootView: View {
                             .environment(\.layoutDirection, .leftToRight)
                             .privacySensitive()
                     } else {
-                        Button("הצגת ביטוי השחזור") { model.showRecovery() }
+                        Button(AnyUIErrorText.text("הצגת ביטוי השחזור", "Show recovery phrase")) { model.showRecovery() }
                             .accessibilityIdentifier("any-native-backup-show-phrase")
                     }
                 }
                 Section {
-                    Toggle("שמרתי את ביטוי השחזור במקום בטוח", isOn: $model.backupAcknowledged)
+                    Toggle(AnyUIErrorText.text("שמרתי את ביטוי השחזור במקום בטוח", "I have saved my recovery phrase in a safe place"), isOn: $model.backupAcknowledged)
                         .accessibilityIdentifier("any-native-backup-acknowledged")
-                    Button("המשך") { model.acknowledgeBackup() }
+                    Button(AnyUIErrorText.text("המשך", "Continue")) { model.acknowledgeBackup() }
                         .accessibilityIdentifier("any-native-backup-continue")
                         .disabled(!model.backupAcknowledged || model.recoveryText.isEmpty)
                 }
             }
-            .navigationTitle("גיבוי החשבון")
+            .navigationTitle(AnyUIErrorText.text("גיבוי החשבון", "Account backup"))
         }
     }
 
     private var spacesView: some View {
         NavigationStack {
             List {
-                Section("המרחבים שלי") {
+                Section(AnyUIErrorText.text("המרחבים שלי", "My Spaces")) {
                     ForEach(model.spaces.filter { $0.status == "active" }) { space in
                         Button {
                             model.openSpace(space)
                         } label: {
-                            Label(space.name.isEmpty ? "ללא שם" : space.name, systemImage: "books.vertical")
+                            Label(space.name.isEmpty ? AnyUIErrorText.text("ללא שם", "Untitled") : space.name, systemImage: "books.vertical")
                         }
                     }
                     if model.spaces.isEmpty {
-                        ContentUnavailableView("אין עדיין מרחבים", systemImage: "books.vertical",
-                            description: Text("צור מרחב חדש כדי להתחיל."))
+                        ContentUnavailableView(AnyUIErrorText.text("אין עדיין מרחבים", "No Spaces yet"), systemImage: "books.vertical",
+                            description: Text(AnyUIErrorText.text("צור מרחב חדש כדי להתחיל.", "Create a new Space to get started.")))
                     }
                 }
-                Section("מרחב חדש") {
-                    TextField("שם המרחב", text: $model.newSpaceName)
+                Section(AnyUIErrorText.text("מרחב חדש", "New Space")) {
+                    TextField(AnyUIErrorText.text("שם המרחב", "Space name"), text: $model.newSpaceName)
                         .accessibilityIdentifier("any-native-space-name")
-                    Button("יצירת מרחב") { model.createSpace() }
+                    Button(AnyUIErrorText.text("יצירת מרחב", "Create Space")) { model.createSpace() }
                         .accessibilityIdentifier("any-native-space-create")
                         .disabled(model.newSpaceName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
                 Section {
-                    Button("הצטרפות למרחב", systemImage: "person.crop.circle.badge.plus") { model.showingJoin = true }
+                    Button(AnyUIErrorText.text("הצטרפות למרחב", "Join a Space"), systemImage: "person.crop.circle.badge.plus") { model.showingJoin = true }
                         .accessibilityIdentifier("any-native-space-join")
-                    Button("רענון מרחבים", systemImage: "arrow.clockwise") { model.refreshSpaces() }
-                    Button("יציאה מהחשבון", role: .destructive) { model.signOut() }
+                    Button(AnyUIErrorText.text("רענון מרחבים", "Refresh Spaces"), systemImage: "arrow.clockwise") { model.refreshSpaces() }
+                    Button(AnyUIErrorText.text("יציאה מהחשבון", "Sign out"), role: .destructive) { model.signOut() }
                         .accessibilityIdentifier("any-native-account-sign-out")
                 }
             }
-            .navigationTitle("המרחבים שלי")
+            .navigationTitle(AnyUIErrorText.text("המרחבים שלי", "My Spaces"))
         }
     }
 }
@@ -537,17 +537,23 @@ fileprivate final class AnyNativeRootModel {
         // never enter user diagnostics or logs.
         switch error {
         case AnyNativeApplicationError.recoveryBackupRequired:
-            errorMessage = "יש לשמור את ביטוי השחזור לפני פתיחת המרחב."
+            errorMessage = AnyUIErrorText.text("יש לשמור את ביטוי השחזור לפני פתיחת המרחב.",
+                "Save your recovery phrase before opening the Space.")
         case AnyEngineError.writeUncertain, AnyHostError.writeUncertain:
-            errorMessage = "עדיין לא ניתן לאשר את תוצאת הפעולה. רענן את המרחב לפני ניסיון נוסף."
+            errorMessage = AnyUIErrorText.text("עדיין לא ניתן לאשר את תוצאת הפעולה. רענן את המרחב לפני ניסיון נוסף.",
+                "The result of the operation cannot be confirmed yet. Refresh the Space before trying again.")
         case AnyEmbeddedRuntimeError.unexpectedVersion, AnyUIActivationError.unexpectedRuntimeContract:
-            errorMessage = "גרסת האפליקציה אינה תואמת למנוע. יש להתקין בנייה תואמת."
+            errorMessage = AnyUIErrorText.text("גרסת האפליקציה אינה תואמת למנוע. יש להתקין בנייה תואמת.",
+                "This app version does not match the engine. Install a matching build.")
         case AnyNativeApplicationError.secureStorageUnavailable:
-            errorMessage = "לא ניתן לשמור כעת את החשבון במכשיר. שמור את ביטוי השחזור המוצג במסך הגיבוי ונסה שוב; פתיחת מסמכים תתאפשר לאחר שהשמירה תאושר."
+            errorMessage = AnyUIErrorText.text("לא ניתן לשמור כעת את החשבון במכשיר. שמור את ביטוי השחזור המוצג במסך הגיבוי ונסה שוב; פתיחת מסמכים תתאפשר לאחר שהשמירה תאושר.",
+                "Your account cannot be saved on this device right now. Keep the recovery phrase shown on the backup screen and try again. Documents will become available after saving is confirmed.")
         case AnyNativeApplicationError.busy:
-            errorMessage = "פעולה אחרת עדיין מסתיימת. נסה שוב לאחר סיומה."
+            errorMessage = AnyUIErrorText.text("פעולה אחרת עדיין מסתיימת. נסה שוב לאחר סיומה.",
+                "Another operation is still finishing. Try again after it completes.")
         default:
-            errorMessage = "הפעולה לא הושלמה. אפשר לנסות שוב או לפתוח מחדש את האפליקציה."
+            errorMessage = AnyUIErrorText.text("הפעולה לא הושלמה. אפשר לנסות שוב או לפתוח מחדש את האפליקציה.",
+                "The operation did not complete. Try again or reopen the app.")
         }
     }
 }

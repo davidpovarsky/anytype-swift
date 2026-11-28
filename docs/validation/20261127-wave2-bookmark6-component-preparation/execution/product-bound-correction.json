@@ -1,0 +1,82 @@
+{
+  "actualProductSizeObservation": null,
+  "aggregateOwnedAllocationCapChanged": false,
+  "allOtherReadMaximumBytes": 16777216,
+  "candidatePacket": {
+    "bytes": 28662,
+    "path": "wave2-bookmark6-component/execution-preparation/input-packet.json",
+    "sha256": "2341bdb226521d368b37f37c402c83b6bb20ae1db6efe4d7f65938198f5f1353"
+  },
+  "candidateRunner": {
+    "bytes": 48105,
+    "path": "wave2-bookmark6-component/execution-preparation/inputs/run_component.py",
+    "sha256": "3729eed7d91e3400c19137420df96465d4785c0bd9587d81553864e1041f176c"
+  },
+  "cumulativeHierarchyInverse": {
+    "bytes": 64469,
+    "path": "wave2-bookmark6-component/execution-preparation/source-inverse.json",
+    "sha256": "1ca4d50ebb9163a8ee16c4863977867555538c0c6f260978e0d01af14a39c32c"
+  },
+  "exactReverse": {
+    "occurrences": 2,
+    "replace": "raw = physical(Path(path), maximum=ALLOCATION_CAP if path in product_modules else 16 * 1024**2)",
+    "restoresFullOriginalSHA256": "937530b3497bf26f0a6a10e99390e7e7b4f3a95ae0b61c419b034e0eeea0df22",
+    "with": "raw = physical(Path(path))"
+  },
+  "finding": "BOOKMARK6-LINK-PRODUCT-BOUND-01",
+  "findingKind": "SOURCE_QUALIFIER_INCONSISTENCY_NOT_AN_OBSERVED_RUNTIME_OR_SIZE_FAILURE",
+  "focusedControl": {
+    "bytes": 3595,
+    "path": "wave2-bookmark6-component/execution-preparation/product-bound-controls1/result.json",
+    "sha256": "d7b5a42a5fbe5fa0aae67b395eae3118c8d04cd4bf20527f44fe288a0dfa0263"
+  },
+  "inputBytesDelta": 138,
+  "linkLoops": [
+    "linked_files read of each exact LinkFileList input",
+    "extraInputs read of exact explicit link inputs"
+  ],
+  "onlyChangedFunction": "compiler_inputs",
+  "onlyChangedInputFile": "run_component.py",
+  "originalFourControlsRetainedWithoutReplay": {
+    "bytes": 620,
+    "path": "wave2-bookmark6-component/execution-preparation/review-v1/portable-controls1/result.json",
+    "sha256": "661e711f851f707235f035a6fd4d9d65a0a039a1fee54aefb56b6bec64f959ef"
+  },
+  "originalPacket": {
+    "bytes": 28662,
+    "path": "wave2-bookmark6-component/execution-preparation/review-v1/input-packet.json",
+    "sha256": "6f120769bd969a23521f92bcf88ae32ff42aaaf61cb216df6c0a9679ec433357"
+  },
+  "originalRunner": {
+    "bytes": 47967,
+    "path": "wave2-bookmark6-component/execution-preparation/review-v1/inputs/run_component.py",
+    "sha256": "937530b3497bf26f0a6a10e99390e7e7b4f3a95ae0b61c419b034e0eeea0df22"
+  },
+  "ownedProductReadMaximumBytes": 268435456,
+  "preservedV1Manifest": {
+    "bytes": 21445,
+    "path": "wave2-bookmark6-component/execution-preparation/review-v1/preservation-manifest.json",
+    "sha256": "e3a80eb769852322887fcd6bb9510cd03b28a75fedabe4f8dc4118735360162b"
+  },
+  "productMembership": "path must be an exact key of the existing product_modules map derived solely from expected_products",
+  "resourceOrDeadlineOrHelperOrSelectionOrGeneratedExpectationChanged": false,
+  "runnerOrSwiftOrHostInvocations": 0,
+  "schema": "pinkha-bookmark6-exact-product-read-bound-correction/v1",
+  "stagerCreated": false,
+  "unchangedFunctionsFromV1": {
+    "allocated_bytes": "2bbd4e653ae2420617571253aedd17c509225315da536d67af8b8e493c27b88b",
+    "cleanup_custody": "2f568150bd84f02be92350b5a6ffc44f89f55b07d42366b09424e0429b4bf66a",
+    "copy_crypto": "ccf9751329111442c078d259f456029e916da13774b7bb5baab8527d51ba04b8",
+    "main": "e17f0a754e8aec78e623235c5f14924b96e9b5d8a0556cc68f774c07f8a9e27c",
+    "mixed_test_result": "208d72d81cfecc10dfec0eaf8dd73594460806f5b58e64bc60f3486eeef81adf",
+    "pinned": "6cdc427d4660b21b4046aef1f106c2834a0504e25c1cfa17124140f7d590e767",
+    "private_directory": "d0634ce119baf4e39b11672d16ab95dc4b3c1cc5e6b5c036837bcfb09c2eddac",
+    "require_budget": "18b166a27f874329deba696d8961f64e12ed091a09306837b6fc7afe21be6ff3",
+    "resource_sample": "cc02a74739da1b6a481bd2ce9cb5575924afff9cb5fb6a86135a7c0ee30947f4",
+    "sha": "166ad903d6d1b4f98706f40c535e6a84f4a6268f81640d32bb1d0f02c6857de1",
+    "source_inventory": "d6a578cef064e1ae21726630e07f105a2b929c8bd8006156e2230b48f32d334a",
+    "verify_crypto": "bedf311323a1a87a8433d694da2db5337aa31d8ded1df230252e448e137f9f09",
+    "write": "63cb2c721e5123e19a3e433d79f78eec533eec0f9fead99691056c8bdf064682"
+  },
+  "unchangedInputFiles": 89
+}

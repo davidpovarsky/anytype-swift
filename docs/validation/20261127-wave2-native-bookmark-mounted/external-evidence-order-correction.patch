@@ -1,0 +1,62 @@
+--- review-v1-ui-evidence/bookmark_ui_suffix.swift
++++ bookmark_ui_suffix.swift
+@@ -249,12 +249,17 @@
+         let external = app.descendants(matching: .any).matching(identifier: "any-native-bookmark-open-source").firstMatch
+         revealNativeProperty(app, external, scrollDown: true)
+         _ = try exactValue(external, editedURL)
++        phase = "external-open"
+         try ready(external); external.tap()
+         let safari = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
+-        guard safari.wait(for: .runningForeground, timeout: 60),
+-              app.wait(for: .runningBackground, timeout: 30) else { throw JourneyError.externalURL }
++        let browserForeground = safari.wait(for: .runningForeground, timeout: 60)
++        let appBackground = app.wait(for: .runningBackground, timeout: 30)
++        try attachJSON(["phase": phase, "browserForeground": browserForeground,
++                        "appBackground": appBackground], name: "external-transition")
++        guard browserForeground, appBackground else { throw JourneyError.externalURL }
+         // Observe the browser's focused address; never type/paste the URL into
+         // Safari. The unique query+fragment must originate from the real Link.
++        phase = "external-address"
+         safari.typeKey("l", modifierFlags: .command)
+         var browserAddress: String?
+         let addressReady = NSPredicate { _, _ in
+@@ -266,8 +271,29 @@
+             guard matches.count == 1 else { return false }
+             browserAddress = matches[0]; return true
+         }
+-        waitFor(addressReady, object: safari, timeout: 60)
+-        guard let browserAddress, Array(browserAddress.utf8) == Array(editedURL.utf8),
++        let addressWait = XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: addressReady, object: safari)], timeout: 60)
++        // Retain an actual mismatch before the original stop-on-failure policy.
++        // Only an address carrying this unpredictable owned scope is retained
++        // verbatim; unrelated browser field values contribute bounds/hash only.
++        var observedAddressFields: [[String: Any]] = []
++        for (index, field) in safari.textFields.allElementsBoundByIndex.filter({ $0.exists && $0.isHittable }).prefix(16).enumerated() {
++            guard let value = field.value as? String else { continue }
++            let bytes = Data(value.utf8)
++            var observation: [String: Any] = ["index": index, "utf8Count": bytes.count,
++                "sha256": SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined()]
++            if bytes.count <= 8192 && value.contains(scope.uuidString) {
++                observation["ownedRawValue"] = value
++                let screen = XCTAttachment(screenshot: field.screenshot())
++                screen.name = "native-bookmark-observed-owned-address-\(index)-screenshot"
++                screen.lifetime = .keepAlways; add(screen)
++            }
++            observedAddressFields.append(observation)
++        }
++        try attachJSON(["phase": phase, "waitResult": String(describing: addressWait),
++            "expectedAddress": editedURL, "observedFields": observedAddressFields,
++            "exactAddressObserved": browserAddress != nil], name: "external-address-attempt")
++        XCTAssertEqual(addressWait, .completed, "The real external browser must expose this exact owned URL.")
++        guard addressWait == .completed, let browserAddress, Array(browserAddress.utf8) == Array(editedURL.utf8),
+               let parts = URLComponents(string: browserAddress), parts.scheme == "https", parts.host == "example.com",
+               parts.percentEncodedQuery == "pinkha_bookmark=" + scope.uuidString + "&stage=edited",
+               parts.fragment == "native-source" else { throw JourneyError.externalURL }
+@@ -283,6 +309,7 @@
+         guard let addressElement else { throw JourneyError.externalURL }
+         let addressScreen = XCTAttachment(screenshot: addressElement.screenshot())
+         addressScreen.name = "native-bookmark-external-address-screenshot"; addressScreen.lifetime = .keepAlways; add(addressScreen)
++        phase = "external-return"
+         app.activate()
+         guard app.wait(for: .runningForeground, timeout: 60) else { throw JourneyError.control }
+         if !app.buttons["any-native-property-close"].exists { try openProperties() }

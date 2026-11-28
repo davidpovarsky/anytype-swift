@@ -1,0 +1,95 @@
+{
+  "schema": "native-bookmark-three-file-full-inverse-v1",
+  "baseCommit": "5a45fe4af2c4601faad181f81d391057c1237654",
+  "sourceOnly": true,
+  "changes": [
+    {
+      "repositoryPath": "NativeApp/Sources/NativeCustomTypeFixture.swift",
+      "original": {
+        "path": "originals/NativeApp/Sources/NativeCustomTypeFixture.swift",
+        "bytes": 16673,
+        "sha256": "d7ead5cc94576fb2b116d6d498e03bfa6a853df4134fbb052838004512212c36",
+        "gitBlob": "1b57652427b9b2ad188aeb9a3673c077b555f165"
+      },
+      "candidate": {
+        "path": "candidate/NativeApp/Sources/NativeCustomTypeFixture.swift",
+        "bytes": 55393,
+        "sha256": "fdac35c51f6a2af10c75230360c3c2c5032e9a2c9c898625f78afc405778aab6",
+        "gitBlob": "fe9074dded02e833bc8eea5af9697e89c9bc9a26"
+      },
+      "operation": "append-exact-suffix",
+      "suffix": {
+        "path": "bookmark_fixture_suffix.swift",
+        "bytes": 38720,
+        "sha256": "bb6b013edf2fbf863437bcd2a86f774e154e6072cd0d48aecae3da2b59af75af",
+        "gitBlob": "e7883ff57095f22720eee9acbd9347cd9a59a275"
+      },
+      "prefixBytesUnchanged": 16673,
+      "fullInverseVerified": true
+    },
+    {
+      "repositoryPath": "NativeApp/UITests/NativeLaunchTests.swift",
+      "original": {
+        "path": "originals/NativeApp/UITests/NativeLaunchTests.swift",
+        "bytes": 295880,
+        "sha256": "e2979e777dd61f7eb8be06bd38028b15cc6f7e2d944fe6adce9603a3f7817358",
+        "gitBlob": "83fd25121f27f789dcce4cde088dd29e3df738a2"
+      },
+      "candidate": {
+        "path": "candidate/NativeApp/UITests/NativeLaunchTests.swift",
+        "bytes": 319986,
+        "sha256": "e06c55a6ed9dd6153f8aabd528f0c225246ec08da96bb515431477c234bdc03c",
+        "gitBlob": "b0cb22635c7b908b27b9013c7615926790308bad"
+      },
+      "operation": "append-exact-suffix",
+      "suffix": {
+        "path": "bookmark_ui_suffix.swift",
+        "bytes": 24106,
+        "sha256": "fa5e3f98bce5a6e3842c904ea24fc53e93e1fdffcbc4cc4d8da77bad758bef82",
+        "gitBlob": "3a1a508896fb71720e7766032119cbb2f83205d2"
+      },
+      "prefixBytesUnchanged": 295880,
+      "fullInverseVerified": true
+    },
+    {
+      "repositoryPath": "NativeApp/Sources/AnyNativeApp.swift",
+      "original": {
+        "path": "originals/NativeApp/Sources/AnyNativeApp.swift",
+        "bytes": 2308,
+        "sha256": "bd77a7572651c4c9d9e11f9337b9a2f7aa28c0c4db6fa6b662b01460930ce77a",
+        "gitBlob": "f9acbcbb434489e60198cee9b012bcceab66817a"
+      },
+      "candidate": {
+        "path": "candidate/NativeApp/Sources/AnyNativeApp.swift",
+        "bytes": 3768,
+        "sha256": "081230a8b5b2c4c032f379a03e7a29076d4c7c3f044e1d6361d52e3cd48065e0",
+        "gitBlob": "5ccd7d976a41079e6dbd4b89f0364d482d6df1db"
+      },
+      "operation": "four-additive-hook-replacements",
+      "rules": [
+        {
+          "old": "    private let customTypeFixture: NativeCustomTypeFixture?\n",
+          "new": "    private let customTypeFixture: NativeCustomTypeFixture?\n    private let bookmarkFixture: NativeBookmarkFixture?\n",
+          "count": 1
+        },
+        {
+          "old": "            customTypeFixture = fixture\n",
+          "new": "            let bookmark = try NativeBookmarkFixture.configured(arguments: ProcessInfo.processInfo.arguments,\n                dataDirectory: directory, credentialService: service)\n            customTypeFixture = fixture\n            bookmarkFixture = bookmark\n",
+          "count": 1
+        },
+        {
+          "old": "            customTypeFixture = nil\n",
+          "new": "            customTypeFixture = nil\n            bookmarkFixture = nil\n",
+          "count": 1
+        },
+        {
+          "old": "                    .task { await customTypeFixture?.run(application: application) }\n",
+          "new": "                    .task { await customTypeFixture?.run(application: application) }\n                    .overlay(alignment: .bottomTrailing) {\n                        if let bookmarkFixture {\n                            VStack(alignment: .trailing, spacing: 4) {\n                                Text(\"Native Bookmark fixture\").font(.caption2)\n                                    .accessibilityIdentifier(\"any-native-ui-bookmark-fixture\")\n                                    .accessibilityValue(bookmarkFixture.accessibilityValue)\n                                    .allowsHitTesting(false)\n                                if bookmarkFixture.canReadNext {\n                                    Button(\"Read Bookmark checkpoint\") {\n                                        Task { await bookmarkFixture.readNext(application: application) }\n                                    }\n                                    .font(.caption2)\n                                    .accessibilityIdentifier(\"any-native-ui-bookmark-read-checkpoint\")\n                                }\n                            }.padding(8)\n                        }\n                    }\n                    .task { await bookmarkFixture?.run(application: application) }\n",
+          "count": 1
+        }
+      ],
+      "fullInverseVerified": true
+    }
+  ],
+  "allOriginalBytesRestored": true
+}

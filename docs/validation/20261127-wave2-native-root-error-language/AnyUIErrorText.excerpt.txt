@@ -1,0 +1,36 @@
+public enum AnyUIErrorText {
+    public static var unmappedComposition: String {
+        text("הטקסט שהוקלד נשמר להעתקה ולבדיקה. אי אפשר לשלב אותו בעיצוב הקיים ללא שינוי העיצוב.",
+             "Your typed text is retained for copying and review. It cannot be merged into the existing formatting losslessly.")
+    }
+    public static var recoveredDrafts: String {
+        text("נשמרו שינויים מקומיים מההפעלה הקודמת. יש לבדוק אותם מול הגרסה הנוכחית לפני המשך שמירה.",
+             "Local edits were recovered from the previous session. Review them against the current version before saving.")
+    }
+    public static var changedDocument: String {
+        text("המסמך השתנה. השינויים המקומיים נשמרו לעריכה; טען את הגרסה הנוכחית לפני ניסיון נוסף.",
+             "The document changed. Your local edits are retained; review the current version before retrying.")
+    }
+    public static var uncertainWrite: String {
+        text("הפעולה נשלחה אך לא התקבל אישור מלא. בדוק את התוצאה לפני ניסיון נוסף.",
+             "The operation was sent but its result could not be fully confirmed. Review the result before retrying.")
+    }
+    public static var incompleteIndex: String {
+        text("יש נתוני מקור שעדיין אינם ניתנים לפענוח או שנמצאים בהתנגשות. הרשימה אינה מלאה.",
+             "Some source data is unsupported or conflicted. This list is incomplete.")
+    }
+    public static func describe(_ error: any Error) -> String {
+        switch error {
+        case AnyHostError.changedDocument: return changedDocument
+        case AnyHostError.writeUncertain, AnyEngineError.writeUncertain: return uncertainWrite
+        case AnyHostError.sessionClosed, AnyHostError.engineRestarted, AnyEngineError.accountChanged:
+            return text("המסמך אינו פעיל עוד. פתח אותו מחדש כדי להמשיך.", "This document session is no longer active. Reopen it to continue.")
+        case TorahAssociationRepositoryError.permissionDenied:
+            return text("אין הרשאת עריכה למסמך זה.", "You do not have permission to edit this document.")
+        default: return error.localizedDescription
+        }
+    }
+    public static func text(_ hebrew: String, _ english: String) -> String {
+        Locale.autoupdatingCurrent.language.languageCode?.identifier == "he" ? hebrew : english
+    }
+}

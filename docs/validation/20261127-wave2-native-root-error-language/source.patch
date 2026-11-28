@@ -1,0 +1,32 @@
+--- a/Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift
++++ b/Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift
+@@ -537,17 +537,23 @@
+         // never enter user diagnostics or logs.
+         switch error {
+         case AnyNativeApplicationError.recoveryBackupRequired:
+-            errorMessage = "יש לשמור את ביטוי השחזור לפני פתיחת המרחב."
++            errorMessage = AnyUIErrorText.text("יש לשמור את ביטוי השחזור לפני פתיחת המרחב.",
++                "Save your recovery phrase before opening the Space.")
+         case AnyEngineError.writeUncertain, AnyHostError.writeUncertain:
+-            errorMessage = "עדיין לא ניתן לאשר את תוצאת הפעולה. רענן את המרחב לפני ניסיון נוסף."
++            errorMessage = AnyUIErrorText.text("עדיין לא ניתן לאשר את תוצאת הפעולה. רענן את המרחב לפני ניסיון נוסף.",
++                "The result of the operation cannot be confirmed yet. Refresh the Space before trying again.")
+         case AnyEmbeddedRuntimeError.unexpectedVersion, AnyUIActivationError.unexpectedRuntimeContract:
+-            errorMessage = "גרסת האפליקציה אינה תואמת למנוע. יש להתקין בנייה תואמת."
++            errorMessage = AnyUIErrorText.text("גרסת האפליקציה אינה תואמת למנוע. יש להתקין בנייה תואמת.",
++                "This app version does not match the engine. Install a matching build.")
+         case AnyNativeApplicationError.secureStorageUnavailable:
+-            errorMessage = "לא ניתן לשמור כעת את החשבון במכשיר. שמור את ביטוי השחזור המוצג במסך הגיבוי ונסה שוב; פתיחת מסמכים תתאפשר לאחר שהשמירה תאושר."
++            errorMessage = AnyUIErrorText.text("לא ניתן לשמור כעת את החשבון במכשיר. שמור את ביטוי השחזור המוצג במסך הגיבוי ונסה שוב; פתיחת מסמכים תתאפשר לאחר שהשמירה תאושר.",
++                "Your account cannot be saved on this device right now. Keep the recovery phrase shown on the backup screen and try again. Documents will become available after saving is confirmed.")
+         case AnyNativeApplicationError.busy:
+-            errorMessage = "פעולה אחרת עדיין מסתיימת. נסה שוב לאחר סיומה."
++            errorMessage = AnyUIErrorText.text("פעולה אחרת עדיין מסתיימת. נסה שוב לאחר סיומה.",
++                "Another operation is still finishing. Try again after it completes.")
+         default:
+-            errorMessage = "הפעולה לא הושלמה. אפשר לנסות שוב או לפתוח מחדש את האפליקציה."
++            errorMessage = AnyUIErrorText.text("הפעולה לא הושלמה. אפשר לנסות שוב או לפתוח מחדש את האפליקציה.",
++                "The operation did not complete. Try again or reopen the app.")
+         }
+     }
+ }

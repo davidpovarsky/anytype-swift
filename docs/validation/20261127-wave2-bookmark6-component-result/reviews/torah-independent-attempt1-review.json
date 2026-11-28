@@ -1,0 +1,314 @@
+{
+  "schema": "bookmark6-independent-original-attempt-review-v1",
+  "status": "EXACT_ORIGINAL_FAILURE_AND_FOUR_XCTEST_RESULTS_REVIEWED_COMPILER_PHYSICAL_PROOF_PENDING",
+  "reviewer": "/root/torah_continue",
+  "scope": "Local-only independent byte/JSON/source/log review; no runner or qualifier import/invocation, no runtime, host, process query or signal. Framework-dispatch diagnosis belongs to Editor.",
+  "originalArtifacts": {
+    "count": 10,
+    "bytes": 361923,
+    "custodySHA256": "361e4a42407d65206945ab5732b83bdf35df9625c8ac01b96e08776353f6e1a9",
+    "exportSHA256": "a508d5a933af6b6edb85b8fc6586c2565616bc1af9fbdb3dcd06fda32a626caa",
+    "allExportedBase64BytesEqualRetainedOriginals": true,
+    "allTenFullFstatSnapshotsStable": true,
+    "physicalDirectoryIdentitiesStable": true,
+    "atimePreservationNotClaimed": true,
+    "files": [
+      {
+        "bytes": 80991,
+        "path": "actual-dependency-copies.json",
+        "sha256": "d27dbe22d09ed5cfc6494d62092ee2db7890de4012b0873310f6cc7881138f78"
+      },
+      {
+        "bytes": 2022,
+        "path": "command.json",
+        "sha256": "35f2b31ba614562563f8fd9379a4a744f1d8adf65bb5e57dc4df4fc1a94da9c7"
+      },
+      {
+        "bytes": 102,
+        "path": "process.json",
+        "sha256": "42b16d9d635765b9f68b6d80eca3ef157f7e02ccf6c0c98d9223a621a7ba5109"
+      },
+      {
+        "bytes": 4923,
+        "path": "receipt.json",
+        "sha256": "4441afb94ce64ef8656dd001ec040bee2cb69201eaddba16d2fc8e7a3d4fb556"
+      },
+      {
+        "bytes": 17603,
+        "path": "resource-samples.json",
+        "sha256": "8adb251daf9c6e94f9dff72d9854c88df0b8e4e4ddfa382aef2d5c8b9d1e7a55"
+      },
+      {
+        "bytes": 10912,
+        "path": "source-inputs-after.json",
+        "sha256": "e1746b0ec408edf61f7cd7b2a6a035cbc44018167f7cc5a02d7520edc6a3f597"
+      },
+      {
+        "bytes": 10912,
+        "path": "source-inputs-before.json",
+        "sha256": "e1746b0ec408edf61f7cd7b2a6a035cbc44018167f7cc5a02d7520edc6a3f597"
+      },
+      {
+        "bytes": 22203,
+        "path": "source-inputs-final.json",
+        "sha256": "a26463168ecc3a9c990daf55fbdd7682f62d49bd90dc99ff0f6f4c39959f873f"
+      },
+      {
+        "bytes": 210554,
+        "path": "stderr.original.log",
+        "sha256": "3129a86a2eba944743567e25b4e317182133cb8e37970d640088067008ca5ed0"
+      },
+      {
+        "bytes": 1701,
+        "path": "stdout.original.log",
+        "sha256": "bdd491647284cb881775720437223dc5d39c9314fcc1f1249c596646a1db7bdf"
+      }
+    ]
+  },
+  "originalResult": {
+    "status": "FAIL",
+    "receiptSHA256": "4441afb94ce64ef8656dd001ec040bee2cb69201eaddba16d2fc8e7a3d4fb556",
+    "error": {
+      "phase": "actual-component",
+      "traceback": "Traceback (most recent call last):\n  File \"/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/inputs/run_component.py\", line 568, in main\n    receipt['testResult'] = mixed_test_result(log)\n                            ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/inputs/run_component.py\", line 442, in mixed_test_result\n    assert set(swift_starts) == set(swift_passes) == set(SWIFT_TESTING_METHODS), 'Both selected Swift Testing cases must pass'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Both selected Swift Testing cases must pass\n",
+      "type": "AssertionError"
+    },
+    "processExit": 0,
+    "testResultFieldAbsent": true,
+    "compilerInputsFieldAbsent": true,
+    "safeToReleaseRuntimeSlot": true,
+    "seconds": 56.665
+  },
+  "observedTests": {
+    "XCTestStarted": [
+      "testBookmarkCreationReadbackRequiresExactSourceAndOriginalIdentity",
+      "testBookmarkCreationRefusesFramesOutsideTheSelectedBinding",
+      "testBookmarkCreationRefusesHiddenManagedAndChangedBindings",
+      "testBookmarkCreationRetainsEmptyNameAndOneExactMappedURL"
+    ],
+    "XCTestPassed": [
+      "testBookmarkCreationReadbackRequiresExactSourceAndOriginalIdentity",
+      "testBookmarkCreationRefusesFramesOutsideTheSelectedBinding",
+      "testBookmarkCreationRefusesHiddenManagedAndChangedBindings",
+      "testBookmarkCreationRetainsEmptyNameAndOneExactMappedURL"
+    ],
+    "actualXCTestMethods": 4,
+    "actualXCTestCases": 4,
+    "actualXCTestSeconds": 0.029,
+    "emptyOtherXCTestProduct": true,
+    "SwiftTestingEvents": 0,
+    "SwiftTestingMethodsQualified": 0,
+    "sixMethodAcceptance": false,
+    "literalHostScenariosAreNotTestEvents": true,
+    "oldHostOrIntegrationEventsObserved": 0
+  },
+  "sourceCustody": {
+    "packetSHA256": "2341bdb226521d368b37f37c402c83b6bb20ae1db6efe4d7f65938198f5f1353",
+    "controllerSHA256": "3729eed7d91e3400c19137420df96465d4785c0bd9587d81553864e1041f176c",
+    "materializedFiles": 90,
+    "materializedBytes": 1344177,
+    "PackageAndWholeSourceFiles": 85,
+    "wholeSwiftFiles": 84,
+    "wholeProductionFiles": 82,
+    "wholeTestFiles": 2,
+    "allBeforeAfterFinalMapsEqualFrozenSourcePins": true,
+    "all90LocalFrozenInputBytesRehashed": true,
+    "commandSHA256": "35f2b31ba614562563f8fd9379a4a744f1d8adf65bb5e57dc4df4fc1a94da9c7",
+    "fixedSixMethodFilterUnchanged": true,
+    "cryptoCopies": 102,
+    "cryptoBytes": 19775715,
+    "cryptoCopyRecordsMatchExactOriginalManifest": true,
+    "originalDriverRecheckedPhysicalCopiesBeforeAfterAndFinally": true,
+    "noNewRemoteCopyRecheckByReviewer": true
+  },
+  "compilerLogEvidence": {
+    "version": "Swift 6.4.3",
+    "target": "aarch64-unknown-linux-gnu",
+    "buildSeconds": 47.34,
+    "drivers": [
+      {
+        "module": "PinkhaAnyEngine",
+        "stderrLine": 309,
+        "lineSHA256": "494ec425ad9f8f4459b0ea4a3876d51f1272fe7e88483e75f39cbb8c55f60222",
+        "target": "aarch64-unknown-linux-gnu",
+        "workingDirectory": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127"
+      },
+      {
+        "module": "TorahInspectorCore",
+        "stderrLine": 313,
+        "lineSHA256": "0fbaf7d0f973aa610964858f2d620133aa0cadd212409c66a0ae59155a8d0671",
+        "target": "aarch64-unknown-linux-gnu",
+        "workingDirectory": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127"
+      },
+      {
+        "module": "PinkhaKit",
+        "stderrLine": 455,
+        "lineSHA256": "a361703bbeaa338db4c4537b04ec42a6f7aafdac21227ab9225e43a9dd8d2034",
+        "target": "aarch64-unknown-linux-gnu",
+        "workingDirectory": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127"
+      },
+      {
+        "module": "PinkhaAnyIntegration",
+        "stderrLine": 555,
+        "lineSHA256": "9b29d48f5ae306b56f0d8f267024ffa16c662ec6d5dfa3c135e84a4e2e67928f",
+        "target": "aarch64-unknown-linux-gnu",
+        "workingDirectory": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127"
+      },
+      {
+        "module": "PinkhaAnyIntegrationTests",
+        "stderrLine": 663,
+        "lineSHA256": "a842b6f33b6a8b2f911fa89cb0689794149131cfb6267f7e88e52ea04206dd19",
+        "target": "aarch64-unknown-linux-gnu",
+        "workingDirectory": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127"
+      },
+      {
+        "module": "PinkhaAnyHost",
+        "stderrLine": 707,
+        "lineSHA256": "44ee567b0b41e1b3de72dd721308d22fdfd58fcaa4c0129921e3ab3f0a73baf7",
+        "target": "aarch64-unknown-linux-gnu",
+        "workingDirectory": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127"
+      },
+      {
+        "module": "PinkhaAnyHostTests",
+        "stderrLine": 860,
+        "lineSHA256": "074050859026a182ae8a8ab38a38d5b74db9244e0969834bd3d7aa723a5cdf70",
+        "target": "aarch64-unknown-linux-gnu",
+        "workingDirectory": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127"
+      },
+      {
+        "module": "PinkhaAnyIntegrationTests_test_runner",
+        "stderrLine": 990,
+        "lineSHA256": "a39a1dda517c1bbc17e6830e4fda4feb1809f20370e9e98aec84c3ff55d58e7f",
+        "target": "aarch64-unknown-linux-gnu",
+        "workingDirectory": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127"
+      },
+      {
+        "module": "PinkhaAnyHostTests_test_runner",
+        "stderrLine": 1026,
+        "lineSHA256": "3b9f3d40d39a6dad75eb64d637c57760490e51c2d47dbadedcdb728723efdfce",
+        "target": "aarch64-unknown-linux-gnu",
+        "workingDirectory": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127"
+      }
+    ],
+    "productLinkCommands": [
+      {
+        "stderrLine": 451,
+        "output": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorCore.o",
+        "lineSHA256": "33bf9ef4d948169e4a204d02cebcbef39329dbfdf158aa0374f1d97a627512f3"
+      },
+      {
+        "stderrLine": 551,
+        "output": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyEngine.o",
+        "lineSHA256": "b1db10fb62de2b5fa1b1bc78110973f4a5e4eb21292e063ed894a057d63a7852"
+      },
+      {
+        "stderrLine": 659,
+        "output": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build/out/Products/Debug-linux-aarch64/PinkhaKit.o",
+        "lineSHA256": "f21fae26deaf1bec36cb0d82d74fca8908c992da47584a945e3bff4b428c8343"
+      },
+      {
+        "stderrLine": 855,
+        "output": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegration.o",
+        "lineSHA256": "7fd509d7f943c438fdb55e585d3ce5699a076154e245950728d14421e1ebf61a"
+      },
+      {
+        "stderrLine": 966,
+        "output": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyHost.o",
+        "lineSHA256": "53b540c0ac9efd163328c0aa988f495b5c20317e41b38d78343e20c127842485"
+      },
+      {
+        "stderrLine": 981,
+        "output": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegrationTests.so",
+        "lineSHA256": "1ada0a43a4bdc5f36a70cadc51eb0d2dac8dc76912d6118b21709fbe4c5a5eed"
+      },
+      {
+        "stderrLine": 994,
+        "output": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyHostTests.so",
+        "lineSHA256": "679a82d93ec4febcfc07c2746d342a73671f3ecd54b4bf7cd17f7b00c7cb49b8"
+      },
+      {
+        "stderrLine": 1086,
+        "output": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner",
+        "lineSHA256": "931120d950eca96cece1ac48b5f1dd6d89d7e7f86fb261791be37a380cd77331"
+      },
+      {
+        "stderrLine": 1091,
+        "output": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyHostTests-test-runner",
+        "lineSHA256": "25a279940b06cfbfd3ecab6e06f9c9d3f2b4b6e35919b932b3bd408ca2eec79e"
+      }
+    ],
+    "anchorWrites": [
+      {
+        "stderrLine": 197,
+        "line": "    write-file /mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build/out/Intermediates.noindex/BookmarkCreationProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/DerivedSources/test_anchor.swift"
+      },
+      {
+        "stderrLine": 257,
+        "line": "    write-file /mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build/out/Intermediates.noindex/BookmarkCreationProof.build/Debug-linux-aarch64/PinkhaAnyHostTests-p.build/DerivedSources/test_anchor.swift"
+      }
+    ],
+    "entryGenerators": [
+      {
+        "stderrLine": 986,
+        "lineSHA256": "2370f3460ae6bea0bf5c2539c39f165e89c34c862547be03d6277184c45b2feb"
+      },
+      {
+        "stderrLine": 1022,
+        "lineSHA256": "562d4350b01584f65360debcd1be8010a75e4d6a707e3442011c563d63be6d1d"
+      }
+    ],
+    "physicalFilelistsOutputMapsGeneratedSourcesObjectsModulesAndLinkedProducts": "NOT_YET_RECORDED_BY_ORIGINAL_QUALIFIER; require separate unchanged compiler_inputs read-only completion",
+    "warningObservations": [
+      {
+        "line": 2,
+        "text": "warning: 'component': /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-frontend -frontend -c -primary-file /mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/component/Package.swift -target aarch64-unknown-lin",
+        "truncatedForCompactReview": true
+      }
+    ],
+    "warningFreeClaim": false
+  },
+  "resources": {
+    "samples": 56,
+    "allOriginalBudgetPredicatesSatisfied": true,
+    "minimumRootFreeBytes": 2243969024,
+    "minimumDevelopmentFreeBytes": 1120194560,
+    "minimumMemAvailableBytes": 3785658368,
+    "maximumOwnedAllocatedBytes": 216399872,
+    "notCurrentCapacityAdmission": true
+  },
+  "lifecycle": {
+    "originalProcessRecordSHA256": "42b16d9d635765b9f68b6d80eca3ef157f7e02ccf6c0c98d9223a621a7ba5109",
+    "originalCleanup": {
+      "absenceEvidence": {
+        "atUTC": "2026-11-27T22:37:21.190723+00:00",
+        "errno": 3,
+        "error": "[Errno 3] No such process",
+        "processGroup": 2634766,
+        "signal": 0,
+        "status": "ABSENT_ESRCH"
+      },
+      "historicalGroupReprobed": false,
+      "processGroup": 2634766,
+      "status": "PASS_OWNED_GROUP_ABSENT"
+    },
+    "absenceEvidenceCopiedFromOriginalOnly": true,
+    "newProcessQueries": 0,
+    "newSignals": 0,
+    "newExecution": 0
+  },
+  "readOnlyCompletionConstraints": [
+    "Pin original runner3729, helper58624/provenance, inputpacket2341, all10 original artifacts and exact fixed ROOT.",
+    "Invoke only the unchanged compiler_inputs against the pinned original log; preserve its nine module/link, 84 original+4 generated, path, byte/hash and resource-size assertions.",
+    "Recheck the exact85 source maps and102 original/alias/private Crypto copies using existing read-only routines.",
+    "Never call main, mixed_test_result, Swift/test executables, subprocess, cleanup/group observation or any old PID.",
+    "Retain FAIL4441 unchanged; report compiler-custody completion independently, with four observed XCTest passes and both SwiftTesting cases still missing.",
+    "Write only a fresh bounded completion receipt; preserve any qualifier failure without relaxing predicate/hash and retain all original files."
+  ],
+  "concreteOriginalCustodyBlockers": [],
+  "limits": [
+    "No Apple/Native/mounted UI/HTTP/account acceptance.",
+    "No passing six-method aggregate.",
+    "No independent remote compiler-product byte qualification until the separate completion is retained.",
+    "No framework-dispatch cause claim in this review."
+  ]
+}
