@@ -1,0 +1,94 @@
+{
+  "actualNativeHTTP": "NOT_RUN_SEPARATE_READ_ONLY_FOUR_DECISIONS_REQUIRED",
+  "addedPaths": 12,
+  "baseC13CompiledInputsSHA256": "1bad7f2ca0bdee3d5957e8bb8647417aef8e823257c36e57ec9ea022f5659ca0",
+  "baseC13CompletionSHA256": "a2af96b5caafba77bdfa6aee7f39b3584651f6f17106092d0421a9735426e87d",
+  "baseOriginalFailureSHA256": "2a453fd5aa39caddbbded6056be7b94eab5978fc3d12391b5caca4a73d38443b",
+  "baseSDKFiles": 741,
+  "baseSourceFiles": 1626,
+  "candidateSDKFiles": 750,
+  "candidateSourceFiles": 1638,
+  "changedPaths": 15,
+  "exactRunPassEvents": 18,
+  "groups": {
+    "fresh-sdk": {
+      "commandSeconds": 180,
+      "cwd": "sdk",
+      "packages": {
+        "github.com/anyproto/any-sync-sdk": [
+          "TestRuntimeStateFreshScopeAndSyncStopAtSignedRemoval"
+        ]
+      },
+      "testTimeout": "90s"
+    },
+    "sdk-units": {
+      "commandSeconds": 240,
+      "cwd": "sdk",
+      "packages": {
+        "github.com/anyproto/any-sync-sdk/internal/files/readguard": [
+          "TestRuntimeObservationBindsActualReaderAndGuestHead",
+          "TestRuntimeObservationWithholdsAfterCurrentAuthorityChanges",
+          "TestRuntimeObservationUsesOriginalACLIsEmptyIncludingInvites"
+        ],
+        "github.com/anyproto/any-sync-sdk/internal/spaceimpl": [
+          "TestRuntimeCoordinatorMissingLimitsAndExplicitZeroStayDistinct",
+          "TestRuntimeCoordinatorRejectsMalformedAndForeignCachedAnswers",
+          "TestRuntimeCoordinatorPersistsSuccessfulAnswerAcrossOfflineReopen",
+          "TestRuntimeCoordinatorCoalescesFetchAndDrainsOwnerCancellation",
+          "TestRuntimeAccessNeedsPositiveOriginalPersonalProvenance"
+        ],
+        "github.com/anyproto/any-sync-sdk/internal/syncstatus": [
+          "TestRuntimeSyncObservationPreservesOriginalDomainsAndPrecedence",
+          "TestRuntimeSyncObservationDistinguishesInheritedAndUnobserved"
+        ]
+      },
+      "testTimeout": "60s"
+    },
+    "server-units": {
+      "commandSeconds": 180,
+      "cwd": "any",
+      "packages": {
+        "github.com/anyproto/any/internal/server": [
+          "TestRuntimeStateWirePreservesAbsenceZeroAndOriginalAccessDomain",
+          "TestRuntimeObjectWireDoesNotCastSDKSyncIntoHeartDomain",
+          "TestRuntimeStateRoutesAdvertiseOnlyVersionedOptionalReads"
+        ]
+      },
+      "testTimeout": "60s"
+    }
+  },
+  "newParents": 14,
+  "newSubcases": 4,
+  "oneNativeProductBuild": true,
+  "originalPrivateAccountInputs": 0,
+  "ownedCommands": 6,
+  "priorMethodsRerun": 0,
+  "protocol": "runtime-state18-qualification-plan-v1",
+  "replacedPaths": 3,
+  "resources": {
+    "allocationIsEstimateNotMeasuredNewPeak": true,
+    "developmentFloorBytes": 536870912,
+    "finalSeconds": 90,
+    "goMemoryLimit": "1GiB",
+    "goWorkers": 2,
+    "mainSeconds": 900,
+    "memoryAdmissionBytes": 3221225472,
+    "observedSharedCacheGrowthCapBytes": 536870912,
+    "outerSeconds": 1050,
+    "ownedOutputCapBytes": 671088640,
+    "rootAdmissionReserveBytes": 33554432,
+    "rootFloorBytes": 2147483648
+  },
+  "sourceDraftSHA256": "f042531d9fb204aa7d92e9c73e375e839753b46b796330c7c2cce8d79a58daa4",
+  "sourcePatchSHA256": "3d6a7d1175429f2dedf4993fbaf47c91ff8cfbaf9202e2c6ef1de15efcf7c478",
+  "status": "SOURCE_ONLY_NOT_INSTALLED_OR_RUN",
+  "subcases": {
+    "TestRuntimeObservationWithholdsAfterCurrentAuthorityChanges": [
+      "signed-removal",
+      "signed-head",
+      "account-retirement",
+      "space-retirement"
+    ]
+  },
+  "wireSHA256": "3d13cb658cb45cf6b690c0d052aa6ebdae06174ec72c7e1826ff0f04019f896d"
+}

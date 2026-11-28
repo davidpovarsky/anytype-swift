@@ -1,0 +1,1547 @@
+--- native1616/.runtime-artifacts/sdk-source/internal/files/readguard/observation.go
++++ runtime-state-formatted-draft2/.runtime-artifacts/sdk-source/internal/files/readguard/observation.go
+@@ -0,0 +1,53 @@
++package readguard
++
++import (
++	"context"
++
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++)
++
++// Observation is a scalar snapshot taken under the original current-authority
++// fence. It contains no mutable ACL object, lifetime token or key material.
++type Observation struct {
++	ACLID      string
++	Identity   string
++	HeadID     string
++	ACLIsEmpty bool
++}
++
++// ObserveValue gives the materializer the exact signed generation it is bound
++// to. Only scalar capture and final assignment run under authority locks; all
++// caller work, including I/O and callbacks, runs outside those locks. No result
++// is released if the account/Space retires, the head changes or read permission
++// is lost. Existing Value and Reader behavior is unchanged.
++func ObserveValue[T any](ctx context.Context, load LoadACL, read func(Observation) (T, error)) (out T, err error) {
++	var admitted authority
++	var observed Observation
++	var loaded list.AclList
++	loadObserved := func(ctx context.Context) (Scope, error) {
++		scope, err := load(ctx)
++		loaded = scope.ACL
++		return scope, err
++	}
++	if err = withAuthority(ctx, loadObserved, nil, func(current authority) error {
++		admitted = current
++		observed = Observation{
++			ACLID: current.aclID, Identity: current.identity, HeadID: current.headID,
++			ACLIsEmpty: loaded.AclState().IsEmpty(),
++		}
++		return nil
++	}); err != nil {
++		return out, err
++	}
++	private, readErr := read(observed)
++	err = withAuthority(ctx, load, &admitted, func(authority) error {
++		if readErr == nil {
++			out = private
++		}
++		return nil
++	})
++	if err != nil {
++		return out, err
++	}
++	return out, readErr
++}
+--- native1616/.runtime-artifacts/sdk-source/internal/files/readguard/observation_test.go
++++ runtime-state-formatted-draft2/.runtime-artifacts/sdk-source/internal/files/readguard/observation_test.go
+@@ -0,0 +1,94 @@
++package readguard
++
++import (
++	"context"
++	"errors"
++	"testing"
++
++	"github.com/anyproto/any-sync-sdk/internal/readlifetime"
++	"github.com/anyproto/any-sync/commonspace/object/accountdata"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list/listtest"
++	"github.com/stretchr/testify/require"
++)
++
++func TestRuntimeObservationBindsActualReaderAndGuestHead(t *testing.T) {
++	for _, permission := range []list.AclPermissions{list.AclPermissionsReader, list.AclPermissionsGuest} {
++		fixture := newSignedFixture(t, permission)
++		fixture.local.RLock()
++		want := Observation{ACLID: fixture.local.Id(), HeadID: fixture.local.Head().Id,
++			Identity: fixture.local.AclState().Identity().Account(), ACLIsEmpty: fixture.local.AclState().IsEmpty()}
++		fixture.local.RUnlock()
++		got, err := ObserveValue(context.Background(), fixture.load, func(observation Observation) (Observation, error) {
++			// The materializer can acquire the write lock: no original ACL or
++			// lifetime lock extends over its work.
++			fixture.local.Lock()
++			fixture.local.Unlock()
++			return observation, nil
++		})
++		require.NoError(t, err)
++		require.Equal(t, want, got)
++		require.Equal(t, fixture.memberKeys.SignKey.GetPublic().Account(), got.Identity)
++	}
++}
++
++func TestRuntimeObservationWithholdsAfterCurrentAuthorityChanges(t *testing.T) {
++	for _, change := range []struct {
++		name  string
++		apply func(*signedFixture) error
++	}{
++		{"signed-removal", func(f *signedFixture) error { return f.revoke() }},
++		{"signed-head", func(f *signedFixture) error { return f.advanceUnrelatedInvite() }},
++		{"account-retirement", func(f *signedFixture) error { f.accountLifetime.Retire(); return nil }},
++		{"space-retirement", func(f *signedFixture) error { f.spaceLifetime.Retire(); return nil }},
++	} {
++		t.Run(change.name, func(t *testing.T) {
++			fixture := newSignedFixture(t, list.AclPermissionsReader)
++			privateErr := errors.New("private materializer diagnostic")
++			got, err := ObserveValue(context.Background(), fixture.load, func(observation Observation) (Observation, error) {
++				require.NoError(t, change.apply(fixture))
++				return observation, privateErr
++			})
++			require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++			require.NotErrorIs(t, err, privateErr)
++			require.Zero(t, got)
++		})
++	}
++	fixture := newSignedFixture(t, list.AclPermissionsReader)
++	ctx, cancel := context.WithCancel(context.Background())
++	defer cancel()
++	got, err := ObserveValue(ctx, fixture.load, func(observation Observation) (Observation, error) {
++		cancel()
++		return observation, nil
++	})
++	require.ErrorIs(t, err, context.Canceled)
++	require.Zero(t, got)
++}
++
++func TestRuntimeObservationUsesOriginalACLIsEmptyIncludingInvites(t *testing.T) {
++	keys, err := accountdata.NewRandom()
++	require.NoError(t, err)
++	acl, err := list.NewInMemoryDerivedAcl("new-runtime-invite-observation", keys)
++	require.NoError(t, err)
++	var accountToken, spaceToken readlifetime.Token
++	load := func(context.Context) (Scope, error) {
++		return Scope{ACL: acl, Account: &accountToken, Space: &spaceToken}, nil
++	}
++	read := func(observation Observation) (Observation, error) { return observation, nil }
++	before, err := ObserveValue(context.Background(), load, read)
++	require.NoError(t, err)
++	require.True(t, before.ACLIsEmpty)
++	acl.Lock()
++	invite, err := acl.RecordBuilder().BuildInvite()
++	if err == nil {
++		err = acl.AddRawRecord(listtest.WrapAclRecord(invite.InviteRec))
++	}
++	acl.Unlock()
++	require.NoError(t, err)
++	after, err := ObserveValue(context.Background(), load, read)
++	require.NoError(t, err)
++	require.False(t, after.ACLIsEmpty, "an invite changes original IsEmpty even before another active member exists")
++	require.Equal(t, before.Identity, after.Identity)
++	require.Equal(t, before.ACLID, after.ACLID)
++	require.NotEqual(t, before.HeadID, after.HeadID)
++}
+--- native1616/.runtime-artifacts/sdk-source/internal/spaceimpl/deletioncontroller.go
++++ runtime-state-formatted-draft2/.runtime-artifacts/sdk-source/internal/spaceimpl/deletioncontroller.go
+@@ -127,6 +127,11 @@
+ 		delLog.Warn("status count mismatch",
+ 			zap.Int("rows", len(rows)), zap.Int("statuses", len(statuses)))
+ 		return
++	}
++	// Keep the successful positional answer without adding I/O or changing
++	// the original deletion decisions below. Nil/missing limits stay absent.
++	if s.runtimeCoordinator != nil {
++		s.runtimeCoordinator.remember(ids, statuses, time.Now())
+ 	}
+ 	deletionReconcilePasses.Add(1)
+ 	for i, r := range rows {
+--- native1616/.runtime-artifacts/sdk-source/internal/spaceimpl/runtime_cache.go
++++ runtime-state-formatted-draft2/.runtime-artifacts/sdk-source/internal/spaceimpl/runtime_cache.go
+@@ -0,0 +1,362 @@
++package spaceimpl
++
++import (
++	"context"
++	"crypto/sha256"
++	"encoding/hex"
++	"encoding/json"
++	"errors"
++	"sync"
++	"time"
++
++	"github.com/anyproto/any-sync-sdk/space"
++	"github.com/anyproto/any-sync/coordinator/coordinatorproto"
++)
++
++const (
++	runtimeCoordinatorFresh = 3 * time.Minute
++	runtimeCoordinatorWait  = 5 * time.Second
++	runtimeCoordinatorFetch = 30 * time.Second
++	runtimeCoordinatorRetry = 30 * time.Second
++	maxRuntimeStoredBytes   = 16 * 1024
++)
++
++// This is a device-local successful-answer cache, not replicated settings or
++// an ACL authority. Keys and stored envelopes both bind all three identities.
++type runtimeCoordinatorKey struct {
++	AccountID string `json:"accountId"`
++	NetworkID string `json:"networkId"`
++	SpaceID   string `json:"spaceId"`
++}
++
++type runtimeCoordinatorKV interface {
++	GetKV(context.Context, string) (string, bool, error)
++	SetKV(context.Context, string, string) error
++}
++
++type runtimeCoordinatorStored struct {
++	Version  int                                 `json:"version"`
++	Scope    runtimeCoordinatorKey               `json:"scope"`
++	Snapshot space.RuntimeCoordinatorObservation `json:"snapshot"`
++}
++
++type runtimeCoordinatorRun struct {
++	available chan struct{}
++	once      sync.Once
++}
++
++func (r *runtimeCoordinatorRun) answer() { r.once.Do(func() { close(r.available) }) }
++
++type runtimeCoordinatorEntry struct {
++	current *space.RuntimeCoordinatorObservation
++	loaded  bool
++	dirty   bool
++	run     *runtimeCoordinatorRun
++	retryAt time.Time
++}
++
++// One run per scoped Space coalesces disk load, network refresh and persistence.
++// The owner closes admission before cancelling and draining every owned run.
++// No cache lock, ACL lock or lifetime lock is held during network or store I/O.
++type runtimeCoordinatorCache struct {
++	mu      sync.Mutex
++	entries map[runtimeCoordinatorKey]*runtimeCoordinatorEntry
++	kv      runtimeCoordinatorKV
++	closed  bool
++	ctx     context.Context
++	cancel  context.CancelFunc
++	wg      sync.WaitGroup
++	scope   func() (accountID, networkID string, err error)
++	fetch   func(context.Context, []string) ([]*coordinatorproto.SpaceStatusPayload, error)
++}
++
++func newRuntimeCoordinatorCache(scope func() (string, string, error), fetch func(context.Context, []string) ([]*coordinatorproto.SpaceStatusPayload, error)) *runtimeCoordinatorCache {
++	ctx, cancel := context.WithCancel(context.Background())
++	return &runtimeCoordinatorCache{
++		entries: make(map[runtimeCoordinatorKey]*runtimeCoordinatorEntry),
++		ctx:     ctx, cancel: cancel, scope: scope, fetch: fetch,
++	}
++}
++
++func (c *runtimeCoordinatorCache) setKV(kv runtimeCoordinatorKV) {
++	c.mu.Lock()
++	defer c.mu.Unlock()
++	if !c.closed {
++		c.kv = kv
++	}
++}
++
++func (c *runtimeCoordinatorCache) close() {
++	c.mu.Lock()
++	c.closed = true
++	c.mu.Unlock()
++	c.cancel()
++	c.wg.Wait()
++}
++
++func (c *runtimeCoordinatorCache) matches(key runtimeCoordinatorKey) bool {
++	accountID, networkID, err := c.scope()
++	return err == nil && accountID != "" && networkID != "" && key.SpaceID != "" &&
++		key.AccountID == accountID && key.NetworkID == networkID
++}
++
++func runtimeCoordinatorCopy(in *space.RuntimeCoordinatorObservation) *space.RuntimeCoordinatorObservation {
++	if in == nil {
++		return nil
++	}
++	out := *in
++	if in.Limits != nil {
++		limits := *in.Limits
++		out.Limits = &limits
++	}
++	return &out
++}
++
++func runtimeCoordinatorSnapshot(payload *coordinatorproto.SpaceStatusPayload, fetchedAt time.Time) *space.RuntimeCoordinatorObservation {
++	if payload == nil || fetchedAt.IsZero() {
++		return nil
++	}
++	status, known := coordinatorproto.SpaceStatus_name[int32(payload.Status)]
++	if !known {
++		return nil
++	}
++	out := &space.RuntimeCoordinatorObservation{FetchedAt: fetchedAt.UTC(), Status: status, IsShared: payload.IsShared}
++	if payload.Limits != nil {
++		out.Limits = &space.RuntimeMemberLimits{
++			ReadersLimit: payload.Limits.ReadMembers, WritersLimit: payload.Limits.WriteMembers,
++		}
++	}
++	return out
++}
++
++func runtimeCoordinatorStorageKey(key runtimeCoordinatorKey) string {
++	raw, _ := json.Marshal(key) // a fixed struct of strings; no custom marshaler
++	digest := sha256.Sum256(raw)
++	return "pinkha/runtime-space-coordinator/v1/" + hex.EncodeToString(digest[:])
++}
++
++func decodeRuntimeCoordinator(raw string, key runtimeCoordinatorKey) *space.RuntimeCoordinatorObservation {
++	if len(raw) == 0 || len(raw) > maxRuntimeStoredBytes {
++		return nil
++	}
++	// Presence is checked independently of numeric value: a malformed local
++	// object with missing booleans/limit members must not manufacture zeros.
++	var stored struct {
++		Version  int
++		Scope    runtimeCoordinatorKey
++		Snapshot *struct {
++			FetchedAt *time.Time
++			Status    *string
++			IsShared  *bool
++			Limits    json.RawMessage
++		}
++	}
++	if json.Unmarshal([]byte(raw), &stored) != nil || stored.Version != 1 || stored.Scope != key || stored.Snapshot == nil {
++		return nil
++	}
++	snapshot := stored.Snapshot
++	if snapshot.FetchedAt == nil || snapshot.FetchedAt.IsZero() || snapshot.Status == nil || snapshot.IsShared == nil || len(snapshot.Limits) == 0 {
++		return nil
++	}
++	if _, known := coordinatorproto.SpaceStatus_value[*snapshot.Status]; !known {
++		return nil
++	}
++	var limits *struct {
++		ReadersLimit *uint32
++		WritersLimit *uint32
++	}
++	if json.Unmarshal(snapshot.Limits, &limits) != nil {
++		return nil
++	}
++	out := &space.RuntimeCoordinatorObservation{
++		FetchedAt: snapshot.FetchedAt.UTC(), Status: *snapshot.Status, IsShared: *snapshot.IsShared,
++	}
++	if limits != nil {
++		if limits.ReadersLimit == nil || limits.WritersLimit == nil {
++			return nil
++		}
++		out.Limits = &space.RuntimeMemberLimits{ReadersLimit: *limits.ReadersLimit, WritersLimit: *limits.WritersLimit}
++	}
++	return out
++}
++
++func runtimeCoordinatorNeedsRefresh(current *space.RuntimeCoordinatorObservation, now time.Time) bool {
++	return current == nil || now.Before(current.FetchedAt) || now.Sub(current.FetchedAt) >= runtimeCoordinatorFresh
++}
++
++// get returns a cached answer immediately. With no answer it waits at most
++// five seconds for the one owner-bound run. Offline/failure without a previous
++// answer is nil, never a fabricated zero limit. Caller cancellation is an error.
++func (c *runtimeCoordinatorCache) get(ctx context.Context, key runtimeCoordinatorKey) (*space.RuntimeCoordinatorObservation, error) {
++	if err := ctx.Err(); err != nil {
++		return nil, err
++	}
++	if !c.matches(key) {
++		return nil, errors.New("runtime state: coordinator scope changed")
++	}
++	c.mu.Lock()
++	if c.closed {
++		c.mu.Unlock()
++		return nil, context.Canceled
++	}
++	entry := c.entries[key]
++	if entry == nil {
++		entry = &runtimeCoordinatorEntry{}
++		c.entries[key] = entry
++	}
++	now := time.Now()
++	if entry.run == nil && (!entry.loaded || entry.dirty ||
++		(runtimeCoordinatorNeedsRefresh(entry.current, now) && !now.Before(entry.retryAt))) {
++		run := &runtimeCoordinatorRun{available: make(chan struct{})}
++		entry.run = run
++		c.wg.Add(1)
++		go c.run(key, entry, run)
++	}
++	current, run := runtimeCoordinatorCopy(entry.current), entry.run
++	c.mu.Unlock()
++	if current != nil || run == nil {
++		return current, nil
++	}
++	timer := time.NewTimer(runtimeCoordinatorWait)
++	defer timer.Stop()
++	select {
++	case <-ctx.Done():
++		return nil, ctx.Err()
++	case <-c.ctx.Done():
++		return nil, context.Canceled
++	case <-run.available:
++	case <-timer.C:
++	}
++	if err := ctx.Err(); err != nil {
++		return nil, err
++	}
++	c.mu.Lock()
++	defer c.mu.Unlock()
++	if c.closed {
++		return nil, context.Canceled
++	}
++	return runtimeCoordinatorCopy(entry.current), nil
++}
++
++func (c *runtimeCoordinatorCache) run(key runtimeCoordinatorKey, entry *runtimeCoordinatorEntry, run *runtimeCoordinatorRun) {
++	defer c.wg.Done()
++	defer func() {
++		c.mu.Lock()
++		entry.run = nil
++		c.mu.Unlock()
++		run.answer()
++	}()
++	ctx, cancel := context.WithTimeout(c.ctx, runtimeCoordinatorFetch)
++	defer cancel()
++	c.mu.Lock()
++	loaded, kv := entry.loaded, c.kv
++	c.mu.Unlock()
++	if !loaded {
++		var stored *space.RuntimeCoordinatorObservation
++		if kv != nil {
++			raw, exists, err := kv.GetKV(ctx, runtimeCoordinatorStorageKey(key))
++			if err == nil && exists {
++				stored = decodeRuntimeCoordinator(raw, key)
++			}
++		}
++		validScope := c.matches(key)
++		c.mu.Lock()
++		if !c.closed && validScope {
++			entry.loaded = true
++			if stored != nil && (entry.current == nil || stored.FetchedAt.After(entry.current.FetchedAt)) {
++				entry.current = stored
++			}
++		}
++		c.mu.Unlock()
++	}
++	c.mu.Lock()
++	now := time.Now()
++	hasAnswer := entry.current != nil
++	refresh := !c.closed && runtimeCoordinatorNeedsRefresh(entry.current, now) && !now.Before(entry.retryAt)
++	c.mu.Unlock()
++	if hasAnswer {
++		run.answer()
++	}
++	if refresh && c.matches(key) && ctx.Err() == nil {
++		payloads, err := c.fetch(ctx, []string{key.SpaceID})
++		var snapshot *space.RuntimeCoordinatorObservation
++		if err == nil && len(payloads) == 1 && ctx.Err() == nil && c.matches(key) {
++			snapshot = runtimeCoordinatorSnapshot(payloads[0], time.Now())
++		}
++		c.mu.Lock()
++		if !c.closed {
++			if snapshot != nil {
++				if entry.current == nil || !entry.current.FetchedAt.After(snapshot.FetchedAt) {
++					entry.current, entry.loaded, entry.dirty = snapshot, true, true
++				}
++				entry.retryAt = time.Time{}
++			} else {
++				entry.retryAt = time.Now().Add(runtimeCoordinatorRetry)
++			}
++		}
++		c.mu.Unlock()
++		run.answer()
++	}
++	// There is only one persistence writer for this exact key. If an existing
++	// reconciler observation arrives during a disk write, persist that newer
++	// value next. The fixed owner deadline bounds this loop as well as the RPC.
++	for kv != nil && ctx.Err() == nil && c.matches(key) {
++		c.mu.Lock()
++		if c.closed || !entry.dirty || entry.current == nil {
++			c.mu.Unlock()
++			return
++		}
++		current := runtimeCoordinatorCopy(entry.current)
++		entry.dirty = false
++		c.mu.Unlock()
++		raw, err := json.Marshal(runtimeCoordinatorStored{Version: 1, Scope: key, Snapshot: *current})
++		if err == nil && len(raw) <= maxRuntimeStoredBytes {
++			err = kv.SetKV(ctx, runtimeCoordinatorStorageKey(key), string(raw))
++		} else if err == nil {
++			err = errors.New("runtime state: cached answer too large")
++		}
++		if err != nil {
++			c.mu.Lock()
++			entry.dirty = true
++			c.mu.Unlock()
++			return
++		}
++	}
++}
++
++// remember records already successful, positionally aligned coordinator data.
++// It never blocks the original deletion reconciler on extra I/O or launches a
++// fetch. The next requested get persists a dirty answer in its owned run.
++func (c *runtimeCoordinatorCache) remember(ids []string, payloads []*coordinatorproto.SpaceStatusPayload, fetchedAt time.Time) {
++	if len(ids) != len(payloads) || fetchedAt.IsZero() {
++		return
++	}
++	accountID, networkID, err := c.scope()
++	if err != nil || accountID == "" || networkID == "" {
++		return
++	}
++	c.mu.Lock()
++	defer c.mu.Unlock()
++	if c.closed {
++		return
++	}
++	for i, id := range ids {
++		if id == "" {
++			continue
++		}
++		snapshot := runtimeCoordinatorSnapshot(payloads[i], fetchedAt)
++		if snapshot == nil {
++			continue
++		}
++		key := runtimeCoordinatorKey{AccountID: accountID, NetworkID: networkID, SpaceID: id}
++		entry := c.entries[key]
++		if entry == nil {
++			entry = &runtimeCoordinatorEntry{}
++			c.entries[key] = entry
++		}
++		if entry.current == nil || !entry.current.FetchedAt.After(snapshot.FetchedAt) {
++			entry.current, entry.loaded, entry.dirty = snapshot, true, true
++			entry.retryAt = time.Time{}
++		}
++	}
++}
+--- native1616/.runtime-artifacts/sdk-source/internal/spaceimpl/runtime_cache_test.go
++++ runtime-state-formatted-draft2/.runtime-artifacts/sdk-source/internal/spaceimpl/runtime_cache_test.go
+@@ -0,0 +1,222 @@
++package spaceimpl
++
++import (
++	"context"
++	"encoding/json"
++	"errors"
++	"sync"
++	"sync/atomic"
++	"testing"
++	"time"
++
++	"github.com/anyproto/any-sync-sdk/space"
++	"github.com/anyproto/any-sync/coordinator/coordinatorproto"
++	"github.com/stretchr/testify/require"
++)
++
++type runtimeMemoryKV struct {
++	mu   sync.Mutex
++	data map[string]string
++}
++
++func (k *runtimeMemoryKV) GetKV(ctx context.Context, key string) (string, bool, error) {
++	if err := ctx.Err(); err != nil {
++		return "", false, err
++	}
++	k.mu.Lock()
++	defer k.mu.Unlock()
++	value, ok := k.data[key]
++	return value, ok, nil
++}
++
++func (k *runtimeMemoryKV) SetKV(ctx context.Context, key, value string) error {
++	if err := ctx.Err(); err != nil {
++		return err
++	}
++	k.mu.Lock()
++	defer k.mu.Unlock()
++	k.data[key] = value
++	return nil
++}
++
++func runtimeTestScope() (string, string, error) { return "new-account", "new-network", nil }
++
++func runtimeTestKey() runtimeCoordinatorKey {
++	return runtimeCoordinatorKey{AccountID: "new-account", NetworkID: "new-network", SpaceID: "new-space"}
++}
++
++func TestRuntimeCoordinatorMissingLimitsAndExplicitZeroStayDistinct(t *testing.T) {
++	key := runtimeTestKey()
++	at := time.Date(2026, 11, 27, 5, 42, 46, 340108716, time.UTC)
++	missing := runtimeCoordinatorSnapshot(&coordinatorproto.SpaceStatusPayload{Status: coordinatorproto.SpaceStatus(0)}, at)
++	require.NotNil(t, missing)
++	require.Equal(t, coordinatorproto.SpaceStatus(0).String(), missing.Status)
++	require.Nil(t, missing.Limits)
++	zero := runtimeCoordinatorSnapshot(&coordinatorproto.SpaceStatusPayload{
++		Status: coordinatorproto.SpaceStatus(0), Limits: &coordinatorproto.SpaceLimits{ReadMembers: 0, WriteMembers: 0},
++	}, at)
++	require.NotNil(t, zero.Limits)
++	require.EqualValues(t, 0, zero.Limits.ReadersLimit)
++	require.EqualValues(t, 0, zero.Limits.WritersLimit)
++	for _, snapshot := range []*space.RuntimeCoordinatorObservation{missing, zero} {
++		raw, err := json.Marshal(runtimeCoordinatorStored{Version: 1, Scope: key, Snapshot: *snapshot})
++		require.NoError(t, err)
++		got := decodeRuntimeCoordinator(string(raw), key)
++		require.Equal(t, snapshot, got)
++		require.Equal(t, at, got.FetchedAt)
++	}
++	copy := runtimeCoordinatorCopy(zero)
++	copy.Limits.ReadersLimit = 99
++	require.Zero(t, zero.Limits.ReadersLimit, "callers never mutate the cached answer")
++}
++
++func TestRuntimeCoordinatorRejectsMalformedAndForeignCachedAnswers(t *testing.T) {
++	key := runtimeTestKey()
++	snapshot := runtimeCoordinatorSnapshot(&coordinatorproto.SpaceStatusPayload{
++		Status: coordinatorproto.SpaceStatus(0), Limits: &coordinatorproto.SpaceLimits{ReadMembers: 3, WriteMembers: 2},
++	}, time.Now())
++	raw, err := json.Marshal(runtimeCoordinatorStored{Version: 1, Scope: key, Snapshot: *snapshot})
++	require.NoError(t, err)
++	for _, change := range []func(*runtimeCoordinatorKey){
++		func(k *runtimeCoordinatorKey) { k.AccountID += "-other" },
++		func(k *runtimeCoordinatorKey) { k.NetworkID += "-other" },
++		func(k *runtimeCoordinatorKey) { k.SpaceID += "-other" },
++	} {
++		foreign := key
++		change(&foreign)
++		require.Nil(t, decodeRuntimeCoordinator(string(raw), foreign))
++		require.NotEqual(t, runtimeCoordinatorStorageKey(key), runtimeCoordinatorStorageKey(foreign))
++	}
++	var stored map[string]any
++	require.NoError(t, json.Unmarshal(raw, &stored))
++	for _, field := range []string{"FetchedAt", "Status", "IsShared", "Limits"} {
++		var malformed map[string]any
++		require.NoError(t, json.Unmarshal(raw, &malformed))
++		delete(malformed["snapshot"].(map[string]any), field)
++		encoded, err := json.Marshal(malformed)
++		require.NoError(t, err)
++		require.Nil(t, decodeRuntimeCoordinator(string(encoded), key), field)
++	}
++	stored["snapshot"].(map[string]any)["Limits"] = map[string]any{"ReadersLimit": 0}
++	malformed, err := json.Marshal(stored)
++	require.NoError(t, err)
++	require.Nil(t, decodeRuntimeCoordinator(string(malformed), key))
++	require.Nil(t, runtimeCoordinatorSnapshot(nil, time.Now()))
++	require.Nil(t, runtimeCoordinatorSnapshot(&coordinatorproto.SpaceStatusPayload{Status: coordinatorproto.SpaceStatus(-99)}, time.Now()))
++	cache := newRuntimeCoordinatorCache(runtimeTestScope, nil)
++	t.Cleanup(cache.close)
++	cache.remember([]string{key.SpaceID, "other-space"}, []*coordinatorproto.SpaceStatusPayload{{Status: coordinatorproto.SpaceStatus(0)}}, time.Now())
++	require.Empty(t, cache.entries, "a response count mismatch publishes no positional cache rows")
++}
++
++func TestRuntimeCoordinatorPersistsSuccessfulAnswerAcrossOfflineReopen(t *testing.T) {
++	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
++	defer cancel()
++	kv := &runtimeMemoryKV{data: map[string]string{}}
++	var calls atomic.Int32
++	cache := newRuntimeCoordinatorCache(runtimeTestScope, func(ctx context.Context, ids []string) ([]*coordinatorproto.SpaceStatusPayload, error) {
++		calls.Add(1)
++		if len(ids) != 1 || ids[0] != runtimeTestKey().SpaceID {
++			return nil, errors.New("unexpected requested scope")
++		}
++		return []*coordinatorproto.SpaceStatusPayload{{Status: coordinatorproto.SpaceStatus(0), IsShared: true,
++			Limits: &coordinatorproto.SpaceLimits{ReadMembers: 0, WriteMembers: 7}}}, nil
++	})
++	cache.setKV(kv)
++	defer cache.close()
++	got, err := cache.get(ctx, runtimeTestKey())
++	require.NoError(t, err)
++	require.NotNil(t, got)
++	require.NotNil(t, got.Limits)
++	require.Zero(t, got.Limits.ReadersLimit)
++	require.EqualValues(t, 7, got.Limits.WritersLimit)
++	// The cached value is persisted before this run's positive join. Waiting
++	// here is test coordination; no production lock is held across I/O.
++	cache.wg.Wait()
++	require.EqualValues(t, 1, calls.Load())
++	cache.close()
++	offline := newRuntimeCoordinatorCache(runtimeTestScope, func(context.Context, []string) ([]*coordinatorproto.SpaceStatusPayload, error) {
++		return nil, errors.New("new fixture is offline")
++	})
++	offline.setKV(kv)
++	defer offline.close()
++	reopened, err := offline.get(ctx, runtimeTestKey())
++	require.NoError(t, err)
++	require.Equal(t, got, reopened, "disk reopen retains the actual timestamp and zero limit")
++	foreign := runtimeTestKey()
++	foreign.SpaceID = "never-observed-space"
++	absent, err := offline.get(ctx, foreign)
++	require.NoError(t, err)
++	require.Nil(t, absent, "offline absence remains distinct from the other Space's observed zero")
++}
++
++func TestRuntimeCoordinatorCoalescesFetchAndDrainsOwnerCancellation(t *testing.T) {
++	entered := make(chan struct{}, 1)
++	var calls atomic.Int32
++	cache := newRuntimeCoordinatorCache(runtimeTestScope, func(ctx context.Context, ids []string) ([]*coordinatorproto.SpaceStatusPayload, error) {
++		calls.Add(1)
++		select {
++		case entered <- struct{}{}:
++		default:
++		}
++		<-ctx.Done()
++		return nil, ctx.Err()
++	})
++	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
++	defer cancel()
++	defer cache.close()
++	type outcome struct {
++		value *space.RuntimeCoordinatorObservation
++		err   error
++	}
++	results := make(chan outcome, 2)
++	for i := 0; i < 2; i++ {
++		go func() { value, err := cache.get(ctx, runtimeTestKey()); results <- outcome{value, err} }()
++	}
++	select {
++	case <-entered:
++	case <-ctx.Done():
++		t.Fatal("coalesced worker did not reach its controlled fetch")
++	}
++	cache.close()
++	for i := 0; i < 2; i++ {
++		select {
++		case result := <-results:
++			require.Nil(t, result.value)
++			require.ErrorIs(t, result.err, context.Canceled)
++		case <-ctx.Done():
++			t.Fatal("caller remained blocked after the cache owner drained")
++		}
++	}
++	require.EqualValues(t, 1, calls.Load())
++}
++
++func TestRuntimeAccessNeedsPositiveOriginalPersonalProvenance(t *testing.T) {
++	require.EqualValues(t, 0, space.RuntimeAccessPrivate)
++	require.EqualValues(t, 1, space.RuntimeAccessPersonal)
++	require.EqualValues(t, 2, space.RuntimeAccessShared)
++	for _, empty := range []bool{false, true} {
++		for _, coordinator := range []*space.RuntimeCoordinatorObservation{nil, {IsShared: false}, {IsShared: true}} {
++			got := runtimeAccessEvidence("candidate", empty, nil, coordinator)
++			require.Nil(t, got.Value)
++			require.Nil(t, got.PersonalSpaceID)
++			require.Equal(t, "personal_provenance_unavailable", got.Reason)
++		}
++	}
++	personal := "original-native-personal"
++	for _, shared := range []bool{false, true} {
++		got := runtimeAccessEvidence(personal, !shared, &personal, &space.RuntimeCoordinatorObservation{IsShared: shared})
++		require.Equal(t, space.RuntimeAccessPersonal, *got.Value, "original Personal classification is sticky")
++		require.Equal(t, "native_personal", got.Reason)
++	}
++	shared := runtimeAccessEvidence("other", false, &personal, nil)
++	require.Equal(t, space.RuntimeAccessShared, *shared.Value)
++	require.Equal(t, "native_acl_shared", shared.Reason)
++	shareable := runtimeAccessEvidence("other", true, &personal, &space.RuntimeCoordinatorObservation{IsShared: true})
++	require.Equal(t, space.RuntimeAccessShared, *shareable.Value, "shareable need not have an additional member")
++	unknown := runtimeAccessEvidence("other", true, &personal, nil)
++	require.Nil(t, unknown.Value)
++	require.Equal(t, "coordinator_unavailable", unknown.Reason)
++	private := runtimeAccessEvidence("other", true, &personal, &space.RuntimeCoordinatorObservation{IsShared: false})
++	require.Equal(t, space.RuntimeAccessPrivate, *private.Value)
++}
+--- native1616/.runtime-artifacts/sdk-source/internal/spaceimpl/runtime_state.go
++++ runtime-state-formatted-draft2/.runtime-artifacts/sdk-source/internal/spaceimpl/runtime_state.go
+@@ -0,0 +1,136 @@
++package spaceimpl
++
++import (
++	"context"
++	"errors"
++	"time"
++
++	"github.com/anyproto/any-sync-sdk/internal/files/readguard"
++	"github.com/anyproto/any-sync-sdk/space"
++)
++
++var _ space.RuntimeStateProvider = (*spaceImpl)(nil)
++
++// runtimeAccountScope reads the existing captured App, never a global active
++// account or a caller-supplied identity. It copies only public identifiers.
++func (s *Service) runtimeAccountScope() (accountID, networkID string, err error) {
++	if s.app == nil {
++		return "", "", errors.New("runtime state: account unavailable")
++	}
++	keys := s.app.AccountKeys()
++	if keys == nil || keys.SignKey == nil {
++		return "", "", errors.New("runtime state: account identity unavailable")
++	}
++	accountID = keys.SignKey.GetPublic().Account()
++	networkID = s.app.NetworkId()
++	if accountID == "" || networkID == "" {
++		return "", "", errors.New("runtime state: account/network scope unavailable")
++	}
++	return accountID, networkID, nil
++}
++
++func (s *spaceImpl) runtimeScope(observed readguard.Observation) (space.RuntimeScope, error) {
++	if s.parent == nil {
++		return space.RuntimeScope{}, errors.New("runtime state: service unavailable")
++	}
++	accountID, networkID, err := s.parent.runtimeAccountScope()
++	if err != nil {
++		return space.RuntimeScope{}, err
++	}
++	return space.RuntimeScope{
++		AccountID: accountID, NetworkID: networkID, SpaceID: s.id,
++		AuthorityIdentity: observed.Identity, ACLHeadID: observed.HeadID,
++	}, nil
++}
++
++func (s *spaceImpl) runtimeScopeUnchanged(scope space.RuntimeScope) error {
++	accountID, networkID, err := s.parent.runtimeAccountScope()
++	if err != nil {
++		return err
++	}
++	if accountID != scope.AccountID || networkID != scope.NetworkID || s.id != scope.SpaceID {
++		return errors.New("runtime state: account/network/Space scope changed")
++	}
++	return nil
++}
++
++func (s *spaceImpl) RuntimeState(ctx context.Context) (space.RuntimeState, error) {
++	return readguard.ObserveValue(ctx, s.fileReadACL, func(observed readguard.Observation) (space.RuntimeState, error) {
++		scope, err := s.runtimeScope(observed)
++		if err != nil {
++			return space.RuntimeState{}, err
++		}
++		var coordinator *space.RuntimeCoordinatorObservation
++		if s.parent.runtimeCoordinator != nil {
++			coordinator, err = s.parent.runtimeCoordinator.get(ctx, runtimeCoordinatorKey{
++				AccountID: scope.AccountID, NetworkID: scope.NetworkID, SpaceID: scope.SpaceID,
++			})
++			if err != nil {
++				return space.RuntimeState{}, err
++			}
++		}
++		if err := s.runtimeScopeUnchanged(scope); err != nil {
++			return space.RuntimeState{}, err
++		}
++		return space.RuntimeState{
++			Contract: space.RuntimeStateContract, Scope: scope, CapturedAt: time.Now().UTC(),
++			Coordinator: coordinator,
++			// The present native producer has no positive original Personal
++			// provenance. Generic Derived/owner/member counts cannot fill it.
++			Access: runtimeAccessEvidence(s.id, observed.ACLIsEmpty, nil, coordinator),
++		}, nil
++	})
++}
++
++// runtimeAccessEvidence follows original Personal-first classification only
++// after that account's actual native Personal identity is positively known.
++// The current production call deliberately passes nil; no external setter or
++// caller hint can inject the missing provenance.
++func runtimeAccessEvidence(spaceID string, aclIsEmpty bool, personalSpaceID *string, coordinator *space.RuntimeCoordinatorObservation) space.RuntimeAccessEvidence {
++	out := space.RuntimeAccessEvidence{ACLIsEmpty: aclIsEmpty, Reason: "personal_provenance_unavailable"}
++	if personalSpaceID == nil || *personalSpaceID == "" {
++		return out
++	}
++	personal := *personalSpaceID
++	out.PersonalSpaceID = &personal
++	var value space.RuntimeAccessType
++	switch {
++	case spaceID == personal:
++		value, out.Reason = space.RuntimeAccessPersonal, "native_personal"
++	case !aclIsEmpty:
++		value, out.Reason = space.RuntimeAccessShared, "native_acl_shared"
++	case coordinator == nil:
++		out.Reason = "coordinator_unavailable"
++		return out
++	case coordinator.IsShared:
++		value, out.Reason = space.RuntimeAccessShared, "coordinator_shared"
++	default:
++		value, out.Reason = space.RuntimeAccessPrivate, "native_private"
++	}
++	out.Value = &value
++	return out
++}
++
++func (s *spaceImpl) RuntimeObjectState(ctx context.Context, objectID string) (space.RuntimeObjectState, error) {
++	return readguard.ObserveValue(ctx, s.fileReadACL, func(observed readguard.Observation) (space.RuntimeObjectState, error) {
++		if objectID == "" {
++			return space.RuntimeObjectState{}, space.ErrRuntimeObjectIDRequired
++		}
++		scope, err := s.runtimeScope(observed)
++		if err != nil {
++			return space.RuntimeObjectState{}, err
++		}
++		object := space.RuntimeObjectSyncObservation{State: space.SyncStateUnknown, Basis: space.RuntimeSyncUnobserved}
++		status := space.RuntimeSpaceSyncObservation{SpaceID: s.id, State: space.SyncStateUnknown, P2P: space.P2PStateUnknown}
++		if service := s.app.SyncStatus(); service != nil {
++			object, status = service.RuntimeObservation(s.id, objectID)
++		}
++		if err := s.runtimeScopeUnchanged(scope); err != nil {
++			return space.RuntimeObjectState{}, err
++		}
++		return space.RuntimeObjectState{
++			Contract: space.RuntimeObjectStateContract, Scope: scope, ObjectID: objectID,
++			CapturedAt: time.Now().UTC(), ObjectSync: object, SpaceSync: status,
++		}, nil
++	})
++}
+--- native1616/.runtime-artifacts/sdk-source/internal/spaceimpl/service.go
++++ runtime-state-formatted-draft2/.runtime-artifacts/sdk-source/internal/spaceimpl/service.go
+@@ -118,6 +118,10 @@
+ 	fetch  *fetch.Service
+ 	fstore *filestore.Store
+ 	fqueue *status.Queue
++
++	// runtimeCoordinator retains only scoped successful coordinator answers.
++	// Its owner-bound runs are cancelled and drained before the files DB closes.
++	runtimeCoordinator *runtimeCoordinatorCache
+ 
+ 	// fileStatusSubs fans queue transitions + local attach events out
+ 	// to per-space Files().SubscribeStatus callbacks.
+@@ -294,6 +298,7 @@
+ 		inviteKick:          make(chan struct{}, 1),
+ 	}
+ 	s.seedCtx, s.seedCancel = context.WithCancel(context.Background())
++	s.runtimeCoordinator = newRuntimeCoordinatorCache(s.runtimeAccountScope, app.SpaceStatuses)
+ 	s.startJoinController()
+ 	// Wire the Total source for the sync-status rollup. The rollup
+ 	// loop reads the per-space `objects` row count via the live Store
+@@ -335,6 +340,9 @@
+ // from sdk.Open before any Space handle is handed out.
+ func (s *Service) SetFiles(up *upload.Service, fe *fetch.Service, st *filestore.Store, q *status.Queue) {
+ 	s.files, s.fetch, s.fstore, s.fqueue = up, fe, st, q
++	if s.runtimeCoordinator != nil && st != nil {
++		s.runtimeCoordinator.setKV(st)
++	}
+ }
+ 
+ // filesStore returns the local payload store (nil-safe accessor for
+@@ -2316,6 +2324,9 @@
+ // each loaded space's Store. The any-sync side of each space is owned
+ // by the App's space cache and torn down separately by App.Close.
+ func (s *Service) Close(_ context.Context) error {
++	if s.runtimeCoordinator != nil {
++		s.runtimeCoordinator.close()
++	}
+ 	// Stop spawning new lazy-seed goroutines, cancel any in flight, and
+ 	// wait for them to return before the caller tears down the store /
+ 	// tech space — otherwise a background seed can race teardown
+--- native1616/.runtime-artifacts/sdk-source/internal/syncstatus/runtime_observation.go
++++ runtime-state-formatted-draft2/.runtime-artifacts/sdk-source/internal/syncstatus/runtime_observation.go
+@@ -0,0 +1,44 @@
++package syncstatus
++
++import (
++	"time"
++
++	"github.com/anyproto/any-sync-sdk/space"
++)
++
++// RuntimeObservation samples existing tracker and presence facts without
++// creating a tracker or changing its state. It is not a cross-service atomic
++// consensus snapshot. The SDK caller supplies the current authority fence.
++func (s *Service) RuntimeObservation(spaceID, objectID string) (space.RuntimeObjectSyncObservation, space.RuntimeSpaceSyncObservation) {
++	object := space.RuntimeObjectSyncObservation{
++		State: space.SyncStateUnknown, Basis: space.RuntimeSyncUnobserved,
++	}
++	if tracker := s.trackerNoCreate(spaceID); tracker != nil {
++		row, known, inherited := tracker.lookup(objectID, false)
++		switch {
++		case known:
++			object.State = row.state
++			object.Basis = space.RuntimeSyncPerObjectHooks
++			object.LastSyncAt = runtimeTimestamp(row.lastApplied)
++		case !inherited.IsZero():
++			object.State = space.SyncStateSynced
++			object.Basis = space.RuntimeSyncResponsibleSpaceRound
++			object.LastSyncAt = runtimeTimestamp(inherited)
++		}
++	}
++	status := s.Status(spaceID)
++	return object, space.RuntimeSpaceSyncObservation{
++		SpaceID: status.SpaceId, State: status.State, Synced: status.Synced, Total: status.Total,
++		NetworkPeers: status.NetworkPeers, LocalPeers: status.LocalPeers, GlobalPeers: status.GlobalPeers,
++		P2P: status.P2P, LastSyncedAt: runtimeTimestamp(status.LastSyncedAt),
++		NetworkProtocolIncompatible: s.incompatible(),
++	}
++}
++
++func runtimeTimestamp(value time.Time) *time.Time {
++	if value.IsZero() {
++		return nil
++	}
++	value = value.UTC()
++	return &value
++}
+--- native1616/.runtime-artifacts/sdk-source/internal/syncstatus/runtime_observation_test.go
++++ runtime-state-formatted-draft2/.runtime-artifacts/sdk-source/internal/syncstatus/runtime_observation_test.go
+@@ -0,0 +1,77 @@
++package syncstatus
++
++import (
++	"testing"
++
++	"github.com/anyproto/any-sync-sdk/space"
++	"github.com/stretchr/testify/require"
++)
++
++func TestRuntimeSyncObservationPreservesOriginalDomainsAndPrecedence(t *testing.T) {
++	// The SDK's sync domain is not Heart's historical relation domain.
++	require.EqualValues(t, 0, space.SyncStateUnknown)
++	require.EqualValues(t, 1, space.SyncStateOffline)
++	require.EqualValues(t, 2, space.SyncStateSyncing)
++	require.EqualValues(t, 3, space.SyncStateSynced)
++	require.EqualValues(t, 4, space.SyncStateError)
++	service := NewService()
++	t.Cleanup(service.Close)
++	connected, incompatible := true, false
++	service.SetNodeIdsFn(func(string) []string { return []string{"responsible-peer"} })
++	service.SetPeerCountsFn(func(string) (int, int, int) {
++		if connected {
++			return 1, 0, 0
++		}
++		return 0, 0, 0
++	})
++	service.SetNetworkIncompatibleFn(func() bool { return incompatible })
++	service.SetTotalFn(func(string) int { return 1 })
++	tracker := service.For("scope-space")
++	tracker.HeadsChange("object", []string{"head"})
++	before, status := service.RuntimeObservation("scope-space", "object")
++	require.Equal(t, space.RuntimeSyncPerObjectHooks, before.Basis)
++	require.Equal(t, space.SyncStateSyncing, before.State)
++	require.Nil(t, before.LastSyncAt)
++	require.Equal(t, space.SyncStateSyncing, status.State)
++	tracker.HeadsApply("responsible-peer", "object", []string{"head"}, true)
++	confirmed := tracker.Object("object")
++	object, status := service.RuntimeObservation("scope-space", "object")
++	require.Equal(t, space.SyncStateSynced, object.State)
++	require.Equal(t, confirmed.LastSyncAt.UTC(), *object.LastSyncAt)
++	require.Equal(t, space.SyncStateSynced, status.State)
++	connected = false
++	object, status = service.RuntimeObservation("scope-space", "object")
++	require.Equal(t, space.SyncStateSynced, object.State, "retained object confirmation is not a claim of current connectivity")
++	require.Equal(t, confirmed.LastSyncAt.UTC(), *object.LastSyncAt)
++	require.Equal(t, space.SyncStateOffline, status.State)
++	incompatible = true
++	_, status = service.RuntimeObservation("scope-space", "object")
++	require.Equal(t, space.SyncStateError, status.State, "protocol error retains the original precedence over offline")
++	require.True(t, status.NetworkProtocolIncompatible)
++}
++
++func TestRuntimeSyncObservationDistinguishesInheritedAndUnobserved(t *testing.T) {
++	service := NewService()
++	t.Cleanup(service.Close)
++	service.SetNodeIdsFn(func(string) []string { return []string{"responsible-peer"} })
++	service.SetHasTreeFn(func(spaceID, objectID string) bool { return spaceID == "scope-space" && objectID == "stored-object" })
++	service.SetPeerCountsFn(func(string) (int, int, int) { return 1, 0, 0 })
++	object, status := service.RuntimeObservation("untracked-space", "unknown-object")
++	require.Nil(t, service.trackerNoCreate("untracked-space"), "a runtime read creates no tracking state")
++	require.Equal(t, space.SyncStateUnknown, status.State)
++	require.Equal(t, space.RuntimeSyncUnobserved, object.Basis)
++	require.Nil(t, object.LastSyncAt)
++	tracker := service.For("scope-space")
++	tracker.BulkSyncedFromPeer("responsible-peer")
++	object, _ = service.RuntimeObservation("scope-space", "stored-object")
++	state, pending, at, known := tracker.Detail("stored-object")
++	require.False(t, known)
++	require.Empty(t, pending)
++	require.Equal(t, state, object.State)
++	require.Equal(t, space.RuntimeSyncResponsibleSpaceRound, object.Basis)
++	require.Equal(t, at.UTC(), *object.LastSyncAt)
++	foreign, _ := service.RuntimeObservation("scope-space", "not-stored-here")
++	require.Equal(t, space.RuntimeSyncUnobserved, foreign.Basis)
++	require.Equal(t, space.SyncStateUnknown, foreign.State)
++	require.Nil(t, foreign.LastSyncAt)
++}
+--- native1616/.runtime-artifacts/sdk-source/runtime_state_fresh_linux_test.go
++++ runtime-state-formatted-draft2/.runtime-artifacts/sdk-source/runtime_state_fresh_linux_test.go
+@@ -0,0 +1,60 @@
++//go:build linux
++
++package anysyncsdk
++
++import (
++	"testing"
++
++	"github.com/anyproto/any-sync-sdk/space"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/stretchr/testify/require"
++)
++
++// Only this new method is selected. The unchanged fresh-fixture constructor
++// creates a new OS-isolated SDK/account/Space and verifies its own signed ACL
++// transitions. No retained account, key, snapshot or old test method is used.
++func TestRuntimeStateFreshScopeAndSyncStopAtSignedRemoval(t *testing.T) {
++	fixture := newFreshFilesFixture(t, true)
++	provider, ok := fixture.space.(space.RuntimeStateProvider)
++	require.True(t, ok, "the actual regular SDK Space exposes the optional provider")
++	fixture.localACL.RLock()
++	head := fixture.localACL.Head().Id
++	identity := fixture.localACL.AclState().Identity().Account()
++	isEmpty := fixture.localACL.AclState().IsEmpty()
++	fixture.localACL.RUnlock()
++	state, err := provider.RuntimeState(fixture.ctx)
++	require.NoError(t, err)
++	require.Equal(t, space.RuntimeStateContract, state.Contract)
++	require.Equal(t, fixture.localID, state.Scope.AccountID)
++	require.Equal(t, fixture.sdk.app.NetworkId(), state.Scope.NetworkID)
++	require.Equal(t, fixture.space.Id(), state.Scope.SpaceID)
++	require.Equal(t, identity, state.Scope.AuthorityIdentity)
++	require.Equal(t, head, state.Scope.ACLHeadID)
++	require.Equal(t, isEmpty, state.Access.ACLIsEmpty)
++	require.Nil(t, state.Coordinator, "new OS-offline fixture has no accepted coordinator answer")
++	require.Nil(t, state.Access.Value)
++	require.Nil(t, state.Access.PersonalSpaceID)
++	require.Equal(t, "personal_provenance_unavailable", state.Access.Reason)
++	require.False(t, state.CapturedAt.IsZero())
++	objectID := fixture.space.SpaceIndexObjectId()
++	object, err := provider.RuntimeObjectState(fixture.ctx, objectID)
++	require.NoError(t, err)
++	require.Equal(t, space.RuntimeObjectStateContract, object.Contract)
++	require.Equal(t, state.Scope, object.Scope)
++	require.Equal(t, objectID, object.ObjectID)
++	require.Equal(t, fixture.space.Id(), object.SpaceSync.SpaceID)
++	legacy := fixture.space.SyncStatus().Object(objectID)
++	require.Equal(t, legacy.State, object.ObjectSync.State)
++	if legacy.LastSyncAt.IsZero() {
++		require.Nil(t, object.ObjectSync.LastSyncAt)
++	} else {
++		require.Equal(t, legacy.LastSyncAt.UTC(), *object.ObjectSync.LastSyncAt)
++	}
++	fixture.revoke(t)
++	state, err = provider.RuntimeState(fixture.ctx)
++	require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++	require.Zero(t, state)
++	object, err = provider.RuntimeObjectState(fixture.ctx, objectID)
++	require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++	require.Zero(t, object)
++}
+--- native1616/.runtime-artifacts/sdk-source/space/runtime_state.go
++++ runtime-state-formatted-draft2/.runtime-artifacts/sdk-source/space/runtime_state.go
+@@ -0,0 +1,120 @@
++package space
++
++import (
++	"context"
++	"errors"
++	"time"
++)
++
++const (
++	RuntimeStateContract       = "pinkha-space-runtime-state-v1"
++	RuntimeObjectStateContract = "pinkha-object-runtime-state-v1"
++)
++
++var ErrRuntimeObjectIDRequired = errors.New("runtime state: object ID required")
++
++// RuntimeStateProvider is optional. A regular Space may implement it without
++// widening the Space interface or changing the existing Info/SyncStatus APIs.
++// Both methods fence delivery with the same captured account, loaded Space,
++// signed ACL head and current read identity before and after collecting data.
++type RuntimeStateProvider interface {
++	RuntimeState(context.Context) (RuntimeState, error)
++	RuntimeObjectState(context.Context, string) (RuntimeObjectState, error)
++}
++
++// RuntimeScope contains public identities, not credentials. AuthorityIdentity
++// is the loaded ACL identity, which can differ from AccountID for a guest.
++type RuntimeScope struct {
++	AccountID         string
++	NetworkID         string
++	SpaceID           string
++	AuthorityIdentity string
++	ACLHeadID         string
++}
++
++// RuntimeMemberLimits preserves an actually returned zero. A nil Limits in a
++// coordinator observation means the original response omitted that message.
++type RuntimeMemberLimits struct {
++	ReadersLimit uint32
++	WritersLimit uint32
++}
++
++// RuntimeCoordinatorObservation is the last successful, account/network/Space
++// scoped coordinator answer. FetchedAt is never refreshed by a cached read or
++// a failed fetch. Status is the original coordinator enum label.
++type RuntimeCoordinatorObservation struct {
++	FetchedAt time.Time
++	Status    string
++	IsShared  bool
++	Limits    *RuntimeMemberLimits
++}
++
++// RuntimeAccessType uses the original Heart access domain. These values must
++// not be reconstructed from a role, member count, or generic Derived flag.
++type RuntimeAccessType uint8
++
++const (
++	RuntimeAccessPrivate RuntimeAccessType = iota
++	RuntimeAccessPersonal
++	RuntimeAccessShared
++)
++
++// RuntimeAccessEvidence keeps the raw evidence when a full classification is
++// unavailable. PersonalSpaceID requires positive original native provenance.
++// In particular, nil does not mean that the account has no Personal space.
++type RuntimeAccessEvidence struct {
++	ACLIsEmpty      bool
++	PersonalSpaceID *string
++	Value           *RuntimeAccessType
++	Reason          string
++}
++
++type RuntimeState struct {
++	Contract    string
++	Scope       RuntimeScope
++	CapturedAt  time.Time
++	Coordinator *RuntimeCoordinatorObservation
++	Access      RuntimeAccessEvidence
++}
++
++type RuntimeObjectSyncBasis string
++
++const (
++	RuntimeSyncPerObjectHooks        RuntimeObjectSyncBasis = "per_object_hooks"
++	RuntimeSyncResponsibleSpaceRound RuntimeObjectSyncBasis = "responsible_space_round"
++	RuntimeSyncUnobserved            RuntimeObjectSyncBasis = "unobserved"
++)
++
++// RuntimeObjectSyncObservation preserves the original tracker semantics.
++// LastSyncAt is a HeadsApply or inherited responsible-space confirmation, not
++// Heart's syncDate (the time its details updater writes a projection).
++type RuntimeObjectSyncObservation struct {
++	State      SyncState
++	Basis      RuntimeObjectSyncBasis
++	LastSyncAt *time.Time
++}
++
++// RuntimeSpaceSyncObservation keeps connectivity/protocol state separate from
++// an object's historical progress. The original Status rollup supplies State.
++// An untracked Space stays unknown even if the separate protocol flag is true.
++type RuntimeSpaceSyncObservation struct {
++	SpaceID                     string
++	State                       SyncState
++	Synced                      int
++	Total                       int
++	NetworkPeers                int
++	LocalPeers                  int
++	GlobalPeers                 int
++	P2P                         P2PState
++	LastSyncedAt                *time.Time
++	NetworkProtocolIncompatible bool
++}
++
++type RuntimeObjectState struct {
++	Contract   string
++	Scope      RuntimeScope
++	ObjectID   string
++	CapturedAt time.Time
++	ObjectSync RuntimeObjectSyncObservation
++	SpaceSync  RuntimeSpaceSyncObservation
++}
+--- native1616/internal/api/runtime_state.go
++++ runtime-state-formatted-draft2/internal/api/runtime_state.go
+@@ -0,0 +1,68 @@
++package api
++
++import "time"
++
++// Runtime state is an additive, versioned observation. Missing observations
++// are JSON null; an actual numeric zero is always emitted as zero.
++type RuntimeScope struct {
++	AccountID         string `json:"accountId"`
++	NetworkID         string `json:"networkId"`
++	SpaceID           string `json:"spaceId"`
++	AuthorityIdentity string `json:"authorityIdentity"`
++	ACLHeadID         string `json:"aclHeadId"`
++}
++
++type RuntimeMemberLimits struct {
++	ReadersLimit uint32 `json:"readersLimit"`
++	WritersLimit uint32 `json:"writersLimit"`
++}
++
++type RuntimeCoordinatorObservation struct {
++	FetchedAt time.Time            `json:"fetchedAt"`
++	Status    string               `json:"status"`
++	IsShared  bool                 `json:"isShared"`
++	Limits    *RuntimeMemberLimits `json:"limits"`
++}
++
++type RuntimeAccessEvidence struct {
++	ACLIsEmpty      bool    `json:"aclIsEmpty"`
++	PersonalSpaceID *string `json:"personalSpaceId"`
++	Value           *uint8  `json:"value"`
++	Reason          string  `json:"reason"`
++}
++
++type RuntimeStateResponse struct {
++	Contract    string                         `json:"contract"`
++	Scope       RuntimeScope                   `json:"scope"`
++	CapturedAt  time.Time                      `json:"capturedAt"`
++	Coordinator *RuntimeCoordinatorObservation `json:"coordinator"`
++	Access      RuntimeAccessEvidence          `json:"access"`
++}
++
++type RuntimeObjectSyncObservation struct {
++	State      string     `json:"state"`
++	Basis      string     `json:"basis"`
++	LastSyncAt *time.Time `json:"lastSyncAt"`
++}
++
++type RuntimeSpaceSyncObservation struct {
++	SpaceID                     string     `json:"spaceId"`
++	State                       string     `json:"state"`
++	Synced                      int        `json:"synced"`
++	Total                       int        `json:"total"`
++	NetworkPeers                int        `json:"networkPeers"`
++	LocalPeers                  int        `json:"localPeers"`
++	GlobalPeers                 int        `json:"globalPeers"`
++	P2P                         string     `json:"p2p"`
++	LastSyncedAt                *time.Time `json:"lastSyncedAt"`
++	NetworkProtocolIncompatible bool       `json:"networkProtocolIncompatible"`
++}
++
++type RuntimeObjectStateResponse struct {
++	Contract   string                       `json:"contract"`
++	Scope      RuntimeScope                 `json:"scope"`
++	ObjectID   string                       `json:"objectId"`
++	CapturedAt time.Time                    `json:"capturedAt"`
++	ObjectSync RuntimeObjectSyncObservation `json:"objectSync"`
++	SpaceSync  RuntimeSpaceSyncObservation  `json:"spaceSync"`
++}
+--- native1616/internal/server/handlers_runtime_state.go
++++ runtime-state-formatted-draft2/internal/server/handlers_runtime_state.go
+@@ -0,0 +1,111 @@
++package server
++
++import (
++	"net/http"
++
++	"github.com/anyproto/any-sync-sdk/space"
++	"github.com/labstack/echo/v4"
++
++	"github.com/anyproto/any/internal/api"
++)
++
++func registerRuntimeStateRoutes(g *echo.Group, d *deps) {
++	g.GET("/spaces/:spaceId/runtime-state", d.spaceRuntimeState)
++	g.GET("/spaces/:spaceId/objects/:objectId/runtime-state", d.objectRuntimeState)
++}
++
++// The optional SDK interface plus a successful versioned contract response is
++// the capability boundary. Unsupported implementations never fall back to a
++// cached SpaceInfo role or to unguarded legacy sync status.
++func runtimeStateUnsupported(c echo.Context) error {
++	return writeError(c, http.StatusNotImplemented, "runtime_state.unsupported",
++		"this Space does not provide current-authority runtime observations", nil)
++}
++
++func (d *deps) spaceRuntimeState(c echo.Context) error {
++	sp, response, done := d.resolveSpace(c)
++	if done {
++		return response
++	}
++	provider, ok := sp.(space.RuntimeStateProvider)
++	if !ok {
++		return runtimeStateUnsupported(c)
++	}
++	state, err := provider.RuntimeState(c.Request().Context())
++	if err != nil {
++		return sdkOpError(c, err, map[string]any{"spaceId": sp.Id()})
++	}
++	return c.JSON(http.StatusOK, runtimeStateToAPI(state))
++}
++
++func (d *deps) objectRuntimeState(c echo.Context) error {
++	sp, response, done := d.resolveSpace(c)
++	if done {
++		return response
++	}
++	provider, ok := sp.(space.RuntimeStateProvider)
++	if !ok {
++		return runtimeStateUnsupported(c)
++	}
++	objectID := c.Param("objectId")
++	if objectID == "" {
++		return writeError(c, http.StatusBadRequest, "request.missing_field", "objectId required", nil)
++	}
++	if isSerializedNil(objectID) {
++		return serializedNilIdError(c, "objectId", objectID)
++	}
++	// This new route takes the exact native ID. It performs no short-ID or
++	// metadata lookup before the provider's current-authority admission.
++	state, err := provider.RuntimeObjectState(c.Request().Context(), objectID)
++	if err != nil {
++		return sdkOpError(c, err, map[string]any{"spaceId": sp.Id(), "objectId": objectID})
++	}
++	return c.JSON(http.StatusOK, runtimeObjectStateToAPI(state))
++}
++
++func runtimeScopeToAPI(scope space.RuntimeScope) api.RuntimeScope {
++	return api.RuntimeScope{
++		AccountID: scope.AccountID, NetworkID: scope.NetworkID, SpaceID: scope.SpaceID,
++		AuthorityIdentity: scope.AuthorityIdentity, ACLHeadID: scope.ACLHeadID,
++	}
++}
++
++func runtimeStateToAPI(state space.RuntimeState) api.RuntimeStateResponse {
++	out := api.RuntimeStateResponse{
++		Contract: state.Contract, Scope: runtimeScopeToAPI(state.Scope), CapturedAt: state.CapturedAt,
++		Access: api.RuntimeAccessEvidence{
++			ACLIsEmpty: state.Access.ACLIsEmpty, PersonalSpaceID: state.Access.PersonalSpaceID, Reason: state.Access.Reason,
++		},
++	}
++	if state.Access.Value != nil {
++		value := uint8(*state.Access.Value) // the explicit original access domain, not a sync enum cast
++		out.Access.Value = &value
++	}
++	if state.Coordinator != nil {
++		out.Coordinator = &api.RuntimeCoordinatorObservation{
++			FetchedAt: state.Coordinator.FetchedAt, Status: state.Coordinator.Status, IsShared: state.Coordinator.IsShared,
++		}
++		if state.Coordinator.Limits != nil {
++			out.Coordinator.Limits = &api.RuntimeMemberLimits{
++				ReadersLimit: state.Coordinator.Limits.ReadersLimit, WritersLimit: state.Coordinator.Limits.WritersLimit,
++			}
++		}
++	}
++	return out
++}
++
++func runtimeObjectStateToAPI(state space.RuntimeObjectState) api.RuntimeObjectStateResponse {
++	return api.RuntimeObjectStateResponse{
++		Contract: state.Contract, Scope: runtimeScopeToAPI(state.Scope), ObjectID: state.ObjectID, CapturedAt: state.CapturedAt,
++		ObjectSync: api.RuntimeObjectSyncObservation{
++			State: state.ObjectSync.State.String(), Basis: string(state.ObjectSync.Basis), LastSyncAt: state.ObjectSync.LastSyncAt,
++		},
++		SpaceSync: api.RuntimeSpaceSyncObservation{
++			SpaceID: state.SpaceSync.SpaceID, State: state.SpaceSync.State.String(),
++			Synced: state.SpaceSync.Synced, Total: state.SpaceSync.Total,
++			NetworkPeers: state.SpaceSync.NetworkPeers, LocalPeers: state.SpaceSync.LocalPeers, GlobalPeers: state.SpaceSync.GlobalPeers,
++			P2P: state.SpaceSync.P2P.String(), LastSyncedAt: state.SpaceSync.LastSyncedAt,
++			NetworkProtocolIncompatible: state.SpaceSync.NetworkProtocolIncompatible,
++		},
++	}
++}
+--- native1616/internal/server/handlers_runtime_state_test.go
++++ runtime-state-formatted-draft2/internal/server/handlers_runtime_state_test.go
+@@ -0,0 +1,99 @@
++package server
++
++import (
++	"encoding/json"
++	"net/http"
++	"net/http/httptest"
++	"testing"
++	"time"
++
++	"github.com/anyproto/any-sync-sdk/space"
++	"github.com/labstack/echo/v4"
++	"github.com/stretchr/testify/require"
++)
++
++func TestRuntimeStateWirePreservesAbsenceZeroAndOriginalAccessDomain(t *testing.T) {
++	at := time.Date(2026, 11, 27, 5, 42, 46, 340108716, time.UTC)
++	state := space.RuntimeState{
++		Contract: space.RuntimeStateContract,
++		Scope: space.RuntimeScope{AccountID: "account", NetworkID: "network", SpaceID: "space",
++			AuthorityIdentity: "loaded-guest", ACLHeadID: "signed-head"},
++		CapturedAt: at,
++		Access:     space.RuntimeAccessEvidence{ACLIsEmpty: false, Reason: "personal_provenance_unavailable"},
++	}
++	encode := func() map[string]json.RawMessage {
++		raw, err := json.Marshal(runtimeStateToAPI(state))
++		require.NoError(t, err)
++		var fields map[string]json.RawMessage
++		require.NoError(t, json.Unmarshal(raw, &fields))
++		require.Len(t, fields, 5)
++		return fields
++	}
++	fields := encode()
++	require.JSONEq(t, `null`, string(fields["coordinator"]))
++	require.JSONEq(t, `{"aclIsEmpty":false,"personalSpaceId":null,"value":null,"reason":"personal_provenance_unavailable"}`, string(fields["access"]))
++	require.Equal(t, `"2026-11-27T05:42:46.340108716Z"`, string(fields["capturedAt"]))
++	state.Coordinator = &space.RuntimeCoordinatorObservation{
++		FetchedAt: at, Status: "original-coordinator-label", IsShared: false,
++	}
++	fields = encode()
++	require.JSONEq(t, `{"fetchedAt":"2026-11-27T05:42:46.340108716Z","status":"original-coordinator-label","isShared":false,"limits":null}`, string(fields["coordinator"]))
++	state.Coordinator.Limits = &space.RuntimeMemberLimits{ReadersLimit: 0, WritersLimit: 0}
++	fields = encode()
++	require.Contains(t, string(fields["coordinator"]), `"readersLimit":0`)
++	require.Contains(t, string(fields["coordinator"]), `"writersLimit":0`)
++	for _, value := range []space.RuntimeAccessType{space.RuntimeAccessPrivate, space.RuntimeAccessPersonal, space.RuntimeAccessShared} {
++		state.Access.Value = &value
++		converted := runtimeStateToAPI(state)
++		require.Equal(t, uint8(value), *converted.Access.Value)
++	}
++}
++
++func TestRuntimeObjectWireDoesNotCastSDKSyncIntoHeartDomain(t *testing.T) {
++	at := time.Date(2026, 11, 27, 5, 42, 46, 340108716, time.UTC)
++	state := space.RuntimeObjectState{
++		Contract: space.RuntimeObjectStateContract, ObjectID: "exact-native-object", CapturedAt: at.Add(time.Second),
++		Scope: space.RuntimeScope{AccountID: "account", NetworkID: "network", SpaceID: "space",
++			AuthorityIdentity: "current-reader", ACLHeadID: "signed-head"},
++		ObjectSync: space.RuntimeObjectSyncObservation{State: space.SyncStateSynced,
++			Basis: space.RuntimeSyncResponsibleSpaceRound, LastSyncAt: &at},
++		SpaceSync: space.RuntimeSpaceSyncObservation{SpaceID: "space", State: space.SyncStateOffline,
++			P2P: space.P2PStateNotConnected, LastSyncedAt: &at},
++	}
++	converted := runtimeObjectStateToAPI(state)
++	require.Equal(t, "synced", converted.ObjectSync.State)
++	require.Equal(t, "responsible_space_round", converted.ObjectSync.Basis)
++	require.Equal(t, "offline", converted.SpaceSync.State)
++	require.Equal(t, "notconnected", converted.SpaceSync.P2P)
++	require.Equal(t, at, *converted.ObjectSync.LastSyncAt)
++	require.NotEqual(t, converted.CapturedAt, *converted.ObjectSync.LastSyncAt)
++	raw, err := json.Marshal(converted)
++	require.NoError(t, err)
++	require.NotContains(t, string(raw), "syncDate")
++	require.NotContains(t, string(raw), "queued")
++	state.ObjectSync = space.RuntimeObjectSyncObservation{State: space.SyncStateUnknown, Basis: space.RuntimeSyncUnobserved}
++	raw, err = json.Marshal(runtimeObjectStateToAPI(state))
++	require.NoError(t, err)
++	require.Contains(t, string(raw), `"lastSyncAt":null`)
++	require.Contains(t, string(raw), `"state":"unknown"`)
++}
++
++func TestRuntimeStateRoutesAdvertiseOnlyVersionedOptionalReads(t *testing.T) {
++	e := echo.New()
++	registerRuntimeStateRoutes(e.Group("/v1"), &deps{})
++	routes := e.Routes()
++	require.Len(t, routes, 2)
++	paths := make([]string, 0, 2)
++	for _, route := range routes {
++		require.Equal(t, http.MethodGet, route.Method)
++		paths = append(paths, route.Path)
++	}
++	require.ElementsMatch(t, []string{"/v1/spaces/:spaceId/runtime-state", "/v1/spaces/:spaceId/objects/:objectId/runtime-state"}, paths)
++	request := httptest.NewRequest(http.MethodGet, "/", nil)
++	recorder := httptest.NewRecorder()
++	err := runtimeStateUnsupported(e.NewContext(request, recorder))
++	require.NoError(t, err)
++	require.Equal(t, http.StatusNotImplemented, recorder.Code)
++	require.Contains(t, recorder.Body.String(), `"code":"runtime_state.unsupported"`)
++	require.NotContains(t, recorder.Body.String(), "ownRole")
++}
+--- native1616/internal/server/handlers_spaces.go
++++ runtime-state-formatted-draft2/internal/server/handlers_spaces.go
+@@ -15,6 +15,7 @@
+ )
+ 
+ func registerSpaceRoutes(g *echo.Group, d *deps) {
++	registerRuntimeStateRoutes(g, d)
+ 	g.POST("/spaces", d.spaceCreate)
+ 	g.GET("/spaces", d.spaceList)
+ 	// Generic windowed query/subscribe over the account's space list,

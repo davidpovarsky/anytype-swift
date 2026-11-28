@@ -1,0 +1,305 @@
+package spaceimpl
+
+import (
+	"context"
+	"sync/atomic"
+	"time"
+
+	"github.com/anyproto/any-sync/app/logger"
+	"github.com/anyproto/any-sync/coordinator/coordinatorproto"
+	"go.uber.org/zap"
+
+	"github.com/anyproto/any-sync-sdk/internal/techspace"
+	"github.com/anyproto/any-sync-sdk/space"
+)
+
+var delLog = logger.NewNamed("sdk.spacedeletion")
+
+// deletionReconcileInterval is how often the reconciler polls the
+// coordinator absent an explicit kick. Matches anytype-heart's deletion
+// controller cadence — space deletion is not latency-sensitive, and a
+// local Delete kicks the loop immediately anyway. Atomic (nanoseconds)
+// so the test seam can override or restore it while another SDK
+// instance's loop starts concurrently (parallel tests share the
+// process).
+var deletionReconcileInterval = newAtomicInterval(180 * time.Second)
+
+// SetDeletionReconcileIntervalForTest overrides the reconcile poll
+// interval and returns a func that restores the previous value. Test
+// seam only — lets e2e exercise the inbound-detection tick without
+// waiting the full production interval. Call before opening the SDK
+// (the interval is read once when the loop starts).
+func SetDeletionReconcileIntervalForTest(d time.Duration) (restore func()) {
+	prev := deletionReconcileInterval.Swap(int64(d))
+	return func() { deletionReconcileInterval.Store(prev) }
+}
+
+// deletionReconcilePasses counts passes that received coordinator
+// statuses for every row, across every SDK instance in the process.
+// Test seam: lets e2e tell a pass that judged live statuses from one the
+// coordinator refused.
+var deletionReconcilePasses atomic.Int64
+
+// DeletionReconcilePassesForTest returns the number of reconcile passes
+// that received coordinator statuses since the process started.
+func DeletionReconcilePassesForTest() int64 { return deletionReconcilePasses.Load() }
+
+// StartDeletionReconciler launches the background reconcile loop. Call
+// once, after the tech space is open: the loop's first pass reads the
+// space index, which lists nothing before then. Bound to its own
+// cancellable context; Close cancels it and drains delWG.
+func (s *Service) StartDeletionReconciler() {
+	ctx, cancel := context.WithCancel(context.Background())
+	s.delCancel = cancel
+	s.delWG.Add(1)
+	go s.deletionLoop(ctx)
+}
+
+// kickDeletionReconciler wakes the loop for an immediate pass. Non-
+// blocking: the kick channel is buffered 1, so coalesced kicks collapse.
+func (s *Service) kickDeletionReconciler() {
+	select {
+	case s.delKick <- struct{}{}:
+	default:
+	}
+}
+
+// deletionLoop reconciles space deletions with the coordinator until
+// ctx is cancelled. It runs one pass at start (to retry deletes marked
+// offline in a previous session) and then on every tick or kick.
+func (s *Service) deletionLoop(ctx context.Context) {
+	defer s.delWG.Done()
+	t := time.NewTicker(time.Duration(deletionReconcileInterval.Load()))
+	defer t.Stop()
+	// Initial pass so a space the user deleted while offline last
+	// session gets driven to the coordinator as soon as we're online.
+	s.reconcileDeletions(ctx)
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-t.C:
+			s.reconcileDeletions(ctx)
+		case <-s.delKick:
+			s.reconcileDeletions(ctx)
+		}
+	}
+}
+
+// reconcileDeletions runs one reconcile pass. Offline-tolerant: if the
+// coordinator is unreachable the StatusCheckMany call errors and the
+// pass is skipped, so the next tick retries — no local state changes.
+func (s *Service) reconcileDeletions(ctx context.Context) {
+	rows, lerr := s.tsp.List(ctx)
+	if lerr != nil {
+		delLog.Debug("skip deletion pass: space list", zap.Error(lerr))
+		return
+	}
+	if len(rows) == 0 {
+		return
+	}
+	// 1-1 offload runs FIRST and is coordinator-independent: a 1-1 delete
+	// propagates only through the synced oneToOneDeleted marker (never a
+	// node delete), so each device offloads its own copy when the marker
+	// arrives — including offline. Done before the coordinator call so an
+	// unreachable coordinator can't block it.
+	s.offloadDeletedOneToOnes(ctx, rows)
+
+	// Read-frontier prune is coordinator-independent too: removed spaces'
+	// read/ rows in the tech-space KV are dead weight on every device and
+	// node, and joining re-seeds read state, so a removed space's
+	// frontiers have no restore value. Gated on synced removal markers only
+	// (shouldPruneReadState) — local-first, in that the watermark row syncs
+	// when connectivity allows, and a no-op once the prefix is empty.
+	s.pruneRemovedSpacesReadState(ctx, rows)
+
+	ids := make([]string, len(rows))
+	for i, r := range rows {
+		ids[i] = r.Id
+	}
+	statuses, err := s.app.SpaceStatuses(ctx, ids)
+	if err != nil {
+		// Offline / coordinator down — try again next tick.
+		delLog.Debug("status check failed", zap.Error(err))
+		return
+	}
+	if len(statuses) != len(rows) {
+		delLog.Warn("status count mismatch",
+			zap.Int("rows", len(rows)), zap.Int("statuses", len(statuses)))
+		return
+	}
+	// Keep the successful positional answer without adding I/O or changing
+	// the original deletion decisions below. Nil/missing limits stay absent.
+	if s.runtimeCoordinator != nil {
+		s.runtimeCoordinator.remember(ids, statuses, time.Now())
+	}
+	deletionReconcilePasses.Add(1)
+	for i, r := range rows {
+		s.reconcileOne(ctx, r, statuses[i])
+	}
+}
+
+// offloadDeletedOneToOnes offloads every row carrying a synced,
+// non-terminal delete marker (1-1 oneToOneDeleted, guest guestDeleted)
+// that still has local storage. On the device that issued the delete
+// this is a no-op (already offloaded); on the account's other devices
+// it reclaims the local copy once the marker syncs in. Pure local work
+// — no coordinator round-trip.
+func (s *Service) offloadDeletedOneToOnes(ctx context.Context, rows []techspace.SpaceIndexRecord) {
+	for _, r := range rows {
+		if ctx.Err() != nil {
+			return
+		}
+		oneToOne := r.Type == space.SpaceTypeOneToOne && r.RemoteStatus == techspace.OneToOneDeletedStatus
+		guest := r.GuestKey != "" && r.RemoteStatus == techspace.GuestDeletedRemoteStatus
+		if !oneToOne && !guest {
+			continue
+		}
+		if s.app.SpaceExists(r.Id) {
+			delLog.Info("offloading marker-deleted space", zap.String("spaceId", r.Id))
+			s.OffloadSpace(ctx, r.Id)
+		}
+	}
+}
+
+// shouldPruneReadState gates the read-frontier prune on SYNCED removal
+// markers only. Deliberately narrower than IsDeleted(): that also fires
+// on LocalStatus==deleted, a DEVICE-LOCAL marker (a declined join
+// recorded before the account was later added for real) — one stale
+// device must never drive an account-wide destructive watermark for a
+// space the rest of the account actively uses. User-initiated Delete
+// stamps the synced RemoteStatus, so it qualifies immediately.
+// A closed switch on purpose: a new removal status must be added here
+// deliberately, having been checked for the device-local hazard above.
+func shouldPruneReadState(r techspace.SpaceIndexRecord) bool {
+	switch r.RemoteStatus {
+	case techspace.StatusDeleted, techspace.OneToOneDeletedStatus, techspace.GuestDeletedRemoteStatus:
+		return true
+	}
+	return false
+}
+
+// pruneRemovedSpacesReadState issues the read-frontier watermark for
+// every removed space still holding visible read/ rows. Failures are
+// retried by the next pass.
+func (s *Service) pruneRemovedSpacesReadState(ctx context.Context, rows []techspace.SpaceIndexRecord) {
+	rs := s.readSync()
+	if rs == nil {
+		return
+	}
+	for _, r := range rows {
+		if ctx.Err() != nil {
+			return
+		}
+		if !shouldPruneReadState(r) {
+			continue
+		}
+		if err := rs.PruneSpace(ctx, r.Id); err != nil {
+			delLog.Warn("read-state prune failed", zap.String("spaceId", r.Id), zap.Error(err))
+		}
+	}
+}
+
+// reconcileOne advances one space toward its terminal deletion state.
+func (s *Service) reconcileOne(ctx context.Context, row techspace.SpaceIndexRecord, st *coordinatorproto.SpaceStatusPayload) {
+	if st == nil {
+		return
+	}
+	if row.Derived {
+		// Derived rows never participate in deletion reconciliation
+		// (space.ErrIsDerivedSpace), and this return is the only guard:
+		// the handler's refusal of remoteStatus=deleted on a derived row
+		// lands in the WriteResult rejections, not in err, so without it
+		// an inbound deletion status would offload the derived space's
+		// storage while its row stayed active. A derived row can also
+		// carry a tombstone written before Derive flagged it, and must
+		// not drive a SpaceDelete of the well-known id either.
+		return
+	}
+	locallyDeleted := row.RemoteStatus == techspace.StatusDeleted
+
+	switch decideReconcile(locallyDeleted, st) {
+	case actionSendDelete:
+		// We deleted locally but the coordinator still has the space
+		// active and we own it — send the signed delete. Idempotent: the
+		// coordinator moves it to PendingDeletion and later passes no-op.
+		if err := s.app.SpaceDelete(ctx, row.Id); err != nil {
+			delLog.Warn("coordinator delete failed", zap.String("spaceId", row.Id), zap.Error(err))
+			return
+		}
+		delLog.Info("space delete sent to coordinator", zap.String("spaceId", row.Id))
+
+	case actionOffload:
+		// The coordinator reports the space gone (deleted on another
+		// device, or the owner deleted a space we joined) but we haven't
+		// marked it locally. Set the synced tombstone — which also emits
+		// the Subscribe `Removed` event consumers wipe their indexes on —
+		// then offload local state.
+		if _, err := s.tsp.SetRemoteStatus(ctx, row.Id, techspace.StatusDeleted); err != nil {
+			delLog.Warn("mark inbound-deleted failed", zap.String("spaceId", row.Id), zap.Error(err))
+			return
+		}
+		delLog.Info("offloading remotely-deleted space", zap.String("spaceId", row.Id))
+		s.OffloadSpace(ctx, row.Id)
+	}
+}
+
+// reconcileAction is the decision reconcileOne acts on for one space.
+type reconcileAction int
+
+const (
+	actionNone reconcileAction = iota
+	// actionSendDelete: drive our local delete to the coordinator.
+	actionSendDelete
+	// actionOffload: the coordinator reports the space gone; offload it.
+	actionOffload
+)
+
+// decideReconcile is the pure reconcile decision, isolated for testing.
+// Owner-delete drive fires only when we deleted locally, we own the
+// space, and the coordinator still has it active (Created) — so a
+// space already moving through deletion (Pending/Started/Deleted) is a
+// no-op and never re-sent. Inbound offload fires only when we have NOT
+// deleted locally but the coordinator reports the space gone. NotExists
+// is a no-op both ways: the space has not been pushed yet (see
+// remotelyGone), so there is nothing to drive and nothing to offload.
+func decideReconcile(locallyDeleted bool, st *coordinatorproto.SpaceStatusPayload) reconcileAction {
+	if st == nil {
+		return actionNone
+	}
+	switch {
+	case locallyDeleted &&
+		st.Status == coordinatorproto.SpaceStatus_SpaceStatusCreated &&
+		st.Permissions == coordinatorproto.SpacePermissions_SpacePermissionsOwner:
+		return actionSendDelete
+	case !locallyDeleted && remotelyGone(st.Status):
+		return actionOffload
+	default:
+		return actionNone
+	}
+}
+
+// remotelyGone reports whether a coordinator status means the space no
+// longer exists for us: pending, started or finished deletion.
+//
+// NotExists is NOT gone. The coordinator registers a space on its first
+// push (SpaceSign in the credential provider) and never purges a
+// registered record (a deleted space reports Deleted forever), so
+// NotExists means the coordinator has never registered the space: the
+// first push has not landed (created or derived offline, or a row
+// synced from another device before that device's push), it was
+// deleted locally before it could push, or SpaceSign was refused. In
+// every case the content exists only on this account's devices, so
+// tombstoning it would wipe the only copy. Any unknown future status
+// is left alone for the same reason: offload is destructive, so only
+// the explicit deletion states qualify.
+func remotelyGone(status coordinatorproto.SpaceStatus) bool {
+	switch status {
+	case coordinatorproto.SpaceStatus_SpaceStatusPendingDeletion,
+		coordinatorproto.SpaceStatus_SpaceStatusDeletionStarted,
+		coordinatorproto.SpaceStatus_SpaceStatusDeleted:
+		return true
+	default:
+		return false
+	}
+}

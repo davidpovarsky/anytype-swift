@@ -1,0 +1,107 @@
+{
+  "AccessEvidence": {
+    "aclIsEmpty": "bool, actual current native AclState.IsEmpty()",
+    "personalSpaceId": "null unless positive original native personal-space provenance for this account/network exists",
+    "reason": [
+      "personal_provenance_unavailable",
+      "native_personal",
+      "native_acl_shared",
+      "coordinator_shared",
+      "native_private",
+      "coordinator_unavailable"
+    ],
+    "value": "null or original Private0/Personal1/Shared2; no fallback ordinal"
+  },
+  "CoordinatorSnapshot": {
+    "fetchedAt": "RFC3339Nano time successful coordinator response was observed; unchanged on cached read/failure",
+    "isShared": "bool, original coordinator value",
+    "limits": "null or MemberLimits",
+    "status": "original coordinator SpaceStatus.String() enum label, not a Heart/Any ordinal"
+  },
+  "MemberLimits": {
+    "readersLimit": "uint32 including zero",
+    "writersLimit": "uint32 including zero"
+  },
+  "ObjectRuntimeState": {
+    "capturedAt": "RFC3339Nano new sample time; never silently Heart syncDate",
+    "contract": "pinkha-object-runtime-state-v1",
+    "objectId": "exact requested native object ID",
+    "objectSync": "ObjectSyncObservation",
+    "scope": "scope",
+    "spaceSync": "SpaceSyncObservation"
+  },
+  "ObjectSyncObservation": {
+    "basis": [
+      "per_object_hooks",
+      "responsible_space_round",
+      "unobserved"
+    ],
+    "lastSyncAt": "null or actual original tracker lastApplied / inherited lastAllSyncedAt; basis identifies origin",
+    "state": [
+      "unknown",
+      "offline",
+      "syncing",
+      "synced",
+      "error"
+    ]
+  },
+  "SpaceRuntimeState": {
+    "access": "AccessEvidence",
+    "capturedAt": "RFC3339Nano timestamp of this sample, not fetchedAt",
+    "contract": "pinkha-space-runtime-state-v1",
+    "coordinator": "null or CoordinatorSnapshot",
+    "scope": "scope"
+  },
+  "SpaceSyncObservation": {
+    "globalPeers": "int",
+    "lastSyncedAt": "null or actual original tracker lastSync time",
+    "localPeers": "int",
+    "networkPeers": "int",
+    "networkProtocolIncompatible": "bool from existing original incompatibility callback",
+    "p2p": [
+      "unknown",
+      "notpossible",
+      "notconnected",
+      "connected",
+      "restricted"
+    ],
+    "spaceId": "same exact scope Space ID",
+    "state": [
+      "unknown",
+      "offline",
+      "syncing",
+      "synced",
+      "error"
+    ],
+    "synced": "int",
+    "total": "int"
+  },
+  "currentAuthority": "same App token, concrete Space token, ACL identity/head and read permission before/after; zero result on refusal",
+  "explicitAbsenceRules": [
+    "coordinator null means no accepted answer",
+    "limits null means coordinator payload omitted limits",
+    "present numeric0 is a real observed zero",
+    "personal provenance unavailable remains access.value null",
+    "unknown/offline must not be remapped to Heart queued",
+    "capturedAt/lastSyncAt must not be silently labelled Heart syncDate"
+  ],
+  "futureQualificationRequired": true,
+  "methods": [
+    "RuntimeState(context.Context) (RuntimeState, error)",
+    "RuntimeObjectState(context.Context, string) (RuntimeObjectState, error)"
+  ],
+  "protocol": "runtime-state-wire-contract-proposal-v1",
+  "routes": {
+    "GET /v1/spaces/:spaceId/objects/:objectId/runtime-state": "ObjectRuntimeState",
+    "GET /v1/spaces/:spaceId/runtime-state": "SpaceRuntimeState"
+  },
+  "scope": {
+    "accountId": "nonempty native account identity",
+    "aclHeadId": "exact signed head fenced before/after read",
+    "authorityIdentity": "actual loaded ACL identity, including authorized guest identity",
+    "networkId": "nonempty native network identity",
+    "spaceId": "exact requested native Space ID"
+  },
+  "sdkOptionalInterface": "space.RuntimeStateProvider",
+  "status": "FROZEN_SOURCE_CONTRACT_NOT_RUNTIME_QUALIFIED"
+}
