@@ -1,0 +1,120 @@
+{
+  "protocol": "pinkha-root-ordinary14-cold-context-native-directory-peer-v1",
+  "status": "SOURCE_SCOPED_CLEAR_PENDING_FOCUSED_TEST_AND_E_LIFECYCLE_PEERS",
+  "sourceInputs": [
+    {
+      "key": "ordinary-context",
+      "bytes": 16143,
+      "sha256": "9db172a43ec08a46d8e06d9f128e493389c727ef02426b95b294ab520ee1fe8f",
+      "gitBlob": "b906b29ec8afb91cac40c5350f60a12bef6cda92"
+    },
+    {
+      "key": "owner",
+      "bytes": 36425,
+      "sha256": "b4891b47901f6243cdad5cb45b000f94fbe8b2b309b4de85692cfda75382b4d7",
+      "gitBlob": "5e75478bae4f1f426625ac4d44ecd4ec144bdc4b"
+    },
+    {
+      "key": "content",
+      "bytes": 20451,
+      "sha256": "5379e04f9c1833956e18fced28517559bb3b889f394b67c475bb3e4b71880500",
+      "gitBlob": "446d4d920b540645b62c752429bf79494d7f85d0"
+    },
+    {
+      "key": "production-proof",
+      "bytes": 18380,
+      "sha256": "1c0443b8ba1e5a9c0637b48f663992a6e5d12f47ebd6cb67d855eeef7ba1dd30",
+      "gitBlob": "322643f9b54f11eb4bcef60e2890987a5afe3cb4"
+    }
+  ],
+  "exactProductionForwardInverse": [
+    {
+      "name": "Owner",
+      "edits": 13,
+      "before": {
+        "bytes": 28578,
+        "sha256": "16f9af20d193bdc64f9397b6f728780d5a2af8ce3f848e18d9bf7c0d28d8dbdf"
+      },
+      "after": {
+        "bytes": 36425,
+        "sha256": "b4891b47901f6243cdad5cb45b000f94fbe8b2b309b4de85692cfda75382b4d7",
+        "gitBlob": "5e75478bae4f1f426625ac4d44ecd4ec144bdc4b"
+      },
+      "completeForwardAndInverse": true
+    },
+    {
+      "name": "Content",
+      "edits": 4,
+      "before": {
+        "bytes": 19898,
+        "sha256": "96cd7578f2b6afdbf990f784dfcd3b3d668cc1ad492158503d5bf26b75279f4b"
+      },
+      "after": {
+        "bytes": 20451,
+        "sha256": "5379e04f9c1833956e18fced28517559bb3b889f394b67c475bb3e4b71880500",
+        "gitBlob": "446d4d920b540645b62c752429bf79494d7f85d0"
+      },
+      "completeForwardAndInverse": true
+    }
+  ],
+  "dependencies": [
+    {
+      "key": "namespace",
+      "bytes": 13010,
+      "sha256": "3076e98bd0d7a1106f376faa8e04de9252e47756c2ff806856a4334eae2457cb",
+      "gitBlob": "850edf99029a1512b020875b8d2c051b1e3f1ecc",
+      "wholeRead": true
+    },
+    {
+      "key": "supplement",
+      "bytes": 9026,
+      "sha256": "8023022c6740bc88fb9502e1e572bfdf4299e0b8e1b9a24e03217e2c790e72dd",
+      "gitBlob": "21f6afa06a05eb694e289a14c488a666efc2dfe3",
+      "wholeRead": true
+    },
+    {
+      "key": "native-migration",
+      "bytes": 24363,
+      "sha256": "b47533f131f3919336c9667d80be1911aedcd131544b5e73ee8910f100d18850",
+      "gitBlob": "f4f23e111468ca494ae661019610463247161df5",
+      "wholeRead": true
+    },
+    {
+      "key": "definition-store",
+      "bytes": 10792,
+      "sha256": "e209c44b174e3ec6a0a1c967135e5d8313a49600ac58161e08dd98969fd9c9c2",
+      "gitBlob": "915badc20430573287dac3aca811b8df450efdec",
+      "wholeRead": true
+    },
+    {
+      "key": "current C14 directory at daaedc545eac20df260489b8a7579527c057aeac",
+      "bytes": 22948,
+      "sha256": "f8706b054757b2601a1e094558989c2a66d44b7a9ddcaee94a543563db38ff27",
+      "gitBlob": "6cd38819232f457f04f9eab1b93c538670403e05",
+      "wholeReadReused": true
+    }
+  ],
+  "findings": [
+    "The separate Ordinary14 locator binds the exact original preservation locator hash, original-derived namespace owner/intent/hash, supplement plan/binding, completed checkpoint and ordered mappings. It does not contain a journal URL or grant current native authority.",
+    "The existing supplement builder reconstructs exactly14 original descriptors and their external original namespace from the admitted archive and original completed plan/mappings. Other definition families remain outside this finite component.",
+    "The typed checkpoint audit requires the exact reconstructed plan and14 mappings/intents, definition kind and expected namespace owner, and immutable expected/actual intent ID/spec/hash. Mapped operation references are refused in this native-owner-only plan.",
+    "The current f870 directory merge preserves the original plan binding/document routing and canonical supplemental definitions, adds exactly one separate property binding, and rejects duplicate source IDs/addresses or a foreign namespace/owner.",
+    "AnyDestinationNativeClients.open opens only the required typed definition capability for this14-property plan and verifies the store. Namespace.observe uses the original immutable namespace intent for receipt/root observations; it does not dispatch prepare or commit.",
+    "DefinitionStoree209 reads typed current definitions and creation receipts under the existing workspace/run lease. The new owner additionally checks14 exact descriptor matches, committed outcome, the separate intent binding and repeated account/run/READ admission.",
+    "Original182 plan/mappings and original C22 document content remain authoritative for document routing. The separate property checkpoint adds no original namespace replay and no archive/carrier fallback document.",
+    "The production owner brackets callbacks with namespace and14definition observations plus completed-journal comparisons. Parent actor delivery performs a final local checkpoint check; these sequential observations are not atomic cross-Space or remote ACL proofs."
+  ],
+  "limitations": [
+    "This finite new contract requires all14 schemas unchanged and their creation outcome committed. Later schema edits or committed_modified refuse; general edited-schema reopening is not qualified.",
+    "The seven focused new component methods were still being authored when this peer was frozen. They need independent source review and actual compilation/execution.",
+    "The existing Native14 fixture targets historical84a/f832/3552; the cold owner requires the separate N24 account/run backend. A future combined current-native reopening proof must not treat those producer scopes as equivalent.",
+    "No actual source installation, Swift parse/typecheck, compilation, test, native process, App wiring or account operation was performed by this peer.",
+    "Broad129definitions/19types, nonempty choice options, other multiplicities/defaults, encrypted history, source admission and whole-space behavior remain outside this source change."
+  ],
+  "sourcePeerScope": "Native client, namespace, intent, definition-directory and current definition-read join. E separately reviews closed checkpoint and owner lifecycle; Root will separately review the final focused test packet.",
+  "nativeWritesDispatched": 0,
+  "original182OperationsReplayed": 0,
+  "compilerInvocations": 0,
+  "testExecutions": 0,
+  "oracleNativeInvocations": 0
+}

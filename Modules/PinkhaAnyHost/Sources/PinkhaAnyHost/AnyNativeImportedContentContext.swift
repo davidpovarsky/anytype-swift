@@ -177,6 +177,7 @@ public struct AnyNativeImportedContentContext: Sendable {
     public let savedPlan: AnyDestinationMigrationPlan
     public let mappings: [AnyDestinationMigrationMapping]
     public let definitionDirectory: AnyNativeImportedDefinitionDirectory
+    public let ordinaryProperties: AnyNativeImportedOrdinaryPropertyContext?
     public let sourceFactsDirectory: AnyNativeImportedSourceFactsDirectory
     public let typeReferences: AnyHeartNativeTypeReferencePlan
     public let documents: [AnyNativeImportedDocumentEntry]
@@ -191,7 +192,8 @@ public struct AnyNativeImportedContentContext: Sendable {
          preservation: AnyHeartNativeSourcePreservation,
          checkpoint: AnyDestinationSavedCheckpoint,
          catalog: AnyHeartNativeDefinitionCatalog,
-         catalogCarrierObjectIDs: [String]) throws {
+         catalogCarrierObjectIDs: [String],
+         ordinaryProperties: AnyNativeImportedOrdinaryPropertyContext? = nil) throws {
         let expected = try AnyNativeImportedContentContextReference(
             preservationReference: preservationReference, preservation: preservation, checkpoint: checkpoint)
         let composition = preservation.currentContent
@@ -217,8 +219,13 @@ public struct AnyNativeImportedContentContext: Sendable {
                 }
             } else { supplements.append(binding) }
         }
-        let definitions = try AnyNativeImportedDefinitionDirectory(plan: plan, mappings: mappings,
+        let originalDefinitions = try AnyNativeImportedDefinitionDirectory(plan: plan, mappings: mappings,
             supplementalCanonicalDefinitions: supplements)
+        let definitions: AnyNativeImportedDefinitionDirectory
+        if let ordinaryProperties {
+            try ordinaryProperties.requirePreservation(preservationReference, checkpoint: checkpoint)
+            definitions = try ordinaryProperties.merging(into: originalDefinitions)
+        } else { definitions = originalDefinitions }
         let sourceFacts = try AnyNativeImportedSourceFactsDirectory(plan: plan, mappings: mappings)
         let references = try AnyHeartNativeTypeReferencePlan(catalog: catalog, directory: definitions)
         let documents = try Self.documentEntries(plan: plan, mappings: mappings,
@@ -233,6 +240,7 @@ public struct AnyNativeImportedContentContext: Sendable {
         }
         self.reference = reference; savedPlan = plan; self.mappings = mappings
         definitionDirectory = definitions; sourceFactsDirectory = sourceFacts; typeReferences = references
+        self.ordinaryProperties = ordinaryProperties
         self.documents = documents; self.bySource = bySource; self.byDestination = byDestination
         try Task.checkCancellation()
     }

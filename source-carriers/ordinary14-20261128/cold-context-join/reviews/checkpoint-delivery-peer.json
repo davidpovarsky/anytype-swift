@@ -1,0 +1,143 @@
+{
+  "protocol": "pinkha-e-ordinary14-cold-context-source-peer-v1",
+  "status": "SOURCE_ONLY_CLEAR_IN_DECLARED_LOCATOR_CHECKPOINT_AND_DELIVERY_SCOPE",
+  "reviewer": "E cutover",
+  "repository": "davidpovarsky/anytype-swift",
+  "scope": "Three new/successor Swift sources joining a separately completed Ordinary14 checkpoint to the existing imported content owner. Native definition and directory semantics are independently reviewed by Root.",
+  "inputs": [
+    {
+      "role": "New closed supplemental locator and historical context",
+      "repository": "davidpovarsky/anytype-swift",
+      "gitBlob": "b906b29ec8afb91cac40c5350f60a12bef6cda92",
+      "bytes": 16143,
+      "sha256": "9db172a43ec08a46d8e06d9f128e493389c727ef02426b95b294ab520ee1fe8f"
+    },
+    {
+      "role": "Existing owner with explicit optional supplemental checkpoint",
+      "repository": "davidpovarsky/anytype-swift",
+      "gitBlob": "5e75478bae4f1f426625ac4d44ecd4ec144bdc4b",
+      "bytes": 36425,
+      "sha256": "b4891b47901f6243cdad5cb45b000f94fbe8b2b309b4de85692cfda75382b4d7"
+    },
+    {
+      "role": "Existing content context with optional merged definition directory",
+      "repository": "davidpovarsky/anytype-swift",
+      "gitBlob": "446d4d920b540645b62c752429bf79494d7f85d0",
+      "bytes": 20451,
+      "sha256": "5379e04f9c1833956e18fced28517559bb3b889f394b67c475bb3e4b71880500"
+    },
+    {
+      "role": "Literal edit, original-source and constraint proof",
+      "repository": "davidpovarsky/anytype-swift",
+      "gitBlob": "322643f9b54f11eb4bcef60e2890987a5afe3cb4",
+      "bytes": 18380,
+      "sha256": "1c0443b8ba1e5a9c0637b48f663992a6e5d12f47ebd6cb67d855eeef7ba1dd30"
+    },
+    {
+      "role": "Exact preserved owner beforeimage",
+      "repository": "davidpovarsky/anytype-swift",
+      "gitBlob": "aa327b376d796948effcba35f8348085c5072470",
+      "bytes": 28578,
+      "sha256": "16f9af20d193bdc64f9397b6f728780d5a2af8ce3f848e18d9bf7c0d28d8dbdf"
+    },
+    {
+      "role": "Exact preserved content beforeimage",
+      "repository": "davidpovarsky/anytype-swift",
+      "gitBlob": "0ec7d66f9f5122b420991516d1731b5ffa650b8d",
+      "bytes": 19898,
+      "sha256": "96cd7578f2b6afdbf990f784dfcd3b3d668cc1ad492158503d5bf26b75279f4b"
+    },
+    {
+      "role": "Unchanged preservation reference",
+      "repository": "davidpovarsky/anytype-swift",
+      "gitBlob": "756a0c82221927756cd2793d13698ba10d33738e",
+      "bytes": 10952,
+      "sha256": "950a947e9c3ad57ae70e627042747ef1dff4b6e890e22d2246cf776c2a3f7e87"
+    },
+    {
+      "role": "Unchanged existing application session",
+      "repository": "davidpovarsky/anytype-swift",
+      "gitBlob": null,
+      "bytes": 5633,
+      "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd"
+    },
+    {
+      "role": "Unchanged C14 completed-checkpoint reader",
+      "repository": "davidpovarsky/anytype-swift",
+      "gitBlob": null,
+      "bytes": 25038,
+      "sha256": "37a827abab7f8458ff0274bc0cc99a65ba62ea6068e7498d025be7fee1fee8dd"
+    }
+  ],
+  "sourceParents": {
+    "ordinary14": "05ef820f404db4d2cc9088009b90927fe59394b0",
+    "c22": "bcd4518793abda5f4183c81ddd150ae94abdb20e",
+    "activeFinalAtObservation": "daaedc545eac20df260489b8a7579527c057aeac"
+  },
+  "independentChecks": {
+    "completeThreeCurrentSourcesRead": true,
+    "fullLiteralProofAndBeforeimagesRead": true,
+    "ownerLiteralEdits": 13,
+    "contentLiteralEdits": 4,
+    "completeOwnerForwardAndInverse": true,
+    "completeContentForwardAndInverse": true,
+    "existingSessionAndCompletedCheckpointReaderRead": true,
+    "originalSessionSourceModified": false,
+    "originalSevenOrdinary14ProductionSourcesModifiedByProposal": false
+  },
+  "findings": [
+    {
+      "boundary": "Closed supplemental locator",
+      "conclusion": "The new locator is bounded to 4096 encoded bytes, has an exact ten-key Codable shape and exact version/scope, requires valid ASCII namespace owner identity and seven digest fields, and checks JSON roundtrip preservation. It grants no native authority."
+    },
+    {
+      "boundary": "Original and supplemental plan identity",
+      "conclusion": "Derivation requires the original preservation binding, source account/Space/capture/witness and complete plan/mapping fingerprint. The unchanged C14 builder derives the exact separate fourteen-property supplement. The locator hashes the complete original locator, namespace and supplemental mappings; its binding keeps the original account/Space/store and a distinct supplement plan."
+    },
+    {
+      "boundary": "Typed checkpoint correspondence",
+      "conclusion": "Initial checkpoint admission checks exact encoded plan, complete fourteen-item/mapping/intent counts and fingerprint. Both expected and actual intents must be property definitions owned by the exact namespace. The native-reference resolver returns the associated native ID and refuses mapped references. Intent id/spec/hash and the resulting definition directory must match."
+    },
+    {
+      "boundary": "Subsequent checkpoint changes",
+      "conclusion": "The immutable context checks the later supplemental checkpoint fingerprint, complete binding, encoded plan and mappings, and every intent identity against its original admitted values. The unchanged public reader reconstructs intents from exact resolved plan operations and validated retained receipts under the original read-only journal lock, then finishes the read before return."
+    },
+    {
+      "boundary": "Initial private access",
+      "conclusion": "The optional supplement requires a paired journal path and a completed content locator. Original session generation/workspace, current account/run/READ and existing lease are admitted before private journal/archive reads. The original archive and full original preservation plan remain required; no supplement replaces them."
+    },
+    {
+      "boundary": "Callback lifetime",
+      "conclusion": "withContext retains the existing task registration, cancellation handler, owner close/drain and session.perform flow. For the supplement, validateOrdinary runs before and after the supplied callback. That path checks its local checkpoint before and after typed native namespace/definition reads, with the existing account/run/READ/lease validation around each observation. No journal lock spans these native awaits."
+    },
+    {
+      "boundary": "Final delivery",
+      "conclusion": "After session.perform completes its final asynchronous lease/run check, the existing synchronous delivery helper runs on the parent session actor, checks active state and cancellation, and performs the final local checkpoint read without an await. withContext then checks its own closed/cancellation state. Initial open rechecks original and supplemental checkpoints sequentially inside this same local delivery boundary."
+    },
+    {
+      "boundary": "Content and namespace separation",
+      "conclusion": "The four content edits only add an optional supplemental directory join. Exact original182 plan/mappings continue to route actual documents; SourceFacts and creation receipts remain bound to those original operations. Namespace14 is a separate completed checkpoint and does not substitute a catalog carrier, replay, prepare or commit."
+    },
+    {
+      "boundary": "Current observation limits",
+      "conclusion": "The source explicitly distinguishes historical routing from current native authority and sequential local/native observations from an atomic pair or whole-Space snapshot. Account/run/READ/lease enforcement still depends on the separately qualified native backend and the caller's existing session lifecycle."
+    }
+  ],
+  "remainingQualification": [
+    "No Swift parser, compiler, component test or native test was invoked for this review.",
+    "The pure new locator/checkpoint controls and future current-native owner proof remain to be qualified under their own exact graph, controller, product and resource admission.",
+    "Root owns the independent native definition/directory semantic review; this record does not replace that scope.",
+    "App persistence/call-site wiring and the N24 account/run backend remain separate obligations.",
+    "No archive, private journal, source fixture, account, binary or native endpoint was accessed. No Oracle operation or filesystem allocation occurred."
+  ],
+  "effects": {
+    "gitSourceReviewBlobOnly": true,
+    "oracleCalls": 0,
+    "sourceInstalls": 0,
+    "swiftParses": 0,
+    "compilerInvocations": 0,
+    "componentOrNativeTests": 0,
+    "privateDataReads": 0,
+    "runtimeOrCacheRelease": false
+  }
+}

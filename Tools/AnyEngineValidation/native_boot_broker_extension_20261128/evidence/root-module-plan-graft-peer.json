@@ -1,0 +1,167 @@
+{
+  "protocol": "pinkha-root-boot-broker64-source-peer-v1",
+  "status": "SOURCE_ONLY_CLEAR_WITH_ACTUAL_MODULE_SYNTAX_OBSERVATION",
+  "module": {
+    "status": "SOURCE_ONLY_MODULE_CLEAR",
+    "module": "75776a4daa118407342b328eb6fcfd8b84ebdc2b",
+    "completeControlPins": 8,
+    "actionsExact": true,
+    "selectionExact": true,
+    "helpers": {
+      "original": "33b529935d3e179e4e33a49b6e185faf15722167491ed856df64d5958e541a51",
+      "unchangedHelpers": [
+        {
+          "name": "require",
+          "bytes": 84,
+          "sha256": "2429c987aa496b6407da2d32d33685b1ebf5dc8b61b5bf95d1f68e0457a22745"
+        },
+        {
+          "name": "canonical",
+          "bytes": 121,
+          "sha256": "c2a0035db48133ded32031994e6e583ec896f36d055fd9674c092791402b69cd"
+        },
+        {
+          "name": "closed_relative",
+          "bytes": 339,
+          "sha256": "0d5a3320473a4010b2c437b0e5ab896f986faf0c84e6c2d98c6b60eb860e0711"
+        },
+        {
+          "name": "projected_sdk",
+          "bytes": 336,
+          "sha256": "cb9b2bf0fb4ffc8e35e26cc906d3591afd72a4497426b921542d044146bba187"
+        },
+        {
+          "name": "validate_map",
+          "bytes": 838,
+          "sha256": "cf1d433e3daffb6607ac8e97a11cc6d3c3c1e3bd9ef26eaead4e71bddeab4ef9"
+        },
+        {
+          "name": "apply_actions",
+          "bytes": 1525,
+          "sha256": "bccf633318ca67a9478450777a6bd8836f01b8c7a273527f1477a158aa0ba913"
+        }
+      ],
+      "renamedAdmissionBodyExact": true,
+      "runSelectedDelta": "...\n    2    2                  command, source_inventory, checkpoint, frozen, identity,\n    3    3                  parse_events, normal, result, save):\n    4    4     \"\"\"Use only the caller's f9de command owner, deadlines and original budgets.\"\"\"\n    5    5     proof = result.get('embeddedBootLifecycleSourceAdmission', {})\n+        6     broker_proof = result.get('brokerSourceAdmission', {})\n    6    7     require(proof.get('completeForwardAndInverse') is True and\n    7    8             proof.get('qualificationFiles') == 1656 and\n+        9             broker_proof.get('completeForwardAndInverse') is True and\n+       10             broker_proof.get('qualificationFiles') == 1657 and\n    8   11             result.get('RootCacheReleaseAcknowledgedByCaller') is True and\n    9   12             identity(canonical(source_before)) == {\n+       13                 key: BROKER_ASSET_ROWS['broker64/native-qualification-source.json'][key]\n-  10                      key: ASSET_ROWS['native-qualification-source.json'][key]\n   11   14                 for key in ('bytes', 'sha256')},\n+       15             'complete explicit final source and upstream ownership admission')\n-  12                  'complete extension source and upstream ownership admission')\n   13   16     require(str(offline) == OFFLINE_PATH and\n   14   17             result['OSPolicy']['helperSHA256'] == OFFLINE_SHA and\n   15   18             result['OSPolicy']['appliedBeforeEveryTestCommand'] is True and\n   16   19             result['OSExecPython']['path'] == str(python) and\n...\n   19   22             'same admitted OS denial, Python and physical Go/native toolchain')\n   20   23     selected_result = {\n   21   24         'protocol': PROTOCOL, 'status': 'RUNNING_SELECTED_COMPONENTS',\n   22   25         'sourceSelection': ASSET_ROWS['selection.json'], 'phases': {},\n+       26         'fullQualificationMap': BROKER_ASSET_ROWS['broker64/native-qualification-source.json'],\n   23   27         'privateControlledRunnerParents': 6, 'realMixedExportManagedParents': 1,\n   24   28         'affectedExistingStandaloneParents': 4, 'additionalNativeProductBuilds': 0,\n   25   29         'generatedAppleABIQualified': False, 'gomobileGeneratedBindingQualified': False,\n   26   30         'newOSDenialProbeEvents': 0, 'inheritedActualOSDenialAndCurrentN24ProofRequired': True\n   27   31     }\n   28   32     result['embeddedBootLifecycle'] = selected_result\n   29   33     for phase in PHASES:\n   30   34         require(source_inventory(source, checkpoint) == source_before,\n+       35                 'complete physical1657-source map before each boot selection')\n-  31                      'complete physical1656-source map before each extension selection')\n   32   36         package = phase['package']\n   33   37         methods = phase['parents']\n   34   38         require(len(methods) == len(set(methods)), 'unique exact parent names')\n   35   39         argv = [str(python), '-B', str(offline), '--exec', str(driver),"
+    },
+    "comments": [
+      "New admission is exactly two broker actions over independently admitted boot production/qualification maps; before/after complete map comparisons and full SDK projection equality are preserved.",
+      "The original six pure helpers and complete boot admission body are unchanged except the private function name.",
+      "Boot selection requires final1657 map while retaining its33-event attribution; broker selection adds exactly one SDK-cwd command with5parents2children.",
+      "Both phase runner and aggregate finalization require exact process/argv/cwd/raw-log joins, source inventory equality, normal process closure, and one final product build.",
+      "This module cannot admit itself, install source, release caches, or make the unavailable current N24 controller equivalent to the reference donor."
+    ],
+    "ASTEvidence": {
+      "gitBlob": "f2a7d142809a48f8564078bff7176037e1ed2e16",
+      "bytes": 815,
+      "sha256": "b47cd9d31e69e0d930cc46d7ed0c6782aaef4cc7b6f2bee41a2b415e1d073657",
+      "job": "3c00d8f2767c412dbfa164e39484cbae",
+      "returncode": 0,
+      "durationSeconds": 0.1,
+      "method": "exact tool-returned stdout",
+      "fullReadback": true
+    },
+    "runtimeExecution": 0
+  },
+  "referenceGraft": {
+    "edits": 13,
+    "completeForwardAndInverse": true,
+    "donor": {
+      "bytes": 42012,
+      "sha256": "c83aa7aaeeee3c40f488b93573c162f253cae8f18856594187cbd301b0c3acb6"
+    },
+    "derived": {
+      "bytes": 46137,
+      "sha256": "275f3ee6470ec1ad5b6f5645b296326b9d5e8d74ca63ff3d9d1f4d570d2971ba"
+    },
+    "pythonParsed": false,
+    "currentN24Changed": false,
+    "executed": false,
+    "fullPatchForwardInverseExact": true,
+    "published57PatchForwardInverseExact": true,
+    "unchangedNonMain": true,
+    "unchangedNestedHelpers": [
+      {
+        "name": "save_json",
+        "bytes": 461,
+        "sha256": "fad07786bb7ba7a22c1c9ab84e53d546af1a38c73d1825a3c0a07f0c6b3274e7"
+      },
+      {
+        "name": "save",
+        "bytes": 178,
+        "sha256": "0b3cc703b2c4083dd937816c208ae96cf1b11a016c79ac2a7647edbb70adee26"
+      },
+      {
+        "name": "checkpoint",
+        "bytes": 841,
+        "sha256": "83bbb4fedf598624f7fe38178cd2001146d47d113615e8f7ea73679e6b4e2d19"
+      },
+      {
+        "name": "cache_identity",
+        "bytes": 145,
+        "sha256": "134cc904c88a179bfa4b449781cc85b43bafbe666a66fe7cbf0b04de8722e4fa"
+      },
+      {
+        "name": "guard",
+        "bytes": 1091,
+        "sha256": "b350c57c1edbbc7485520870c24561037e66a53450b2630cd6d9069c6ea6f059"
+      },
+      {
+        "name": "observe",
+        "bytes": 171,
+        "sha256": "e74f3a879e3e678f9ce04d8f8c563714018a8cf448aa52a53d7aa061b1fe9dcc"
+      },
+      {
+        "name": "pin",
+        "bytes": 498,
+        "sha256": "5c55416bc7a167e2db156086ca1b1bb2befb697cfbf2b665edf1ed6aec9230cb"
+      },
+      {
+        "name": "mkdir_owned",
+        "bytes": 662,
+        "sha256": "f77ec42c68882e699da2d04890b70fcbd8388a98d1865fcd866f79b8a42d5f76"
+      },
+      {
+        "name": "command",
+        "bytes": 784,
+        "sha256": "4a01fd868f477e108ec54f6516885b186ed5aad28f88881c107c9eaf5c2988b3"
+      },
+      {
+        "name": "validate_inputs",
+        "bytes": 375,
+        "sha256": "76354345e4ccf1e743b48de70541d65267812cb102807c8d24fb677d4d9210bf"
+      },
+      {
+        "name": "fixture_directories",
+        "bytes": 684,
+        "sha256": "edc4b04aa3a4eaa7dc2dce6971e8565ab036fdd46deb9298cd65dd860b29c7f7"
+      },
+      {
+        "name": "interrupted",
+        "bytes": 124,
+        "sha256": "a20115b72404ef5e2bc26373f09c6c9f4db2d12ad0dfcfd300261396f5911e9c"
+      }
+    ]
+  },
+  "plan": {
+    "gitBlob": "e9a356ddac28bad459e8955b67c260d20664e1cb",
+    "bytes": 22812,
+    "sha256": "39fadf98c561b8ed6c1fb2919e5414c11410d17a79f2c2d34bfb280a1a06e616",
+    "assetCount": 24,
+    "assetBytes": 1967571,
+    "events": 64,
+    "ownedCommands": 10,
+    "mainSeconds": 900,
+    "rootFloorBytes": 2147483648,
+    "developmentFloorBytes": 536870912,
+    "all24AssetRowsEqualModule": true
+  },
+  "noCurrentN24ControllerChanged": true,
+  "noRuntimeReleaseGranted": true,
+  "noReferenceControllerSyntaxOrRuntimeClaim": true,
+  "limitations": [
+    "Only the import-only module has actual AST syntax evidence. Neither its functions nor the reference controller were executed.",
+    "The preserved attempt1 donor is not the actual latest N24 controller; current adoption, E Native117→Swift23 receipts, exclusive cache release and unchanged resource admission remain unsatisfied.",
+    "All64 selected events and final native/ABI/Apple/consumer qualification remain NOT_RUN."
+  ]
+}

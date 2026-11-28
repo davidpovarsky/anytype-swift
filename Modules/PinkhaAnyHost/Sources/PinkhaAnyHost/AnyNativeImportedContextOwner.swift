@@ -33,6 +33,8 @@ public struct AnyNativeImportedContext: Sendable {
     public let observedCatalogRecordCount: Int
     /// nil for a preservation-only open. A catalog carrier never fills this.
     public let content: AnyNativeImportedContentContext?
+    /// A separate completed supplement, admitted through current native reads.
+    public let ordinaryProperties: AnyNativeImportedOrdinaryPropertyContext?
     public var originalHistoryReconstructed: Bool { false }
     public var permitsMigrationReplay: Bool { false }
     public var qualifiesWholeSourceBehavior: Bool { false }
@@ -48,13 +50,15 @@ public actor AnyNativeImportedContextOwner {
     private let session: AnyApplicationSession
     private let client: AnyHTTPClient
     private let context: AnyNativeImportedContext
+    private let ordinaryJournalDirectory: URL?
     private var closed = false
     private var calls: [UUID: @Sendable () -> Void] = [:]
     private var drainWaiters: [CheckedContinuation<Void, Never>] = []
 
     private init(session: AnyApplicationSession, client: AnyHTTPClient,
-                 context: AnyNativeImportedContext) {
+                 context: AnyNativeImportedContext, ordinaryJournalDirectory: URL? = nil) {
         self.session = session; self.client = client; self.context = context
+        self.ordinaryJournalDirectory = ordinaryJournalDirectory
         workspace = context.workspace; generation = context.generation
     }
 
@@ -88,12 +92,39 @@ public actor AnyNativeImportedContextOwner {
             completedContent: contentReference)
     }
 
+    /// Explicitly adds the completed Ordinary14 namespace to the existing
+    /// content view. It opens no session, replays no migration, and never repairs
+    /// a missing journal. Both caller-supplied locators remain non-authoritative.
+    public static func openContent(
+        client: AnyHTTPClient, session: AnyApplicationSession,
+        preservationReference: AnyNativeImportedContextReference,
+        preservationJournalDirectory: URL,
+        contentReference: AnyNativeImportedContentContextReference,
+        ordinaryPropertyReference: AnyNativeImportedOrdinaryPropertyReference,
+        ordinaryPropertyJournalDirectory: URL,
+        archiveSource: AnyNativeImportedContextArchiveSource
+    ) async throws -> AnyNativeImportedContextOwner {
+        _ = try contentReference.binding(preservation: preservationReference)
+        _ = try ordinaryPropertyReference.binding(preservation: preservationReference)
+        return try await open(client: client, session: session, reference: preservationReference,
+            journalDirectory: preservationJournalDirectory, archiveSource: archiveSource,
+            completedContent: contentReference, completedOrdinary: ordinaryPropertyReference,
+            ordinaryJournalDirectory: ordinaryPropertyJournalDirectory)
+    }
+
     private static func open(
         client: AnyHTTPClient, session: AnyApplicationSession,
         reference: AnyNativeImportedContextReference, journalDirectory: URL,
         archiveSource: AnyNativeImportedContextArchiveSource,
-        completedContent: AnyNativeImportedContentContextReference?
+        completedContent: AnyNativeImportedContentContextReference?,
+        completedOrdinary: AnyNativeImportedOrdinaryPropertyReference? = nil,
+        ordinaryJournalDirectory: URL? = nil
     ) async throws -> AnyNativeImportedContextOwner {
+        guard (completedOrdinary == nil) == (ordinaryJournalDirectory == nil),
+              completedOrdinary == nil || completedContent != nil else {
+            throw AnyNativeImportedOrdinaryPropertyContextError.missingCheckpoint
+        }
+        if let completedOrdinary { _ = try completedOrdinary.binding(preservation: reference) }
         try requireScope(client: client, session: session, reference: reference)
         let context = try await session.perform { lease in
             guard lease.generation == session.generation,
@@ -139,12 +170,30 @@ public actor AnyNativeImportedContextOwner {
                   Data(preservation.archiveItemSourceKey.utf8) == Data(reference.archiveSourceKey.utf8) else {
                 throw AnyNativeImportedContextError.changedCheckpoint
             }
-            let definitions = try AnyNativeImportedDefinitionDirectory(plan: checkpoint.plan,
+            var definitions = try AnyNativeImportedDefinitionDirectory(plan: checkpoint.plan,
                 mappings: checkpoint.mappings,
                 supplementalCanonicalDefinitions: reference.supplementalCanonicalDefinitions)
             let directory = try AnyNativeImportedCatalogDirectory(plan: checkpoint.plan, mappings: checkpoint.mappings)
             let catalog = try AnyHeartNativeDefinitionCatalog(bundle: restored.bundle,
                 recoveredDefinitions: restored.recoveredDefinitions)
+            let ordinary: AnyNativeImportedOrdinaryPropertyContext?
+            if let completedOrdinary {
+                guard let ordinaryJournalDirectory else {
+                    throw AnyNativeImportedOrdinaryPropertyContextError.missingCheckpoint
+                }
+                try await admission.validate()
+                let ordinaryBinding = try completedOrdinary.binding(preservation: reference)
+                let savedOrdinary = try AnyDestinationMigrationExecutor.readCompletedCheckpoint(
+                    journalDirectory: ordinaryJournalDirectory, binding: ordinaryBinding)
+                let value = try AnyNativeImportedOrdinaryPropertyContext(reference: completedOrdinary,
+                    preservationReference: reference, bundle: restored.bundle,
+                    completedPreservationPlan: checkpoint.plan,
+                    completedPreservationMappings: checkpoint.mappings, checkpoint: savedOrdinary)
+                definitions = try value.merging(into: definitions)
+                try await admission.validateOrdinary(value, definitions: definitions,
+                    journalDirectory: ordinaryJournalDirectory)
+                ordinary = value
+            } else { ordinary = nil }
             let references = try AnyHeartNativeTypeReferencePlan(catalog: catalog, directory: definitions)
             let reader = try AnyNativeImportedCatalogStore(client: client, workspace: reference.binding.workspace)
             for entry in directory.entries {
@@ -168,7 +217,8 @@ public actor AnyNativeImportedContextOwner {
                 }
                 let value = try AnyNativeImportedContentContext(reference: completedContent,
                     preservationReference: reference, preservation: preservation, checkpoint: checkpoint,
-                    catalog: catalog, catalogCarrierObjectIDs: directory.entries.map(\.objectID))
+                    catalog: catalog, catalogCarrierObjectIDs: directory.entries.map(\.objectID),
+                    ordinaryProperties: ordinary)
                 let definitionsReader = try AnyNativeImportedDefinitionStore(client: client,
                     workspace: lease.workspace)
                 for entry in value.definitionDirectory.entries {
@@ -197,7 +247,7 @@ public actor AnyNativeImportedContextOwner {
                 engineBinding: run, savedPlan: checkpoint.plan, mappings: checkpoint.mappings,
                 sourceCatalog: catalog, definitionDirectory: definitions, catalogDirectory: directory,
                 typeReferences: references, observedCatalogRecordCount: directory.entries.count,
-                content: content)
+                content: content, ordinaryProperties: ordinary)
         }
         // The original session performs its last asynchronous run check before
         // this separate delivery observation. The final shared journal read and
@@ -216,9 +266,20 @@ public actor AnyNativeImportedContextOwner {
                     throw AnyNativeImportedContentContextError.changedContentCheckpoint
                 }
             }
-            // One completed checkpoint owns both views. This is still a local
-            // delivery observation, not atomic current native Space authority.
-            return AnyNativeImportedContextOwner(session: session, client: client, context: context)
+            if let ordinary = context.ordinaryProperties {
+                guard let ordinaryJournalDirectory else {
+                    throw AnyNativeImportedOrdinaryPropertyContextError.missingCheckpoint
+                }
+                try ordinary.requirePreservation(reference, checkpoint: finalCheckpoint)
+                let finalOrdinary = try AnyDestinationMigrationExecutor.readCompletedCheckpoint(
+                    journalDirectory: ordinaryJournalDirectory, binding: ordinary.savedPlan.binding)
+                try ordinary.requireCheckpoint(finalOrdinary)
+            }
+            // Original content remains the original182 checkpoint. The optional
+            // supplement is a distinct checkpoint. These are sequential local
+            // delivery observations, not an atomic pair or whole-Space proof.
+            return AnyNativeImportedContextOwner(session: session, client: client, context: context,
+                ordinaryJournalDirectory: ordinaryJournalDirectory)
         }
     }
 
@@ -229,6 +290,7 @@ public actor AnyNativeImportedContextOwner {
     ) async throws -> Value {
         try requireActive()
         let id = UUID(), session = self.session, client = self.client, captured = context
+        let ordinaryJournal = ordinaryJournalDirectory
         let task = Task<Value, Error> {
             try await session.perform { lease in
                 guard lease.generation == captured.generation,
@@ -240,7 +302,21 @@ public actor AnyNativeImportedContextOwner {
                 let admission = AnyImportedContextAdmission(client: client, lease: lease,
                                                              binding: captured.engineBinding)
                 try await admission.validate()
+                if let ordinary = captured.ordinaryProperties {
+                    guard let ordinaryJournal else {
+                        throw AnyNativeImportedOrdinaryPropertyContextError.missingCheckpoint
+                    }
+                    try await admission.validateOrdinary(ordinary, definitions: captured.definitionDirectory,
+                        journalDirectory: ordinaryJournal)
+                }
                 let value = try await operation(captured, lease)
+                if let ordinary = captured.ordinaryProperties {
+                    guard let ordinaryJournal else {
+                        throw AnyNativeImportedOrdinaryPropertyContextError.missingCheckpoint
+                    }
+                    try await admission.validateOrdinary(ordinary, definitions: captured.definitionDirectory,
+                        journalDirectory: ordinaryJournal)
+                }
                 try await admission.validate()
                 try await self.requireActive()
                 return value
@@ -251,7 +327,17 @@ public actor AnyNativeImportedContextOwner {
         return try await withTaskCancellationHandler {
             let value = try await task.value
             try requireActive()
-            let delivered = try await session.deliverImportedContextObservation { value }
+            let delivered = try await session.deliverImportedContextObservation {
+                if let ordinary = captured.ordinaryProperties {
+                    guard let ordinaryJournal else {
+                        throw AnyNativeImportedOrdinaryPropertyContextError.missingCheckpoint
+                    }
+                    let finalCheckpoint = try AnyDestinationMigrationExecutor.readCompletedCheckpoint(
+                        journalDirectory: ordinaryJournal, binding: ordinary.savedPlan.binding)
+                    try ordinary.requireCheckpoint(finalCheckpoint)
+                }
+                return value
+            }
             try requireActive()
             return delivered
         } onCancel: { task.cancel() }
@@ -367,6 +453,41 @@ private struct AnyImportedContextAdmission: Sendable {
             maximumResponseBytes: 65_536, authorize: { try await validate() })
         try await validate()
         return value
+    }
+
+    func validateOrdinary(_ ordinary: AnyNativeImportedOrdinaryPropertyContext,
+                          definitions: AnyNativeImportedDefinitionDirectory,
+                          journalDirectory: URL) async throws {
+        guard Self.sameWorkspace(ordinary.savedPlan.binding.workspace, lease.workspace),
+              AnyNativeImportedContextReference.sameBinding(definitions.binding, ordinary.namespace.binding),
+              definitions.supplementalPropertyBindings.count == 1,
+              AnyNativeImportedContextReference.sameBinding(
+                definitions.supplementalPropertyBindings[0], ordinary.savedPlan.binding) else {
+            throw AnyHostError.wrongWorkspace
+        }
+        try await validate()
+        let before = try AnyDestinationMigrationExecutor.readCompletedCheckpoint(
+            journalDirectory: journalDirectory, binding: ordinary.savedPlan.binding)
+        try ordinary.requireCheckpoint(before)
+        let driver = try await AnyDestinationNativeClients.open(client: client, plan: ordinary.savedPlan,
+            authorize: { try await validate() })
+        let reader = try AnyNativeImportedDefinitionStore(client: client, workspace: lease.workspace)
+        try await ordinary.observe(using: driver, authorize: { try await validate() }) { sourceID in
+            let observed = try await reader.read(sourceObjectID: sourceID,
+                directory: definitions, lease: lease)
+            guard Self.sameWorkspace(observed.workspace, lease.workspace),
+                  observed.generation == lease.generation,
+                  Data(observed.engineStartedAt.utf8) == Data(lease.engineStartedAt.utf8),
+                  observed.matchesOriginalDescriptor, observed.nativeCreationOutcome == "committed",
+                  observed.entry.intent.map({ AnyNativeImportedContextReference.sameBinding(
+                    $0.binding, ordinary.savedPlan.binding) }) == true else {
+                throw AnyNativeImportedOrdinaryPropertyContextError.changedDefinition(sourceID)
+            }
+        }
+        let after = try AnyDestinationMigrationExecutor.readCompletedCheckpoint(
+            journalDirectory: journalDirectory, binding: ordinary.savedPlan.binding)
+        try ordinary.requireCheckpoint(after)
+        try await validate()
     }
 
     func validateDocument(_ entry: AnyNativeImportedDocumentEntry,

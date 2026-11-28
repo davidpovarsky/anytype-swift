@@ -1,0 +1,428 @@
+--- published-boot33/embedded_boot_lifecycle.py
++++ proposed-broker64/embedded_boot_lifecycle_broker.py
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
++"""Source-only boot/lifecycle and broker extension for the N-owned qualifier.
+-"""Source-only embedded boot/lifecycle extension for the N-owned qualifier.
+ 
+ There is no entry point, source installer, cache-release path or process owner.
+ Only a separately reviewed N controller may call these functions, after its
+@@ -7,10 +7,11 @@
+ The exact preserved N24 attempt1 donor is c83aa7aa, not the unavailable current
+ attempt2. This extension does not make that donor executable or current.
+ 
++Three boot commands retain their17 parents/16 children; a fourth SDK command
++selects five broker parents/two children. Separate24/33/7 evidence must join.
++The four affected embedded and three affected broker parents run once; no
++untouched migration, Files, ACL or networking cohort is selected. Linux Go
++wrappers/core do not qualify generated gomobile or Apple bindings or an app.
+-Three additional existing-owner commands select 17 parents and 16 children.
+-The four affected original embedded parents run once; no untouched migration,
+-Files, ACL or networking cohort is selected. Linux Go wrappers/core are not
+-generated gomobile bindings, an Apple C ABI, a framework or an app acceptance.
+ """
+ import json
+ from pathlib import Path, PurePosixPath
+@@ -32,6 +33,16 @@
+ N24_MAP_PINS = json.loads("{\"production\":{\"bytes\":371724,\"sha256\":\"f5cee416ebf393079a3eedc7cf9890df64548628a90291803201ed0c6fdef645\"},\"qualification\":{\"bytes\":372692,\"sha256\":\"b757e6f81d7fadd76abfb0f6e96974896eee59c7dc62a6b984c021003bce7e47\"},\"sdkProduction\":{\"bytes\":148000,\"sha256\":\"4a756afeda551334ae012fd9256c0f7bec83321ab83bd5595b7ee99c90ef8f40\"}}")
+ 
+ 
++BROKER_PROTOCOL = 'pinkha-embedded-boot-lifecycle-broker-extension-v1'
++BROKER_SOURCE_COMMIT = 'dae5c971f61eda51e497df21a974b1c7fad29184'
++BROKER_COMPOSITION_COMMIT = '412d8e77e54ddd4c8f138643d4d4bab18c684aec'
++BOOT_EXTENSION_SOURCE_COMMIT = '5f86ea97cd4a9aee102163a5d7ff59b796e4c381'
++BROKER_ASSET_ROWS = json.loads("{\"broker64/native-production-source.json\":{\"bytes\":372320,\"sha256\":\"437ded56616ae2c342076aaad30e8bf56c0a6d5e2033a9146de1676985027c66\",\"mode\":384},\"broker64/native-qualification-source.json\":{\"bytes\":374439,\"sha256\":\"0b581b558f1750e62aeb3eb5aa1370fcced7aff03d2613085406ca7a05db4d14\",\"mode\":384},\"broker64/sdk-production-source.json\":{\"bytes\":148000,\"sha256\":\"95f841431592083020a4ec0d3283f475e4cdb0b45dbe8c3b3ad44b24be75f096\",\"mode\":384},\"broker64/sdk-qualification-source.json\":{\"bytes\":148458,\"sha256\":\"0f9600abbc7bc4ebab349e4e49704471f0f6f5bafc5cf34c2350dee4006fa5de\",\"mode\":384},\"broker64/ordered-overlay-manifest.json\":{\"bytes\":38292,\"sha256\":\"7a843d4b8a0b8d7f75588e1cbe803825f0136e9a31d34fe81ff7a8ea676b6a84\",\"mode\":384},\"broker64/test-selection64.json\":{\"bytes\":24225,\"sha256\":\"e58943629c5c6524e9b4ebe1a0b418842b1a87a4b8d9ebc81dfecafc7aaa1c07\",\"mode\":384},\"broker64/n24-selection.json\":{\"bytes\":3820,\"sha256\":\"87d1ca5bf68563f50d7557b350ffd15e0ffcd496db62d67ac3eba07111fb0590\",\"mode\":384},\"broker64/broker-selection.json\":{\"bytes\":1417,\"sha256\":\"e29ebd0347405792b6c6b560e0aec4a24fb8d7e7e597f7e997fc1f8ae71129f8\",\"mode\":384},\"payloads/quota-broker-cancellation/.runtime-artifacts/sdk-source/internal/files/broker/broker.go\":{\"bytes\":12218,\"sha256\":\"fe698597e58d3cd2aa4ce99bf00f59cbf101ce81c4b00f77d3539d483fc9ea9d\",\"mode\":384},\"payloads/quota-broker-cancellation/.runtime-artifacts/sdk-source/internal/files/broker/pinkha_quota_deadline_test.go\":{\"bytes\":3804,\"sha256\":\"3545314693fea848a66e55c3fb22b76981a6d30fe859b52f718a8288e4077100\",\"mode\":384},\"before/quota-broker-cancellation/.runtime-artifacts/sdk-source/internal/files/broker/broker.go\":{\"bytes\":12108,\"sha256\":\"25de187fc12f7e8a9e1aa89c420a47e2bbc9aac021740e0257f79c63245e4f34\",\"mode\":384}}")
++BROKER_PHASE = json.loads("{\"label\":\"broker-cancellation\",\"package\":\"github.com/anyproto/any-sync-sdk/internal/files/broker\",\"cwd\":\"sdk\",\"parents\":[\"TestPinkhaQuotaHedgePreCancelledSkipsFleet\",\"TestPinkhaQuotaHedgeEndsBeforeBlockedPeerReturns\",\"TestHedgeQuota\",\"TestHedgeQuota_Cancelled\",\"TestQuotaFrom_RemembersUsablePeer\"],\"tags\":[],\"testTimeout\":\"90s\",\"commandSeconds\":180,\"expectedEvents\":7}")
++BROKER_SUBCASES = json.loads("{\"TestPinkhaQuotaHedgeEndsBeforeBlockedPeerReturns\":[\"cancel\",\"deadline\"]}")
++EXPECTED_BROKER_SELECTION = json.loads("{\"protocol\":\"PINKHA_QUOTA_BROKER_CANCELLATION_SELECTION_V2\",\"status\":\"NOT_RUN\",\"package\":\"./internal/files/broker\",\"goRunPattern\":\"^(TestPinkhaQuotaHedgePreCancelledSkipsFleet|TestPinkhaQuotaHedgeEndsBeforeBlockedPeerReturns|TestHedgeQuota|TestHedgeQuota_Cancelled|TestQuotaFrom_RemembersUsablePeer)$\",\"newParents\":[\"TestPinkhaQuotaHedgePreCancelledSkipsFleet\",\"TestPinkhaQuotaHedgeEndsBeforeBlockedPeerReturns\"],\"affectedOriginalParents\":[\"TestHedgeQuota\",\"TestHedgeQuota_Cancelled\",\"TestQuotaFrom_RemembersUsablePeer\"],\"parents\":[\"TestPinkhaQuotaHedgePreCancelledSkipsFleet\",\"TestPinkhaQuotaHedgeEndsBeforeBlockedPeerReturns\",\"TestHedgeQuota\",\"TestHedgeQuota_Cancelled\",\"TestQuotaFrom_RemembersUsablePeer\"],\"children\":[\"TestPinkhaQuotaHedgeEndsBeforeBlockedPeerReturns/cancel\",\"TestPinkhaQuotaHedgeEndsBeforeBlockedPeerReturns/deadline\"],\"totalEvents\":7,\"newEvents\":4,\"affectedOriginalEvents\":3,\"expectedParentEvents\":5,\"expectedChildEvents\":2,\"expectedTotalEvents\":7,\"affectedOriginalSelectionReason\":\"hedgeQuota callee changed; original method bodies retained\",\"unselectedOriginalParents\":[\"TestPeerFirst\",\"TestSpaceQuotaOf\"],\"priorN24EventsNotReplayedOrRecounted\":24,\"fixtureAccounts\":0,\"networkUse\":0,\"arbitraryCallbackForcedTermination\":false}")
++EXPECTED_BROKER_ACTIONS = json.loads("[{\"action\":\"replace\",\"after\":{\"availablePathInThisCarrier\":\"Tools/AnyEngineValidation/native_quota_broker_cancellation_20261128/overlay/any/.runtime-artifacts/sdk-source/internal/files/broker/broker.go\",\"bytes\":12218,\"gitBlob\":\"49c06cd901fc33faca11fa2483c925dfc4898572\",\"nativeMode\":384,\"sha256\":\"fe698597e58d3cd2aa4ce99bf00f59cbf101ce81c4b00f77d3539d483fc9ea9d\",\"wholeBodyMatches\":true},\"before\":{\"bytes\":12108,\"nativeMode\":384,\"sha256\":\"25de187fc12f7e8a9e1aa89c420a47e2bbc9aac021740e0257f79c63245e4f34\"},\"beforeImage\":{\"availablePathInThisCarrier\":\"Tools/AnyEngineValidation/native_quota_broker_cancellation_20261128/originals/any/.runtime-artifacts/sdk-source/internal/files/broker/broker.go\",\"bytes\":12108,\"gitBlob\":\"5b83d54c9abd93132636e4b864c302a7279ab6e2\",\"nativeMode\":384,\"originCommit\":\"dae5c971f61eda51e497df21a974b1c7fad29184\",\"originPath\":\"Tools/AnyEngineValidation/native_quota_broker_cancellation_20261128/originals/any/.runtime-artifacts/sdk-source/internal/files/broker/broker.go\",\"sha256\":\"25de187fc12f7e8a9e1aa89c420a47e2bbc9aac021740e0257f79c63245e4f34\",\"wholeBodyMatches\":true},\"carrierCommit\":\"dae5c971f61eda51e497df21a974b1c7fad29184\",\"carrierPath\":\"Tools/AnyEngineValidation/native_quota_broker_cancellation_20261128/overlay/any/.runtime-artifacts/sdk-source/internal/files/broker/broker.go\",\"kind\":\"production\",\"ordinal\":30,\"sourceRelativePath\":\".runtime-artifacts/sdk-source/internal/files/broker/broker.go\",\"stage\":\"quota-broker-cancellation\"},{\"action\":\"add\",\"after\":{\"availablePathInThisCarrier\":\"Tools/AnyEngineValidation/native_quota_broker_cancellation_20261128/overlay/any/.runtime-artifacts/sdk-source/internal/files/broker/pinkha_quota_deadline_test.go\",\"bytes\":3804,\"gitBlob\":\"05a3d9ae46f8b48c3ff1bc474661f485dbe1984e\",\"nativeMode\":384,\"sha256\":\"3545314693fea848a66e55c3fb22b76981a6d30fe859b52f718a8288e4077100\",\"wholeBodyMatches\":true},\"before\":null,\"beforeImage\":null,\"carrierCommit\":\"dae5c971f61eda51e497df21a974b1c7fad29184\",\"carrierPath\":\"Tools/AnyEngineValidation/native_quota_broker_cancellation_20261128/overlay/any/.runtime-artifacts/sdk-source/internal/files/broker/pinkha_quota_deadline_test.go\",\"kind\":\"test\",\"ordinal\":31,\"sourceRelativePath\":\".runtime-artifacts/sdk-source/internal/files/broker/pinkha_quota_deadline_test.go\",\"stage\":\"quota-broker-cancellation\"}]")
++
+ def require(value, message):
+     if not value:
+         raise RuntimeError(message)
+@@ -105,7 +116,7 @@
+     return result
+ 
+ 
++def _admit_boot_composition(admitted, asset_root, pin, identity, result):
+-def admit_composition(admitted, asset_root, pin, identity, result):
+     """Read only13 fixed public assets through the N owner's immutable reader.
+ 
+     This never admits or reads the cache, a user account, a fixture, or a prior
+@@ -214,18 +225,179 @@
+                 manifest=combined_manifest, originalN24Manifest=original_manifest)
+ 
+ 
++def admit_composition(admitted, asset_root, pin, identity, result):
++    """Compose only the exact broker successor after the unchanged boot stage.
++
++    The preceding helper retains all original cache/source admission. This
++    additional stage reads only11 fixed public controls and full source bodies.
++    It makes no cache release, process, account, fixture or installation claim.
++    """
++    boot = _admit_boot_composition(admitted, asset_root, pin, identity, result)
++    asset_root = Path(asset_root)
++    public_raw, observed = {}, {}
++    for name, row in BROKER_ASSET_ROWS.items():
++        path = asset_root/closed_relative(name)
++        raw = pin(path, row['sha256'], max(1, row['bytes']), mode=row['mode'])
++        require(identity(raw) == {key: row[key] for key in ('bytes', 'sha256')},
++                'complete pinned broker composition asset')
++        public_raw[name] = raw
++        observed[name] = dict(path=str(path), **row)
++    production = json.loads(public_raw['broker64/native-production-source.json'])
++    qualification = json.loads(public_raw['broker64/native-qualification-source.json'])
++    sdk_production = json.loads(public_raw['broker64/sdk-production-source.json'])
++    sdk_qualification = json.loads(public_raw['broker64/sdk-qualification-source.json'])
++    ordered = json.loads(public_raw['broker64/ordered-overlay-manifest.json'])
++    selected = json.loads(public_raw['broker64/test-selection64.json'])
++    n24_selection = json.loads(public_raw['broker64/n24-selection.json'])
++    broker_selection = json.loads(public_raw['broker64/broker-selection.json'])
++    require(ordered['protocol'] == 'pinkha-final64-ordered-source-overlay-v1' and
++            ordered['status'] == 'SOURCE_ONLY_PROSPECTIVE' and
++            ordered['modesAreProspective'] is True and
++            ordered['noActiveSourceOrControllerMutation'] is True and
++            ordered['brokerSourceCommit'] == BROKER_SOURCE_COMMIT and
++            len(ordered['actions']) == 31 and
++            [row['ordinal'] for row in ordered['actions']] == list(range(1, 32)) and
++            ordered['actions'][-2:] == EXPECTED_BROKER_ACTIONS,
++            'exact31-action source-only manifest and its two broker actions')
++    require(broker_selection == EXPECTED_BROKER_SELECTION and
++            broker_selection['status'] == 'NOT_RUN' and
++            broker_selection['parents'] == BROKER_PHASE['parents'] and
++            broker_selection['goRunPattern'] ==
++                '^('+'|'.join(BROKER_PHASE['parents'])+')$' and
++            broker_selection['expectedTotalEvents'] == 7 and
++            broker_selection['fixtureAccounts'] == broker_selection['networkUse'] == 0,
++            'five broker parents and two children remain an unexecuted source selection')
++    require(n24_selection['protocol'] == 'pinkha-bound-http-acl24-source-selection-v1' and
++            n24_selection['status'] == 'NOT_RUN' and
++            n24_selection['parents'] == 9 and n24_selection['children'] == 15 and
++            n24_selection['expectedRunAndPassEvents'] == 24 and
++            n24_selection['actualNewTests'] == 0,
++            'complete original N24 source selection retains its attribution')
++    validate_map(production, 1648)
++    validate_map(qualification, 1657)
++    validate_map(sdk_production, 755)
++    validate_map(sdk_qualification, 757)
++    actions = EXPECTED_BROKER_ACTIONS
++    require(apply_actions(boot['production'], actions, False) == production and
++            apply_actions(boot['candidate'], actions, True) == qualification and
++            apply_actions(production, actions, False, inverse=True) == boot['production'] and
++            apply_actions(qualification, actions, True, inverse=True) == boot['candidate'],
++            'full broker forward and inverse recover both already-admitted boot maps')
++    require(projected_sdk(production) == sdk_production and
++            projected_sdk(qualification) == sdk_qualification,
++            'complete changed SDK755/757 projections are exact, not historical SDK equivalence')
++    before_name = 'before/quota-broker-cancellation/'+actions[0]['sourceRelativePath']
++    require(identity(public_raw[before_name]) == {
++                key: actions[0]['before'][key] for key in ('bytes', 'sha256')} and
++            boot['candidate']['files'][actions[0]['sourceRelativePath']] ==
++                {key: actions[0]['before'][key] for key in ('bytes', 'sha256')} and
++            boot['candidate']['modes'][actions[0]['sourceRelativePath']] ==
++                actions[0]['before']['nativeMode'],
++            'complete original broker beforeimage remains bound to admitted source')
++    overlay = dict(boot['overlay'])
++    boot_overlay = dict(overlay)
++    broker_names = {row['sourceRelativePath'] for row in actions}
++    require(len(broker_names) == 2 and not broker_names.intersection(overlay),
++            'only two broker paths extend the exact28 boot/N24 overlay paths')
++    for row in actions:
++        name = 'payloads/'+row['stage']+'/'+row['sourceRelativePath']
++        raw = public_raw[name]
++        require(identity(raw) == {key: row['after'][key] for key in ('bytes', 'sha256')},
++                'complete broker production/test source bodies')
++        overlay[row['sourceRelativePath']] = raw
++    require(len(boot_overlay) == 28 and len(overlay) == 30 and
++            {name: raw for name, raw in overlay.items() if name not in broker_names} == boot_overlay,
++            'all28 original overlay bodies remain byte-identical')
++    for name, raw in overlay.items():
++        require(identity(raw) == qualification['files'][name],
++                'all30 final overlay bodies equal the complete qualification map')
++
++    expected_events = []
++    for group in n24_selection['groups'].values():
++        for package, parents in group['packages'].items():
++            for parent in parents:
++                expected_events.append(dict(suite='N24', package=package, test=parent,
++                                            kind='parent', cwd=group['cwd'], tags=[]))
++            for child in n24_selection['expectedChildren']:
++                if child.split('/')[0] in parents:
++                    expected_events.append(dict(suite='N24', package=package, test=child,
++                                                kind='child', cwd=group['cwd'], tags=[]))
++    for phase in PHASES:
++        for parent in phase['parents']:
++            expected_events.append(dict(suite='boot-lifecycle33', package=phase['package'],
++                                        test=parent, kind='parent', cwd='any', tags=phase['tags']))
++            for child in SUBCASES.get(parent, ()):
++                expected_events.append(dict(suite='boot-lifecycle33', package=phase['package'],
++                    test=parent+'/'+child, kind='child', cwd='any', tags=phase['tags']))
++    for parent in BROKER_PHASE['parents']:
++        expected_events.append(dict(suite='broker7', package=BROKER_PHASE['package'],
++                                    test=parent, kind='parent', cwd='sdk', tags=[]))
++        for child in BROKER_SUBCASES.get(parent, ()):
++            expected_events.append(dict(suite='broker7', package=BROKER_PHASE['package'],
++                test=parent+'/'+child, kind='child', cwd='sdk', tags=[]))
++    require(selected['protocol'] == 'pinkha-n24-boot-broker64-source-selection-v1' and
++            selected['status'] == 'NOT_RUN' and selected['executionPlan'] is False and
++            selected['N24ControllerChanged'] is selected['E33ExtensionChanged'] is False and
++            selected['counts'] == {'parents': 31, 'children': 33, 'totalEvents': 64} and
++            selected['StartAddressStopOccurrences'] == 1 and
++            sorted(selected['events'], key=lambda row: (row['package'], row['test'])) ==
++            sorted(expected_events, key=lambda row: (row['package'], row['test'])) and
++            len({(row['package'], row['test']) for row in expected_events}) == 64 and
++            len({row['test'] for row in expected_events}) == 64 and
++            sum(row['kind'] == 'parent' for row in expected_events) == 31 and
++            sum(row['kind'] == 'child' for row in expected_events) == 33,
++            'one exact disjoint source selection24+33+7 with no old affected duplicate')
++    proof = {
++        'protocol': BROKER_PROTOCOL, 'assets': observed,
++        'sourceCommit': BROKER_SOURCE_COMMIT, 'compositionCommit': BROKER_COMPOSITION_COMMIT,
++        'preservedBootExtensionSourceCommit': BOOT_EXTENSION_SOURCE_COMMIT,
++        'completeForwardAndInverse': True, 'fullSDKProjections': True,
++        'sourceOnlyInputWasNotAnExecution': True,
++        'priorBootProductionMap': ASSET_ROWS['native-production-source.json'],
++        'priorBootQualificationMap': ASSET_ROWS['native-qualification-source.json'],
++        'productionMap': BROKER_ASSET_ROWS['broker64/native-production-source.json'],
++        'qualificationMap': BROKER_ASSET_ROWS['broker64/native-qualification-source.json'],
++        'sdkProductionMap': BROKER_ASSET_ROWS['broker64/sdk-production-source.json'],
++        'sdkQualificationMap': BROKER_ASSET_ROWS['broker64/sdk-qualification-source.json'],
++        'productionFiles': 1648, 'qualificationFiles': 1657,
++        'sdkProductionFiles': 755, 'sdkQualificationFiles': 757,
++        'additionalSourcePaths': sorted(broker_names), 'effectiveOverlayPaths': 30,
++        'newNativeAccountOrNetworkAcceptanceClaim': False
++    }
++    result['brokerSourceAdmission'] = proof
++    result['combinedSourceSelection'] = {
++        'source': BROKER_ASSET_ROWS['broker64/test-selection64.json'],
++        'counts': dict(parents=31, children=33, events=64),
++        'events': expected_events, 'sourceOnlyWasNotAnExecution': True
++    }
++    manifest = {
++        'protocol': 'pinkha-native-n24-plus-boot-lifecycle-plus-broker-source-manifest-v1',
++        'status': 'SOURCE_COMPOSED_REQUIRES_ACTUAL_QUALIFICATION',
++        'originalN24Manifest': boot['originalN24Manifest'],
++        'priorBootCompositionManifest': boot['manifest'],
++        'brokerCancellation': proof,
++        'fullSourceCounts': dict(base=1638, production=1648, qualification=1657,
++                                sdkProduction=755, sdkQualification=757)
++    }
++    return dict(boot, production=production, candidate=qualification, overlay=overlay,
++                manifest=manifest)
++
++
+ def run_selected(source, source_before, driver, python, offline, environment, *,
+                  command, source_inventory, checkpoint, frozen, identity,
+                  parse_events, normal, result, save):
+     """Use only the caller's f9de command owner, deadlines and original budgets."""
+     proof = result.get('embeddedBootLifecycleSourceAdmission', {})
++    broker_proof = result.get('brokerSourceAdmission', {})
+     require(proof.get('completeForwardAndInverse') is True and
+             proof.get('qualificationFiles') == 1656 and
++            broker_proof.get('completeForwardAndInverse') is True and
++            broker_proof.get('qualificationFiles') == 1657 and
+             result.get('RootCacheReleaseAcknowledgedByCaller') is True and
+             identity(canonical(source_before)) == {
++                key: BROKER_ASSET_ROWS['broker64/native-qualification-source.json'][key]
+-                key: ASSET_ROWS['native-qualification-source.json'][key]
+                 for key in ('bytes', 'sha256')},
++            'complete explicit final source and upstream ownership admission')
+-            'complete extension source and upstream ownership admission')
+     require(str(offline) == OFFLINE_PATH and
+             result['OSPolicy']['helperSHA256'] == OFFLINE_SHA and
+             result['OSPolicy']['appliedBeforeEveryTestCommand'] is True and
+@@ -236,6 +408,7 @@
+     selected_result = {
+         'protocol': PROTOCOL, 'status': 'RUNNING_SELECTED_COMPONENTS',
+         'sourceSelection': ASSET_ROWS['selection.json'], 'phases': {},
++        'fullQualificationMap': BROKER_ASSET_ROWS['broker64/native-qualification-source.json'],
+         'privateControlledRunnerParents': 6, 'realMixedExportManagedParents': 1,
+         'affectedExistingStandaloneParents': 4, 'additionalNativeProductBuilds': 0,
+         'generatedAppleABIQualified': False, 'gomobileGeneratedBindingQualified': False,
+@@ -244,7 +417,7 @@
+     result['embeddedBootLifecycle'] = selected_result
+     for phase in PHASES:
+         require(source_inventory(source, checkpoint) == source_before,
++                'complete physical1657-source map before each boot selection')
+-                'complete physical1656-source map before each extension selection')
+         package = phase['package']
+         methods = phase['parents']
+         require(len(methods) == len(set(methods)), 'unique exact parent names')
+@@ -292,55 +465,153 @@
+     return selected_result
+ 
+ 
++def run_broker_selected(source, source_before, driver, python, offline, environment, *,
++                        command, source_inventory, checkpoint, frozen, identity,
++                        parse_events, normal, result, save):
++    """Run the one explicitly added SDK phase through the same N-owned callback."""
++    proof = result.get('brokerSourceAdmission', {})
++    require(proof.get('completeForwardAndInverse') is True and
++            proof.get('fullSDKProjections') is True and proof.get('qualificationFiles') == 1657 and
++            result.get('RootCacheReleaseAcknowledgedByCaller') is True and
++            result['embeddedBootLifecycle']['status'] == 'PASS_SELECTED33_REQUIRES_OUTER_FINALIZATION' and
++            identity(canonical(source_before)) == {
++                key: BROKER_ASSET_ROWS['broker64/native-qualification-source.json'][key]
++                for key in ('bytes', 'sha256')},
++            'exact final source and separately completed boot33 phase evidence')
++    require(str(offline) == OFFLINE_PATH and
++            result['OSPolicy']['helperSHA256'] == OFFLINE_SHA and
++            result['OSPolicy']['appliedBeforeEveryTestCommand'] is True and
++            result['OSExecPython']['path'] == str(python) and
++            result['goToolchain']['driver']['path'] == str(driver) and
++            environment['CGO_ENABLED'] == '1' and environment['GOTOOLCHAIN'] == 'local' and
++            environment['GOWORK'] == 'off' and environment['GOFLAGS'] == '-mod=readonly' and
++            environment['GOPROXY'] == environment['GOSUMDB'] == 'off',
++            'same admitted OS denial, physical toolchain and offline read-only module environment')
++    source = Path(source)
++    sdk = source/SDK_PREFIX
++    require(sdk.is_absolute() and sdk.resolve(strict=True) == sdk and
++            identity(canonical(projected_sdk(source_before))) == {
++                key: BROKER_ASSET_ROWS['broker64/sdk-qualification-source.json'][key]
++                for key in ('bytes', 'sha256')},
++            'exact physical SDK cwd and complete final SDK757 source projection')
++    phase = BROKER_PHASE
++    before = len(result['processes'])
++    require(before == 7, 'one broker command follows the exact N24 and three boot commands')
++    selected_result = {
++        'protocol': BROKER_PROTOCOL, 'status': 'RUNNING_SELECTED_BROKER_COMPONENTS',
++        'sourceSelection': BROKER_ASSET_ROWS['broker64/broker-selection.json'],
++        'newParentNames': EXPECTED_BROKER_SELECTION['newParents'],
++        'affectedOriginalParentNames': EXPECTED_BROKER_SELECTION['affectedOriginalParents'],
++        'newEvents': 4, 'affectedOriginalEvents': 3,
++        'additionalNativeProductBuilds': 0, 'fixtureAccounts': 0,
++        'arbitraryPeerCallbackForcedTerminationClaimed': False
++    }
++    result['brokerCancellation'] = selected_result
++    save()
++    require(source_inventory(source, checkpoint) == source_before,
++            'complete final1657-source map before broker selection')
++    methods = phase['parents']
++    require(len(methods) == len(set(methods)) == 5, 'five exact broker parent names')
++    argv = [str(python), '-B', str(offline), '--exec', str(driver),
++            'test', '-json', '-count=1', '-p', '2', '-parallel=1',
++            '-timeout='+phase['testTimeout'], '-run', '^('+'|'.join(methods)+')$', phase['package']]
++    log, row = command(phase['label'], argv, sdk, environment, phase['commandSeconds'])
++    require(normal(row) and len(result['processes']) == before+1 and
++            result['processes'][-1] == row and row['argv'] == argv and row['cwd'] == str(sdk),
++            'one exact normally closed broker command in physical SDK cwd')
++    require(Path(log) == source.parent/phase['label']/'original.log',
++            'broker log remains in the caller-owned label directory')
++    raw = frozen(log, 16*MIB)
++    require(row['logSHA256'] == identity(raw)['sha256'],
++            'broker event stream bound to the actual owned command row')
++    events = parse_events(raw, {phase['package']: methods}, subcases=BROKER_SUBCASES)
++    expected = {(phase['package'], parent) for parent in methods}
++    for parent in methods:
++        expected.update((phase['package'], parent+'/'+child)
++                        for child in BROKER_SUBCASES.get(parent, ()))
++    actual = [(event['package'], event['name']) for event in events['methods']]
++    require(events['runs'] == events['passes'] == len(actual) == len(set(actual)) == 7 and
++            events['skips'] == events['failures'] == 0 and set(actual) == expected,
++            'exact five-parent/two-child broker run/pass set with no skips or extras')
++    require(source_inventory(source, checkpoint) == source_before,
++            'complete final source remains unchanged after broker selection')
++    selected_result.update(status='PASS_SELECTED7_REQUIRES_OUTER_FINALIZATION',
++        processIndex=before, argv=argv, cwd=str(sdk),
++        log=dict(path=str(log), **identity(raw)), events=events,
++        actualParents=5, actualSubcases=2, actualRuns=7, actualPasses=7, skips=0,
++        actualMethods=[{'package': package, 'name': name} for package, name in sorted(actual)])
++    save()
++    return selected_result
++
++
+ def finalize_combined(result, normal):
++    """Join separate24/33/7 evidence after the N owner's one build/module check."""
+-    """Called only after the N owner's one product build and module check."""
+     extension = result['embeddedBootLifecycle']
++    broker = result['brokerCancellation']
+     original = result['actualMethods']
+     require(extension['status'] == 'PASS_SELECTED33_REQUIRES_OUTER_FINALIZATION' and
+             extension['actualRuns'] == extension['actualPasses'] == 33 and
+             extension['actualParents'] == 17 and extension['actualSubcases'] == 16 and
+             extension['skips'] == 0 and
+             original['parents'] == 9 and original['subcases'] == 15 and
++            original['runs'] == original['passes'] == 24 and original['skips'] == 0 and
++            broker['status'] == 'PASS_SELECTED7_REQUIRES_OUTER_FINALIZATION' and
++            broker['actualRuns'] == broker['actualPasses'] == 7 and
++            broker['actualParents'] == 5 and broker['actualSubcases'] == 2 and broker['skips'] == 0 and
++            broker['newEvents'] == 4 and broker['affectedOriginalEvents'] == 3,
++            'separate complete N24, boot33 and broker7 evidence')
+-            original['runs'] == original['passes'] == 24 and original['skips'] == 0,
+-            'separate complete N24 and embedded33 evidence')
+     original_events = []
+     for label in ('server-units', 'fresh-sdk', 'fresh-http'):
++        original_events.extend((row['package'], row['name']) for row in result[label]['methods'])
++    boot_events = [(row['package'], row['name']) for row in extension['actualMethods']]
++    broker_events = [(row['package'], row['name']) for row in broker['actualMethods']]
++    all_events = original_events+boot_events+broker_events
++    source_events = [(row['package'], row['test'])
++                     for row in result['combinedSourceSelection']['events']]
+-        original_events.extend((x['package'], x['name']) for x in result[label]['methods'])
+-    additional = [(x['package'], x['name']) for x in extension['actualMethods']]
+     require(len(original_events) == len(set(original_events)) == 24 and
++            len(boot_events) == len(set(boot_events)) == 33 and
++            len(broker_events) == len(set(broker_events)) == 7 and
++            len(all_events) == len(set(all_events)) == len(source_events) == len(set(source_events)) == 64 and
++            set(all_events) == set(source_events),
++            'exact disjoint64-event set equals the caller-pinned final source selection')
++    require(len(result['processes']) == 10 and all(normal(row) for row in result['processes']) and
++            result['nativeProductBuilds'] == 1 and result['sourceFiles'] == 1657 and
+-            len(additional) == len(set(additional)) == 33 and
+-            not set(original_events).intersection(additional),
+-            'disjoint original24 and new selected33 event sets')
+-    require(len(result['processes']) == 9 and all(normal(row) for row in result['processes']) and
+-            result['nativeProductBuilds'] == 1 and result['sourceFiles'] == 1656 and
+             result['productionFiles'] == 1648 and
++            result['sdkSourceFiles'] == 757 and result['sdkProductionFiles'] == 755,
++            'ten normal owned commands and one coherent complete-source product')
+-            result['sdkSourceFiles'] == 756 and result['sdkProductionFiles'] == 755,
+-            'nine normal owned commands and one coherent complete-source product')
+     require(set(extension['phases']) == {phase['label'] for phase in PHASES} and
++            [extension['phases'][phase['label']]['processIndex'] for phase in PHASES] == [4, 5, 6] and
++            broker['processIndex'] == 7,
++            'three boot commands then one broker command precede the sole native build')
+-            [extension['phases'][phase['label']]['processIndex'] for phase in PHASES] == [4, 5, 6],
+-            'three extension commands remain between N24 tests and the sole native product build')
+     for phase in PHASES:
+         evidence = extension['phases'][phase['label']]
+         row = result['processes'][evidence['processIndex']]
+         require(row['argv'] == evidence['argv'] and row['cwd'] == result['sourceRoot'] and
+                 row['logSHA256'] == evidence['log']['sha256'],
++                'each boot phase remains joined to its exact owned command and raw log')
++    broker_row = result['processes'][7]
++    require(broker_row['argv'] == broker['argv'] and
++            broker_row['cwd'] == broker['cwd'] == str(Path(result['sourceRoot'])/SDK_PREFIX) and
++            broker_row['logSHA256'] == broker['log']['sha256'],
++            'broker phase remains joined to exact SDK cwd, command and raw log')
+-                'each selected phase remains joined to its exact owned command and raw log')
+     driver = result['goToolchain']['driver']['path']
+     binary = result['nativeBinary']['path']
++    require(result['processes'][8]['argv'] == [driver, 'build', '-p', '2', '-o', binary, './cmd/any'] and
++            result['processes'][9]['argv'] == [driver, 'version', '-m', binary] and
++            result['processes'][8]['cwd'] == result['processes'][9]['cwd'] == result['sourceRoot'],
++            'one original native build and exact module observation remain last')
+-    require(result['processes'][7]['argv'] == [driver, 'build', '-p', '2', '-o', binary, './cmd/any'] and
+-            result['processes'][8]['argv'] == [driver, 'version', '-m', binary] and
+-            result['processes'][7]['cwd'] == result['processes'][8]['cwd'] == result['sourceRoot'],
+-            'one original native build and its exact module observation remain last')
+     for index, label in enumerate(('server-units', 'fresh-sdk', 'fresh-http'), 1):
+         require(result['processes'][index]['logSHA256'] == result['rawLogs'][label]['sha256'],
+                 'all original N24 parsed event streams remain joined to their owned rows')
+     aggregate = {
++        'parents': 31, 'subcases': 33, 'runs': 64, 'passes': 64, 'skips': 0,
++        'n24Events': 24, 'embeddedBootLifecycleEvents': 33, 'brokerCancellationEvents': 7,
++        'affectedExistingEmbeddedParents': 4, 'affectedExistingBrokerParents': 3,
++        'newBrokerEvents': 4,
+-        'parents': 26, 'subcases': 31, 'runs': 57, 'passes': 57, 'skips': 0,
+-        'n24Events': 24, 'embeddedBootLifecycleEvents': 33,
+-        'affectedExistingEmbeddedParents': 4,
+         'untouchedC13Runtime18MigrationFilesMethodsSelected': 0,
++        'methods': [{'package': package, 'name': name} for package, name in sorted(all_events)],
++        'nativeCLIAccountProof': False, 'generatedAppleABIQualified': False,
++        'arbitraryPeerCallbackForcedTerminationClaimed': False
+-        'methods': [{'package': p, 'name': n} for p, n in sorted(original_events+additional)],
+-        'nativeCLIAccountProof': False, 'generatedAppleABIQualified': False
+     }
+     result['combinedActualMethods'] = aggregate
+     return aggregate

@@ -1,0 +1,11 @@
+--- a/REFERENCE_ONLY/graft-before-message-precision.py
++++ b/REFERENCE_ONLY/graft-after-message-precision.py
+@@ -629,7 +629,7 @@
+             frozen=frozen, identity=identity, parse_events=parse_events, normal=normal,
+             result=result, save=save)
+         require(fixture_directories() == plan['fixtureMethodDirectories'],
++                'same four declared immediate N24 fixture directory names after extension')
+-                'extension cannot add, replace or read the four original N24 private fixture roots')
+         binary = output/'any'
+         result['mutations'].append({'operation': 'build-one-coherent-native-product', 'state': 'dispatching'})
+         save()
