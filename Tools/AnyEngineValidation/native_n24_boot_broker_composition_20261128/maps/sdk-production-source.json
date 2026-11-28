@@ -1,0 +1,3781 @@
+{
+  "files": {
+    ".gitignore": {
+      "bytes": 454,
+      "sha256": "a8f8b4f956427c49a9f8497f4669bd00eb8b91112d146041c9d2cceabb8968e7"
+    },
+    "LICENSE.md": {
+      "bytes": 1071,
+      "sha256": "35f1ad54b34dffa2f34179178bc5e0781c7be05724fc7a37f2fbecdf4bc74dd9"
+    },
+    "README.md": {
+      "bytes": 9872,
+      "sha256": "a55471982b2ce157d28253bc08ef99bebedf4717cde8116faf4b1eb4cc91be07"
+    },
+    "account_limits.go": {
+      "bytes": 10461,
+      "sha256": "994379ebb48ec98a43b88955a0231fa24138b31e973dbd24f0335b9b3ac4fde1"
+    },
+    "account_limits_test.go": {
+      "bytes": 17158,
+      "sha256": "8c1d1c8efdf93a6afabb638edaa699446e32e7c778f9783fa38244cba1334d45"
+    },
+    "auth/doc.go": {
+      "bytes": 642,
+      "sha256": "03fa7114bc5ef3ade7a47c97ddf696f54d974e1c50d67894700f2e33e4cfe263"
+    },
+    "auth/file.go": {
+      "bytes": 10117,
+      "sha256": "358f776c1e8a3d0729f8f76b9a6d58b1d57eaaf7a3e8b984321cd2348f37b971"
+    },
+    "auth/file_test.go": {
+      "bytes": 9362,
+      "sha256": "554699ba44bcbfc090d70873de1090f10d2aaf9186e588e7d81b3b8e621e9b94"
+    },
+    "auth/key.go": {
+      "bytes": 925,
+      "sha256": "8382079e576a85d5414b4106e3a9dc0a354fbc9550d86d46ecd3cc7dc41a24e4"
+    },
+    "auth/mnemonic.go": {
+      "bytes": 4378,
+      "sha256": "9626941726d3a4928ab8600ddddbdcdc0b1a71249aa23ad3edbd423958b836b3"
+    },
+    "auth/mnemonic_test.go": {
+      "bytes": 2868,
+      "sha256": "e6efa8608e5e5a55af2c1b1372092651b97e7436503cbebcbf6ec853cd9da9dd"
+    },
+    "auth/provider.go": {
+      "bytes": 1063,
+      "sha256": "c81a40dfeb666059e919b42d29c362a56ebff6f3cb6e8726cc8cec92eb96b11f"
+    },
+    "config/config.go": {
+      "bytes": 15019,
+      "sha256": "7605b889f5920fe8f7a96dde295d50ba8d838b96094d573bd1035cf5f6020338"
+    },
+    "config/config_test.go": {
+      "bytes": 3524,
+      "sha256": "2c00cb39767393d2acc2a531f53985445da7dc0f9c708a96e20f84d7b61aad0f"
+    },
+    "config/doc.go": {
+      "bytes": 989,
+      "sha256": "92a1ca2d4e54954b1072060bb2b7835a35fc1c555535450b43d74a283c80de64"
+    },
+    "doc.go": {
+      "bytes": 806,
+      "sha256": "b3971babd91f9397a1649a33f7d44636053b69cafd3ef06f9a491223980449c5"
+    },
+    "docs/account-discovery.md": {
+      "bytes": 8730,
+      "sha256": "f916371fc7fe35359152a99ef6fab73b738151745b30ff95e325c40bfe79ff61"
+    },
+    "docs/auth-module.md": {
+      "bytes": 4529,
+      "sha256": "a9dfa37b988a0d7873aa56f56a98d277abd5fa716ac848f33aa8dabeef9c7735"
+    },
+    "docs/bundles.md": {
+      "bytes": 21322,
+      "sha256": "a249e93a8af7a9f628b7730c7dc24433432980cc311b50439618424ee50b429c"
+    },
+    "docs/change-index-proposal.md": {
+      "bytes": 5165,
+      "sha256": "6889cb1aee437d042f16d932a61f7ef7e5f75c79bc4e4c19188667665500dc5e"
+    },
+    "docs/common-context.md": {
+      "bytes": 4559,
+      "sha256": "e65a62c9a3f053799b5828e5b3aec143712c0950bf757c4ddc358f4329e3bea2"
+    },
+    "docs/crdt-spec.md": {
+      "bytes": 53768,
+      "sha256": "176fd51eaf9dec9e6e7c169292d8f7969d636e1885bfd3e5ed4bfe063be2c821"
+    },
+    "docs/crdt.md": {
+      "bytes": 13060,
+      "sha256": "aac1d88866ae4f8b2168da7d079868fdbf2a01ff93658a7e9b6b6b48f500b6f2"
+    },
+    "docs/data-structure.md": {
+      "bytes": 29632,
+      "sha256": "59c6b6d54dafc5f3bb8e0951f155c54fae027c684f304f04331b763772bc7c12"
+    },
+    "docs/direct-add-invites.md": {
+      "bytes": 5103,
+      "sha256": "eb54d4e4f55d2b7a2afb6d92b5e2a8743324286c5a24775fbe1e0fcdc8ae337d"
+    },
+    "docs/files.md": {
+      "bytes": 13045,
+      "sha256": "c986ba82a342595b69d6443d3db9ef0ecc8b84cb83e8790b4f4a756600b41338"
+    },
+    "docs/global-p2p.md": {
+      "bytes": 10519,
+      "sha256": "ef4635eed176a36b20319f6ba2c6fda049f345c6b62239610bfbcf8fe12e1de6"
+    },
+    "docs/identities.md": {
+      "bytes": 14285,
+      "sha256": "5645c2d33bcbe9aae00bd9b303cd07c6bd831fd37ed9d730f188bd9f8d86e2c7"
+    },
+    "docs/object.md": {
+      "bytes": 8425,
+      "sha256": "526668c54db52b3445d019cd008bffd79be49fb20e04cbacbeb0300c7b3aa1cf"
+    },
+    "docs/one-to-one-spaces.md": {
+      "bytes": 23216,
+      "sha256": "b7e5619d8b0cb81541306a9bc8e52bc77c56b0f5053813519ee6cca8d8cf9892"
+    },
+    "docs/pinkha-prepared-property-updates.md": {
+      "bytes": 3015,
+      "sha256": "0a4fd52d845dc6621ea0006e4aa083fd36a5f5172fbf308d1d7b725e511e7899"
+    },
+    "docs/read-tracking-proposal.md": {
+      "bytes": 18269,
+      "sha256": "6a31947ffe341b98484ae401518b996b7ae4240b1dc46af54154e45a5027dc19"
+    },
+    "docs/scoped-properties-proposal.md": {
+      "bytes": 10861,
+      "sha256": "30bcbf7233c7ec3ac63a5f516c410151b2ec12c5e4ff62b604deee50aafac58d"
+    },
+    "docs/space-index-proposal.md": {
+      "bytes": 3948,
+      "sha256": "976b5b15d4552ba7dc484fed848ca552a2af33c8e2db687fcfa949e9d39466b5"
+    },
+    "docs/space.md": {
+      "bytes": 23577,
+      "sha256": "ee1c09ae8b2afe6e0da9168d5b7b51fee1245771c16b711bec1eaa60ee12f266"
+    },
+    "docs/sync-status-proposal.md": {
+      "bytes": 6493,
+      "sha256": "6bfb7facb4fad5ad95725f00398a9af3d3ff05ca635db35b0c0315ad127a42d3"
+    },
+    "docs/tech-space.md": {
+      "bytes": 18012,
+      "sha256": "3faab27442937a42cd14f1895894005a36ab3aae6f6d5a0e7723e0503028d270"
+    },
+    "docs/types-properties-proposal.md": {
+      "bytes": 10073,
+      "sha256": "61ef3b7dc8524a90d617450b743ce6a8cdf1e0bef11df9407e5ab8735fd84388"
+    },
+    "docs/user-datasets.md": {
+      "bytes": 38905,
+      "sha256": "8b67b49eda697749f201c8022d2f96d3d8b500b0138569f1502850fee683c941"
+    },
+    "docs/version-history-proposal.md": {
+      "bytes": 15588,
+      "sha256": "ff634dd51173b6876c55689cb5ea290e2bfce5f52d71df94ccbe272d08e72707"
+    },
+    "docs/versioning.md": {
+      "bytes": 9533,
+      "sha256": "264611b74a9560db48dbd06df312c208c633cd4aa092685481e1a72936287aff"
+    },
+    "e2e/account_icon_test.go": {
+      "bytes": 10061,
+      "sha256": "a8958154392c3f9b6a83ec9356055dc37dd4f7243aedbc19ec53cc45c0bd6e88"
+    },
+    "e2e/account_limits_test.go": {
+      "bytes": 5686,
+      "sha256": "6daeb139643089a28c3a77cc4cf1328c6ee8354c96a88393e27747395de13227"
+    },
+    "e2e/account_scope_test.go": {
+      "bytes": 7290,
+      "sha256": "cdba1709b60bec8870840a181b4b8c8b52affe981dce35027dd4baff166a3148"
+    },
+    "e2e/acl_add_invite_test.go": {
+      "bytes": 7789,
+      "sha256": "1193ec4564575c653bb3e1d46635de1b499c7dbb9472af8324fc05f855e3401d"
+    },
+    "e2e/acl_test.go": {
+      "bytes": 30484,
+      "sha256": "252d7716753ecd7604f78b7d30dc1bbcdb9c5691c06db290350fe92c47a66c61"
+    },
+    "e2e/aggregate_test.go": {
+      "bytes": 5492,
+      "sha256": "c71e0c13ae982ae2492ef1d75f3162d1d9e312a2e623a9ffd468a1fb1f8a2738"
+    },
+    "e2e/broker_embed_test.go": {
+      "bytes": 7027,
+      "sha256": "d787370157c32907d385e2476022711b670abbe34d61d87283fd80105eebd522"
+    },
+    "e2e/bundles_test.go": {
+      "bytes": 34291,
+      "sha256": "d16d769d3185fc43900fe552b35f332b17159e895bba5a7ebfcda3d1c797fc76"
+    },
+    "e2e/bundles_uninstall_test.go": {
+      "bytes": 9428,
+      "sha256": "a8ee9bc99659d9cff60c8fdc8b82846164e0536baacaffea1eeb815ea317f0af"
+    },
+    "e2e/change_index_test.go": {
+      "bytes": 6644,
+      "sha256": "4706c9e1945fa492e7cb0397b3056778ee8fc22fd1a567598d7c60a937023789"
+    },
+    "e2e/cold_sync_test.go": {
+      "bytes": 13697,
+      "sha256": "5dce2e3492d2034b2166d0efc8ed822a76b2f0e369613812c2c3f3933421cc25"
+    },
+    "e2e/collection_gc_test.go": {
+      "bytes": 5242,
+      "sha256": "33c65082355229b9189d34f8635ea109b2463b5af98f02a6b2a2bc9da03d77d5"
+    },
+    "e2e/collections_test.go": {
+      "bytes": 45254,
+      "sha256": "a33f870acbffda87ec9e0d9f37f1259b59d9890c501adc5d054fe75c7cc647d2"
+    },
+    "e2e/confdump_test.go": {
+      "bytes": 1676,
+      "sha256": "fc0ae17609c8904788afafc4e9f9e256032b37c94ab70e81132a02b13d428da7"
+    },
+    "e2e/crdt_version_test.go": {
+      "bytes": 3535,
+      "sha256": "92c40d25eb8e33d091d121631878f4c3ef4d1cf508a2da2db31abc7d421066b3"
+    },
+    "e2e/dataset_indexes_test.go": {
+      "bytes": 73739,
+      "sha256": "96c600ab321a04d7aae83eef0ca62b7200af530c7ad9a265b06a1767239a7d52"
+    },
+    "e2e/datetime_test.go": {
+      "bytes": 4059,
+      "sha256": "c907e6bc412e355332e9691a6a2ec065093696da1b6b2732883766904c9f5ce7"
+    },
+    "e2e/debug_api_test.go": {
+      "bytes": 3920,
+      "sha256": "6a72de8ce0fccb53b70f4afdbac0a5cbf5245ec9c2d93529cbebf30e9ee211af"
+    },
+    "e2e/deletion_feed_test.go": {
+      "bytes": 5165,
+      "sha256": "64c60ad4f18209250f64c5bed07227abe329a7df841224acbee6ff4304e1e1d5"
+    },
+    "e2e/derive_child_test.go": {
+      "bytes": 5473,
+      "sha256": "3dd792e7d1459ed9a0b1adde4a9c8396b7fe92105326b243640662b8890ced5e"
+    },
+    "e2e/derive_idempotent_test.go": {
+      "bytes": 5970,
+      "sha256": "8c4595b51c5cada3534ddc33bef056b7a2173ef04b6fce91d4a81d8bd473bc10"
+    },
+    "e2e/devices_claim_test.go": {
+      "bytes": 4611,
+      "sha256": "757e44195e284e40e1d1587013aaa806423c345cb88a50b2a873aa01684b02d1"
+    },
+    "e2e/files_v2_delete_test.go": {
+      "bytes": 6701,
+      "sha256": "f41facf3e4c8c0f2f921d6fcf4a5e70b0d70bb0d9a0c47f29536137bec568ab7"
+    },
+    "e2e/files_v2_deleted_owner_test.go": {
+      "bytes": 7045,
+      "sha256": "8e405f06cf44de4db6aebe0637f348074bf3bb8b1089bc8447b4fd411f068295"
+    },
+    "e2e/files_v2_derived_owner_test.go": {
+      "bytes": 7741,
+      "sha256": "0aa8def7f87082731eb6d9f4fd43cc01d628c9eaae9ab24ff2a42a67ef27fa92"
+    },
+    "e2e/files_v2_download_test.go": {
+      "bytes": 8359,
+      "sha256": "e1234a29548af475379af657be08850843607514b548cba7361a08e8dce89868"
+    },
+    "e2e/files_v2_offload_test.go": {
+      "bytes": 5032,
+      "sha256": "27d01e1e0cdae345cb571cccc1e9d02d8e0e6f25c720602909e37219d5936a5c"
+    },
+    "e2e/files_v2_public_read_test.go": {
+      "bytes": 4546,
+      "sha256": "84cbed02a6a13c6deb7734dda9b52e7ef066e36a9037606c3cb5bedb2fbb73c4"
+    },
+    "e2e/files_v2_restart_test.go": {
+      "bytes": 7218,
+      "sha256": "1c0b882c203340b1565869d7a1a8fa73aef68e8320aebfed82d63ebe489170ae"
+    },
+    "e2e/files_v2_sdk_test.go": {
+      "bytes": 6603,
+      "sha256": "1e236dfafb5f5a6b8984a2b5e6bf06a2660dc065a63093bf0e2f332662040856"
+    },
+    "e2e/files_v2_status_test.go": {
+      "bytes": 5449,
+      "sha256": "1513f26eecd4d6655f104837fd568a71bc9f18a636bccceacc41c03f11019940"
+    },
+    "e2e/files_v2_surface_test.go": {
+      "bytes": 5704,
+      "sha256": "e60a6cd7ce5de6f66f28af3cf47019b3d3497eea40fc3de8fdf0509a1ec3be46"
+    },
+    "e2e/files_v2_test.go": {
+      "bytes": 17265,
+      "sha256": "dbde60669ea98773194379e72dce1ccfc86adbc2d8de987c028b9955b7c00461"
+    },
+    "e2e/guest_key_test.go": {
+      "bytes": 9439,
+      "sha256": "a75c46250a541e004157e6233f02767d85ebe2faefe8025c51b9e079e7e4abc9"
+    },
+    "e2e/history_bench_test.go": {
+      "bytes": 15807,
+      "sha256": "83deeec3155273bcd51fb6eac118327500550c48dfc3fc12ecfd93497407bc4b"
+    },
+    "e2e/history_test.go": {
+      "bytes": 12457,
+      "sha256": "f56de4dd86cddbdb647a2d8c963daa0f8ce8a11a5074141fd523a312350ad4ca"
+    },
+    "e2e/identities_test.go": {
+      "bytes": 5689,
+      "sha256": "484d1fc46a0fcd364938c67079e4f10a273244085ebeaa72353478f0a1318ac0"
+    },
+    "e2e/invite_decline_test.go": {
+      "bytes": 3564,
+      "sha256": "cf9989df8b6c6dbe84385e4d30f89104b9ac05105beb6ab232cac23504a02561"
+    },
+    "e2e/invite_delete_propagation_test.go": {
+      "bytes": 9898,
+      "sha256": "834bd1e579d3eba906b7c8135b2c3d7f7ae85953c77aa9c8d8bd13bf21adb625"
+    },
+    "e2e/invite_sync_test.go": {
+      "bytes": 10630,
+      "sha256": "f5813f388b211b73c67c4db563f06bd54069628264840958b77892dce0e2df53"
+    },
+    "e2e/join_cancel_test.go": {
+      "bytes": 6687,
+      "sha256": "e8da3467594e3c3a59deff2831388c1aa9d6295a11854225ae10a2366e251e98"
+    },
+    "e2e/join_defs_first_test.go": {
+      "bytes": 11396,
+      "sha256": "d9f10041af5313f2ef02bf45f508940505569e35dd3f10ec0a773f921ebce057"
+    },
+    "e2e/join_ended_heal_test.go": {
+      "bytes": 4992,
+      "sha256": "cc9701d009ce1cf1bdc525f6eb3038f59ccba65374b9b0718c96e8acea9607fa"
+    },
+    "e2e/join_name_first_test.go": {
+      "bytes": 4396,
+      "sha256": "5d62b1f98f6cd7b3c9c293cc4591a76705085553fce93c30696351cc736bbe09"
+    },
+    "e2e/join_synced_test.go": {
+      "bytes": 12876,
+      "sha256": "87beab237500c9d509b7ad50d4e80829030d01816e92792fb4fe0eb821ea1604"
+    },
+    "e2e/local.yml": {
+      "bytes": 1137,
+      "sha256": "a3fe3c21144c2c82afa03b58014752c6bca6e5a9f3e69a1bc1b2b38415434756"
+    },
+    "e2e/local_scope_records_test.go": {
+      "bytes": 9188,
+      "sha256": "ffc704b8d8c9161c94ef8c285951af9082b257b6043897c6246c680d7bc600d5"
+    },
+    "e2e/local_scope_test.go": {
+      "bytes": 7231,
+      "sha256": "c63a66a60bbac24e43b4524d44870a6f12564871341f458e284435de99f735c5"
+    },
+    "e2e/modified_at_test.go": {
+      "bytes": 9584,
+      "sha256": "5a380286c013691dc0611901876382cfa8f39e6b9e96c256859ba54a7836b89d"
+    },
+    "e2e/modified_by_test.go": {
+      "bytes": 6369,
+      "sha256": "22a99629f88e406da651def662f96ca27f390f6f9678ae76bfa6b6bb15b39c9d"
+    },
+    "e2e/onetoone_inbox_replay_test.go": {
+      "bytes": 10378,
+      "sha256": "2e3e3472ad5661bd77f2102703a193b4d89d1208a57284f19945bb1b876236b0"
+    },
+    "e2e/onetoone_inbox_test.go": {
+      "bytes": 4708,
+      "sha256": "62ef4141a93432c4e3f2bcba0776669820fe3a7878f4a093dda5e7bfbd1e9082"
+    },
+    "e2e/onetoone_keys_test.go": {
+      "bytes": 18503,
+      "sha256": "bdc2fbf9a76998267d7358faed2245706ad4ed2ae807e2a36bccb65f306b67ee"
+    },
+    "e2e/onetoone_test.go": {
+      "bytes": 15424,
+      "sha256": "da73efd365bdc03e1d767ad3447d7f17fc8803146344eb3bd66a3ae3c3dbb4c2"
+    },
+    "e2e/own_role_test.go": {
+      "bytes": 1976,
+      "sha256": "a51f14229de8405e9400698c791278815d180d50c1ea45b870e67d9ab3200c96"
+    },
+    "e2e/p2p_account_test.go": {
+      "bytes": 8698,
+      "sha256": "50f6ce9fd477eaec09b7f720db68458e44690031d142eddda0109a76ab0370ba"
+    },
+    "e2e/p2p_files_test.go": {
+      "bytes": 4882,
+      "sha256": "b99773f70c96ac79608684200bacd834012600d3075bd37628ba0f4a41937823"
+    },
+    "e2e/p2p_global_test.go": {
+      "bytes": 14901,
+      "sha256": "f3767a7cf10ef726020f89a8ca858db0b1b011a06e34028f812808aceb067f1f"
+    },
+    "e2e/p2p_test.go": {
+      "bytes": 13434,
+      "sha256": "881d10ccc0b90e33659083eca4ada94d23e2e5982de0c94b3e9d26f3b477b457"
+    },
+    "e2e/payloads_test.go": {
+      "bytes": 9262,
+      "sha256": "e9797455ef8a800d906550f0bcf5e29e81e10b905d7cac2091374282f050b6c3"
+    },
+    "e2e/property_xformat_test.go": {
+      "bytes": 8240,
+      "sha256": "cc72da1cd4febf21e7a00d2c533a15279966d8dc59cadc9b221d915f36bd7edd"
+    },
+    "e2e/pubsub_test.go": {
+      "bytes": 12023,
+      "sha256": "e0a9c4b28527d1676baad5311dd9dc175f48b61f964fcdfa79b5b9a018b32de0"
+    },
+    "e2e/push_keys_test.go": {
+      "bytes": 6599,
+      "sha256": "7636f4299c0406ccbb615ef044c96d9abee0e80f356d39c3eccfd13be6be5c14"
+    },
+    "e2e/query_subscribe_cold_load_test.go": {
+      "bytes": 6986,
+      "sha256": "64ce4478004d18243b336dd613106d107ab213af0c0d8cae2d32d38df3f611a6"
+    },
+    "e2e/query_subscribe_replay_test.go": {
+      "bytes": 6243,
+      "sha256": "fa4ada53aa90276f59ce9ee7915c44da6e40eb08cae5ad33700347b8b2569e1a"
+    },
+    "e2e/query_subscribe_test.go": {
+      "bytes": 18674,
+      "sha256": "15b473319d6a5ac51b45d7a0ccd9839485a5f719b44d797859c8f8c52e4f1cb7"
+    },
+    "e2e/read_state_purge_test.go": {
+      "bytes": 2780,
+      "sha256": "df892b2eb467703b2a2956feefc371d2625e919bf08fbea6e6ea9358a8fcaf85"
+    },
+    "e2e/read_tracking_test.go": {
+      "bytes": 17964,
+      "sha256": "9ce45e24c6cf8bba62a873eeb26db8ab45b7e1407d7ffbd251458d87740b04cc"
+    },
+    "e2e/reconcile_unpushed_test.go": {
+      "bytes": 8708,
+      "sha256": "bf75e1c179c04c40a91a5239d06a1d0efb15e2bb2a54c91fe4e2bcd3cbfbf32a"
+    },
+    "e2e/reindex_test.go": {
+      "bytes": 11188,
+      "sha256": "ece705dd422eb36f12493d0fd6b68587320364d9d3f3f11c3328ccd725db88d6"
+    },
+    "e2e/sdk_test.go": {
+      "bytes": 18499,
+      "sha256": "4d283fc357513d3dbcedcd962d61bda665fd5df2ba6ca4a99b8c7ff19523c689"
+    },
+    "e2e/selective_sync_test.go": {
+      "bytes": 7986,
+      "sha256": "deba563935f1475c7346c50ea6940ead8f09b67701d3ea3feb82bb3b9828b9e5"
+    },
+    "e2e/shared_datasets_space_test.go": {
+      "bytes": 47011,
+      "sha256": "28fc17847394d9ae9656e46919017272dcfa518591183deaad081898c788a7c1"
+    },
+    "e2e/shared_datasets_test.go": {
+      "bytes": 79592,
+      "sha256": "b8e0b9f53c0b4b6fb8ff5a16bf1a16e0ed84a32e1c803d9fd3ed3d2ad94abfe8"
+    },
+    "e2e/space_delete_live_test.go": {
+      "bytes": 5229,
+      "sha256": "4d7ce5e00b89ba26501cfa41ab0787e75381957a21c726713d60787015e77ee2"
+    },
+    "e2e/space_delete_test.go": {
+      "bytes": 5605,
+      "sha256": "a5578c64afda0fc5b19f35e34c8157113debc1a30a7bd372def42a32dccbe930"
+    },
+    "e2e/space_index_test.go": {
+      "bytes": 9151,
+      "sha256": "93988f6886f6b94ee7aa4d54d1533fcdc682afbf6bf9d92c40391688620bac01"
+    },
+    "e2e/subscribe_test.go": {
+      "bytes": 12828,
+      "sha256": "a8e4178bed53e35300c83dd263d723e032bffedf6a75be90ed83f91dcba263ad"
+    },
+    "e2e/sync_status_node_drop_test.go": {
+      "bytes": 5964,
+      "sha256": "c3ee762567503492277038f74af20829ad124c4a956bbbee82afdfd9fb743efe"
+    },
+    "e2e/tech_bundles_test.go": {
+      "bytes": 19637,
+      "sha256": "355fd70a3e9bbd5c2f35e0ce23c914fbd919fff7f41d346cc28d32eaf56e6dfb"
+    },
+    "e2e/techspace_inbound_test.go": {
+      "bytes": 3523,
+      "sha256": "01ae111563a79966a2e5935cec875b8806437a348d3936f1edd0eefaa5bb82ef"
+    },
+    "e2e/techspace_query_test.go": {
+      "bytes": 4161,
+      "sha256": "8e4873221782158df44ac7719520999200d7ec51307099425f8e89dd8e684c2e"
+    },
+    "e2e/type_flags_test.go": {
+      "bytes": 4540,
+      "sha256": "d28000556d94ed36949bc019944a296906586157cb0ebbb6673c2fcd4731d2ab"
+    },
+    "e2e/type_parts_static_test.go": {
+      "bytes": 13337,
+      "sha256": "51059bd134404e26b9ab77d2106c46e98fb2691d45120c008fb5baa026c44d26"
+    },
+    "e2e/type_parts_test.go": {
+      "bytes": 11618,
+      "sha256": "e8ac09dfbf3e7bc64791fd909cac4a6b15e87bb5e3da9dafe2f2936de2dd034f"
+    },
+    "e2e/user_datasets_delete_by_none_test.go": {
+      "bytes": 3365,
+      "sha256": "e59aaf4ea4a2a3462d0d3200a027fab2b7303672a98e8cf534227ae3d75d5606"
+    },
+    "e2e/user_datasets_test.go": {
+      "bytes": 21432,
+      "sha256": "4dfc5e14efcf9dac40d008a4c30a82356e4eb2c51080c3fb84f388e596b04218"
+    },
+    "examples/basic/main.go": {
+      "bytes": 7374,
+      "sha256": "cf77bd24a8eeee312aaf4d46910edf1e0d9ee7799cf80abfc6bc7cac0e542cef"
+    },
+    "files_cache_effect_authority_fresh_linux_test.go": {
+      "bytes": 4882,
+      "sha256": "d0bec436057d1fbfd7e8e2adb1c3fccc2ea479e478a10df2dd42b73b70367e9b"
+    },
+    "files_metadata_authority_fresh_linux_test.go": {
+      "bytes": 4858,
+      "sha256": "0f42150f6a71c7c96865614dfdb1631060353cd2204adb5eae61a0e23766608c"
+    },
+    "files_readguard_fresh_linux_test.go": {
+      "bytes": 20481,
+      "sha256": "31759517cd3f033e0c44f53b3938af0faf6db4f75efe53c5df7fd2d67fb88409"
+    },
+    "go.mod": {
+      "bytes": 6001,
+      "sha256": "c1b547a1f77dc3382e074d64b2247e8a71d83d2905f9f8e989facabf2e90f825"
+    },
+    "go.sum": {
+      "bytes": 34431,
+      "sha256": "1056c0d902304995ac2d2acb16a361996b644ff93f322dcabcc1b101c361d052"
+    },
+    "handler/handler.go": {
+      "bytes": 26519,
+      "sha256": "7aa17384d70552897cebdc01fd39a6cb2c2b230b15929ea6bb73f43ac5ce77d4"
+    },
+    "handler/localguard.go": {
+      "bytes": 668,
+      "sha256": "848afc67387631330b962ca379e470b789a0bf6e5c77bba12ed975de91025a8e"
+    },
+    "handler/validation_test.go": {
+      "bytes": 3146,
+      "sha256": "9be89e0137ed1a3effd571cf7a617adb881da17d8f4b3c6d2e9970ef170a4c15"
+    },
+    "internal/accountvalues/accountvalues.go": {
+      "bytes": 8341,
+      "sha256": "480302869fc53a5c1af753b7a250d41b905fffa5b372a1082205d995a6301b5a"
+    },
+    "internal/accountvalues/accountvalues_test.go": {
+      "bytes": 7728,
+      "sha256": "e22ba9663c2aca48e0378c439485b2eda72575ce7dca2b83dcd14022626506ad"
+    },
+    "internal/anyencx/anyencx.go": {
+      "bytes": 1426,
+      "sha256": "ce50ac80125c6113c36cde8c73eec083a876901797990cc0243f179866d9fd88"
+    },
+    "internal/anysyncx/account.go": {
+      "bytes": 707,
+      "sha256": "8dccaa7b4145d0075436d70047e3d8ea839df2e75e093dbfa3568cf080511e93"
+    },
+    "internal/anysyncx/aclrefresh.go": {
+      "bytes": 2101,
+      "sha256": "9b825f844292472288725a75e017bfaadae951d2228a6821d97a65a4f634053c"
+    },
+    "internal/anysyncx/aclrefresh_test.go": {
+      "bytes": 6033,
+      "sha256": "f2aac7e5cf69a7318ca46d6cdf29403a30f0fcaff80090f06c2ec91ecca8b639"
+    },
+    "internal/anysyncx/app.go": {
+      "bytes": 41920,
+      "sha256": "c2cb2d1e6c353a84895fb3095902813086d509fe6e99cb6a23be264853c0361e"
+    },
+    "internal/anysyncx/app_test.go": {
+      "bytes": 1940,
+      "sha256": "65fb89cbda51fd27dc97de3ff46c156ea86fa99706ccbef4ff81614d353f54cf"
+    },
+    "internal/anysyncx/config.go": {
+      "bytes": 5901,
+      "sha256": "f391b404f8302cb611ac553af89458f9b13d9fbdb430bf191b9ebd6cf96c2d0a"
+    },
+    "internal/anysyncx/config_test.go": {
+      "bytes": 3177,
+      "sha256": "c87be99515e81da5b7df976f323baa366b2d77cdd4034adc7ce545c6eb07ef48"
+    },
+    "internal/anysyncx/credential.go": {
+      "bytes": 1578,
+      "sha256": "04c2e0673f459d2c6264f1450b6a491479b5d29ba7a4ad2b21881ca118610aae"
+    },
+    "internal/anysyncx/discoverykeys.go": {
+      "bytes": 5668,
+      "sha256": "46eb27ce0aae0f6b5161922e87a441dba1dd30eb39f9927406cbf3beefc87f52"
+    },
+    "internal/anysyncx/discoverykeys_test.go": {
+      "bytes": 2215,
+      "sha256": "e632d0f6ac0e5a86f04db358942fefa37a64abb8cbf2b8a71f3a22f850c016f6"
+    },
+    "internal/anysyncx/doc.go": {
+      "bytes": 799,
+      "sha256": "b6f8f81f894a81169cb8d0a5e4b5f4d7d75d5dd469ea2b90746795a128c8c705"
+    },
+    "internal/anysyncx/file_read_lifetime.go": {
+      "bytes": 629,
+      "sha256": "2fe10e00d6b20ef3a5e35b9f3e3c2fb5d7d5ac343427882f97ce2123aeb84bfe"
+    },
+    "internal/anysyncx/file_read_lifetime_test.go": {
+      "bytes": 3845,
+      "sha256": "ba77f19e19bcc820518aa7beea93272602fec12cc915d70856b1019aac61ae93"
+    },
+    "internal/anysyncx/globalspace.go": {
+      "bytes": 1119,
+      "sha256": "27a8c4d16febaf907c7ec8a1e115b7e7ddadfd7cc46441e6257e14c7695df81d"
+    },
+    "internal/anysyncx/globalsubs.go": {
+      "bytes": 2873,
+      "sha256": "a163467440a4a342f261b805337a2d6210b33d39d67ea60d387de65ace22c98c"
+    },
+    "internal/anysyncx/headcache.go": {
+      "bytes": 2093,
+      "sha256": "678faa4d6dc940ac7d571bf6710200c5792f93c2a6dc82605f4fe4d2db7731c7"
+    },
+    "internal/anysyncx/headcache_test.go": {
+      "bytes": 3362,
+      "sha256": "43964673dc1ab712183b9475f03755e9f045fe06cdfd322f846dee03bf2e5691"
+    },
+    "internal/anysyncx/kvdispatcher.go": {
+      "bytes": 2818,
+      "sha256": "7ef7a9e1165e88322bf528a8e1ff27fad725f5748a2fe880694d7d31804c69e5"
+    },
+    "internal/anysyncx/localonly.go": {
+      "bytes": 1066,
+      "sha256": "7f3ca6cb0ec777dfbf2dbda5e71d50469ce81aaeb00884bf8a34e0ab2e1e6b6f"
+    },
+    "internal/anysyncx/p2pserver.go": {
+      "bytes": 5683,
+      "sha256": "e8a762452a30915f714f8e7d007f72f4b9800d96e43809649397ddcbafefbf80"
+    },
+    "internal/anysyncx/p2pserver_test.go": {
+      "bytes": 6439,
+      "sha256": "f2d5824af4ff55fa06c6f55e6dee5ca7d48938f09c3514444b3495e133a80f9e"
+    },
+    "internal/anysyncx/p2pstate_test.go": {
+      "bytes": 3734,
+      "sha256": "aca6926108e29dbf87a1dd3502957f4d2febc3b7cecaa11d7aecbc3cfc26892d"
+    },
+    "internal/anysyncx/peerlimit.go": {
+      "bytes": 4242,
+      "sha256": "334a02fc5a72af182388769195dfbebd6a9b8e139195d1f6caf1076e1f120c18"
+    },
+    "internal/anysyncx/peerlimit_test.go": {
+      "bytes": 4082,
+      "sha256": "dbe905f9a6f21aadcdc7dcf0e6849c65227b975222a82b1ecec045d733d13f6c"
+    },
+    "internal/anysyncx/peermanager.go": {
+      "bytes": 34394,
+      "sha256": "f4fafe3619ad6e487eef4e67ce24ede38341e193479d6e1b02cbba62e41c077d"
+    },
+    "internal/anysyncx/peermanager_global_test.go": {
+      "bytes": 10162,
+      "sha256": "512e285a2a4c1db2628d4136be9507cf248a1468bab4d3fe8a73633f8e3378b3"
+    },
+    "internal/anysyncx/peermanager_globalsub_test.go": {
+      "bytes": 8149,
+      "sha256": "7c71e6ec4a9a5531584f0e010b2b391e0931dc35e58e62f9a07100b9d9cb7e81"
+    },
+    "internal/anysyncx/peermanager_internal_test.go": {
+      "bytes": 1508,
+      "sha256": "41581efef667ebbdd96498942f9055e2a93dc2832c3de15352046dad3f85ad18"
+    },
+    "internal/anysyncx/peermanager_localpeers_test.go": {
+      "bytes": 5995,
+      "sha256": "f7a2e0555180f8fd7ac1722c5794547b691ce4657b51dadd0bcb277a7d290c35"
+    },
+    "internal/anysyncx/peermanager_park_test.go": {
+      "bytes": 5092,
+      "sha256": "189140344b95d7c2db5e44ec6400ca8ceb90b252996e01e5c051fd68ff380c90"
+    },
+    "internal/anysyncx/peerprogress.go": {
+      "bytes": 1985,
+      "sha256": "9fb4d3e94dc3419c1e9bedb93a3dfb4a39c2a4c567fe3930e93dad4ea5e65c9b"
+    },
+    "internal/anysyncx/peerprogress_test.go": {
+      "bytes": 8796,
+      "sha256": "2da1cd6150bb0da4c0e09bd11dd40dd046834ef5a48628b8820b4f7afa4cb4b8"
+    },
+    "internal/anysyncx/presence.go": {
+      "bytes": 1064,
+      "sha256": "a4615a9e4394956211bfd7573215fc37a1e770642002cbd8715d42fc098b9a40"
+    },
+    "internal/anysyncx/presence_test.go": {
+      "bytes": 1828,
+      "sha256": "b913989c369342f2328f45a9321185f1bcb5dd854a32eaa6b5a5ed02f02a651a"
+    },
+    "internal/anysyncx/pubsub.go": {
+      "bytes": 11917,
+      "sha256": "eb8dc0045f352a2b8b674490304f88ab9ee45c6f5cbbccac6b026eb78619180f"
+    },
+    "internal/anysyncx/pubsub_global_test.go": {
+      "bytes": 1025,
+      "sha256": "314f24df26b961aeb1dbd6f81de59b8691cd7515885bf037abf3cd8180bacb2e"
+    },
+    "internal/anysyncx/pubsub_test.go": {
+      "bytes": 2860,
+      "sha256": "b40607ec5bf8b5aa315105a076187c3b3676132962793a4b7d69982e6d5ecf4c"
+    },
+    "internal/anysyncx/spacecache.go": {
+      "bytes": 12048,
+      "sha256": "0542f2675042f94fdf5963d95ae3092e0462775b43471c1be8e0a14d1ce49f66"
+    },
+    "internal/anysyncx/spacecache_test.go": {
+      "bytes": 4407,
+      "sha256": "3a3ea7486c3e74c93281b74ae1835647839943b4c1431dba5a2dbaf3910c3945"
+    },
+    "internal/anysyncx/spacedelete.go": {
+      "bytes": 2278,
+      "sha256": "ec208e77c66c1af486cfc6314417febe81ac391919716b271cdc3f654d49af7f"
+    },
+    "internal/anysyncx/spacesync.go": {
+      "bytes": 21642,
+      "sha256": "bec1e59ea9b685181ba3de34485b41b6bfe1448a761b95a3e21a6daeecce1b35"
+    },
+    "internal/anysyncx/spacesync_globalsub_test.go": {
+      "bytes": 6352,
+      "sha256": "0994601260a9239ba13089392eae6ce98ec4d66773d676813496d5722decce78"
+    },
+    "internal/anysyncx/storage.go": {
+      "bytes": 17938,
+      "sha256": "7634752b336fc90efb8305c2a5c63701f3fef158f9878087630e5168e52da3ac"
+    },
+    "internal/anysyncx/storage_test.go": {
+      "bytes": 11878,
+      "sha256": "06ec731989e87d9f050eb8c67e95f9d10f1bcf088e140450c2d55f1b104d250c"
+    },
+    "internal/anysyncx/syncjob.go": {
+      "bytes": 12821,
+      "sha256": "23f6f64fd666b4b4e5d93f2c3d194875fbec88bd35aafb0de79588341ac9bba2"
+    },
+    "internal/anysyncx/syncjob_test.go": {
+      "bytes": 18384,
+      "sha256": "acf06b2fcf031a63a834ae70b71cd052c603b31510c851ebb324d26d1d1e5ffe"
+    },
+    "internal/anysyncx/transport.go": {
+      "bytes": 867,
+      "sha256": "557ba8f47bae30739c068c3cd86cf4765cbfdb36e1e3cd54c70cfe5083f1e88f"
+    },
+    "internal/anysyncx/transport_test.go": {
+      "bytes": 585,
+      "sha256": "a3e9000445392604a0aa7b076804218596b411c6ccd1f6af71c00df0c6bedae7"
+    },
+    "internal/anysyncx/treefetch.go": {
+      "bytes": 6069,
+      "sha256": "59d1bd58511e1f8b62c7148d072b2d3e51f43c998092c29d72177ff6dae1c31c"
+    },
+    "internal/anysyncx/treemanager.go": {
+      "bytes": 6125,
+      "sha256": "f73b63d41ca00e6d5092d62f25a0e62aedfe8e308a1eae1e087200cbc8bc1494"
+    },
+    "internal/anysyncx/treemanager_test.go": {
+      "bytes": 2724,
+      "sha256": "1e7321739b0782ecffa0560d3f830ff36cb032e9e84f25de0703459b44b34ec9"
+    },
+    "internal/anysyncx/treesyncer.go": {
+      "bytes": 24115,
+      "sha256": "f17c216c0adb8f544be27dd06e7c31658a2979b0b72923ad07736ebbe843ab5e"
+    },
+    "internal/anysyncx/treesyncer_test.go": {
+      "bytes": 17376,
+      "sha256": "b1958b9919e157004c1d26a2f3b6c46e9b820dfd9b57b3ca40f31eba7c6dd9b2"
+    },
+    "internal/bookmarkcreate/frame.go": {
+      "bytes": 7359,
+      "sha256": "d28dee6d85e232333b5924e97d1f72455103e452d683bb17b4efca6222c6ae81"
+    },
+    "internal/bookmarkcreate/frame_test.go": {
+      "bytes": 5823,
+      "sha256": "adfb92fcf8d3f6806d679177e590b25261e3ef9b4412faf0eaf578a44a1f4eb9"
+    },
+    "internal/commitguard/create.go": {
+      "bytes": 2566,
+      "sha256": "b8ffee3166890a0251ba56355b6de7185692595952a7cae8af80e75e2679187b"
+    },
+    "internal/commitguard/create_test.go": {
+      "bytes": 5425,
+      "sha256": "96c6d52b1a386c7abad2af2b396df6ae5c1652c885bdc1ced85a5abc30ec38c7"
+    },
+    "internal/commitguard/guard.go": {
+      "bytes": 10669,
+      "sha256": "7c1599c8af423ed00661f6f0eb02d429f6313fdf50c1770e1b9546140a00a258"
+    },
+    "internal/commitguard/guard_test.go": {
+      "bytes": 9324,
+      "sha256": "8e202c50fbc92f40a60512b2e204102f6fd11250ea2a376993681db73e63e01f"
+    },
+    "internal/commitguard/prepared.go": {
+      "bytes": 6290,
+      "sha256": "13c4429c666d2450b6a1a544afec6a8b535549655437ca46fd5609e18ee16a1c"
+    },
+    "internal/commitguard/prepared_definition.go": {
+      "bytes": 1545,
+      "sha256": "e8ef3500fb9c1be27785f51915fe2b8345f8047fa1c8e32433985e95006b2ba0"
+    },
+    "internal/commitguard/prepared_definition_test.go": {
+      "bytes": 1705,
+      "sha256": "8c70333dfc1fa173ebda444d1c9c8cd54dfe85820410b594a7c07639ada05081"
+    },
+    "internal/commitguard/prepared_file.go": {
+      "bytes": 6714,
+      "sha256": "da752998d430e5498d6976bf035ddea0a68b8eee3e80fa6b80e8be86037864ef"
+    },
+    "internal/commitguard/prepared_inline_file.go": {
+      "bytes": 8302,
+      "sha256": "d5cb4dff66a9d71e1f57593c1e696a0033b3b3da99388da22daabbb27aa59618"
+    },
+    "internal/commitguard/prepared_inline_file_test.go": {
+      "bytes": 8601,
+      "sha256": "6d1b9477a7709c1166edc882e4e05529dc3470dc8d5bd02d3b660acbe5036109"
+    },
+    "internal/commitguard/prepared_test.go": {
+      "bytes": 6779,
+      "sha256": "d9a7dba0f3c6121a11a29a1bd32a45fb8884de1940719b517e03854f3249a925"
+    },
+    "internal/crdt/addseq_stamp_test.go": {
+      "bytes": 3808,
+      "sha256": "31d4f809760fce4cceb2d238ee652216a0244db81b314ac7283d95268518eb30"
+    },
+    "internal/crdt/apply.go": {
+      "bytes": 18208,
+      "sha256": "7384c1ae73e0016b01b4e74e430f7092a30b4a07249edb97f873e39c885363f3"
+    },
+    "internal/crdt/apply_test.go": {
+      "bytes": 60361,
+      "sha256": "d221fac704732b01505b4bd38b34b8421ebd7cae70c6d7b31645f832056eb2fe"
+    },
+    "internal/crdt/applyhook_test.go": {
+      "bytes": 1273,
+      "sha256": "4e261caf55adb9f4b6613383d246fda729527625df5b2c470b524b0ac32d185e"
+    },
+    "internal/crdt/applyseq.go": {
+      "bytes": 3335,
+      "sha256": "b1d59e38b4ea3deafd45b3d20707d07f520edba940d88a42616f4c834726f5fd"
+    },
+    "internal/crdt/applyseq_test.go": {
+      "bytes": 4968,
+      "sha256": "9b9b4ad0b40b1809cce8620dece2efff0a43455d53759bbd1cbe7573da6832c7"
+    },
+    "internal/crdt/batch_test.go": {
+      "bytes": 4782,
+      "sha256": "97b3f31f1a4e851edf418600e8732ff8c403df5c9384b13f62c304e94bd87b1f"
+    },
+    "internal/crdt/conflict_test.go": {
+      "bytes": 20403,
+      "sha256": "575d21de327aef1311dc985114c7d64d3e7438bf17a0176e9c443de9d37dc9be"
+    },
+    "internal/crdt/controller.go": {
+      "bytes": 78938,
+      "sha256": "db36be69bbeb90e1aabf3ba54df9367aa35d15d0fa24493aa303a98847037363"
+    },
+    "internal/crdt/controller_close_test.go": {
+      "bytes": 4689,
+      "sha256": "a861dfb1b8af4d5896d0ba2d1a0c6336e88c0fda02038fe55a165fab3ce80aac"
+    },
+    "internal/crdt/controller_copy.go": {
+      "bytes": 1298,
+      "sha256": "f0bd81ccb6d96728955240b4c08194e2b2ef53ff94986c46adb6dbf75a5372f6"
+    },
+    "internal/crdt/convergence_regression_test.go": {
+      "bytes": 6749,
+      "sha256": "e52d8a3542d6755627f770f569730bc73d35f85a0a30537ca3420fb2da71ffd2"
+    },
+    "internal/crdt/doc.go": {
+      "bytes": 301,
+      "sha256": "cf9bd2b4b6cb32ba5130e0cbc3adc19a14460339c295e410249cf64df37f289e"
+    },
+    "internal/crdt/getter_test.go": {
+      "bytes": 6637,
+      "sha256": "15ef0044378f2c38f29060e379becb9975847c24009e82d85cb2902aa5a2f123"
+    },
+    "internal/crdt/guard_lookup_test.go": {
+      "bytes": 1592,
+      "sha256": "d2cb7da2d6ed861abf7d7c2f7b3a33670a17ff386ad0e0b751403b6e37796139"
+    },
+    "internal/crdt/handler.go": {
+      "bytes": 15183,
+      "sha256": "1165b764a56d61df9999a0182385493af56145664bd9b7d45bc020a19e0a675a"
+    },
+    "internal/crdt/history_filtered_fuzz_test.go": {
+      "bytes": 7992,
+      "sha256": "8aaacfcfd0014149f621568a78e406ffd9ed169680d92fcfbc7bf93860b154b5"
+    },
+    "internal/crdt/history_replay_bench_test.go": {
+      "bytes": 11993,
+      "sha256": "be9a9f84c01b8bb8b4c0bdd41535ca5253c5dffee19f0c92c0f116752f852cb3"
+    },
+    "internal/crdt/idderive.go": {
+      "bytes": 729,
+      "sha256": "aa077941cdfa8d59d8f2bf46777a953286dff09dae85540ed702dfe445f8727c"
+    },
+    "internal/crdt/idderive_test.go": {
+      "bytes": 690,
+      "sha256": "b44e54846693dca5f0a17fbf0eac3e5fd074da61cf22d3a274d732124da4afd0"
+    },
+    "internal/crdt/indexed_handler_test.go": {
+      "bytes": 2113,
+      "sha256": "649b55c9fa221923e1119ee37eb49028bd8c46bbd75fe549c07ef35f76bf867b"
+    },
+    "internal/crdt/indexes_test.go": {
+      "bytes": 3570,
+      "sha256": "234864896dcd72d84d46c82e58306c198cdca9640c5096c8f59aa572059ba7c0"
+    },
+    "internal/crdt/keyed_test.go": {
+      "bytes": 14840,
+      "sha256": "cef8e2016440450dd861dd117d1fdabc82f74ba4d8e5d255290c8ee660f8c283"
+    },
+    "internal/crdt/local_test.go": {
+      "bytes": 12994,
+      "sha256": "776e29c02fc18e78ad6ca50fc277d6f8cd3596a12209f90714ca525d9b27dd03"
+    },
+    "internal/crdt/localguard.go": {
+      "bytes": 5481,
+      "sha256": "3a2b10c4c63d673c446d12c9cc6cb478a93fe56e69a785da6775e4a0f404c8b4"
+    },
+    "internal/crdt/meta.go": {
+      "bytes": 22971,
+      "sha256": "edc5288b18925437cf20ee9b2e7d074451ece4eade012f1becf47c4955bc8d3f"
+    },
+    "internal/crdt/meta_deletion_test.go": {
+      "bytes": 3746,
+      "sha256": "46018d9cbccd46f70521a3530088f194f44d4f6268801272613c125076716a38"
+    },
+    "internal/crdt/meta_purge_test.go": {
+      "bytes": 7271,
+      "sha256": "e329b4fa059ad8d3a9ea85d3bc90be6b94ec1499830e307bb2b396b7bca68351"
+    },
+    "internal/crdt/meta_query_test.go": {
+      "bytes": 4576,
+      "sha256": "afe83aa915e2920371623eeb3754dc20ae7e4a3afb69c35ac8b48e5b109309e7"
+    },
+    "internal/crdt/meta_test.go": {
+      "bytes": 4986,
+      "sha256": "19f4796f47bb62627f26044e6fbd3119684b0c58bd0bf4f5afa7e67db56e671c"
+    },
+    "internal/crdt/objectprecondition.go": {
+      "bytes": 1033,
+      "sha256": "c428721ee14eb4fcc6beef49f5717d0b7c57caac833cd8ac90d1145c7544e730"
+    },
+    "internal/crdt/objectstamp_test.go": {
+      "bytes": 24836,
+      "sha256": "2a5ea3230149e9f1d9593b35b94dc8b0870ebd1ba7c0af1bd008b69d56d1dadd"
+    },
+    "internal/crdt/op.go": {
+      "bytes": 10245,
+      "sha256": "fd12a85594b8698c33123d8638341802b9268d6ef8737ae6fd6cc2b13a1524ed"
+    },
+    "internal/crdt/peek_collection_test.go": {
+      "bytes": 2445,
+      "sha256": "af49a940b8e77bda25ef22a29979b2e693ff004aec9f8559fe6d3539ba721ff1"
+    },
+    "internal/crdt/precondition.go": {
+      "bytes": 2268,
+      "sha256": "b640a45c318a8002cda3e08eaee8abc4f02cfce908b2f595cb8cb3331beed96d"
+    },
+    "internal/crdt/precondition_test.go": {
+      "bytes": 2686,
+      "sha256": "4bae08ac14bf42a0a498448c8378584c2097e40f86acf5c53419f7150774d4aa"
+    },
+    "internal/crdt/readtracking.go": {
+      "bytes": 5842,
+      "sha256": "f673c73aa87f8921732a00c340c931fccb86eab27bbc08b07ea9fec835f3292e"
+    },
+    "internal/crdt/records_test.go": {
+      "bytes": 1413,
+      "sha256": "be685611abd0afdcca85d01328b768d7003b693b596b58548623d0d6af0149b8"
+    },
+    "internal/crdt/reindex.go": {
+      "bytes": 10309,
+      "sha256": "008b3b9ae3d032db07acfb60083339a618fe1c825492e2a8f28876120405ec84"
+    },
+    "internal/crdt/reindex_test.go": {
+      "bytes": 10848,
+      "sha256": "8d375f6121c3a57690587fa9511f4636dd7032f9df32c9d8da22767c51444d5c"
+    },
+    "internal/crdt/schemahandler.go": {
+      "bytes": 20897,
+      "sha256": "5689947d8b918cf40cb68addd01731f4ee366de4ec3d00c7953bde6cd8863210"
+    },
+    "internal/crdt/schemahandler_deletebynone_test.go": {
+      "bytes": 4615,
+      "sha256": "a0b6e0ede25074747407eface2b26ea9f0021b46fd508b0f2b8f9eedb598439e"
+    },
+    "internal/crdt/schemahandler_test.go": {
+      "bytes": 24242,
+      "sha256": "347ca3edc582feb26d360b20258e5628dc8fb5bf416390082404e8bdf7437e51"
+    },
+    "internal/crdt/traces.go": {
+      "bytes": 2883,
+      "sha256": "2afcc6fc4e91f73d8a071c01338d8af3d1568c205a72e1abf56e68329bf8a62a"
+    },
+    "internal/crdt/traces_test.go": {
+      "bytes": 11373,
+      "sha256": "b47583e03894b96a82ea5b13177ad72c6f012a9a494f679b24116495f0b1b338"
+    },
+    "internal/crdt/validate.go": {
+      "bytes": 3146,
+      "sha256": "6748b4acd21249c10c0eef0c208ca46e3c7ad3ab29fd3b58c8d43a77df0ea989"
+    },
+    "internal/crdt/validate_test.go": {
+      "bytes": 3378,
+      "sha256": "4dc90805ccb38db3261b3efd05f6269128a542d7c329047119e0a8dc3486928a"
+    },
+    "internal/crdt/version.go": {
+      "bytes": 3569,
+      "sha256": "715882bcd7cc836084f8f6d3b965163f392d9d37f1fe8eece68e4b6861e8e92c"
+    },
+    "internal/crdt/versions.go": {
+      "bytes": 13130,
+      "sha256": "56005a96fba33c821458e797528704db96f2c5d40fa8cd640b3921162453a033"
+    },
+    "internal/crdt/versions_bench_test.go": {
+      "bytes": 9222,
+      "sha256": "a6cdd67ea046432d092b90c9669b6d6e408c5f0efe582a3b91900805c857470f"
+    },
+    "internal/crdt/versions_test.go": {
+      "bytes": 16796,
+      "sha256": "5988f6b12244385ae294e70ed60f94b6568e8289e218169ec155ddf4fc4d744d"
+    },
+    "internal/fanout/fanout.go": {
+      "bytes": 2498,
+      "sha256": "1f7f535425973d878bbd9e1d277b34c1790c881e10645e685079182c4ef4028f"
+    },
+    "internal/fanout/fanout_test.go": {
+      "bytes": 1828,
+      "sha256": "61c1ddcc908984ee88f431d375f8a3ef3e746ff3fbe301d9188a4ab6cc0b4559"
+    },
+    "internal/files/broker/broker.go": {
+      "bytes": 12218,
+      "sha256": "fe698597e58d3cd2aa4ce99bf00f59cbf101ce81c4b00f77d3539d483fc9ea9d"
+    },
+    "internal/files/broker/put_test.go": {
+      "bytes": 1861,
+      "sha256": "d952e3db41ff5c2279f06c4c75f18cd2845400cb10648be893c6e35ccacc6e98"
+    },
+    "internal/files/broker/quota_test.go": {
+      "bytes": 7401,
+      "sha256": "5540b6d8d1e88c82695c16aae5e4a0689d3f1666fc10a153de9451612b40bc7c"
+    },
+    "internal/files/broker/receipt.go": {
+      "bytes": 4716,
+      "sha256": "a033765af11270b916538ae55072efbd1ac69d07e26f237ff8499d41251f085e"
+    },
+    "internal/files/broker/receipt_test.go": {
+      "bytes": 4962,
+      "sha256": "10688125a5eeade603a4a2188d85ded12f87c0e70b3221983086e5565c78ab86"
+    },
+    "internal/files/carfile/builder.go": {
+      "bytes": 2335,
+      "sha256": "f2eee4147f5a794bd4b2ab9984b486ef75c59936788c9e64d2ac71a4c3c7f735"
+    },
+    "internal/files/carfile/carfile.go": {
+      "bytes": 7245,
+      "sha256": "1e174225da0a593c6e4609c5b76edf2bb0aba6b4bd342ecafc797c9ade65f61e"
+    },
+    "internal/files/carfile/carfile_test.go": {
+      "bytes": 6567,
+      "sha256": "d12e6948ff2c36e70257d526cd3bd9907106961351300f1af67ff75452eb9d6a"
+    },
+    "internal/files/carfile/sparse.go": {
+      "bytes": 5658,
+      "sha256": "025eb968cef12ede44ae85eaa9cd800188afa1fde8bef6c3a0c227e8861d433e"
+    },
+    "internal/files/crypt/crypt.go": {
+      "bytes": 3457,
+      "sha256": "f2d8dfca861e13132b8f5724f26eb86d3ce197c9a9223d2d5d50fa585174be91"
+    },
+    "internal/files/crypt/crypt_test.go": {
+      "bytes": 2623,
+      "sha256": "6227a4a37002a345186735cc26d43b4a195005bbf060660d5a129a4788c327c6"
+    },
+    "internal/files/fetch/baseurl.go": {
+      "bytes": 1583,
+      "sha256": "72bfd71346fbf6d543a81f8a7d102cc2ced8cc3440867f775b0e66cf9f88be95"
+    },
+    "internal/files/fetch/baseurl_test.go": {
+      "bytes": 2650,
+      "sha256": "8b05cb5a6ab5e32867287ddc71c960b34d10055febf8ae57190cced52e2926d2"
+    },
+    "internal/files/fetch/dagreader.go": {
+      "bytes": 4741,
+      "sha256": "d7c3be35c2ccaa33b71a91f8e60e83a8114c749e20e4b2072c2ba5f34a5316fb"
+    },
+    "internal/files/fetch/fetch.go": {
+      "bytes": 10146,
+      "sha256": "4c7a6cf107e1212589ea17c411b1bb25b3bba1c235a598c1e3d0cfe4de3bec0d"
+    },
+    "internal/files/fetch/fetch_test.go": {
+      "bytes": 19169,
+      "sha256": "91ce19e0eac7ed1ecf60d08640e259665159b7d992833aa464713695cebfea56"
+    },
+    "internal/files/fetch/remote.go": {
+      "bytes": 4008,
+      "sha256": "0240d29ddf60a130bd8e325b55598570c182dbdc687f62c77d7b24be9d6d2d7e"
+    },
+    "internal/files/fetch/source.go": {
+      "bytes": 10851,
+      "sha256": "40ba195fc484c9b20581ddfb10dd0e9bece6033bb326ae35ab3845e2705bf748"
+    },
+    "internal/files/fetch/source_deadline_test.go": {
+      "bytes": 7336,
+      "sha256": "348175a8eb3a3dbcdf61e1e24bd697a574af371318128027059350b9d780c084"
+    },
+    "internal/files/filep2p/server.go": {
+      "bytes": 5316,
+      "sha256": "52e0dafd60bad9e7e036915b76b7db98473ae3c92314ccc8dc0ce7ee624b1e76"
+    },
+    "internal/files/filep2p/server_test.go": {
+      "bytes": 4872,
+      "sha256": "eab8d97efd7eae99a913d764aa17919bc9fb51a3c411fd54661549589842aefc"
+    },
+    "internal/files/filep2p/source.go": {
+      "bytes": 12215,
+      "sha256": "5a9594dd88067f7564327ba141fa55d12d21dc6e5ed569cf3f9eb3589a79eccb"
+    },
+    "internal/files/filep2p/source_global_test.go": {
+      "bytes": 15154,
+      "sha256": "4d7ffd47f49be3d5aade9bd64ccc86a353d783f123c283643d53737dd0907beb"
+    },
+    "internal/files/gc/gc.go": {
+      "bytes": 13011,
+      "sha256": "072a42494e0678d313aa3f15cb65ab4e7956f353eecea56094c4057b8d33f175"
+    },
+    "internal/files/gc/gc_test.go": {
+      "bytes": 14569,
+      "sha256": "1a357432fb587a4b9fa1dbe339020ec4976eb9e0ecedf84b9b31c795a2a76471"
+    },
+    "internal/files/readguard/effect.go": {
+      "bytes": 1289,
+      "sha256": "e278dc93a4f2fb406d2f1f48e07e51a937d132295af3c13eaa0a68585a7d7814"
+    },
+    "internal/files/readguard/effect_test.go": {
+      "bytes": 4826,
+      "sha256": "a75d9c3d00702667f27c4c2c8fa4cd9120594bafede9f9546b55fd938db16b62"
+    },
+    "internal/files/readguard/events.go": {
+      "bytes": 2079,
+      "sha256": "27aad31c5c66726dfd8bd2ba1a6c3669f9c2fb2cdcfe2dd9db24d899d38a20b0"
+    },
+    "internal/files/readguard/metadata_test.go": {
+      "bytes": 8702,
+      "sha256": "c239306d17a2b212508e9d514509b7b197ab2806ea0c2402f4ee22256b3bdcf3"
+    },
+    "internal/files/readguard/observation.go": {
+      "bytes": 1592,
+      "sha256": "a2251fcf8f7654f894b32285756e52f3838648329b3ff3bb302cdc2daceb0d57"
+    },
+    "internal/files/readguard/observation_test.go": {
+      "bytes": 3819,
+      "sha256": "483f3a9e78c79665d089327fa67f6df3b82aa1b0cd372abe3a2026190d0ac164"
+    },
+    "internal/files/readguard/readguard.go": {
+      "bytes": 6985,
+      "sha256": "23de4921b633d3ad2011dd24551aff65a776a0aa972e43ae54ce78b7a7757c7d"
+    },
+    "internal/files/readguard/readguard_cached_stream_measurement_test.go": {
+      "bytes": 7667,
+      "sha256": "bcbfbe42b9fabf0d63fdb852343fffa6c2e2800b8e84ec5e9e1423a290c2fcbe"
+    },
+    "internal/files/readguard/readguard_lifetime_test.go": {
+      "bytes": 8262,
+      "sha256": "e74ccdbfaa9a8bd9b7fce425ab95c5436600253cb813c3e8ac614a33679e5119"
+    },
+    "internal/files/readguard/readguard_test.go": {
+      "bytes": 17648,
+      "sha256": "e00ed13b8c362939185c2856497328838b674e7dde310f83738f6197da18752b"
+    },
+    "internal/files/readguard/value.go": {
+      "bytes": 910,
+      "sha256": "d92ff8e7b1451f2fba6ef24a2661613d429ea37789c3a83e059d81b7beeff4b8"
+    },
+    "internal/files/status/queue.go": {
+      "bytes": 15094,
+      "sha256": "eecc2056e398e2ce31ffa017ca377f5a88b5e34fd650bfc8c677d946f303ce8c"
+    },
+    "internal/files/status/queue_test.go": {
+      "bytes": 14366,
+      "sha256": "e0107a618d626cfa1f06cefea58edbeaad361a77d2313ac21e2d522fd872ffe7"
+    },
+    "internal/files/store/bitmap.go": {
+      "bytes": 822,
+      "sha256": "ab01a4b5871f388265270ff3317e5f8909ae076f2e8d3eb481c09a5e6dc10050"
+    },
+    "internal/files/store/blockstore.go": {
+      "bytes": 2583,
+      "sha256": "605b7e534eebc67463959d814f8f9ca3740f9600bb0a298d42fd88dc6439ec3e"
+    },
+    "internal/files/store/build.go": {
+      "bytes": 6319,
+      "sha256": "ff9983e3587dee280d933c2a745224703fc246161fe2169d508d81f98f6436df"
+    },
+    "internal/files/store/handle.go": {
+      "bytes": 8265,
+      "sha256": "78f911814c9e5d9b6afbbb5430fab1ac50412fe8dd2cec6601d61e678cbcd5ed"
+    },
+    "internal/files/store/migration_prepared_pin.go": {
+      "bytes": 5909,
+      "sha256": "b2f8399ea157b5f51bdf836b52285ad5c2628f0a8c30d3320da6c0cf42203e91"
+    },
+    "internal/files/store/rows.go": {
+      "bytes": 1772,
+      "sha256": "de6e3bf068aa53403ecda27015a8aafdc3ea47def6198919d78b2a3afdd58f97"
+    },
+    "internal/files/store/seek_bench_test.go": {
+      "bytes": 2022,
+      "sha256": "ea35db609306c9febff6aafaefd8a4abd13521ddd865701d77903eec68c6b914"
+    },
+    "internal/files/store/store.go": {
+      "bytes": 21664,
+      "sha256": "08286ec9170ebbe2ad534bf93635b34d17b105d8bb7f8fddcd5f3b0a77127cac"
+    },
+    "internal/files/store/store_test.go": {
+      "bytes": 23538,
+      "sha256": "c56b195fa918471b238530282f08a59aca75d8494ed2c77f9e9205d05484768e"
+    },
+    "internal/files/upload/migration_prepared.go": {
+      "bytes": 6996,
+      "sha256": "5c462dab0b59813991358b2215be76261e0996e35d090c68c94233f7ef4128db"
+    },
+    "internal/files/upload/migration_prepared_test.go": {
+      "bytes": 6195,
+      "sha256": "81845511355df20495e198aa9805c24b150357fa232fdd0dc61429906000e6ab"
+    },
+    "internal/files/upload/spool.go": {
+      "bytes": 2625,
+      "sha256": "c4f888d266edda7b7e2fde840e424e90f3700c5d428caa0d051343e42c6f5f93"
+    },
+    "internal/files/upload/upload.go": {
+      "bytes": 18094,
+      "sha256": "fcfa9625b854fe94c118cb8a75ff9814582c33f568d4d37a81e2dae2e643b668"
+    },
+    "internal/files/upload/upload_test.go": {
+      "bytes": 22605,
+      "sha256": "1e292cb33eea6a2a89f7c524b165abed0934c67b28e01b72e94c0cbf2d47548e"
+    },
+    "internal/history/coalesce.go": {
+      "bytes": 4446,
+      "sha256": "85eeabb9e62e9e7765a4e87c931349f6f1e074ec96fb849ef90c866150c82891"
+    },
+    "internal/history/coalesce_test.go": {
+      "bytes": 3690,
+      "sha256": "872c79608de7d37b28869eccf80d894d0342a2aa32f2160043c42da2c2478473"
+    },
+    "internal/history/diff.go": {
+      "bytes": 6911,
+      "sha256": "2ed5a19fa4145f11309805f1199b3cc30ff5869d70f6788385ce229417cda551"
+    },
+    "internal/history/diff_test.go": {
+      "bytes": 5359,
+      "sha256": "28282aa2ee98658860ff8653ef05a84ae1ec930298685a5289dce14ec4c49554"
+    },
+    "internal/history/diffrange.go": {
+      "bytes": 10498,
+      "sha256": "34429bad78d22cc9a336ef3345d4bc84070db14ee03b373a53d8b52f6aabcec2"
+    },
+    "internal/history/diffrange_test.go": {
+      "bytes": 8578,
+      "sha256": "0adb8c35245687d60dfafb8073f025095b251619643d019fae4a4fab1508a1ae"
+    },
+    "internal/history/envelope.go": {
+      "bytes": 2396,
+      "sha256": "3d0ce0f75c5aef50f82872dbbe8ba0f0dd6ae353bb00787e2d161775923620c5"
+    },
+    "internal/history/explain_test.go": {
+      "bytes": 2675,
+      "sha256": "083eb27cfb25f89037b76ff7f58e844d8da7804306489e0fe30b8f4b8c854070"
+    },
+    "internal/history/guardrail_test.go": {
+      "bytes": 1568,
+      "sha256": "b672dbdc31558c821cf0cd516a4145836aca57fbf4ca6ad38566824c3998a764"
+    },
+    "internal/history/index.go": {
+      "bytes": 26097,
+      "sha256": "4a64583f7ef312758d56c520a4729173f75644d2d50fb0ff7bbcca1d750aa2a0"
+    },
+    "internal/history/index_merge_test.go": {
+      "bytes": 3388,
+      "sha256": "96c6749dd499da42cc6f4387dcb9d793ff0261908594fffe5444508f1cdb987e"
+    },
+    "internal/history/index_test.go": {
+      "bytes": 14113,
+      "sha256": "79247141344031d46e5f4ac62e8500ae6d500bc3cf9aa17da6557194a18b8e52"
+    },
+    "internal/history/record.go": {
+      "bytes": 7672,
+      "sha256": "861875c4a4f48780209080fc2fbf4839ed48af45d7d7f9ef3bc8a0a2add877d4"
+    },
+    "internal/history/record_test.go": {
+      "bytes": 3710,
+      "sha256": "a2729728020f420ef01b0d438445c864173a9a510283cbe758b8009c8ed84504"
+    },
+    "internal/history/replay.go": {
+      "bytes": 14306,
+      "sha256": "bdec4f3574d938ef5261cce052308790a73d15b857e88ad40658d35608967f0a"
+    },
+    "internal/history/replay_test.go": {
+      "bytes": 11069,
+      "sha256": "0afcb6dcef924feaafb64f16a629316349ac4b3f77929b8b3389584e5fdf7f58"
+    },
+    "internal/inbox/notifier.go": {
+      "bytes": 11078,
+      "sha256": "c83dee1bfdf2811b02397447ca117066d29423890f622a7b152ac530c3a09134"
+    },
+    "internal/inbox/notifier_test.go": {
+      "bytes": 11575,
+      "sha256": "90f656f2f760f4d7cc2fb73c5dc0bd51aab00e562f7a7c94fe66c1a65c489392"
+    },
+    "internal/migrationintent/definition.go": {
+      "bytes": 6093,
+      "sha256": "87112c1c3371466acdcb525b341e78237a337a37c0a199a6d82dcc026faa41fb"
+    },
+    "internal/migrationintent/file.go": {
+      "bytes": 8001,
+      "sha256": "da86fe4aff406aac7d9bbe9ab773e2ca4e618c0a1a2eca3963b4db444e87c964"
+    },
+    "internal/migrationintent/file_payload.go": {
+      "bytes": 1016,
+      "sha256": "23b611a4a407a9b2fb0db3a2056580881d386a01f2131f072bb60561d11770af"
+    },
+    "internal/migrationintent/immutable_record_test.go": {
+      "bytes": 2169,
+      "sha256": "eeab20310b931d6fcf5bfff6411658fc2a8778977d1f55476a366e500d3ce865"
+    },
+    "internal/migrationintent/inline_file.go": {
+      "bytes": 5536,
+      "sha256": "31072f04507163e06277893a7fe893ed51b81a3fef9696fac903c2b813fb00c3"
+    },
+    "internal/migrationintent/inline_file_test.go": {
+      "bytes": 6210,
+      "sha256": "73943efd736b68a2d6c0d2ba1f9cc54528945fd8a8470a750a05c63ca2e26480"
+    },
+    "internal/migrationintent/numbers.go": {
+      "bytes": 1569,
+      "sha256": "825cf4c7b06f03a6e8738f7a9ef2e3afc6e52c2a1c7748809212b01aa2846ea7"
+    },
+    "internal/migrationintent/numbers_test.go": {
+      "bytes": 615,
+      "sha256": "5443619e63e8ac86f9638dfdc5c91859d24f2a76b06f9f5542b82a7922f2fd14"
+    },
+    "internal/migrationintent/property_update.go": {
+      "bytes": 6163,
+      "sha256": "987a645f0694fe1181ade0258283f4fcfca2493db686e2f8430ed13f7b9d57e3"
+    },
+    "internal/migrationintent/store.go": {
+      "bytes": 14014,
+      "sha256": "5bfecfd33940b932907f6208398009bfd1ba90e597402c84467187384e4dda15"
+    },
+    "internal/migrationintent/store_test.go": {
+      "bytes": 8704,
+      "sha256": "364981062bac5c8e8ec9367cad80ea751c9dd997b262a94f82d33c559d90863e"
+    },
+    "internal/object/checked_local_write.go": {
+      "bytes": 1590,
+      "sha256": "d71192dbad136c29c5035ace40e37804d1f1977ea578625f455d0101549629b2"
+    },
+    "internal/object/conditional_noop_test.go": {
+      "bytes": 4448,
+      "sha256": "e491a9840d57285fe97fad5c10b5fd5043a6abb9a6b78afaaa564c199dcd14b8"
+    },
+    "internal/object/create_current_writer_test.go": {
+      "bytes": 3206,
+      "sha256": "78c09c7fd06ce0d7f8d05b4702e2050985eddba93b99e0f0442be99f3c8b2469"
+    },
+    "internal/object/current_writer.go": {
+      "bytes": 1482,
+      "sha256": "22fb16a6e1a0d8754fba1b60af8875c8f85f930594e64debedbd3771584865cf"
+    },
+    "internal/object/current_writer_test.go": {
+      "bytes": 6123,
+      "sha256": "211cc4f15bb7acc75c5c522d388cb5b2fe34b35e56f9321e089744bcca67ef2d"
+    },
+    "internal/object/doc.go": {
+      "bytes": 430,
+      "sha256": "b724b1b8b25961408f925c418616d9568b9c6fe2dbb343ba3b2df98dad766265"
+    },
+    "internal/object/lexid.go": {
+      "bytes": 2418,
+      "sha256": "494c447e650b5b55733f600a5d7fc74e29b0fb2fc953f6c96da9b8660b78bcfa"
+    },
+    "internal/object/lexid_test.go": {
+      "bytes": 976,
+      "sha256": "677d9177e2af2be4e061d3149a242c73a198c877762df96a328f2d33a81fde73"
+    },
+    "internal/object/localguard.go": {
+      "bytes": 1122,
+      "sha256": "6bcdc5f5bd3ed92490691ad71090bad8d7a616bc451a3124323218f8072861d3"
+    },
+    "internal/object/localguard_test.go": {
+      "bytes": 2710,
+      "sha256": "794b40362cd13c127d1ebc0cc23bd76385f40728b47311d595eb4801083f3bde"
+    },
+    "internal/object/migration_definition.go": {
+      "bytes": 1997,
+      "sha256": "c10e1859934ef6cbaed816a8a0fa3f3ef18df4efa33522948bdd7cc4e5b8d9d0"
+    },
+    "internal/object/migration_definition_part.go": {
+      "bytes": 6250,
+      "sha256": "f04dc04490f8371583a90609cf31141f4eede1010bd7d649c73cf0435592271d"
+    },
+    "internal/object/migration_file.go": {
+      "bytes": 7826,
+      "sha256": "c1f6374801e3ea5208ebc6f0e849df2ee30401403fb9ce309f71a971f949d8e3"
+    },
+    "internal/object/migration_inline_file.go": {
+      "bytes": 7240,
+      "sha256": "646634e33ba08ec08ab5728ffe058fc4b7569d55203f7f022fef252204edd213"
+    },
+    "internal/object/migration_prepared.go": {
+      "bytes": 13288,
+      "sha256": "baa68164c5d25b0795d5d9d5fe9313c409cf8b9979853dabae7d7e5c0e9d0f5a"
+    },
+    "internal/object/migration_property_update.go": {
+      "bytes": 8654,
+      "sha256": "104c232fb394c80987380923520918471d1a93f85a8c349daac967bfc3311f39"
+    },
+    "internal/object/object.go": {
+      "bytes": 51719,
+      "sha256": "b64ed050a02e495da5d2836635217c87a8bca59b33304c93e4a047180017d178"
+    },
+    "internal/object/object_applygap_test.go": {
+      "bytes": 10483,
+      "sha256": "4f16f07806acdeb9bfd0cab4e1b5cea3bf4fdd643be2a83cca032af44f998bfe"
+    },
+    "internal/object/object_close_test.go": {
+      "bytes": 7313,
+      "sha256": "f64934bc6991c58101cbbc373704a9236b54d1d626cce8ae311d6983297932f2"
+    },
+    "internal/object/object_deleted_test.go": {
+      "bytes": 2179,
+      "sha256": "22074c5a1b1ab63ead8b967b68748121d0d9efd7782f4889acdd5f6e76c1c1a8"
+    },
+    "internal/object/object_localwrite_test.go": {
+      "bytes": 8083,
+      "sha256": "45d121e35445ee6ec13087a74fddeedeec028bc2c36d3aec12fe5a960ef20522"
+    },
+    "internal/object/object_localwriteif_test.go": {
+      "bytes": 6709,
+      "sha256": "4073b15b6217312c5cdb71489d1539ef5fd87b84d91c84489c3b1c66f66b41e4"
+    },
+    "internal/object/object_meta_test.go": {
+      "bytes": 6056,
+      "sha256": "99b0b6a4beb42c6450f14bce91840cd895e7cfedda4d4026123606a77bcf5100"
+    },
+    "internal/object/object_plaintext_test.go": {
+      "bytes": 7814,
+      "sha256": "8b7ffa4dcc2773fe5537ff5995a26807393ff72cb80c42af930e9efa3db3d210"
+    },
+    "internal/object/object_replay_test.go": {
+      "bytes": 3185,
+      "sha256": "5b8667a31a1405703970129da10eb5b73ce43a99ee4cc77e3eb1a877366fed1b"
+    },
+    "internal/object/object_row_cas_test.go": {
+      "bytes": 6594,
+      "sha256": "243b7a5be045bc325859f535d132d4047cd22ea782f2b822a167f3af2061257d"
+    },
+    "internal/object/wire.go": {
+      "bytes": 6228,
+      "sha256": "0291cb807c76a559de0262bbd0e2b88db7689e30286acef9a289f6d8f2c9ae84"
+    },
+    "internal/object/wire_test.go": {
+      "bytes": 3197,
+      "sha256": "c5be81a510de5e713f14eb7ef5be8881e049a4ac5bba8e936132af495be3504d"
+    },
+    "internal/p2p/account/account_test.go": {
+      "bytes": 12180,
+      "sha256": "d9c1992d6979f2cd0b8b2ce827b1d6845856076112478c2145c27ecf13dc292e"
+    },
+    "internal/p2p/account/client.go": {
+      "bytes": 5920,
+      "sha256": "6c1e265508d5a6912a8a1e7ef154d1ea7566891446cc41b5a4f9a8ba94fcf977"
+    },
+    "internal/p2p/account/record.go": {
+      "bytes": 13920,
+      "sha256": "73fed7f0b238a5b5db2bb498410d0cf213f897751519473cecd285db0bbe13a2"
+    },
+    "internal/p2p/accountlayer.go": {
+      "bytes": 19241,
+      "sha256": "7333b226717d89aed3c8011d2edc0060dcd3d3ac687a0a50ff7484970d28b869"
+    },
+    "internal/p2p/addrbook.go": {
+      "bytes": 3070,
+      "sha256": "a6e04c282aca17c3924ddd2f714058a29933086950ddf6df07d0be377aad2985"
+    },
+    "internal/p2p/addrbook_test.go": {
+      "bytes": 1785,
+      "sha256": "0bb5d4481f4d8d23d0883b395c9dcde1d87a82a8adcaf10c63ae7b84659987e9"
+    },
+    "internal/p2p/connector.go": {
+      "bytes": 11109,
+      "sha256": "2c30312fd29258c8f10ee0b288920124a91bf9ae705e02a0b54174d9e1050976"
+    },
+    "internal/p2p/discovery.go": {
+      "bytes": 13985,
+      "sha256": "6b2797d9b1058f3e5745467d0ed286874a436d1ca57181c0bcf7164cce3c05a6"
+    },
+    "internal/p2p/discovery_test.go": {
+      "bytes": 9700,
+      "sha256": "b9c241ca17d3dc497820f73a08d7c9b1078690b89a79579d7ae929b14df90ac5"
+    },
+    "internal/p2p/dnssd_driver.go": {
+      "bytes": 1762,
+      "sha256": "bd0c5285fb25c1cb3a26f836b5c4869359057d74b33cecb530c23f153489cb5b"
+    },
+    "internal/p2p/exchange.go": {
+      "bytes": 19134,
+      "sha256": "f111e7f0c3ff94247241920b67c2893a4d282a56fe667da2711d735c755ec33e"
+    },
+    "internal/p2p/exchange_test.go": {
+      "bytes": 12788,
+      "sha256": "5bbcfed5475637a0495a854e5efac320ebec02d5e65989bc3c8c6209b36101f5"
+    },
+    "internal/p2p/global.go": {
+      "bytes": 28312,
+      "sha256": "06ecd12d98c56c42366e7e6d8aa4687131f61091289d33400298467cc46d101f"
+    },
+    "internal/p2p/global_account_test.go": {
+      "bytes": 22302,
+      "sha256": "8c372bce9feb77e95bea7a527ed264a44b9bbd65f428a7bd7bfc62ee94917bfb"
+    },
+    "internal/p2p/global_test.go": {
+      "bytes": 31822,
+      "sha256": "4aa94cafc2cce12bc41b0d00f4ce9a731e830972373b3753e1c7d607f1c7b1b6"
+    },
+    "internal/p2p/peerstatus.go": {
+      "bytes": 8251,
+      "sha256": "bd38f6e36c573854f8b66a2ce64d8110adf3b432a70d02828d99c42c272cfa28"
+    },
+    "internal/p2p/peerstatus_test.go": {
+      "bytes": 4260,
+      "sha256": "c0cbf278616ace1053f701cbb6e128d3194ca07b685f933b26136e02c243e73b"
+    },
+    "internal/p2p/peerstore.go": {
+      "bytes": 12369,
+      "sha256": "90be2ce6c1b75690c0df258d095fca85b2142ec2a573e91a43ceef506a061714"
+    },
+    "internal/p2p/peerstore_test.go": {
+      "bytes": 7163,
+      "sha256": "131eeef5a3c74148b3e512696be30433392f921ee855b7c96769f3d73aa0c487"
+    },
+    "internal/p2p/pick.go": {
+      "bytes": 792,
+      "sha256": "64253580bb292d2717b8a1786d8b57208f65b16a8822536b9475a3c3cfc201f2"
+    },
+    "internal/p2p/record.go": {
+      "bytes": 2517,
+      "sha256": "68f0cbf48591613e90f3c129222b5f91b6489b3d017228895799993bec4ad20f"
+    },
+    "internal/payloads/derive_test.go": {
+      "bytes": 1202,
+      "sha256": "d0bccc18c488671fecaffaa82a9e525037d0e530ecc8f4683ed08096dd190deb"
+    },
+    "internal/payloads/handler.go": {
+      "bytes": 9471,
+      "sha256": "04bb6b8ba0e10f10a916cab484458fb7d113a86620cadc2d2276bc2301dc8f1c"
+    },
+    "internal/payloads/handler_test.go": {
+      "bytes": 12623,
+      "sha256": "c01f0e5ab100e66d47949bb6efb05f587d95239ae0638a836991f1590e5350a4"
+    },
+    "internal/payloads/payloads.go": {
+      "bytes": 6638,
+      "sha256": "b80378e129dc93b2d66c76b5433a369f931eaba48a9d037d54af723f7dffa5c0"
+    },
+    "internal/payloads/row.go": {
+      "bytes": 3747,
+      "sha256": "64f50750de96cb4099c3db5564487ad82f391a13e85bae0b6a25631d25970337"
+    },
+    "internal/payloads/row_test.go": {
+      "bytes": 2536,
+      "sha256": "1475b6dd7c6b90a58ad5176b31e462e4c41d77a1d662cc66df2e1e1a27a15585"
+    },
+    "internal/payloads/seal.go": {
+      "bytes": 5203,
+      "sha256": "6f27e764b6694b3865d2e4a03b650f5e5c0b838630fdfb51757654a3c7732ab7"
+    },
+    "internal/payloads/seal_test.go": {
+      "bytes": 5158,
+      "sha256": "4c895fabdbf29b174d6e673bc840baa2f0bf9f6160985567e2c9c5f4759acd47"
+    },
+    "internal/properties/conditional_membership_version_test.go": {
+      "bytes": 2304,
+      "sha256": "045aff4cb20bf43bc5f4e7d5cd29bb4415179970e66f7e211376fce27b6d87d0"
+    },
+    "internal/properties/convergence_test.go": {
+      "bytes": 6371,
+      "sha256": "caf7ff9baf39a7eed305320f885e3b511ab834c8104c7ba34b4f99451a0a3512"
+    },
+    "internal/properties/doc.go": {
+      "bytes": 1123,
+      "sha256": "8ed8706b99174a85961868feca20aede55eb82fdd625d0e7aa155d4a1ba7a239"
+    },
+    "internal/properties/errors.go": {
+      "bytes": 8866,
+      "sha256": "c6ef43a539c30dc26baae1c195402c5dfaa7d17f84743e27f088facdb9b7dd76"
+    },
+    "internal/properties/system.go": {
+      "bytes": 33343,
+      "sha256": "215c340a8a8e6444a2549a416d87d91747f71ff0a1b13e48fc85c1b8a143d570"
+    },
+    "internal/properties/system_membership_test.go": {
+      "bytes": 16260,
+      "sha256": "a49409431dfa026b63c59fefa1258f4861115681f3d737617a9a8db52c0d2266"
+    },
+    "internal/properties/system_metatype_test.go": {
+      "bytes": 7250,
+      "sha256": "ecb9ee2c80e103b309e7fdd7f3e0ca6feac69f06fc4b0fc9f70e384663b4b2d9"
+    },
+    "internal/properties/system_multifield_test.go": {
+      "bytes": 6041,
+      "sha256": "3bc4d8019d7672c2f4d74ba6bd1dc82c1dd20d99d5a53c87256cad0bdaa8c790"
+    },
+    "internal/properties/system_nested_test.go": {
+      "bytes": 3064,
+      "sha256": "b39b75e1549079d2b5f4005a89711b5ff1355ac136e4ecaaf22c624e265fd682"
+    },
+    "internal/properties/system_optypes_test.go": {
+      "bytes": 5167,
+      "sha256": "508df4489b3a30a99014be1f344f98b66b7c87c2f7ba0ee524d3e1843f2f6c15"
+    },
+    "internal/properties/system_test.go": {
+      "bytes": 34788,
+      "sha256": "0c28e2828e9fed0120bc5e39cf1205b483a928485e92e96f1d4efa56f5892a98"
+    },
+    "internal/pushclient/client.go": {
+      "bytes": 4550,
+      "sha256": "67812551de6beb39a690da8411238bec823077c853fc731fa2a135acd10d054a"
+    },
+    "internal/pushclient/keys.go": {
+      "bytes": 6407,
+      "sha256": "5e69eaf709428d7582677225e06a9622eb5c99a77403a61a6bddc9866620c5c9"
+    },
+    "internal/pushclient/keys_test.go": {
+      "bytes": 7378,
+      "sha256": "c0efda38dc4d1a8f85436ab33d0b05a3c40f3bbc86e385ab790d1cfa744d4d10"
+    },
+    "internal/pushclient/messages.go": {
+      "bytes": 3648,
+      "sha256": "b92baa6642290459e50784c8dcd9d675d0edd252aed7c34a993faeaad03714e2"
+    },
+    "internal/pushclient/messages_test.go": {
+      "bytes": 4361,
+      "sha256": "fa36f12b8b7483e869831a6cede2b75a6b9db5cba2868030fcc70069e850e074"
+    },
+    "internal/pushclient/service.go": {
+      "bytes": 8426,
+      "sha256": "5d1427f947328c3065f04fb2b15597817f5e3a89442f4b4371ddc0203d779d9e"
+    },
+    "internal/readlifetime/lifetime.go": {
+      "bytes": 2497,
+      "sha256": "233ee49b367a91d9e73b143d8ed1a39b482bb6d2e273744e59287695e7a56dd7"
+    },
+    "internal/readstate/load_test.go": {
+      "bytes": 5817,
+      "sha256": "0ae973bd72840f000678a2b9b5242f24f64520f751037432f0dd6e820c1f74b7"
+    },
+    "internal/readstate/open_test.go": {
+      "bytes": 4158,
+      "sha256": "5d8c8240fa8e45e95d12f5006fca4e58d6fa03a3ab9ddd6ce7b62cc7a8521dfa"
+    },
+    "internal/readstate/purge.go": {
+      "bytes": 5297,
+      "sha256": "62d3e0b847a34b6f533839124361a0fcecda76d35168cdb24cada9b1dd12da07"
+    },
+    "internal/readstate/purge_test.go": {
+      "bytes": 5673,
+      "sha256": "4525dc735a7ccb261dc82114fdbd64c0337a3be7469c02bc26ecca3bb9404b54"
+    },
+    "internal/readstate/readstate.go": {
+      "bytes": 37284,
+      "sha256": "136c780d08b58b4601ccb42bb1d4df3f07ed1b3a7fc24bdda258ecab8d8821fa"
+    },
+    "internal/readstate/readstate_test.go": {
+      "bytes": 20298,
+      "sha256": "214af459b197c506cabcb7107f455b065286c8eba2bf938f6029d5f654e2032a"
+    },
+    "internal/readsync/readsync.go": {
+      "bytes": 18566,
+      "sha256": "fe04c46476863caa29539e5632ae8f16bc56849922431c86fe4a516afbd428a4"
+    },
+    "internal/readsync/readsync_coldspace_test.go": {
+      "bytes": 2856,
+      "sha256": "9249cfb5655e1e1e14af9d1e4d5b163303f93735948c76f93a6af02efcc615a6"
+    },
+    "internal/readsync/readsync_lockorder_test.go": {
+      "bytes": 1746,
+      "sha256": "6d8d05c0b9928069eab5df5724ebbb25e9cdbc868f7d5d85909f67d08c3f5852"
+    },
+    "internal/readsync/readsync_test.go": {
+      "bytes": 18884,
+      "sha256": "792f27760c2fc07946e1029be8f44e25516a63a8147a220d55aa866f85c145e5"
+    },
+    "internal/schema/dataset.go": {
+      "bytes": 17370,
+      "sha256": "b465bd938ed06a556ccd50d039fc59626d21c1291e4681781be03a8d791e8f1b"
+    },
+    "internal/schema/dataset_test.go": {
+      "bytes": 8021,
+      "sha256": "2192a06f36cc9137955b738a654fac8ebd06b36045856f74f0205dbd2c822992"
+    },
+    "internal/schema/decl.go": {
+      "bytes": 5877,
+      "sha256": "696350d4baca14a2b2921b2e18f8178795aa9811ae4bb0bc0b2d6994dca5c8f9"
+    },
+    "internal/schema/decl_test.go": {
+      "bytes": 4359,
+      "sha256": "11fe0b4a70cba9a86d838698ee2e3ce1a83e501ccac4a1b93212082fcdf47a62"
+    },
+    "internal/schema/deletebynone_test.go": {
+      "bytes": 651,
+      "sha256": "1c2d46b767c67f2c1b871a32ea1bb0fe3ce2fc2ee2757910a46f5db4aa690d19"
+    },
+    "internal/schema/index.go": {
+      "bytes": 5027,
+      "sha256": "734293e3a2df73a412ee2a6c3b852aa8cbd6df1b2266fed137b16af268e27d86"
+    },
+    "internal/schema/index_test.go": {
+      "bytes": 4519,
+      "sha256": "1507f75f389418eed8f102539055bd434a6f373c960605e238265218fe9674a6"
+    },
+    "internal/schema/schema.go": {
+      "bytes": 10069,
+      "sha256": "9e2fa0ef33a5deb89c7819854adb0a36f47bdfdebf77fc29101404471acc454a"
+    },
+    "internal/schema/schema_test.go": {
+      "bytes": 9889,
+      "sha256": "bbaee09c2d240ec570020ecc00c57297611a4e714245f5c34b6ef12d8871cabc"
+    },
+    "internal/spaceimpl/accountmirror.go": {
+      "bytes": 11533,
+      "sha256": "3f8ec4af5c82e7e4a6f893080ed0aba36d66bf07025612693ef6021931ab9a6c"
+    },
+    "internal/spaceimpl/acl.go": {
+      "bytes": 22498,
+      "sha256": "6931e46524e93d6f9a9b1af3570008c7b4bbc3f0e7f523dc4190ed278ae05dc6"
+    },
+    "internal/spaceimpl/aclkick.go": {
+      "bytes": 3026,
+      "sha256": "eba8d846c77294c64958d869106c40d71291f28527049d477a54b4d40ab32b20"
+    },
+    "internal/spaceimpl/aclkick_test.go": {
+      "bytes": 1520,
+      "sha256": "d28ac766ba07e4f9e3ed56f800cdcc5989bd1657c3c8717e4e268ad6c15c99ab"
+    },
+    "internal/spaceimpl/aclmirror_watcher.go": {
+      "bytes": 10553,
+      "sha256": "3a78f9882854b5a2163576fe19aa3d244ffae67dc50e2ff9f12c7368e3d091db"
+    },
+    "internal/spaceimpl/aggregate.go": {
+      "bytes": 9155,
+      "sha256": "5af23db2fa4ea484496957a4eb862d7c599738bda50966abde431594aa1e7c8f"
+    },
+    "internal/spaceimpl/aggregate_test.go": {
+      "bytes": 3919,
+      "sha256": "20ae251679b75f36a399acce6c26254051306d0f91c5286e9d42e36c6c9a3b19"
+    },
+    "internal/spaceimpl/applygaps_test.go": {
+      "bytes": 805,
+      "sha256": "08d87b04e808cc4bc6216b239cfae2861a9d00fa08510a0daa1484b2db963855"
+    },
+    "internal/spaceimpl/builtin_descriptors_test.go": {
+      "bytes": 3765,
+      "sha256": "07f3f70f5def4ae2cff5aa98f699ecc8dffbfd0d21c537addac739566db366c2"
+    },
+    "internal/spaceimpl/bundles.go": {
+      "bytes": 48948,
+      "sha256": "c3284dc1429591a9cc52fa06f01df585782132d39ee5df99ad27f6c581bc93d5"
+    },
+    "internal/spaceimpl/bundles_test.go": {
+      "bytes": 11908,
+      "sha256": "676eaedb4fc8e9892a8536ace0069a81e5881e59951196127a1d52b480d46af5"
+    },
+    "internal/spaceimpl/changeindex.go": {
+      "bytes": 1233,
+      "sha256": "e4ce1b73bfbe09da1c49240168ca995556df133414ff9dec6e014abe5385b00f"
+    },
+    "internal/spaceimpl/collections.go": {
+      "bytes": 10490,
+      "sha256": "701877036d1425ac8bedb6bc501478dc20b52a36ff46e49c789483e8bf3b4096"
+    },
+    "internal/spaceimpl/current_reader_mutations.go": {
+      "bytes": 4756,
+      "sha256": "3c7903fa05332c62bf2abae3ac8966fe96f706031c573c2390c077da950e7050"
+    },
+    "internal/spaceimpl/current_writer.go": {
+      "bytes": 1608,
+      "sha256": "8c7d8ca5f3eb931a3ad8825c15356dfc92dd0ca2cd82de6c612d6df0e65b1a5f"
+    },
+    "internal/spaceimpl/current_writer_test.go": {
+      "bytes": 1314,
+      "sha256": "e59b459a1212a150eabbe27478ac15786bfe2b3d4b0027ee068a78589342c243"
+    },
+    "internal/spaceimpl/custody.go": {
+      "bytes": 1952,
+      "sha256": "5f2ee4cda130371e65e449933c51b4199b3a14dca7495357073ce9c64afee0fd"
+    },
+    "internal/spaceimpl/debug.go": {
+      "bytes": 4704,
+      "sha256": "ab3d41412f844df5884e91f3692b384bc4cd32d6ceaea582f6babc44444245c5"
+    },
+    "internal/spaceimpl/deletioncontroller.go": {
+      "bytes": 12100,
+      "sha256": "ea682081136f1967d3a44ab94e66c31b9719bc70a09905166dcf1341673c3f25"
+    },
+    "internal/spaceimpl/doc.go": {
+      "bytes": 569,
+      "sha256": "b1ec12af23dbeb6386020505604f5a654e77d547a16e7da31ef6606dff900136"
+    },
+    "internal/spaceimpl/errors_sentinel_test.go": {
+      "bytes": 1460,
+      "sha256": "98fec96dad313100986acbc7df7b91c520a30bd79e600aed6e8ea5ff3ac7e468"
+    },
+    "internal/spaceimpl/files.go": {
+      "bytes": 21036,
+      "sha256": "6e0e8d3576b80a2d8bb522ebd731217e82f4518acd123ff54c9189ca0d5a7004"
+    },
+    "internal/spaceimpl/files_purge.go": {
+      "bytes": 3742,
+      "sha256": "a1e812e0b10af35877ec3d401e8084add569a187d29ac6cb88479dfe91c7e556"
+    },
+    "internal/spaceimpl/files_read_authority.go": {
+      "bytes": 1116,
+      "sha256": "54c19ef7f23cad279840a6b100ca00c36f8585ea001004686b67e9dc1e0bd28a"
+    },
+    "internal/spaceimpl/files_status.go": {
+      "bytes": 7907,
+      "sha256": "ae2af500cfc39c08ad91876736b6b4d7d88509b23a4906192c6615944fb051c6"
+    },
+    "internal/spaceimpl/files_status_authority.go": {
+      "bytes": 834,
+      "sha256": "6fa229ef51cf6a8ab7877425e19d4114f81a1116aebb32742ad6ca33972364d6"
+    },
+    "internal/spaceimpl/gc.go": {
+      "bytes": 14206,
+      "sha256": "6ca24a550e128c7a8c88410008f77f12c77f56220e871c92aab679dff5e01171"
+    },
+    "internal/spaceimpl/gc_test.go": {
+      "bytes": 10144,
+      "sha256": "f3221432d317a007718967e31660156b42e123dd1dcfc6aaa11d84296bfccd49"
+    },
+    "internal/spaceimpl/gotoanyenc_test.go": {
+      "bytes": 8368,
+      "sha256": "4c5de84f932473c0b09e2ecd9e8d81bb27d0d160fd63aae828e396a9c9b91313"
+    },
+    "internal/spaceimpl/history.go": {
+      "bytes": 14839,
+      "sha256": "cad7a359a21005e56a273c2599a483351b37f6d287fc766389ee849459780374"
+    },
+    "internal/spaceimpl/identities_api.go": {
+      "bytes": 4197,
+      "sha256": "d8205c8500307d81c48c7636c4004177d33bb45871729f61fa54e50050d9e7df"
+    },
+    "internal/spaceimpl/identity_icon.go": {
+      "bytes": 5732,
+      "sha256": "9576a30f272964fe7b89cfbe553aab15504caf80f59d3b9c043587e2749efdc5"
+    },
+    "internal/spaceimpl/identity_icon_test.go": {
+      "bytes": 684,
+      "sha256": "27a8a1d6732b87f74566f34c305c3899bc24116727a78221ca814e4865202e11"
+    },
+    "internal/spaceimpl/join_ended_test.go": {
+      "bytes": 7112,
+      "sha256": "a1074910a864cb92578c34b80fe376f84e14631014e186e67f42ec0b98a9f2ad"
+    },
+    "internal/spaceimpl/joincontroller.go": {
+      "bytes": 21459,
+      "sha256": "9507a5dff4697fd192d6adde4009bfdf79a0676a2a16c250372253309720fa3e"
+    },
+    "internal/spaceimpl/materialize_block_test.go": {
+      "bytes": 3450,
+      "sha256": "ea4f9f254d918fd4dde6c7e50245209c9d4e47fdd3e434d947921cb428ce4d7c"
+    },
+    "internal/spaceimpl/members.go": {
+      "bytes": 39001,
+      "sha256": "80d8b53444d44d690c4ecb1582169a2c4aad9d654de7886a0b1a624337f72a04"
+    },
+    "internal/spaceimpl/members_collection.go": {
+      "bytes": 1954,
+      "sha256": "9e0133c8bc896ab5da59e2d892f03f4703f8b4dbf88aaa6c5b41decafdc54da2"
+    },
+    "internal/spaceimpl/members_fetchqueue_test.go": {
+      "bytes": 955,
+      "sha256": "99de3eb41321a4f3f269aaa82a14e430a3c81e66f8650b87f86a93b7a8c5e881"
+    },
+    "internal/spaceimpl/members_query.go": {
+      "bytes": 5035,
+      "sha256": "9de5a7cf9e9180214463c43ef9261273ebf1ae24ba40260d127ec5fe7ac73e2b"
+    },
+    "internal/spaceimpl/members_refresh.go": {
+      "bytes": 1402,
+      "sha256": "b242c4a650c4e9cbb7f921298c42851055c99ff159601aafb799ec01001c6a4f"
+    },
+    "internal/spaceimpl/metadata_symkey_test.go": {
+      "bytes": 1188,
+      "sha256": "bf2431d2a3eee6e1629b49fc69eab08b2a88c125283da37693dea2b8c6a92406"
+    },
+    "internal/spaceimpl/migration_definition.go": {
+      "bytes": 13488,
+      "sha256": "5d0a6ff98e91ad025ca4c998d47ada9b497e2031373f220324ba1cdd87236d12"
+    },
+    "internal/spaceimpl/migration_definition_part.go": {
+      "bytes": 2867,
+      "sha256": "6092e3e138fc88b76422b17bcd4d18d7230b27bc29ba522d2d18e2eba764a2bf"
+    },
+    "internal/spaceimpl/migration_file.go": {
+      "bytes": 7084,
+      "sha256": "cd074c3d842f78f7cdc58794b667ca4e76bdbe0d748d2fd2b575fd8663421678"
+    },
+    "internal/spaceimpl/migration_immutable_record.go": {
+      "bytes": 12102,
+      "sha256": "150fbcef24f25436ae30fc077cd7a73dd5507b5c60ddc9d3686296ef90708a53"
+    },
+    "internal/spaceimpl/migration_immutable_record_test.go": {
+      "bytes": 2432,
+      "sha256": "b0cc79744844c764a8c3293d0d5de5525bc5151f36cb57d00df07ed1ec52bba0"
+    },
+    "internal/spaceimpl/migration_inline_file.go": {
+      "bytes": 5061,
+      "sha256": "c1a87e93d3b838b6104a644b3f97ac390f4937e147434dc10cdab977d90199a9"
+    },
+    "internal/spaceimpl/migration_prepared.go": {
+      "bytes": 12679,
+      "sha256": "9899687fdd3e2e3cf446ce1148eb8c976dfb43286c21bb6a4483cdb0ae068bfd"
+    },
+    "internal/spaceimpl/migration_prepared_test.go": {
+      "bytes": 617,
+      "sha256": "64940795a7bfc319ec88846eb659d2423699ab1954134fcf6c61405cb136f53d"
+    },
+    "internal/spaceimpl/migration_property_update.go": {
+      "bytes": 10104,
+      "sha256": "a90d26a4d5807e01d81612b2c5759fb78d594308a10a1911af04800b17f7b87d"
+    },
+    "internal/spaceimpl/modify_conditional_test.go": {
+      "bytes": 3546,
+      "sha256": "fc5e388f31d719f61d974ac89d8347641a01cd459b659b335da85280669dee9a"
+    },
+    "internal/spaceimpl/modify_scope_test.go": {
+      "bytes": 2748,
+      "sha256": "436314c61013c4d67f6b4fc2cb65a173e6914438e9590ddfb18b7bfe85627eb3"
+    },
+    "internal/spaceimpl/object_conditional_test.go": {
+      "bytes": 1397,
+      "sha256": "976fec4e98e3c36645c8df3350b280eb39c4b50ba1e476ed7d9a047cb88f340b"
+    },
+    "internal/spaceimpl/object_create_bookmark.go": {
+      "bytes": 1739,
+      "sha256": "c63bc79da2af93bad6e54e810f9c3a34c86ad1e34814aefbae47c17d031255af"
+    },
+    "internal/spaceimpl/object_create_current_writer.go": {
+      "bytes": 2425,
+      "sha256": "002df2801a3e0c298364b7a4d2c98bdac9f93df2773caece694a55aa0a8e1f9a"
+    },
+    "internal/spaceimpl/objects.go": {
+      "bytes": 19357,
+      "sha256": "567501b1bdc1edfa8cb6b6ec8077995fcb6992f30ee5688e87265e5ef7814415"
+    },
+    "internal/spaceimpl/objects_copy.go": {
+      "bytes": 12375,
+      "sha256": "51d13c1624fc75188400f582fd801a262aca5ed10e282bf2b0a117452e33a710"
+    },
+    "internal/spaceimpl/objects_get_test.go": {
+      "bytes": 2615,
+      "sha256": "f5704d879c1b8d31cec4629b760cc0b4b89ab29aa91db09f122f18cb07497614"
+    },
+    "internal/spaceimpl/offload.go": {
+      "bytes": 17053,
+      "sha256": "7046b3baebe1898319db93a82aafafca8ae5ffe707c27d8b7accd9a7f77d57b0"
+    },
+    "internal/spaceimpl/offload_test.go": {
+      "bytes": 16475,
+      "sha256": "359b097a9db5d1beecc7c6bc808735f3d691bb25239bed1ecbc5c27876b72154"
+    },
+    "internal/spaceimpl/onetoone_inbox.go": {
+      "bytes": 22121,
+      "sha256": "7add3311386a2d957a33d1704a6557d681dd53ea67fc3a37427b003913e26071"
+    },
+    "internal/spaceimpl/onetoone_inbox_test.go": {
+      "bytes": 10579,
+      "sha256": "f508e75c9d369552a8b7c44542e2781bbbbed14b0fef45741d6cd6aa07ee5936"
+    },
+    "internal/spaceimpl/onetoone_keys.go": {
+      "bytes": 9374,
+      "sha256": "254dc0459d63effb3a1204d70562b463fa15070b2b7521c735c466854f31facc"
+    },
+    "internal/spaceimpl/onetoone_keys_test.go": {
+      "bytes": 1593,
+      "sha256": "7a2e393bf392645cce9f23da498cdb11d0b460ddc7e88d5b55a3e5f01444d014"
+    },
+    "internal/spaceimpl/payloads.go": {
+      "bytes": 25875,
+      "sha256": "1a595a9cfd2b493cebf8e5d82bb66aa7110f22390167896809ac59bc7ed12fc1"
+    },
+    "internal/spaceimpl/payloads_test.go": {
+      "bytes": 2679,
+      "sha256": "69442473dbe3df6de90cd54d332e9dd781cc19d1a6ae0b3d5e1045b22a7187a0"
+    },
+    "internal/spaceimpl/payloads_view.go": {
+      "bytes": 2198,
+      "sha256": "7d8b9595c68a72e19fd35f2fef48c898949bbffa333562b10d5bd7a3bcb4d3b6"
+    },
+    "internal/spaceimpl/properties.go": {
+      "bytes": 16622,
+      "sha256": "2f8218846d1f1865b4ed67affec29bd0e0d79e14e484d9f97e3f05ecad1e2e47"
+    },
+    "internal/spaceimpl/properties_conditional.go": {
+      "bytes": 3991,
+      "sha256": "b5f6c8370a6bdb95d2798998e8181248a403466c2950d18f0a60e314ba4b23c4"
+    },
+    "internal/spaceimpl/properties_conditional_noop_test.go": {
+      "bytes": 641,
+      "sha256": "109ac0608ed7ed8bcc5265f9c34439881d1cf2a4c86e265bbdb4e33039d57d09"
+    },
+    "internal/spaceimpl/properties_route_test.go": {
+      "bytes": 2900,
+      "sha256": "dc38c7c7fe71c998a412f8e30818f7bdf87bf58362d64d5db161a230e76bd3e8"
+    },
+    "internal/spaceimpl/pubsub.go": {
+      "bytes": 3154,
+      "sha256": "013e44d14727fee286830ba4b19f771a55fcf36877f82120524b8f538ae78e68"
+    },
+    "internal/spaceimpl/pubsub_test.go": {
+      "bytes": 1078,
+      "sha256": "efbdbaf567857ff700357b186aae0d6f3c6b67939e7c79e903a4d0993feff346"
+    },
+    "internal/spaceimpl/pullfirst_test.go": {
+      "bytes": 4380,
+      "sha256": "40661e8fcc4073c79fbbc6869d1d371756b8b64f7e8d338bc7f83deef430d379"
+    },
+    "internal/spaceimpl/push.go": {
+      "bytes": 4752,
+      "sha256": "26fa1b6b2700f865f65a9e82c72589ffcb8042fa3783d085b476ee1de3ad7dcf"
+    },
+    "internal/spaceimpl/push_test.go": {
+      "bytes": 6344,
+      "sha256": "4297f000923c6e9ea8aa2e43e452f1feab4cf1175e1253dfb61f648633775932"
+    },
+    "internal/spaceimpl/query.go": {
+      "bytes": 29095,
+      "sha256": "c00bc0341f41f99f4bb6ae548c135676ef994c1ba342af76b7022547a4fbecc0"
+    },
+    "internal/spaceimpl/readstate.go": {
+      "bytes": 4050,
+      "sha256": "79e95e8c58db0717426e3b182673b0f259a51bca32f8567da23911b0aea1502e"
+    },
+    "internal/spaceimpl/regularinvite.go": {
+      "bytes": 2624,
+      "sha256": "4a353d540d73a4adf5af65f42024680099a5a1a9fbfeab41ea68a084ad0ac48a"
+    },
+    "internal/spaceimpl/regularinvite_test.go": {
+      "bytes": 1620,
+      "sha256": "2852d0b53fdfb0adb391b60b6f58fb6879e9ad6bc0b5b6670e32aa867e5f70c1"
+    },
+    "internal/spaceimpl/releasetree_test.go": {
+      "bytes": 464,
+      "sha256": "957d326baee3a097cf2a2b542e09d4f49668a688c90a8bb156d1dd33a8c55c9e"
+    },
+    "internal/spaceimpl/result.go": {
+      "bytes": 1146,
+      "sha256": "392e811d750cb5cf8614a3ce170c618d2e97e2769bea2539823733ca30516d94"
+    },
+    "internal/spaceimpl/runtime_cache.go": {
+      "bytes": 11129,
+      "sha256": "817d470b46c48edcb1499f7c014c0b621827631187e7f887e120d6febffba1ad"
+    },
+    "internal/spaceimpl/runtime_cache_test.go": {
+      "bytes": 9071,
+      "sha256": "41d93abb341b9943a2cee20fefae8f7f1ece1015b76c479af284e36922c59475"
+    },
+    "internal/spaceimpl/runtime_state.go": {
+      "bytes": 5183,
+      "sha256": "e7dc11c6bfac2938ee2339e056234d1185ea23bf504b61a51b312b417e615799"
+    },
+    "internal/spaceimpl/service.go": {
+      "bytes": 112676,
+      "sha256": "50d52ecb5c76a6411713cca1f84d920bb2925faf4b0ac0fbeb01a61672a2a6ec"
+    },
+    "internal/spaceimpl/shared_records_test.go": {
+      "bytes": 5945,
+      "sha256": "345c218bdb305ce3d1ca4ccdf577c2194801c32b75d4078be6dde961b157b3ba"
+    },
+    "internal/spaceimpl/space.go": {
+      "bytes": 37455,
+      "sha256": "1e6312fdcd16fbbffc3ba1144890d10f79889c3d7b788691770b0a1b9d5206d4"
+    },
+    "internal/spaceimpl/spaceindex.go": {
+      "bytes": 14339,
+      "sha256": "a92af97f84005840060763a81f7c2c0265b610f6fef76c71f21ec5cc29604ad1"
+    },
+    "internal/spaceimpl/spaceindex_watcher.go": {
+      "bytes": 6484,
+      "sha256": "81c5f2d87ac2c79d37cfbff7fff52deb2bddf416194ae2da4dbb2300986591cd"
+    },
+    "internal/spaceimpl/spacetype.go": {
+      "bytes": 5446,
+      "sha256": "e3dad3eaecea5bfe51f3a6c8fe1fdb71294d88e694e7ef8311051e9118777343"
+    },
+    "internal/spaceimpl/spacetype_test.go": {
+      "bytes": 2479,
+      "sha256": "8228ac4250d14f0f855034987c836f7df48c58d35baff95c58a05eeec4142350"
+    },
+    "internal/spaceimpl/storeonce_test.go": {
+      "bytes": 7332,
+      "sha256": "49d8e347616ef3f3783b27126246f79d5fa54cf4776eeb236c48b27235db76a3"
+    },
+    "internal/spaceimpl/syncstatus.go": {
+      "bytes": 1348,
+      "sha256": "fe16a2bb9930881a8df718e2d8637ddcc42004af625ffbae829d58ce9d7dd881"
+    },
+    "internal/spaceimpl/techfiles.go": {
+      "bytes": 4331,
+      "sha256": "d6537d02213e06cf01a34f7f29d897aa6ccb72f2896fdfc8e30e5d6087052702"
+    },
+    "internal/spaceimpl/techspace_handle.go": {
+      "bytes": 22581,
+      "sha256": "2026c327f86bdfb955c72802fffd458e0769317d3d8472e2f170f71b03032885"
+    },
+    "internal/spaceimpl/track.go": {
+      "bytes": 3041,
+      "sha256": "628eab35288da8e06dff7fe178c869e43672bf8219c209799bf618b963be6146"
+    },
+    "internal/spaceimpl/track_test.go": {
+      "bytes": 980,
+      "sha256": "0e7e4106b08ebb7056da69ceba085c5c721066bf9e7d1fe0e3e891fb50fb3bbb"
+    },
+    "internal/spaceimpl/typedatasets.go": {
+      "bytes": 44430,
+      "sha256": "2430fe9b6ffec3a7a46e594bbfc48a4a4f861f6557ed3b406b14344a12042805"
+    },
+    "internal/spaceimpl/typedatasets_draft_test.go": {
+      "bytes": 9567,
+      "sha256": "c083cd369e480cb7e5a0ef6d7d224032f0e7652eb4462f700474db93372ac788"
+    },
+    "internal/spaceimpl/typedatasets_head_test.go": {
+      "bytes": 1377,
+      "sha256": "f612bfd83a1af107e8a8584d9c6c96b0b7b341cb76aae44bf892a20a20678bcb"
+    },
+    "internal/spaceimpl/types.go": {
+      "bytes": 38048,
+      "sha256": "a666d6cc42bdd2deced0a4bf3b3a684128231d073a77798f9ee43f67c3060ff6"
+    },
+    "internal/spaceimpl/unsupported.go": {
+      "bytes": 10615,
+      "sha256": "58c45b4760668a7dcf5a0742191b458ddc06d88cebf4300d6f2a0a1e9c847af6"
+    },
+    "internal/spaceimpl/unsupported_test.go": {
+      "bytes": 6281,
+      "sha256": "6daa504044ad683136030422ab1301893fb737ec915dc7b628d760e910941802"
+    },
+    "internal/spaceimpl/upsert.go": {
+      "bytes": 12697,
+      "sha256": "3aff66d40e3ad71452184a8087acff4212fdabed3114f191cb1e85e1bb1c634e"
+    },
+    "internal/spaceimpl/upsert_test.go": {
+      "bytes": 4735,
+      "sha256": "67c2fc01ac554aba6e010bf0003b2472c7eba66f0d29c3758b3314811944ef45"
+    },
+    "internal/spaceimpl/watchers.go": {
+      "bytes": 3069,
+      "sha256": "531cd2e152f6ad93a19d081b4bea032032951ced70848f9ea247f81d2c2017f8"
+    },
+    "internal/spaceimpl/xformat_encode_test.go": {
+      "bytes": 1113,
+      "sha256": "59653f5d44dbeedcf43592f34eab08f038ad8bf4246d66dd1aa61e7aec92c78d"
+    },
+    "internal/spaceobjects/applyseq_seed_test.go": {
+      "bytes": 1602,
+      "sha256": "127a34d7d5ad74051452e4efb7bef910d6d2892798daec1b940fb34e2698e1d1"
+    },
+    "internal/spaceobjects/bookmark_create.go": {
+      "bytes": 15523,
+      "sha256": "8a9b580b92772f738ca5d87a6978334a674f3e01d2a47ee455c5a64d296d815f"
+    },
+    "internal/spaceobjects/bookmark_create_test.go": {
+      "bytes": 18720,
+      "sha256": "7df39eef494957ba6213346641711a2479459f3c2c658206c4329804de6fddf8"
+    },
+    "internal/spaceobjects/buildtree_error_test.go": {
+      "bytes": 1486,
+      "sha256": "e27e0de7bb3aadab4d2ebd99f78c68405a49a721d7b9da70b590484ee2e37fd9"
+    },
+    "internal/spaceobjects/catalog.go": {
+      "bytes": 14566,
+      "sha256": "44db10e162e55315155322f4011e7599e1ef170b59cfac8d7accb6f2fa4d7552"
+    },
+    "internal/spaceobjects/catalog_test.go": {
+      "bytes": 22537,
+      "sha256": "bd970d9986409cf80a7e2014cb76a3e983c33491b33291ffbe280d17a2ff1ba7"
+    },
+    "internal/spaceobjects/catalog_version_test.go": {
+      "bytes": 1487,
+      "sha256": "c6fe84d7bf52015e1c1ba36232c2bbe375942001ac91ecf544b25aeaa67b0291"
+    },
+    "internal/spaceobjects/changefeed.go": {
+      "bytes": 6647,
+      "sha256": "1c1148a9186038a79a21d3d1de9624a2841fc2bd55fbbb887ed453145090123b"
+    },
+    "internal/spaceobjects/changefeed_test.go": {
+      "bytes": 2434,
+      "sha256": "cd9c90bab44eb047cc8cada167738b4098d3215970ebfd8c4489c7342338fbeb"
+    },
+    "internal/spaceobjects/create_current_writer.go": {
+      "bytes": 1996,
+      "sha256": "552c684b97b7a10faec5f7c790efa9a3710f130b085907e6c4408bf783a01aca"
+    },
+    "internal/spaceobjects/derive_gate_test.go": {
+      "bytes": 2795,
+      "sha256": "ba6ffcfe6cfac561d7a372a875f3c61300cf47e74f28b7004a953bc1d4cd9cae"
+    },
+    "internal/spaceobjects/detached.go": {
+      "bytes": 7358,
+      "sha256": "431fddf3375ef7f93f42a6cfbcee5a48b448ad25bcd2a49b64fe16bca36074f5"
+    },
+    "internal/spaceobjects/drainer.go": {
+      "bytes": 3287,
+      "sha256": "080f5c602ab36b9f21bde3f4f5cd17a19d4ee503974658ea5545083184a5e76a"
+    },
+    "internal/spaceobjects/gaps.go": {
+      "bytes": 1083,
+      "sha256": "bb1ec40badb8327efa58300ab831d63daccd59ab9e51956baea70bb0118adaa5"
+    },
+    "internal/spaceobjects/gaps_test.go": {
+      "bytes": 408,
+      "sha256": "587531f15c40cfb8334c2cd9b05be48f3d9318f7cfde875d6ef53b1cab22d3a3"
+    },
+    "internal/spaceobjects/gate.go": {
+      "bytes": 20216,
+      "sha256": "2c93e49ab5c60e79837f09a7b438264196119e6184f941a678d832de5971a318"
+    },
+    "internal/spaceobjects/gate_decision_test.go": {
+      "bytes": 8557,
+      "sha256": "528fd15aa60148f4fb5d705a4ecc319541421601bd1741520b99c64731a55a4f"
+    },
+    "internal/spaceobjects/gate_test.go": {
+      "bytes": 5861,
+      "sha256": "026d453c59e24b6018ffdcbee4b2722c816af59830baf3c8dcacf5fea5a5393c"
+    },
+    "internal/spaceobjects/getwithpayload_test.go": {
+      "bytes": 5598,
+      "sha256": "8168e52963e898c6574998a6c072ccb1ebee60eac223c3dc3016af6befd9dd91"
+    },
+    "internal/spaceobjects/handlers_test.go": {
+      "bytes": 9498,
+      "sha256": "7ecf21513b88c76442a05db9bf35b9b1bef86d580add34260efafd0ce8b5c0c9"
+    },
+    "internal/spaceobjects/history_hook_test.go": {
+      "bytes": 5680,
+      "sha256": "4a135e59906ab98ea7dd584eb03f5020064f5e9fe77dd741f8ac5f71fcaec362"
+    },
+    "internal/spaceobjects/indexes.go": {
+      "bytes": 6103,
+      "sha256": "43f8048c5b523c088ebeb5dabfe549002d6e93da42851646f05dda070f3fba7d"
+    },
+    "internal/spaceobjects/indexes_test.go": {
+      "bytes": 15967,
+      "sha256": "f1912b6fc4039c6598d82dc1a5bf9cd343d5d8cd6f6771e894c41f32aaabd9b7"
+    },
+    "internal/spaceobjects/localguard.go": {
+      "bytes": 11556,
+      "sha256": "e4f1baad8fb823264059add3e62f5b1147c4c43c17b9adbdd8aab29afe403d1a"
+    },
+    "internal/spaceobjects/migration_definition.go": {
+      "bytes": 4303,
+      "sha256": "bb65b6fa337e4fe22a00bd600ff215006a7fa1fb342862e839df6895d71a1e64"
+    },
+    "internal/spaceobjects/migration_file.go": {
+      "bytes": 6717,
+      "sha256": "252551f791f58dac0ae98b5cfa58c421f80afca7cc43712f5ab068ccefa84169"
+    },
+    "internal/spaceobjects/migration_inline_file.go": {
+      "bytes": 8513,
+      "sha256": "66725d902f31d49f10b2666fc135ecb427edf969e714481963dcc40d09c72eb0"
+    },
+    "internal/spaceobjects/migration_prepared.go": {
+      "bytes": 6794,
+      "sha256": "2b9f4edc4c1874c4b36eabfbb477146801d2b0d0d09679f033b6f48740f1134a"
+    },
+    "internal/spaceobjects/migration_prepared_test.go": {
+      "bytes": 8617,
+      "sha256": "9966cbd4997b3bc4c3fb35f6ee00446cdfb35e69c281e01cf7cd8ec9b62e51ff"
+    },
+    "internal/spaceobjects/native_conditional_noop_test.go": {
+      "bytes": 6362,
+      "sha256": "f9e39706b2687c69e0d4f74303505636448463deb6a71c1cabb246cfb93d5ef9"
+    },
+    "internal/spaceobjects/native_definition_policy.go": {
+      "bytes": 3033,
+      "sha256": "fb5e3b50d9ecd7286d1f91e590cd5da6446e2ae25d8363fca0b5143efed6af7c"
+    },
+    "internal/spaceobjects/native_definitions.go": {
+      "bytes": 9910,
+      "sha256": "2e74ff9361d1b93103f0794582959183014c02e791ed5debd7620ecb5fa72a8a"
+    },
+    "internal/spaceobjects/native_definitions_test.go": {
+      "bytes": 11048,
+      "sha256": "db68d039c370f2374b8306744f1018d14cbb26f7a5337420d217af9c72e78876"
+    },
+    "internal/spaceobjects/native_guard_test.go": {
+      "bytes": 5943,
+      "sha256": "e0568929c50098d90f0694840328837dacef70ac7b48ab22c3de9591b264b5c5"
+    },
+    "internal/spaceobjects/native_part_policy.go": {
+      "bytes": 1447,
+      "sha256": "c6f8bb9654a911ed5d70cc7ade01d9082d03e3d92e52dced5bbb9e28a73b121f"
+    },
+    "internal/spaceobjects/objectstamp_test.go": {
+      "bytes": 8102,
+      "sha256": "7b13c22372dd57065638f93c3f253d384a971ffc6a43718445a3860d559fb320"
+    },
+    "internal/spaceobjects/opentree_test.go": {
+      "bytes": 2047,
+      "sha256": "b91861dc15bb7fc2515782a12532bf06d4ee5eb10ecdfe2f83ef5617ac02387e"
+    },
+    "internal/spaceobjects/purge_test.go": {
+      "bytes": 16326,
+      "sha256": "8ca26a51242ef73e66d8f6bd3a47039d890e522a00a7c51183890c85eac3dba1"
+    },
+    "internal/spaceobjects/readmaterialize.go": {
+      "bytes": 8302,
+      "sha256": "1318e099881b3ad6579f85907b698ce863b944e3441e33f67c1e707ee5ebdefc"
+    },
+    "internal/spaceobjects/readmaterialize_test.go": {
+      "bytes": 2802,
+      "sha256": "acff6f831316ef7669fb6c7eecb936f1acbaeb54e7981438adb5169b137fb13e"
+    },
+    "internal/spaceobjects/readresolver_test.go": {
+      "bytes": 1816,
+      "sha256": "7811ca688527203b9cd6b6adef4fbfd8b5aa97b8cf961559bc6e780450a3e3f9"
+    },
+    "internal/spaceobjects/readtracking.go": {
+      "bytes": 14689,
+      "sha256": "0e58e74fe5cd7a30336cd302d1c6a9d4c12bd6b44341b524114d3ab37edf5b6a"
+    },
+    "internal/spaceobjects/readtracking_present_test.go": {
+      "bytes": 2206,
+      "sha256": "f895a14b5d5ee016359bb9a0503336954eb87116a3ff5db4ed9a278f5bc8868f"
+    },
+    "internal/spaceobjects/readtracking_reject_test.go": {
+      "bytes": 1962,
+      "sha256": "f3b062ab2f27f40aa6e98a0409202daa737fa725c2538afdff87b9625b1458ce"
+    },
+    "internal/spaceobjects/reindex.go": {
+      "bytes": 21527,
+      "sha256": "45ce741fbfc9ed3e8986198f0346edba8adba0ff674a37b69ddabad3809544aa"
+    },
+    "internal/spaceobjects/reindex_shed_test.go": {
+      "bytes": 3870,
+      "sha256": "fad357730bf933482acd78a6f075e4a6e612f73ae80c1f941fdfc0accac42710"
+    },
+    "internal/spaceobjects/reindex_test.go": {
+      "bytes": 16137,
+      "sha256": "f087efbd8bb8b14d57242a6879cba47d101fddd5ec18007a6e568b9ff8efc048"
+    },
+    "internal/spaceobjects/release.go": {
+      "bytes": 4389,
+      "sha256": "aff61cbcd65c4df3449559c0b7e2186c51aba2ef02fe7771c53f3e845a9ac979"
+    },
+    "internal/spaceobjects/release_test.go": {
+      "bytes": 5836,
+      "sha256": "7807e4309fbb8cad529b0357f6c907a6a1310e85369f13e2c35187ffcdc9e878"
+    },
+    "internal/spaceobjects/selective.go": {
+      "bytes": 9638,
+      "sha256": "da1e2ac1de906bca80f17a311269d754e71219c57251dea2d6abd959b501e72e"
+    },
+    "internal/spaceobjects/selective_test.go": {
+      "bytes": 3585,
+      "sha256": "edc8bde791e397ebc893ebb3daf3f519dcbab465fbb5e66dd78879a9c1135f9b"
+    },
+    "internal/spaceobjects/shared_dataset_test.go": {
+      "bytes": 18543,
+      "sha256": "849ea686af21e32490de1b9e4110e0249f29eb67bb0cf976f3422e8a0a8a1295"
+    },
+    "internal/spaceobjects/staticparts.go": {
+      "bytes": 7613,
+      "sha256": "f3ea43221bdb0aeba0df717814283796e606f26d0d571e7b4c2f11acdced0b69"
+    },
+    "internal/spaceobjects/staticparts_test.go": {
+      "bytes": 12603,
+      "sha256": "dc983a3f8c28bf211172e65e3925b3403294ea22b69e9419170ed6bfd7ad7986"
+    },
+    "internal/spaceobjects/staticschema_test.go": {
+      "bytes": 2870,
+      "sha256": "c582513cbefd5855e4942cd6cdb291508058a7f64c709ed6d55722c7c94080f3"
+    },
+    "internal/spaceobjects/store.go": {
+      "bytes": 141449,
+      "sha256": "8a05a490df571b13f1159ce6fd80b1329eb188cd7ebb94c3ae27cecdd6537c17"
+    },
+    "internal/spaceobjects/system_datasets_test.go": {
+      "bytes": 2754,
+      "sha256": "f55c4e922969792d557438fccd099837482d9fd96dcf0f1254cfc49a3fbae197"
+    },
+    "internal/spacesync/catchup.go": {
+      "bytes": 7836,
+      "sha256": "a8143eaf7b367564f5301cce6bb287125db4b1d5469589538ac6edd04dfe20d8"
+    },
+    "internal/spacesync/catchup_test.go": {
+      "bytes": 1847,
+      "sha256": "aeb22700b28a5106db07f121577d5ab4687e20c18cf236f4bd1dd8cbfe581cc3"
+    },
+    "internal/spacesync/reconcile.go": {
+      "bytes": 4743,
+      "sha256": "74f86a238ffeeb832ea871563fc4b616fcae752968953a712eb93d7dc058afde"
+    },
+    "internal/spacesync/reconcile_test.go": {
+      "bytes": 554,
+      "sha256": "ae5fe80816c90cc51ceda0414eaaedfc601581b1334f625d26933989208b1389"
+    },
+    "internal/store/doc.go": {
+      "bytes": 602,
+      "sha256": "a9df3e357e7b6f1e6e21c19d6e35f0c24b80f1febc6dfed42a9893380473bc39"
+    },
+    "internal/subscribe/doc.go": {
+      "bytes": 2311,
+      "sha256": "89ed97474bca36f814a57202d8c3e39bd33c7a1f76ab64f49780204e1371b5b8"
+    },
+    "internal/subscribe/drift_test.go": {
+      "bytes": 6956,
+      "sha256": "5b95a01ffa49152ca518aff42d2690db4c811ed3eebd36975bb7a1b3e6080812"
+    },
+    "internal/subscribe/engine.go": {
+      "bytes": 13554,
+      "sha256": "d64c6101c038baf7ab6f10629553c1d67af812c0eec6b8244a4e30d5f39357bf"
+    },
+    "internal/subscribe/engine_test.go": {
+      "bytes": 27024,
+      "sha256": "4e33d5fa1a2b0291767b413b333a9329463e3f4a47756c0854a70e70f769edcf"
+    },
+    "internal/subscribe/event.go": {
+      "bytes": 10157,
+      "sha256": "a684aa401bb5ce8f01c8b4f39702d1395517d0d25bec465bfd70934e9e53095d"
+    },
+    "internal/subscribe/event_test.go": {
+      "bytes": 2263,
+      "sha256": "83f3d28016d6f3915529be959c5708dd241da306216ebbc48d6179d43587f812"
+    },
+    "internal/subscribe/heldrow_test.go": {
+      "bytes": 2297,
+      "sha256": "89845b41ae47b4d2abcdf3df86274c5c581057aa079729737ff227adb9d5d788"
+    },
+    "internal/subscribe/refill_test.go": {
+      "bytes": 53254,
+      "sha256": "8058529f7a4d8c060d141fcd4cbbefaa2cf95e5c48285924bb393c1d4cc19545"
+    },
+    "internal/subscribe/resync_test.go": {
+      "bytes": 38901,
+      "sha256": "e693a13f35ccd6c126801feb8f756d073e6a55cef26a748258b3e7cb56ac186f"
+    },
+    "internal/subscribe/scope.go": {
+      "bytes": 3149,
+      "sha256": "4a84631feeb4518e402beb0084cf1277426956d076efbc82025b4ec44711397a"
+    },
+    "internal/subscribe/sub.go": {
+      "bytes": 26651,
+      "sha256": "e335d96b8c42528f9b222fe3701e7d4cef80879d7df4940a8602fa48c65e1c6b"
+    },
+    "internal/subscribe/ties_test.go": {
+      "bytes": 5182,
+      "sha256": "a574f2086c6731c1890f1c3034c3006e23494a10643bde5b53b1aa3d80416f99"
+    },
+    "internal/subscribe/window.go": {
+      "bytes": 4066,
+      "sha256": "9b79a135db928d7677815a2d21af5f37a04a55858c6771f670630388a573824b"
+    },
+    "internal/syncstatus/doc.go": {
+      "bytes": 764,
+      "sha256": "99e05523eedc4a7557a688ebdfaa8bec2b95da3cd91618926c2c217c638adf95"
+    },
+    "internal/syncstatus/rollup_test.go": {
+      "bytes": 10497,
+      "sha256": "1ed08f7ccaf54818500f9b820ea58525c2ccb0ad6f49568fe298e21f9babf9c5"
+    },
+    "internal/syncstatus/runtime_observation.go": {
+      "bytes": 1556,
+      "sha256": "f18f17060a316531e6e4b31e625bb0e0ba6a6589946e3881687d68f405bc8521"
+    },
+    "internal/syncstatus/runtime_observation_test.go": {
+      "bytes": 3695,
+      "sha256": "44780855592fb7b96770ed2d3da51625d25b0511c9cb475383128b8ec17ba8c2"
+    },
+    "internal/syncstatus/service.go": {
+      "bytes": 19112,
+      "sha256": "34c001d06d0ca62ba305d668694acced2329ab09a9f57bfdf7ecbe8bc2c8e7d0"
+    },
+    "internal/syncstatus/service_test.go": {
+      "bytes": 12014,
+      "sha256": "fb2089e8e02b8ef250654f712777ba0d9edf01fb92a1a2945b37da8ac37646f8"
+    },
+    "internal/syncstatus/tracker.go": {
+      "bytes": 13721,
+      "sha256": "47b9eb967c15ba87f246838d2bde51d1f4edee3f194bfcaf96437c99b245765d"
+    },
+    "internal/techspace/accountvalues.go": {
+      "bytes": 6972,
+      "sha256": "16dd47c1ee234ed7fe74185228fa18d86e9ee0bf683a5c32d1e81ab02764519b"
+    },
+    "internal/techspace/advertise_test.go": {
+      "bytes": 833,
+      "sha256": "77a2727efe1ef13f4ea5170cffc381040d0046b23f20d699f144be73cfdfb69e"
+    },
+    "internal/techspace/crdtversion.go": {
+      "bytes": 9125,
+      "sha256": "df3b69a9a4ae76bde457355510944b69b0af773abfd438baf234e4f471377fea"
+    },
+    "internal/techspace/crdtversion_test.go": {
+      "bytes": 6359,
+      "sha256": "cb2df3e4ee144a6a317e992001562d775beffc9aeb9ce036c6b6326fb05b4157"
+    },
+    "internal/techspace/derive_test.go": {
+      "bytes": 1312,
+      "sha256": "a9197827366d44d951c0d5bcf59d9aee524a82cc6053eb6614435b2d06b54b3e"
+    },
+    "internal/techspace/devices.go": {
+      "bytes": 23220,
+      "sha256": "e5cb0e520ac4dfd455856720ddfdfb97e572e52db05423b324500ee8fca4ff1b"
+    },
+    "internal/techspace/devices_test.go": {
+      "bytes": 21966,
+      "sha256": "6bd3a18b058f6b5b9210f1398d5cb427c6a8a7d0f284bc9db2710c9b15a0fcd1"
+    },
+    "internal/techspace/doc.go": {
+      "bytes": 865,
+      "sha256": "f7cb64dfec9aff34107fb881c91552bc720ae4aff51c6e82fa17d589fec85e3f"
+    },
+    "internal/techspace/export_test.go": {
+      "bytes": 623,
+      "sha256": "ef87fcf7e64ce4b71d9d71cf111b25d522bb989702fa25e4784c2c3f4f936c79"
+    },
+    "internal/techspace/identities.go": {
+      "bytes": 6138,
+      "sha256": "0b538d3a7ee772261da87756cdd8d7a2e973e0e211b7a28c57615b002eb75e72"
+    },
+    "internal/techspace/identities_test.go": {
+      "bytes": 3944,
+      "sha256": "dba044447a28a6ddebf93839acbce48c2e9d8dca9d4a7d6f7cd8724d13d543d0"
+    },
+    "internal/techspace/inboxcursor.go": {
+      "bytes": 2962,
+      "sha256": "cbf702d1f8ce4b2b97b69c9d5634557076293a8fc7728dabb85b2d47b312a62a"
+    },
+    "internal/techspace/profile.go": {
+      "bytes": 5239,
+      "sha256": "5d60f246222f0eca20ce4b404f59d62ab6cf4468caf60c674f9ce9a754859216"
+    },
+    "internal/techspace/record.go": {
+      "bytes": 9496,
+      "sha256": "cb56449d09d1f7eadcb1d9e4023ccae3286a3bedabb5c95f3a33e9233738c1b6"
+    },
+    "internal/techspace/service.go": {
+      "bytes": 40926,
+      "sha256": "4f553a2754da56b7c200639a0eb6780100051bf6289e80246866dd3b88f1955f"
+    },
+    "internal/techspace/settings.go": {
+      "bytes": 5696,
+      "sha256": "f6273542361df8cfb10457449f50ffffa24db9900d729abc07f19c4a7a25c225"
+    },
+    "internal/techspace/settings_current_reader.go": {
+      "bytes": 1953,
+      "sha256": "589714c060dc13322b950ff2635883de1013ae42ef584760b3388a254d039c7a"
+    },
+    "internal/techspace/settings_test.go": {
+      "bytes": 8466,
+      "sha256": "7bed8b5690b1db57411478c64f1303747012e64d1d89b41944715bc14fd8d469"
+    },
+    "internal/techspace/spaceindex.go": {
+      "bytes": 30003,
+      "sha256": "8b1b22531917fefe5221babc9f6f1d0b3be10c6719770b3cde974a5056076ab7"
+    },
+    "internal/techspace/spaceindex_test.go": {
+      "bytes": 30838,
+      "sha256": "ae02badd3287b904af22a62454496946008c4e63716d60cb5c4e7b18925afb20"
+    },
+    "internal/types/any/any.go": {
+      "bytes": 6692,
+      "sha256": "b6657fa57bae98576494d3c114fa8e815d30385f42f207903108a57a7ae0e372"
+    },
+    "internal/types/any/pinkha_last_opened.go": {
+      "bytes": 1081,
+      "sha256": "b911488174254dbcba6d116cb1289e1bd4d36cac60cb5b1eb1187a42799521b2"
+    },
+    "internal/types/collection/collection.go": {
+      "bytes": 2427,
+      "sha256": "8520b70951fe5e7126da872cf2c4cce3af7967b4da0b61f858d2e31e7cd6cda0"
+    },
+    "internal/types/compile.go": {
+      "bytes": 27604,
+      "sha256": "88ebba8a94967d06cf0760d64a860373c7fbc2d315caa68723517ac03c81f7c8"
+    },
+    "internal/types/dataversion.go": {
+      "bytes": 2324,
+      "sha256": "cd22a019bac5dffecd64cbaf97ac4a0c7e69b5d98df2563200e52343f04edf56"
+    },
+    "internal/types/dataversion_test.go": {
+      "bytes": 2691,
+      "sha256": "5c671740a1c7fcb802f9618fe11924baed130e0719645b0d711f22ebcbc6bb3c"
+    },
+    "internal/types/doc.go": {
+      "bytes": 785,
+      "sha256": "3c636e87aa16e48bd157a0dd01349b57ebba997d1594bd8374abcb8a05dd1906"
+    },
+    "internal/types/modules.go": {
+      "bytes": 4344,
+      "sha256": "4042e01d4419b52a1b6e562c681dcc4eea796d26bee81336b1c9a52f78c727b6"
+    },
+    "internal/types/modules_test.go": {
+      "bytes": 4428,
+      "sha256": "f14145836fce057164fb2c29568280f799e778722dd2ad361ce2f54459912188"
+    },
+    "internal/types/registry.go": {
+      "bytes": 2302,
+      "sha256": "32cc007149b03f3552e09288d27029ec1a4e1905a95e50f5a84a0bc394140e5b"
+    },
+    "internal/types/registry_live.go": {
+      "bytes": 7405,
+      "sha256": "4cf2160498990f04f5dccc0e97d4ed380ef862d54ea981731631f23221aea602"
+    },
+    "internal/types/registry_live_test.go": {
+      "bytes": 2794,
+      "sha256": "7d1971d16c74b04975be2304dd8c0d0080a76ad0ab31b3476410c65ec9b44ed0"
+    },
+    "internal/types/registry_shortids_test.go": {
+      "bytes": 3255,
+      "sha256": "25de9b375020a832a64e4d03425e694f050476656691d413645e28264d2367cb"
+    },
+    "internal/types/registry_stub.go": {
+      "bytes": 2396,
+      "sha256": "c0f968f576182e48cb322670756f713c2132f75d6eda9c93d21ad14da79cdb99"
+    },
+    "internal/types/spaceindex/bundles.go": {
+      "bytes": 7372,
+      "sha256": "792d5002124670f195753608b68b783e94ca95ff9b4c0b0e23e4ebd382f72971"
+    },
+    "internal/types/spaceindex/bundles_test.go": {
+      "bytes": 9868,
+      "sha256": "3d140555567f1a6cb67d943c93b05bc0f6b38291d30b3783b9f95a7284ba5acf"
+    },
+    "internal/types/spaceindex/identitykeys.go": {
+      "bytes": 4908,
+      "sha256": "b24b7630917f34a9541a131bca6c8e00f74a2a72317a20b4696fcb9cc7cc24d8"
+    },
+    "internal/types/spaceindex/identitykeys_test.go": {
+      "bytes": 5601,
+      "sha256": "cd72b2e0c457f24cb975c5f5c28ddccdf417fe8faf4bf80ecb4e5b6eb0285c95"
+    },
+    "internal/types/spaceindex/spaceindex.go": {
+      "bytes": 3345,
+      "sha256": "626ee0537a7146b7577b4073ed85e33d2b688e07df1758c755e9141507fd9abb"
+    },
+    "internal/types/template/template.go": {
+      "bytes": 1877,
+      "sha256": "a29d8c1da9141efb7b2d85dfa23b1fe398ab9183c288f6d3e8ade1d9cdf7afc3"
+    },
+    "internal/types/type/datasets.go": {
+      "bytes": 23497,
+      "sha256": "8ff62c863c2b8feeb74b793cffe26e7764d58cd0da285f48523f3bc4dc45178e"
+    },
+    "internal/types/type/datasets_deletebynone_test.go": {
+      "bytes": 1370,
+      "sha256": "3b4fdb707773fa5f80193a40c3935e899fba8bedee8446a98c093edb3eddbc3e"
+    },
+    "internal/types/type/datasets_test.go": {
+      "bytes": 47745,
+      "sha256": "1c1ea756c91ed819b6cebd58447372adae68df6a83b16695e42488c37faf3b87"
+    },
+    "internal/types/type/duplicate_create_test.go": {
+      "bytes": 2491,
+      "sha256": "34642c5f74e82ac10d426ae66c53eb3c5e1735f35c2c2c10c1a464c24d930d50"
+    },
+    "internal/types/type/indexes_test.go": {
+      "bytes": 15886,
+      "sha256": "1016f3e31bf0edadc505cb375a4e5c7bc6fbe699cefafa3f93b8412aca9fc666"
+    },
+    "internal/types/type/readd_test.go": {
+      "bytes": 3000,
+      "sha256": "d81e2475fc9f1b91b843e95d99a7083094f320ba303f9d305f7001bf34aafabe"
+    },
+    "internal/types/type/shortids.go": {
+      "bytes": 4694,
+      "sha256": "1793e134285d70a93b5468891c86b16d1624fcef9e860b41abac4ecf7cec0aa4"
+    },
+    "internal/types/type/type.go": {
+      "bytes": 19394,
+      "sha256": "483dc9db22eadfd36d309e58d9e028d67b715f143437ea023d76e2ec6e10e17f"
+    },
+    "internal/types/type/type_test.go": {
+      "bytes": 24351,
+      "sha256": "f6fca19fa613f45f151aa5bab286c58cef5ef08470b1919594547b651c4e6b82"
+    },
+    "internal/types/xformat.go": {
+      "bytes": 2502,
+      "sha256": "331fab8c8416732a570bc3e29371c218a72f5f9ccd808c52b9398a1f12bbe6c1"
+    },
+    "internal/types/xformat_test.go": {
+      "bytes": 2490,
+      "sha256": "5897a81fb806b3dd9432b8b7765b686525c19659135110a418442d31ce599223"
+    },
+    "p2p/driver.go": {
+      "bytes": 6422,
+      "sha256": "3548609357cc0ff824f6892115b0ae80ad984399bd6cbb9fb5c186767cc2c358"
+    },
+    "p2p/p2p.go": {
+      "bytes": 831,
+      "sha256": "00e9801d9413d66bd278cd9aa09dd440f7ea1fd58ca4d30bb160b7fb0613265e"
+    },
+    "p2p/powerhint_test.go": {
+      "bytes": 623,
+      "sha256": "3317a3781fa7b03e8d95e0465dc293d84346ed3d3ea1074dfb8b313d434efe7d"
+    },
+    "p2p/status.go": {
+      "bytes": 3767,
+      "sha256": "c0a035967993dc0ab09ddc7256e85e916eae48f4e72ef0d4f9baab7e37a542d9"
+    },
+    "readsync_gate_test.go": {
+      "bytes": 8867,
+      "sha256": "2f468b75c32b4f11cefbfa0891fff8471c871a367a868212c362d62c9a60fc57"
+    },
+    "runtime_state_fresh_linux_test.go": {
+      "bytes": 2622,
+      "sha256": "b89648cbbe79e341c3007dddca001fdf507a8fb0fe97b20db2c2fb6b0737c382"
+    },
+    "sdk.go": {
+      "bytes": 69248,
+      "sha256": "66b7414d7371697cca0867f29e13ded9afe781a1571c2b8c75fd5269d4f20097"
+    },
+    "sdk_bootstrap_test.go": {
+      "bytes": 4247,
+      "sha256": "e6c6dd7084c4e1679dcc9c91879d68e3e02209dae083d398b5195b42ed741262"
+    },
+    "sdk_close_test.go": {
+      "bytes": 3944,
+      "sha256": "9cccce5223d31118bb3247fd0fec4d509246a54df51c290fd6541b3b64eed4c2"
+    },
+    "sdk_conditional_modify_test.go": {
+      "bytes": 3239,
+      "sha256": "996e0d65291340b6b32ff9ed30a675e680a74a54d70309048b6f1a92a3096529"
+    },
+    "sdk_create_from_test.go": {
+      "bytes": 19114,
+      "sha256": "262097050772fba71455c440faa8fd33d91f50be9b0465b14802e7e661d5178f"
+    },
+    "sdk_create_shed_test.go": {
+      "bytes": 3384,
+      "sha256": "e8b8f35578a89438018729e2c025cf45efcf2c3ce46831b2386c0f7e4d95c21d"
+    },
+    "sdk_derive_offline_test.go": {
+      "bytes": 4425,
+      "sha256": "6fb6d2e76e70f17c0a452cd47f879a96e5a18897207f7538c978d6efa96179c8"
+    },
+    "sdk_query_find_test.go": {
+      "bytes": 3264,
+      "sha256": "8e1e0d08b11d60069c367e8393391a23a80178b6d1667dacef7853cf7c211d00"
+    },
+    "sdk_readprune_test.go": {
+      "bytes": 9574,
+      "sha256": "100252c03e1020c4a5d876ec831feaa009438db93287bef774837675b8491bff"
+    },
+    "sdk_readtracking_self_test.go": {
+      "bytes": 6592,
+      "sha256": "b8472009a66c1db51777473a2d800213aaf28a285de5ae18f1d64e58766c129d"
+    },
+    "sdk_readtracking_unread_since_test.go": {
+      "bytes": 4078,
+      "sha256": "46b1b03618c7d452b680097e26c57a99b30402241bee54d5ea77095210475efc"
+    },
+    "sdk_subscribe_refill_test.go": {
+      "bytes": 5135,
+      "sha256": "acf195bbdb933c20f80c77084ff89f193618f3fd2136134f0a0dae4d73fa8e63"
+    },
+    "sdk_subscribe_tie_test.go": {
+      "bytes": 4189,
+      "sha256": "d5aaf83b05c73197047bd544fb66fad66aff8c335b80f7df356141acfb9ad980"
+    },
+    "sdk_subscribe_total_test.go": {
+      "bytes": 3181,
+      "sha256": "9ea1f21055e9c0d06bff2059daa0f33a5b74b489814459e6cce7b550e03dd102"
+    },
+    "sdk_syncstatus_offline_test.go": {
+      "bytes": 2190,
+      "sha256": "f26f7760e636350a98fbfe4258127c1d0e72cd7635c7b0afd1b74d28a3b27c01"
+    },
+    "sdk_syncstatus_test.go": {
+      "bytes": 2044,
+      "sha256": "aefd71aebc04597791a9831733a38ecfbe8b3c69248fe673c2cc3344af0777e9"
+    },
+    "sdk_watermark_test.go": {
+      "bytes": 7975,
+      "sha256": "3efff432acae306990c9e3e32f93c0856af739135973fb66c94cac0f17d767b3"
+    },
+    "sdkdb.go": {
+      "bytes": 5293,
+      "sha256": "96bf8e4837c20c78f7713e2bb8e0c9f427b2d5091700ec4a8ed74e175fb64f88"
+    },
+    "sdkdb_other.go": {
+      "bytes": 157,
+      "sha256": "9d8a9420eadc0fd8ef5546276a0b7ce6f3d88fe2ab7f6ac4407b8510837a96c9"
+    },
+    "sdkdb_test.go": {
+      "bytes": 11558,
+      "sha256": "33beff67eb4b61551ede6e96898672399c07637d0abbd98f6a2f34932b9cd2ab"
+    },
+    "sdkdb_unix.go": {
+      "bytes": 571,
+      "sha256": "711dccde07b5593b93074e605330d62411f510b07fd677bba66af5b3aca5fa2b"
+    },
+    "space/acl.go": {
+      "bytes": 7408,
+      "sha256": "c5254d01e56f9a7414635111cb7b2d5bff05bfd356d27032875559e9bc8cf87e"
+    },
+    "space/aggregate.go": {
+      "bytes": 3572,
+      "sha256": "9a8a3aeecbf5031bb531b6b467bb4ad48bfef81c58bc6d815a3a8ebd0e5ebc49"
+    },
+    "space/bookmark_create.go": {
+      "bytes": 2073,
+      "sha256": "a555676400f864bb1fd7f41786dc0d0ba61ed89290c57ccc1acb7d88dcf1fa60"
+    },
+    "space/bundles.go": {
+      "bytes": 18798,
+      "sha256": "4630f7b59b486fce7194d0ac55a8eacaf7a3f40e5d40425094fa98958d7cbb6d"
+    },
+    "space/changeindex.go": {
+      "bytes": 4810,
+      "sha256": "cb1358cc6f47faea4acab16e50b526fe40e2f0579df7d0f4ffccebb4e341f46b"
+    },
+    "space/collections_doc.go": {
+      "bytes": 739,
+      "sha256": "d6381b8a1cfaa523acd608876f022a80870ba1805be920c71fadebf7e5ccd2c0"
+    },
+    "space/current_reader_mutations.go": {
+      "bytes": 1420,
+      "sha256": "598aeb712109e45eeb536f78d6633ce6756451a5a0989473a2826ee903b42af4"
+    },
+    "space/current_writer.go": {
+      "bytes": 3481,
+      "sha256": "57c1d050964179d656bd47b98f084d6997b8dd511980ce6f24e9bdc7bc47cefe"
+    },
+    "space/debug.go": {
+      "bytes": 3801,
+      "sha256": "8c83b1e538c6428e8d391a15f109e01f581d44907f133fcebd9e0e09a756fc7e"
+    },
+    "space/devices.go": {
+      "bytes": 7249,
+      "sha256": "dd682cbe2e89b50acc13bbf7fbd4946ac5a0e1a8dd6c2ae4469f4733c7b4841e"
+    },
+    "space/devices_test.go": {
+      "bytes": 4786,
+      "sha256": "e32289acd1c5a12ae89e9ace159ae34ccfb18d8436760b64a1b186834f4a41a6"
+    },
+    "space/doc.go": {
+      "bytes": 1008,
+      "sha256": "b8ef06eb9e05f90d54376352db81627d63f85613bd6bfce859251fcea6e6d4aa"
+    },
+    "space/errors_test.go": {
+      "bytes": 3230,
+      "sha256": "b24bbb16cf7430e2440561f0d0045e16c014cc007cdeea2193dc3a7fb3473168"
+    },
+    "space/files.go": {
+      "bytes": 11459,
+      "sha256": "1f5ac1991c8ec194104cd7c650566a4153598380bb9b1e7da9bf11e4d4355f6d"
+    },
+    "space/history.go": {
+      "bytes": 6683,
+      "sha256": "025f1343c20e251267edf5a027b2073d420f7a45e3f18156dffe7aa10a07d9da"
+    },
+    "space/identities.go": {
+      "bytes": 2123,
+      "sha256": "1aaab1840e448a19e28706e7a2516705c88ca408f5fe59b39060bf5d9e7609bf"
+    },
+    "space/identity.go": {
+      "bytes": 9185,
+      "sha256": "d350d55fbc8855cc2f3b4102cbfb3293a9d87357f9a3e99b408d9c128d7ce016"
+    },
+    "space/identity_decrypt_test.go": {
+      "bytes": 1318,
+      "sha256": "702510035dd24d93397c517d82a8a6c0d65eb6ba5f04c908e97c781f6afc0181"
+    },
+    "space/identity_test.go": {
+      "bytes": 4753,
+      "sha256": "6c3532ba7a64fd90fc66a18e3748363619b354cb4f6d276ff4a878317bbbfe45"
+    },
+    "space/indexer.go": {
+      "bytes": 1382,
+      "sha256": "ba21c52ab5f9ae1908c99f784afbfc3b28dfeae9f7e043f6ca7e4a320ce61022"
+    },
+    "space/info.go": {
+      "bytes": 11161,
+      "sha256": "af50b7f864beb0e4c86c2a5be504ecda71f7ac9de528eb11bbda7a0be460c6f2"
+    },
+    "space/info_test.go": {
+      "bytes": 813,
+      "sha256": "4165c3ae207c28a2f1bb2947d66f725711feb83632e070bf663239b3bb07d4dc"
+    },
+    "space/invite.go": {
+      "bytes": 4470,
+      "sha256": "0aada8476fef1978fbc8343ae54af327400d4a598e1445d88e84de321000ebd0"
+    },
+    "space/invite_test.go": {
+      "bytes": 3705,
+      "sha256": "51656db0a49b761bbcfa012541fd93261be66a544ab0cae1c61c6f57e0f85be4"
+    },
+    "space/members.go": {
+      "bytes": 7692,
+      "sha256": "7d670de58e00f05b4b8d05786b5db9df6288ffc6385f247526c664deaef07d5e"
+    },
+    "space/migration_definition.go": {
+      "bytes": 2022,
+      "sha256": "3ebfba3323ba710618709b9bdc75be857dca472b91bde0e1fd50807785b6d539"
+    },
+    "space/migration_file.go": {
+      "bytes": 1685,
+      "sha256": "0f5a79dbe7a0286e961d96be3b9484e9314fe115bab73b3cb96eb4fa423d0a4b"
+    },
+    "space/migration_immutable_record.go": {
+      "bytes": 1850,
+      "sha256": "f1eee7d45716b4162e3b3e8a0bab2ae41847ceacd770ed9a1da49669315e81fe"
+    },
+    "space/migration_inline_file.go": {
+      "bytes": 1448,
+      "sha256": "55a573ef325f4d58782d0a8a4e181867b383c219210e973b690038fed97aa4cf"
+    },
+    "space/migration_prepared.go": {
+      "bytes": 2893,
+      "sha256": "ba7a998e9891ab052de09ee4c6dd8ed05c1f53944ac2b1c2b72bfa6ad381e658"
+    },
+    "space/migration_property_update.go": {
+      "bytes": 1918,
+      "sha256": "289baa5e0051117ab4579b1e8cba3be6df7b3b132b2388f39450d80d9a83dd4d"
+    },
+    "space/modify.go": {
+      "bytes": 11908,
+      "sha256": "60827e5056d7949633addacbb167e1889cce56fb70acee23a518a7db7d774a55"
+    },
+    "space/modify_test.go": {
+      "bytes": 591,
+      "sha256": "2dacd2ee84dd1c0f82126325e007734d9443077820a425aa9c6cd88466c1be58"
+    },
+    "space/objects.go": {
+      "bytes": 7381,
+      "sha256": "51bc8bb59fd407f5f18a4366d6d156449c6ff30e13ed201170756b827474fe7a"
+    },
+    "space/payloads.go": {
+      "bytes": 2560,
+      "sha256": "dd0d80f67cfff9243269b552ddc3448e6f3d41d6dda901812034c408bf410742"
+    },
+    "space/properties.go": {
+      "bytes": 3901,
+      "sha256": "cfff8d3568f06c3a6b159d5a3ef434b11010af33b31218796b9cea46bf1dad4d"
+    },
+    "space/pubsub.go": {
+      "bytes": 3850,
+      "sha256": "4c138b5729d90e145cf359386f0a651c66145c3af27e2ceac51f7823cdee1725"
+    },
+    "space/push.go": {
+      "bytes": 5151,
+      "sha256": "fdce8afe6c656c4666bcc8ef9e840b191db0bbc8b7a39255efc792b525db30f1"
+    },
+    "space/query.go": {
+      "bytes": 6774,
+      "sha256": "141d6f38254f231ea07cdc0135c7bacf8a38fbf8e6b6deeb8d4b896a1a1dd6d5"
+    },
+    "space/readstate.go": {
+      "bytes": 5471,
+      "sha256": "c44482ca94a1b20330ee1dcfcc70a6c9781cc5a776b6afc670fae93dc8e5d694"
+    },
+    "space/runtime_state.go": {
+      "bytes": 3972,
+      "sha256": "7c51cfd66b1dec2c39ecac6640a4d1711317da24638509f12a30909575d76506"
+    },
+    "space/schema.go": {
+      "bytes": 2274,
+      "sha256": "ab189f345819cd2f2d558e48bfcf30a4947ce55da16c8b6d9f1feaeb21866ce5"
+    },
+    "space/service.go": {
+      "bytes": 27232,
+      "sha256": "4ca1078fd7c05e16873d7285910ce3657d0c267afbf6a11272b4dbe809d0a6d7"
+    },
+    "space/snapshot.go": {
+      "bytes": 762,
+      "sha256": "42ae5aa7239be684320eba670a4d52412be613b20e2b388695a4ddd29af465ea"
+    },
+    "space/space.go": {
+      "bytes": 11699,
+      "sha256": "3d7843300d5b1dcac87409bb752c72ae4c1f3d80e07ccd96399131ce9ce58995"
+    },
+    "space/subscribe.go": {
+      "bytes": 6609,
+      "sha256": "fde90c275bce97089ba38ad6818ed8b09a9adbc9da6608dd5c4e3a6dd69a5577"
+    },
+    "space/syncstatus.go": {
+      "bytes": 4759,
+      "sha256": "69632558d55ee979d4aa7ab777ef81fdc0547a15919a4dd9f2b93d2fa744abbf"
+    },
+    "space/types.go": {
+      "bytes": 34939,
+      "sha256": "2d980824c2270ff8eed8ae695db75f10e132036273de2004897613d995b3ddc3"
+    },
+    "space/upsert.go": {
+      "bytes": 3103,
+      "sha256": "295b6cf464a4158fe9c54a8a8923fc0e45153665b80264ac528b03443b71adc9"
+    },
+    "space/version.go": {
+      "bytes": 728,
+      "sha256": "c62c95a0e9ea2be5ddc42f5daa5a3425118847238cd9a840445ce21e3f2c93da"
+    },
+    "task-version-history.md": {
+      "bytes": 5034,
+      "sha256": "169d84b1c2240474109088132afafb18b6544a1ddb81bdc3b23b8f91614bc93f"
+    },
+    "testdata/format5.db.gz": {
+      "bytes": 4367,
+      "sha256": "dde5899d264eaae2a6353745fef129d7f92ddcdeb3ec89f31ca5c6588fc7245a"
+    }
+  },
+  "modes": {
+    ".gitignore": 384,
+    "LICENSE.md": 384,
+    "README.md": 384,
+    "account_limits.go": 384,
+    "account_limits_test.go": 384,
+    "auth/doc.go": 384,
+    "auth/file.go": 384,
+    "auth/file_test.go": 384,
+    "auth/key.go": 384,
+    "auth/mnemonic.go": 384,
+    "auth/mnemonic_test.go": 384,
+    "auth/provider.go": 384,
+    "config/config.go": 384,
+    "config/config_test.go": 384,
+    "config/doc.go": 384,
+    "doc.go": 384,
+    "docs/account-discovery.md": 384,
+    "docs/auth-module.md": 384,
+    "docs/bundles.md": 384,
+    "docs/change-index-proposal.md": 384,
+    "docs/common-context.md": 384,
+    "docs/crdt-spec.md": 384,
+    "docs/crdt.md": 384,
+    "docs/data-structure.md": 384,
+    "docs/direct-add-invites.md": 384,
+    "docs/files.md": 384,
+    "docs/global-p2p.md": 384,
+    "docs/identities.md": 384,
+    "docs/object.md": 384,
+    "docs/one-to-one-spaces.md": 384,
+    "docs/pinkha-prepared-property-updates.md": 384,
+    "docs/read-tracking-proposal.md": 384,
+    "docs/scoped-properties-proposal.md": 384,
+    "docs/space-index-proposal.md": 384,
+    "docs/space.md": 384,
+    "docs/sync-status-proposal.md": 384,
+    "docs/tech-space.md": 384,
+    "docs/types-properties-proposal.md": 384,
+    "docs/user-datasets.md": 384,
+    "docs/version-history-proposal.md": 384,
+    "docs/versioning.md": 384,
+    "e2e/account_icon_test.go": 384,
+    "e2e/account_limits_test.go": 384,
+    "e2e/account_scope_test.go": 384,
+    "e2e/acl_add_invite_test.go": 384,
+    "e2e/acl_test.go": 384,
+    "e2e/aggregate_test.go": 384,
+    "e2e/broker_embed_test.go": 384,
+    "e2e/bundles_test.go": 384,
+    "e2e/bundles_uninstall_test.go": 384,
+    "e2e/change_index_test.go": 384,
+    "e2e/cold_sync_test.go": 384,
+    "e2e/collection_gc_test.go": 384,
+    "e2e/collections_test.go": 384,
+    "e2e/confdump_test.go": 384,
+    "e2e/crdt_version_test.go": 384,
+    "e2e/dataset_indexes_test.go": 384,
+    "e2e/datetime_test.go": 384,
+    "e2e/debug_api_test.go": 384,
+    "e2e/deletion_feed_test.go": 384,
+    "e2e/derive_child_test.go": 384,
+    "e2e/derive_idempotent_test.go": 384,
+    "e2e/devices_claim_test.go": 384,
+    "e2e/files_v2_delete_test.go": 384,
+    "e2e/files_v2_deleted_owner_test.go": 384,
+    "e2e/files_v2_derived_owner_test.go": 384,
+    "e2e/files_v2_download_test.go": 384,
+    "e2e/files_v2_offload_test.go": 384,
+    "e2e/files_v2_public_read_test.go": 384,
+    "e2e/files_v2_restart_test.go": 384,
+    "e2e/files_v2_sdk_test.go": 384,
+    "e2e/files_v2_status_test.go": 384,
+    "e2e/files_v2_surface_test.go": 384,
+    "e2e/files_v2_test.go": 384,
+    "e2e/guest_key_test.go": 384,
+    "e2e/history_bench_test.go": 384,
+    "e2e/history_test.go": 384,
+    "e2e/identities_test.go": 384,
+    "e2e/invite_decline_test.go": 384,
+    "e2e/invite_delete_propagation_test.go": 384,
+    "e2e/invite_sync_test.go": 384,
+    "e2e/join_cancel_test.go": 384,
+    "e2e/join_defs_first_test.go": 384,
+    "e2e/join_ended_heal_test.go": 384,
+    "e2e/join_name_first_test.go": 384,
+    "e2e/join_synced_test.go": 384,
+    "e2e/local.yml": 384,
+    "e2e/local_scope_records_test.go": 384,
+    "e2e/local_scope_test.go": 384,
+    "e2e/modified_at_test.go": 384,
+    "e2e/modified_by_test.go": 384,
+    "e2e/onetoone_inbox_replay_test.go": 384,
+    "e2e/onetoone_inbox_test.go": 384,
+    "e2e/onetoone_keys_test.go": 384,
+    "e2e/onetoone_test.go": 384,
+    "e2e/own_role_test.go": 384,
+    "e2e/p2p_account_test.go": 384,
+    "e2e/p2p_files_test.go": 384,
+    "e2e/p2p_global_test.go": 384,
+    "e2e/p2p_test.go": 384,
+    "e2e/payloads_test.go": 384,
+    "e2e/property_xformat_test.go": 384,
+    "e2e/pubsub_test.go": 384,
+    "e2e/push_keys_test.go": 384,
+    "e2e/query_subscribe_cold_load_test.go": 384,
+    "e2e/query_subscribe_replay_test.go": 384,
+    "e2e/query_subscribe_test.go": 384,
+    "e2e/read_state_purge_test.go": 384,
+    "e2e/read_tracking_test.go": 384,
+    "e2e/reconcile_unpushed_test.go": 384,
+    "e2e/reindex_test.go": 384,
+    "e2e/sdk_test.go": 384,
+    "e2e/selective_sync_test.go": 384,
+    "e2e/shared_datasets_space_test.go": 384,
+    "e2e/shared_datasets_test.go": 384,
+    "e2e/space_delete_live_test.go": 384,
+    "e2e/space_delete_test.go": 384,
+    "e2e/space_index_test.go": 384,
+    "e2e/subscribe_test.go": 384,
+    "e2e/sync_status_node_drop_test.go": 384,
+    "e2e/tech_bundles_test.go": 384,
+    "e2e/techspace_inbound_test.go": 384,
+    "e2e/techspace_query_test.go": 384,
+    "e2e/type_flags_test.go": 384,
+    "e2e/type_parts_static_test.go": 384,
+    "e2e/type_parts_test.go": 384,
+    "e2e/user_datasets_delete_by_none_test.go": 384,
+    "e2e/user_datasets_test.go": 384,
+    "examples/basic/main.go": 384,
+    "files_cache_effect_authority_fresh_linux_test.go": 384,
+    "files_metadata_authority_fresh_linux_test.go": 384,
+    "files_readguard_fresh_linux_test.go": 384,
+    "go.mod": 384,
+    "go.sum": 384,
+    "handler/handler.go": 384,
+    "handler/localguard.go": 384,
+    "handler/validation_test.go": 384,
+    "internal/accountvalues/accountvalues.go": 384,
+    "internal/accountvalues/accountvalues_test.go": 384,
+    "internal/anyencx/anyencx.go": 384,
+    "internal/anysyncx/account.go": 384,
+    "internal/anysyncx/aclrefresh.go": 384,
+    "internal/anysyncx/aclrefresh_test.go": 384,
+    "internal/anysyncx/app.go": 384,
+    "internal/anysyncx/app_test.go": 384,
+    "internal/anysyncx/config.go": 384,
+    "internal/anysyncx/config_test.go": 384,
+    "internal/anysyncx/credential.go": 384,
+    "internal/anysyncx/discoverykeys.go": 384,
+    "internal/anysyncx/discoverykeys_test.go": 384,
+    "internal/anysyncx/doc.go": 384,
+    "internal/anysyncx/file_read_lifetime.go": 384,
+    "internal/anysyncx/file_read_lifetime_test.go": 384,
+    "internal/anysyncx/globalspace.go": 384,
+    "internal/anysyncx/globalsubs.go": 384,
+    "internal/anysyncx/headcache.go": 384,
+    "internal/anysyncx/headcache_test.go": 384,
+    "internal/anysyncx/kvdispatcher.go": 384,
+    "internal/anysyncx/localonly.go": 384,
+    "internal/anysyncx/p2pserver.go": 384,
+    "internal/anysyncx/p2pserver_test.go": 384,
+    "internal/anysyncx/p2pstate_test.go": 384,
+    "internal/anysyncx/peerlimit.go": 384,
+    "internal/anysyncx/peerlimit_test.go": 384,
+    "internal/anysyncx/peermanager.go": 384,
+    "internal/anysyncx/peermanager_global_test.go": 384,
+    "internal/anysyncx/peermanager_globalsub_test.go": 384,
+    "internal/anysyncx/peermanager_internal_test.go": 384,
+    "internal/anysyncx/peermanager_localpeers_test.go": 384,
+    "internal/anysyncx/peermanager_park_test.go": 384,
+    "internal/anysyncx/peerprogress.go": 384,
+    "internal/anysyncx/peerprogress_test.go": 384,
+    "internal/anysyncx/presence.go": 384,
+    "internal/anysyncx/presence_test.go": 384,
+    "internal/anysyncx/pubsub.go": 384,
+    "internal/anysyncx/pubsub_global_test.go": 384,
+    "internal/anysyncx/pubsub_test.go": 384,
+    "internal/anysyncx/spacecache.go": 384,
+    "internal/anysyncx/spacecache_test.go": 384,
+    "internal/anysyncx/spacedelete.go": 384,
+    "internal/anysyncx/spacesync.go": 384,
+    "internal/anysyncx/spacesync_globalsub_test.go": 384,
+    "internal/anysyncx/storage.go": 384,
+    "internal/anysyncx/storage_test.go": 384,
+    "internal/anysyncx/syncjob.go": 384,
+    "internal/anysyncx/syncjob_test.go": 384,
+    "internal/anysyncx/transport.go": 384,
+    "internal/anysyncx/transport_test.go": 384,
+    "internal/anysyncx/treefetch.go": 384,
+    "internal/anysyncx/treemanager.go": 384,
+    "internal/anysyncx/treemanager_test.go": 384,
+    "internal/anysyncx/treesyncer.go": 384,
+    "internal/anysyncx/treesyncer_test.go": 384,
+    "internal/bookmarkcreate/frame.go": 384,
+    "internal/bookmarkcreate/frame_test.go": 384,
+    "internal/commitguard/create.go": 384,
+    "internal/commitguard/create_test.go": 384,
+    "internal/commitguard/guard.go": 384,
+    "internal/commitguard/guard_test.go": 384,
+    "internal/commitguard/prepared.go": 384,
+    "internal/commitguard/prepared_definition.go": 384,
+    "internal/commitguard/prepared_definition_test.go": 384,
+    "internal/commitguard/prepared_file.go": 384,
+    "internal/commitguard/prepared_inline_file.go": 384,
+    "internal/commitguard/prepared_inline_file_test.go": 384,
+    "internal/commitguard/prepared_test.go": 384,
+    "internal/crdt/addseq_stamp_test.go": 384,
+    "internal/crdt/apply.go": 384,
+    "internal/crdt/apply_test.go": 384,
+    "internal/crdt/applyhook_test.go": 384,
+    "internal/crdt/applyseq.go": 384,
+    "internal/crdt/applyseq_test.go": 384,
+    "internal/crdt/batch_test.go": 384,
+    "internal/crdt/conflict_test.go": 384,
+    "internal/crdt/controller.go": 384,
+    "internal/crdt/controller_close_test.go": 384,
+    "internal/crdt/controller_copy.go": 384,
+    "internal/crdt/convergence_regression_test.go": 384,
+    "internal/crdt/doc.go": 384,
+    "internal/crdt/getter_test.go": 384,
+    "internal/crdt/guard_lookup_test.go": 384,
+    "internal/crdt/handler.go": 384,
+    "internal/crdt/history_filtered_fuzz_test.go": 384,
+    "internal/crdt/history_replay_bench_test.go": 384,
+    "internal/crdt/idderive.go": 384,
+    "internal/crdt/idderive_test.go": 384,
+    "internal/crdt/indexed_handler_test.go": 384,
+    "internal/crdt/indexes_test.go": 384,
+    "internal/crdt/keyed_test.go": 384,
+    "internal/crdt/local_test.go": 384,
+    "internal/crdt/localguard.go": 384,
+    "internal/crdt/meta.go": 384,
+    "internal/crdt/meta_deletion_test.go": 384,
+    "internal/crdt/meta_purge_test.go": 384,
+    "internal/crdt/meta_query_test.go": 384,
+    "internal/crdt/meta_test.go": 384,
+    "internal/crdt/objectprecondition.go": 384,
+    "internal/crdt/objectstamp_test.go": 384,
+    "internal/crdt/op.go": 384,
+    "internal/crdt/peek_collection_test.go": 384,
+    "internal/crdt/precondition.go": 384,
+    "internal/crdt/precondition_test.go": 384,
+    "internal/crdt/readtracking.go": 384,
+    "internal/crdt/records_test.go": 384,
+    "internal/crdt/reindex.go": 384,
+    "internal/crdt/reindex_test.go": 384,
+    "internal/crdt/schemahandler.go": 384,
+    "internal/crdt/schemahandler_deletebynone_test.go": 384,
+    "internal/crdt/schemahandler_test.go": 384,
+    "internal/crdt/traces.go": 384,
+    "internal/crdt/traces_test.go": 384,
+    "internal/crdt/validate.go": 384,
+    "internal/crdt/validate_test.go": 384,
+    "internal/crdt/version.go": 384,
+    "internal/crdt/versions.go": 384,
+    "internal/crdt/versions_bench_test.go": 384,
+    "internal/crdt/versions_test.go": 384,
+    "internal/fanout/fanout.go": 384,
+    "internal/fanout/fanout_test.go": 384,
+    "internal/files/broker/broker.go": 384,
+    "internal/files/broker/put_test.go": 384,
+    "internal/files/broker/quota_test.go": 384,
+    "internal/files/broker/receipt.go": 384,
+    "internal/files/broker/receipt_test.go": 384,
+    "internal/files/carfile/builder.go": 384,
+    "internal/files/carfile/carfile.go": 384,
+    "internal/files/carfile/carfile_test.go": 384,
+    "internal/files/carfile/sparse.go": 384,
+    "internal/files/crypt/crypt.go": 384,
+    "internal/files/crypt/crypt_test.go": 384,
+    "internal/files/fetch/baseurl.go": 384,
+    "internal/files/fetch/baseurl_test.go": 384,
+    "internal/files/fetch/dagreader.go": 384,
+    "internal/files/fetch/fetch.go": 384,
+    "internal/files/fetch/fetch_test.go": 384,
+    "internal/files/fetch/remote.go": 384,
+    "internal/files/fetch/source.go": 384,
+    "internal/files/fetch/source_deadline_test.go": 384,
+    "internal/files/filep2p/server.go": 384,
+    "internal/files/filep2p/server_test.go": 384,
+    "internal/files/filep2p/source.go": 384,
+    "internal/files/filep2p/source_global_test.go": 384,
+    "internal/files/gc/gc.go": 384,
+    "internal/files/gc/gc_test.go": 384,
+    "internal/files/readguard/effect.go": 384,
+    "internal/files/readguard/effect_test.go": 384,
+    "internal/files/readguard/events.go": 384,
+    "internal/files/readguard/metadata_test.go": 384,
+    "internal/files/readguard/observation.go": 420,
+    "internal/files/readguard/observation_test.go": 420,
+    "internal/files/readguard/readguard.go": 384,
+    "internal/files/readguard/readguard_cached_stream_measurement_test.go": 384,
+    "internal/files/readguard/readguard_lifetime_test.go": 384,
+    "internal/files/readguard/readguard_test.go": 384,
+    "internal/files/readguard/value.go": 384,
+    "internal/files/status/queue.go": 384,
+    "internal/files/status/queue_test.go": 384,
+    "internal/files/store/bitmap.go": 384,
+    "internal/files/store/blockstore.go": 384,
+    "internal/files/store/build.go": 384,
+    "internal/files/store/handle.go": 384,
+    "internal/files/store/migration_prepared_pin.go": 384,
+    "internal/files/store/rows.go": 384,
+    "internal/files/store/seek_bench_test.go": 384,
+    "internal/files/store/store.go": 384,
+    "internal/files/store/store_test.go": 384,
+    "internal/files/upload/migration_prepared.go": 384,
+    "internal/files/upload/migration_prepared_test.go": 384,
+    "internal/files/upload/spool.go": 384,
+    "internal/files/upload/upload.go": 384,
+    "internal/files/upload/upload_test.go": 384,
+    "internal/history/coalesce.go": 384,
+    "internal/history/coalesce_test.go": 384,
+    "internal/history/diff.go": 384,
+    "internal/history/diff_test.go": 384,
+    "internal/history/diffrange.go": 384,
+    "internal/history/diffrange_test.go": 384,
+    "internal/history/envelope.go": 384,
+    "internal/history/explain_test.go": 384,
+    "internal/history/guardrail_test.go": 384,
+    "internal/history/index.go": 384,
+    "internal/history/index_merge_test.go": 384,
+    "internal/history/index_test.go": 384,
+    "internal/history/record.go": 384,
+    "internal/history/record_test.go": 384,
+    "internal/history/replay.go": 384,
+    "internal/history/replay_test.go": 384,
+    "internal/inbox/notifier.go": 384,
+    "internal/inbox/notifier_test.go": 384,
+    "internal/migrationintent/definition.go": 384,
+    "internal/migrationintent/file.go": 384,
+    "internal/migrationintent/file_payload.go": 384,
+    "internal/migrationintent/immutable_record_test.go": 384,
+    "internal/migrationintent/inline_file.go": 384,
+    "internal/migrationintent/inline_file_test.go": 384,
+    "internal/migrationintent/numbers.go": 384,
+    "internal/migrationintent/numbers_test.go": 384,
+    "internal/migrationintent/property_update.go": 384,
+    "internal/migrationintent/store.go": 384,
+    "internal/migrationintent/store_test.go": 384,
+    "internal/object/checked_local_write.go": 420,
+    "internal/object/conditional_noop_test.go": 384,
+    "internal/object/create_current_writer_test.go": 384,
+    "internal/object/current_writer.go": 384,
+    "internal/object/current_writer_test.go": 384,
+    "internal/object/doc.go": 384,
+    "internal/object/lexid.go": 384,
+    "internal/object/lexid_test.go": 384,
+    "internal/object/localguard.go": 384,
+    "internal/object/localguard_test.go": 384,
+    "internal/object/migration_definition.go": 384,
+    "internal/object/migration_definition_part.go": 384,
+    "internal/object/migration_file.go": 384,
+    "internal/object/migration_inline_file.go": 384,
+    "internal/object/migration_prepared.go": 384,
+    "internal/object/migration_property_update.go": 384,
+    "internal/object/object.go": 384,
+    "internal/object/object_applygap_test.go": 384,
+    "internal/object/object_close_test.go": 384,
+    "internal/object/object_deleted_test.go": 384,
+    "internal/object/object_localwrite_test.go": 384,
+    "internal/object/object_localwriteif_test.go": 384,
+    "internal/object/object_meta_test.go": 384,
+    "internal/object/object_plaintext_test.go": 384,
+    "internal/object/object_replay_test.go": 384,
+    "internal/object/object_row_cas_test.go": 384,
+    "internal/object/wire.go": 384,
+    "internal/object/wire_test.go": 384,
+    "internal/p2p/account/account_test.go": 384,
+    "internal/p2p/account/client.go": 384,
+    "internal/p2p/account/record.go": 384,
+    "internal/p2p/accountlayer.go": 384,
+    "internal/p2p/addrbook.go": 384,
+    "internal/p2p/addrbook_test.go": 384,
+    "internal/p2p/connector.go": 384,
+    "internal/p2p/discovery.go": 384,
+    "internal/p2p/discovery_test.go": 384,
+    "internal/p2p/dnssd_driver.go": 384,
+    "internal/p2p/exchange.go": 384,
+    "internal/p2p/exchange_test.go": 384,
+    "internal/p2p/global.go": 384,
+    "internal/p2p/global_account_test.go": 384,
+    "internal/p2p/global_test.go": 384,
+    "internal/p2p/peerstatus.go": 384,
+    "internal/p2p/peerstatus_test.go": 384,
+    "internal/p2p/peerstore.go": 384,
+    "internal/p2p/peerstore_test.go": 384,
+    "internal/p2p/pick.go": 384,
+    "internal/p2p/record.go": 384,
+    "internal/payloads/derive_test.go": 384,
+    "internal/payloads/handler.go": 384,
+    "internal/payloads/handler_test.go": 384,
+    "internal/payloads/payloads.go": 384,
+    "internal/payloads/row.go": 384,
+    "internal/payloads/row_test.go": 384,
+    "internal/payloads/seal.go": 384,
+    "internal/payloads/seal_test.go": 384,
+    "internal/properties/conditional_membership_version_test.go": 384,
+    "internal/properties/convergence_test.go": 384,
+    "internal/properties/doc.go": 384,
+    "internal/properties/errors.go": 384,
+    "internal/properties/system.go": 384,
+    "internal/properties/system_membership_test.go": 384,
+    "internal/properties/system_metatype_test.go": 384,
+    "internal/properties/system_multifield_test.go": 384,
+    "internal/properties/system_nested_test.go": 384,
+    "internal/properties/system_optypes_test.go": 384,
+    "internal/properties/system_test.go": 384,
+    "internal/pushclient/client.go": 384,
+    "internal/pushclient/keys.go": 384,
+    "internal/pushclient/keys_test.go": 384,
+    "internal/pushclient/messages.go": 384,
+    "internal/pushclient/messages_test.go": 384,
+    "internal/pushclient/service.go": 384,
+    "internal/readlifetime/lifetime.go": 384,
+    "internal/readstate/load_test.go": 384,
+    "internal/readstate/open_test.go": 384,
+    "internal/readstate/purge.go": 384,
+    "internal/readstate/purge_test.go": 384,
+    "internal/readstate/readstate.go": 384,
+    "internal/readstate/readstate_test.go": 384,
+    "internal/readsync/readsync.go": 384,
+    "internal/readsync/readsync_coldspace_test.go": 384,
+    "internal/readsync/readsync_lockorder_test.go": 384,
+    "internal/readsync/readsync_test.go": 384,
+    "internal/schema/dataset.go": 384,
+    "internal/schema/dataset_test.go": 384,
+    "internal/schema/decl.go": 384,
+    "internal/schema/decl_test.go": 384,
+    "internal/schema/deletebynone_test.go": 384,
+    "internal/schema/index.go": 384,
+    "internal/schema/index_test.go": 384,
+    "internal/schema/schema.go": 384,
+    "internal/schema/schema_test.go": 384,
+    "internal/spaceimpl/accountmirror.go": 384,
+    "internal/spaceimpl/acl.go": 384,
+    "internal/spaceimpl/aclkick.go": 384,
+    "internal/spaceimpl/aclkick_test.go": 384,
+    "internal/spaceimpl/aclmirror_watcher.go": 384,
+    "internal/spaceimpl/aggregate.go": 384,
+    "internal/spaceimpl/aggregate_test.go": 384,
+    "internal/spaceimpl/applygaps_test.go": 384,
+    "internal/spaceimpl/builtin_descriptors_test.go": 384,
+    "internal/spaceimpl/bundles.go": 384,
+    "internal/spaceimpl/bundles_test.go": 384,
+    "internal/spaceimpl/changeindex.go": 384,
+    "internal/spaceimpl/collections.go": 384,
+    "internal/spaceimpl/current_reader_mutations.go": 420,
+    "internal/spaceimpl/current_writer.go": 384,
+    "internal/spaceimpl/current_writer_test.go": 384,
+    "internal/spaceimpl/custody.go": 384,
+    "internal/spaceimpl/debug.go": 384,
+    "internal/spaceimpl/deletioncontroller.go": 420,
+    "internal/spaceimpl/doc.go": 384,
+    "internal/spaceimpl/errors_sentinel_test.go": 384,
+    "internal/spaceimpl/files.go": 384,
+    "internal/spaceimpl/files_purge.go": 384,
+    "internal/spaceimpl/files_read_authority.go": 384,
+    "internal/spaceimpl/files_status.go": 384,
+    "internal/spaceimpl/files_status_authority.go": 384,
+    "internal/spaceimpl/gc.go": 384,
+    "internal/spaceimpl/gc_test.go": 384,
+    "internal/spaceimpl/gotoanyenc_test.go": 384,
+    "internal/spaceimpl/history.go": 384,
+    "internal/spaceimpl/identities_api.go": 384,
+    "internal/spaceimpl/identity_icon.go": 384,
+    "internal/spaceimpl/identity_icon_test.go": 384,
+    "internal/spaceimpl/join_ended_test.go": 384,
+    "internal/spaceimpl/joincontroller.go": 384,
+    "internal/spaceimpl/materialize_block_test.go": 384,
+    "internal/spaceimpl/members.go": 384,
+    "internal/spaceimpl/members_collection.go": 384,
+    "internal/spaceimpl/members_fetchqueue_test.go": 384,
+    "internal/spaceimpl/members_query.go": 384,
+    "internal/spaceimpl/members_refresh.go": 384,
+    "internal/spaceimpl/metadata_symkey_test.go": 384,
+    "internal/spaceimpl/migration_definition.go": 384,
+    "internal/spaceimpl/migration_definition_part.go": 384,
+    "internal/spaceimpl/migration_file.go": 384,
+    "internal/spaceimpl/migration_immutable_record.go": 384,
+    "internal/spaceimpl/migration_immutable_record_test.go": 384,
+    "internal/spaceimpl/migration_inline_file.go": 384,
+    "internal/spaceimpl/migration_prepared.go": 384,
+    "internal/spaceimpl/migration_prepared_test.go": 384,
+    "internal/spaceimpl/migration_property_update.go": 384,
+    "internal/spaceimpl/modify_conditional_test.go": 384,
+    "internal/spaceimpl/modify_scope_test.go": 384,
+    "internal/spaceimpl/object_conditional_test.go": 384,
+    "internal/spaceimpl/object_create_bookmark.go": 384,
+    "internal/spaceimpl/object_create_current_writer.go": 384,
+    "internal/spaceimpl/objects.go": 384,
+    "internal/spaceimpl/objects_copy.go": 384,
+    "internal/spaceimpl/objects_get_test.go": 384,
+    "internal/spaceimpl/offload.go": 384,
+    "internal/spaceimpl/offload_test.go": 384,
+    "internal/spaceimpl/onetoone_inbox.go": 384,
+    "internal/spaceimpl/onetoone_inbox_test.go": 384,
+    "internal/spaceimpl/onetoone_keys.go": 384,
+    "internal/spaceimpl/onetoone_keys_test.go": 384,
+    "internal/spaceimpl/payloads.go": 384,
+    "internal/spaceimpl/payloads_test.go": 384,
+    "internal/spaceimpl/payloads_view.go": 384,
+    "internal/spaceimpl/properties.go": 384,
+    "internal/spaceimpl/properties_conditional.go": 384,
+    "internal/spaceimpl/properties_conditional_noop_test.go": 384,
+    "internal/spaceimpl/properties_route_test.go": 384,
+    "internal/spaceimpl/pubsub.go": 384,
+    "internal/spaceimpl/pubsub_test.go": 384,
+    "internal/spaceimpl/pullfirst_test.go": 384,
+    "internal/spaceimpl/push.go": 384,
+    "internal/spaceimpl/push_test.go": 384,
+    "internal/spaceimpl/query.go": 384,
+    "internal/spaceimpl/readstate.go": 384,
+    "internal/spaceimpl/regularinvite.go": 384,
+    "internal/spaceimpl/regularinvite_test.go": 384,
+    "internal/spaceimpl/releasetree_test.go": 384,
+    "internal/spaceimpl/result.go": 384,
+    "internal/spaceimpl/runtime_cache.go": 420,
+    "internal/spaceimpl/runtime_cache_test.go": 420,
+    "internal/spaceimpl/runtime_state.go": 420,
+    "internal/spaceimpl/service.go": 420,
+    "internal/spaceimpl/shared_records_test.go": 384,
+    "internal/spaceimpl/space.go": 384,
+    "internal/spaceimpl/spaceindex.go": 384,
+    "internal/spaceimpl/spaceindex_watcher.go": 384,
+    "internal/spaceimpl/spacetype.go": 384,
+    "internal/spaceimpl/spacetype_test.go": 384,
+    "internal/spaceimpl/storeonce_test.go": 384,
+    "internal/spaceimpl/syncstatus.go": 384,
+    "internal/spaceimpl/techfiles.go": 384,
+    "internal/spaceimpl/techspace_handle.go": 384,
+    "internal/spaceimpl/track.go": 384,
+    "internal/spaceimpl/track_test.go": 384,
+    "internal/spaceimpl/typedatasets.go": 384,
+    "internal/spaceimpl/typedatasets_draft_test.go": 384,
+    "internal/spaceimpl/typedatasets_head_test.go": 384,
+    "internal/spaceimpl/types.go": 384,
+    "internal/spaceimpl/unsupported.go": 384,
+    "internal/spaceimpl/unsupported_test.go": 384,
+    "internal/spaceimpl/upsert.go": 384,
+    "internal/spaceimpl/upsert_test.go": 384,
+    "internal/spaceimpl/watchers.go": 384,
+    "internal/spaceimpl/xformat_encode_test.go": 384,
+    "internal/spaceobjects/applyseq_seed_test.go": 384,
+    "internal/spaceobjects/bookmark_create.go": 384,
+    "internal/spaceobjects/bookmark_create_test.go": 384,
+    "internal/spaceobjects/buildtree_error_test.go": 384,
+    "internal/spaceobjects/catalog.go": 384,
+    "internal/spaceobjects/catalog_test.go": 384,
+    "internal/spaceobjects/catalog_version_test.go": 384,
+    "internal/spaceobjects/changefeed.go": 384,
+    "internal/spaceobjects/changefeed_test.go": 384,
+    "internal/spaceobjects/create_current_writer.go": 384,
+    "internal/spaceobjects/derive_gate_test.go": 384,
+    "internal/spaceobjects/detached.go": 384,
+    "internal/spaceobjects/drainer.go": 384,
+    "internal/spaceobjects/gaps.go": 384,
+    "internal/spaceobjects/gaps_test.go": 384,
+    "internal/spaceobjects/gate.go": 384,
+    "internal/spaceobjects/gate_decision_test.go": 384,
+    "internal/spaceobjects/gate_test.go": 384,
+    "internal/spaceobjects/getwithpayload_test.go": 384,
+    "internal/spaceobjects/handlers_test.go": 384,
+    "internal/spaceobjects/history_hook_test.go": 384,
+    "internal/spaceobjects/indexes.go": 384,
+    "internal/spaceobjects/indexes_test.go": 384,
+    "internal/spaceobjects/localguard.go": 384,
+    "internal/spaceobjects/migration_definition.go": 384,
+    "internal/spaceobjects/migration_file.go": 384,
+    "internal/spaceobjects/migration_inline_file.go": 384,
+    "internal/spaceobjects/migration_prepared.go": 384,
+    "internal/spaceobjects/migration_prepared_test.go": 384,
+    "internal/spaceobjects/native_conditional_noop_test.go": 384,
+    "internal/spaceobjects/native_definition_policy.go": 384,
+    "internal/spaceobjects/native_definitions.go": 384,
+    "internal/spaceobjects/native_definitions_test.go": 384,
+    "internal/spaceobjects/native_guard_test.go": 384,
+    "internal/spaceobjects/native_part_policy.go": 384,
+    "internal/spaceobjects/objectstamp_test.go": 384,
+    "internal/spaceobjects/opentree_test.go": 384,
+    "internal/spaceobjects/purge_test.go": 384,
+    "internal/spaceobjects/readmaterialize.go": 384,
+    "internal/spaceobjects/readmaterialize_test.go": 384,
+    "internal/spaceobjects/readresolver_test.go": 384,
+    "internal/spaceobjects/readtracking.go": 384,
+    "internal/spaceobjects/readtracking_present_test.go": 384,
+    "internal/spaceobjects/readtracking_reject_test.go": 384,
+    "internal/spaceobjects/reindex.go": 384,
+    "internal/spaceobjects/reindex_shed_test.go": 384,
+    "internal/spaceobjects/reindex_test.go": 384,
+    "internal/spaceobjects/release.go": 384,
+    "internal/spaceobjects/release_test.go": 384,
+    "internal/spaceobjects/selective.go": 384,
+    "internal/spaceobjects/selective_test.go": 384,
+    "internal/spaceobjects/shared_dataset_test.go": 384,
+    "internal/spaceobjects/staticparts.go": 384,
+    "internal/spaceobjects/staticparts_test.go": 384,
+    "internal/spaceobjects/staticschema_test.go": 384,
+    "internal/spaceobjects/store.go": 384,
+    "internal/spaceobjects/system_datasets_test.go": 384,
+    "internal/spacesync/catchup.go": 384,
+    "internal/spacesync/catchup_test.go": 384,
+    "internal/spacesync/reconcile.go": 384,
+    "internal/spacesync/reconcile_test.go": 384,
+    "internal/store/doc.go": 384,
+    "internal/subscribe/doc.go": 384,
+    "internal/subscribe/drift_test.go": 384,
+    "internal/subscribe/engine.go": 384,
+    "internal/subscribe/engine_test.go": 384,
+    "internal/subscribe/event.go": 384,
+    "internal/subscribe/event_test.go": 384,
+    "internal/subscribe/heldrow_test.go": 384,
+    "internal/subscribe/refill_test.go": 384,
+    "internal/subscribe/resync_test.go": 384,
+    "internal/subscribe/scope.go": 384,
+    "internal/subscribe/sub.go": 384,
+    "internal/subscribe/ties_test.go": 384,
+    "internal/subscribe/window.go": 384,
+    "internal/syncstatus/doc.go": 384,
+    "internal/syncstatus/rollup_test.go": 384,
+    "internal/syncstatus/runtime_observation.go": 420,
+    "internal/syncstatus/runtime_observation_test.go": 420,
+    "internal/syncstatus/service.go": 384,
+    "internal/syncstatus/service_test.go": 384,
+    "internal/syncstatus/tracker.go": 384,
+    "internal/techspace/accountvalues.go": 384,
+    "internal/techspace/advertise_test.go": 384,
+    "internal/techspace/crdtversion.go": 384,
+    "internal/techspace/crdtversion_test.go": 384,
+    "internal/techspace/derive_test.go": 384,
+    "internal/techspace/devices.go": 384,
+    "internal/techspace/devices_test.go": 384,
+    "internal/techspace/doc.go": 384,
+    "internal/techspace/export_test.go": 384,
+    "internal/techspace/identities.go": 384,
+    "internal/techspace/identities_test.go": 384,
+    "internal/techspace/inboxcursor.go": 384,
+    "internal/techspace/profile.go": 384,
+    "internal/techspace/record.go": 384,
+    "internal/techspace/service.go": 384,
+    "internal/techspace/settings.go": 384,
+    "internal/techspace/settings_current_reader.go": 420,
+    "internal/techspace/settings_test.go": 384,
+    "internal/techspace/spaceindex.go": 384,
+    "internal/techspace/spaceindex_test.go": 384,
+    "internal/types/any/any.go": 384,
+    "internal/types/any/pinkha_last_opened.go": 420,
+    "internal/types/collection/collection.go": 384,
+    "internal/types/compile.go": 384,
+    "internal/types/dataversion.go": 384,
+    "internal/types/dataversion_test.go": 384,
+    "internal/types/doc.go": 384,
+    "internal/types/modules.go": 384,
+    "internal/types/modules_test.go": 384,
+    "internal/types/registry.go": 384,
+    "internal/types/registry_live.go": 384,
+    "internal/types/registry_live_test.go": 384,
+    "internal/types/registry_shortids_test.go": 384,
+    "internal/types/registry_stub.go": 384,
+    "internal/types/spaceindex/bundles.go": 384,
+    "internal/types/spaceindex/bundles_test.go": 384,
+    "internal/types/spaceindex/identitykeys.go": 384,
+    "internal/types/spaceindex/identitykeys_test.go": 384,
+    "internal/types/spaceindex/spaceindex.go": 384,
+    "internal/types/template/template.go": 384,
+    "internal/types/type/datasets.go": 384,
+    "internal/types/type/datasets_deletebynone_test.go": 384,
+    "internal/types/type/datasets_test.go": 384,
+    "internal/types/type/duplicate_create_test.go": 384,
+    "internal/types/type/indexes_test.go": 384,
+    "internal/types/type/readd_test.go": 384,
+    "internal/types/type/shortids.go": 384,
+    "internal/types/type/type.go": 384,
+    "internal/types/type/type_test.go": 384,
+    "internal/types/xformat.go": 384,
+    "internal/types/xformat_test.go": 384,
+    "p2p/driver.go": 384,
+    "p2p/p2p.go": 384,
+    "p2p/powerhint_test.go": 384,
+    "p2p/status.go": 384,
+    "readsync_gate_test.go": 384,
+    "runtime_state_fresh_linux_test.go": 420,
+    "sdk.go": 384,
+    "sdk_bootstrap_test.go": 384,
+    "sdk_close_test.go": 384,
+    "sdk_conditional_modify_test.go": 384,
+    "sdk_create_from_test.go": 384,
+    "sdk_create_shed_test.go": 384,
+    "sdk_derive_offline_test.go": 384,
+    "sdk_query_find_test.go": 384,
+    "sdk_readprune_test.go": 384,
+    "sdk_readtracking_self_test.go": 384,
+    "sdk_readtracking_unread_since_test.go": 384,
+    "sdk_subscribe_refill_test.go": 384,
+    "sdk_subscribe_tie_test.go": 384,
+    "sdk_subscribe_total_test.go": 384,
+    "sdk_syncstatus_offline_test.go": 384,
+    "sdk_syncstatus_test.go": 384,
+    "sdk_watermark_test.go": 384,
+    "sdkdb.go": 384,
+    "sdkdb_other.go": 384,
+    "sdkdb_test.go": 384,
+    "sdkdb_unix.go": 384,
+    "space/acl.go": 384,
+    "space/aggregate.go": 384,
+    "space/bookmark_create.go": 384,
+    "space/bundles.go": 384,
+    "space/changeindex.go": 384,
+    "space/collections_doc.go": 384,
+    "space/current_reader_mutations.go": 420,
+    "space/current_writer.go": 384,
+    "space/debug.go": 384,
+    "space/devices.go": 384,
+    "space/devices_test.go": 384,
+    "space/doc.go": 384,
+    "space/errors_test.go": 384,
+    "space/files.go": 384,
+    "space/history.go": 384,
+    "space/identities.go": 384,
+    "space/identity.go": 384,
+    "space/identity_decrypt_test.go": 384,
+    "space/identity_test.go": 384,
+    "space/indexer.go": 384,
+    "space/info.go": 384,
+    "space/info_test.go": 384,
+    "space/invite.go": 384,
+    "space/invite_test.go": 384,
+    "space/members.go": 384,
+    "space/migration_definition.go": 384,
+    "space/migration_file.go": 384,
+    "space/migration_immutable_record.go": 384,
+    "space/migration_inline_file.go": 384,
+    "space/migration_prepared.go": 384,
+    "space/migration_property_update.go": 384,
+    "space/modify.go": 384,
+    "space/modify_test.go": 384,
+    "space/objects.go": 384,
+    "space/payloads.go": 384,
+    "space/properties.go": 384,
+    "space/pubsub.go": 384,
+    "space/push.go": 384,
+    "space/query.go": 384,
+    "space/readstate.go": 384,
+    "space/runtime_state.go": 420,
+    "space/schema.go": 384,
+    "space/service.go": 384,
+    "space/snapshot.go": 384,
+    "space/space.go": 384,
+    "space/subscribe.go": 384,
+    "space/syncstatus.go": 384,
+    "space/types.go": 384,
+    "space/upsert.go": 384,
+    "space/version.go": 384,
+    "task-version-history.md": 384,
+    "testdata/format5.db.gz": 384
+  }
+}

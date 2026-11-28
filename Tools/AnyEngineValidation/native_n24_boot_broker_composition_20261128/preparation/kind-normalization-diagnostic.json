@@ -1,0 +1,33 @@
+{
+  "compiler": 0,
+  "currentModule": {
+    "bytes": 12874,
+    "gitBlob": "0d1f1f0cacaefedf904c216a7c50309fd5e1d5e1",
+    "sha256": "d8535ecd1514f90b88d6d2cf8b460651aa8a943b0d7735a1866f0a3c9e0bcc57"
+  },
+  "error": {
+    "compiler": 0,
+    "message": "declared action kind",
+    "name": "Error",
+    "native": 0,
+    "projectWrites": 0,
+    "sourceSaved": true
+  },
+  "exactCorrection": {
+    "after": "  require(input.n24Overlay.files.every(row => [\"production\", \"qualification-test\"].includes(row.kind)),\n    \"N24 declared source kinds\");\n  const nActions = input.n24Overlay.files.map(row => ({\n    stage: \"n24-bound-http-acl\", kind: row.kind === \"qualification-test\" ? \"test\" : row.kind,\n    sourceDeclaredKind: row.kind, action: row.action,",
+    "before": "  const nActions = input.n24Overlay.files.map(row => ({\n    stage: \"n24-bound-http-acl\", kind: row.kind, action: row.action,",
+    "preservesInputSourceManifest": true
+  },
+  "inputManifestsUnchanged": true,
+  "native": 0,
+  "oracleProjectWrites": 0,
+  "predecessorModule": {
+    "bytes": 12657,
+    "gitBlob": "dd1b2e9d6bd70613b274dc33869bed39dfcbe315",
+    "sha256": "bcdb0fba833f7d6c2657b4b7ce975de3584e9959328b181b57f821cf8389a400"
+  },
+  "protocol": "pinkha-final64-retained-preparation-diagnostic-v1",
+  "reason": "The original N24 manifest calls its four added test rows qualification-test. The first new derivation draft accepted only production/test. The successor validates the exact original two-kind domain and explicitly normalizes qualification-test to its internal test kind.",
+  "status": "PRESERVED_IN_MEMORY_DERIVATION_FAILURE_NOT_A_NATIVE_TEST",
+  "tests": 0
+}
