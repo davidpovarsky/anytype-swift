@@ -281,6 +281,17 @@ public final class AnyLibraryPresentation {
         return model
     }
 
+    /// An imported mount owns this editor's drain. Do not put it in the
+    /// ordinary document cache, which may survive a context replacement.
+    func makeImportedDocument(_ id: String) throws -> AnyDocumentPresentation {
+        try lifetime.requireActive()
+        guard let marker, let operations else { throw AnyHostError.incompleteDocument }
+        return try AnyDocumentPresentation(client: client, session: session,
+            objects: objects, blocks: blocks, capabilities: capabilities, operations: operations,
+            noteMarker: marker, objectID: id, lifetime: lifetime, recovery: recovery,
+            hierarchySchema: hierarchy?.schema, personalNavigation: personalNavigation)
+    }
+
     /// These personal preferences require current READ authority, independently
     /// of the permission to edit shared document content.
     public func openHome() { beginHomeAction(.open) }

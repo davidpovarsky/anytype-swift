@@ -1339,6 +1339,23 @@ public final class AnyDocumentPresentation: Sendable {
         return try recovery.attachmentIntentStore(workspace: workspace)
     }
 
+    /// Called only for a fresh uncached imported editor after its mount has
+    /// registered with this exact lifetime. One owner drains the editor and
+    /// imported context; adding an await back to that owner here would cycle.
+    func installImportedMount(
+        readOperation: @escaping AnyDocumentReadOperation,
+        revoke: @escaping @MainActor () -> Void
+    ) throws {
+        try lifetime.requireActive()
+        guard !isMounted, read == nil, let registration else {
+            throw AnyHostError.sessionClosed
+        }
+        editorReadOperation = readOperation
+        revokeHandlers.append(revoke)
+        lifetime.unregister(registration)
+        self.registration = nil
+    }
+
     func installSourceInvalidator(_ invalidate: @escaping @Sendable () -> Void) throws {
         try requireMounted(epoch)
         scopeInvalidators.append(invalidate)

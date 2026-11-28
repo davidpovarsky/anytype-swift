@@ -62,6 +62,19 @@ public struct AnyNativeLibraryView: View {
         self.onManageMembers = onManageMembers
     }
 
+    /// Reuses the workspace owner's actual library instead of creating another
+    /// presentation, service set, or ordinary editor cache.
+    public init(presentation: AnyLibraryPresentation,
+                onRequestClose: @escaping @MainActor () async -> Void,
+                onManageMembers: (@MainActor () -> Void)? = nil) {
+        _model = State(initialValue: presentation)
+        _path = State(initialValue: presentation.recovery.workspace == presentation.session.workspace
+            ? presentation.recovery.navigation : [])
+        self.onRequestClose = onRequestClose
+        self.lifetime = presentation.lifetime
+        self.onManageMembers = onManageMembers
+    }
+
     public var body: some View {
         NavigationStack(path: $path) {
             library(parentID: nil)

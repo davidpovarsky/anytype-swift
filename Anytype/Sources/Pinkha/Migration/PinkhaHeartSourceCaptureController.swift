@@ -14,6 +14,7 @@ actor PinkhaHeartSourceCaptureController {
     private var capturedReview: AnyHeartNativeSourceCaptureReview?
     private var migrationProducer: AnyHeartNativeMigrationProducer?
     private var migrationTask: Task<AnyHeartNativeMigrationCompletion, Error>?
+    private var ordinaryMigrationTask: Task<AnyHeartNativeOrdinaryMigrationCompletion, Error>?
     private var migrationTicket: UUID?
     private var generation = UUID()
     private var captureTicket: UUID?
@@ -199,7 +200,7 @@ actor PinkhaHeartSourceCaptureController {
               let review = capturedReview else {
             throw AnyHeartNativeSourceAccountError.inactiveCapture
         }
-        guard migrationTask == nil, migrationTicket == nil else {
+        guard migrationTask == nil, ordinaryMigrationTask == nil, migrationTicket == nil else {
             throw AnyHeartNativeMigrationProducerError.busy
         }
         let current = generation, ticket = UUID()
@@ -240,6 +241,59 @@ actor PinkhaHeartSourceCaptureController {
         }
     }
 
+    /// Run C's explicit preservation/content and Ordinary14 stages under the
+    /// same captured source owner. The exact original destination invocation
+    /// returns three locators; the App must retain them inside that invocation
+    /// before its delivery fence. Outside-slice data is not silently imported.
+    func executeMigrationWithOrdinaryProperties(
+        _ request: AnyHeartNativeMigrationRequest,
+        inDestination: @escaping AnyHeartNativeMigrationProducer.OrdinaryDestinationOperation
+    ) async throws -> AnyHeartNativeOrdinaryMigrationCompletion {
+        guard !invalidating, cleanup == nil, captureTicket == nil,
+              let review = capturedReview else {
+            throw AnyHeartNativeSourceAccountError.inactiveCapture
+        }
+        guard migrationTask == nil, ordinaryMigrationTask == nil, migrationTicket == nil else {
+            throw AnyHeartNativeMigrationProducerError.busy
+        }
+        let current = generation, ticket = UUID()
+        let producer: AnyHeartNativeMigrationProducer
+        if let retained = migrationProducer {
+            producer = retained
+        } else {
+            producer = try AnyHeartNativeMigrationProducer(source: controller,
+                review: review, privateCaptureParent: privateCaptureParent)
+            // Retain before the first suspension. Invalidation must join this
+            // producer's entire destination invocation and its delivery fence.
+            migrationProducer = producer
+        }
+        let task = Task {
+            try await producer.executeWithOrdinaryProperties(request, inDestination: inDestination)
+        }
+        migrationTicket = ticket
+        ordinaryMigrationTask = task
+        defer {
+            if migrationTicket == ticket {
+                migrationTicket = nil
+                ordinaryMigrationTask = nil
+            }
+        }
+        do {
+            let result = try await withTaskCancellationHandler {
+                try await task.value
+            } onCancel: { task.cancel() }
+            guard !invalidating, generation == current, capturedReview != nil else {
+                throw AnyHeartNativeSourceAccountError.inactiveCapture
+            }
+            try Task.checkCancellation()
+            return result
+        } catch {
+            let original = error
+            if Task.isCancelled { try await invalidate(reason: .userCancelled) }
+            throw original
+        }
+    }
+
     func revalidate(source: AnyDestinationSourceBinding) async throws {
         try await controller.revalidate(source: source)
     }
@@ -256,10 +310,12 @@ actor PinkhaHeartSourceCaptureController {
         migrationTicket = nil
         capturedReview = nil
         let controller = self.controller, producer = migrationProducer,
-            pendingCapture = captureTask, pendingMigration = migrationTask, id = UUID()
+            pendingCapture = captureTask, pendingMigration = migrationTask,
+            pendingOrdinary = ordinaryMigrationTask, id = UUID()
         cleanupID = id
         pendingCapture?.cancel()
         pendingMigration?.cancel()
+        pendingOrdinary?.cancel()
         let task = Task {
             let native = Task {
                 if let producer {
@@ -275,6 +331,7 @@ actor PinkhaHeartSourceCaptureController {
             // Join the public producer invocation too. Its outer cancellation
             // cleanup can outlive its registered destination child.
             if let pendingMigration { _ = await pendingMigration.result }
+            if let pendingOrdinary { _ = await pendingOrdinary.result }
             try nativeResult.get()
         }
         cleanup = task
@@ -284,6 +341,7 @@ actor PinkhaHeartSourceCaptureController {
                 migrationProducer = nil
                 captureTask = nil
                 migrationTask = nil
+                ordinaryMigrationTask = nil
                 cleanup = nil
                 cleanupID = nil
                 // Admission stays closed permanently on this facade.

@@ -17,6 +17,15 @@ public struct AnyNativeDestinationSelection: Sendable {
     public var grantsNativeAuthority: Bool { false }
 }
 
+/// Mapped destination metadata observed through the original imported owner.
+/// Neither a row nor its opaque ID grants native authority.
+public struct AnyNativeImportedDocumentSummary: Sendable, Identifiable {
+    public let destinationObjectID: String
+    public let nativeTypeID: String
+    public var id: Data { Data(destinationObjectID.utf8) }
+    public var grantsNativeAuthority: Bool { false }
+}
+
 /// A scene keeps this owner while switching engines. Suspension waits for real
 /// document/AI work and native shutdown before another scene can use the engine.
 @MainActor
@@ -44,6 +53,69 @@ public final class AnyNativePresentationSession {
         try await model.performDestinationOperation(
             expectedAccountID: expectedAccountID, expectedSpaceID: expectedSpaceID,
             operation)
+    }
+
+    public func listImportedContent(
+        expectedAccountID: String, expectedSpaceID: String,
+        preservationReference: AnyNativeImportedContextReference,
+        preservationJournalDirectory: URL,
+        contentReference: AnyNativeImportedContentContextReference,
+        archiveSource: AnyNativeImportedContextArchiveSource
+    ) async throws -> [AnyNativeImportedDocumentSummary] {
+        try await model.listImportedContent(expectedAccountID: expectedAccountID,
+            expectedSpaceID: expectedSpaceID, preservationReference: preservationReference,
+            preservationJournalDirectory: preservationJournalDirectory,
+            contentReference: contentReference, archiveSource: archiveSource)
+    }
+
+    public func listImportedContent(
+        expectedAccountID: String, expectedSpaceID: String,
+        preservationReference: AnyNativeImportedContextReference,
+        preservationJournalDirectory: URL,
+        contentReference: AnyNativeImportedContentContextReference,
+        ordinaryPropertyReference: AnyNativeImportedOrdinaryPropertyReference,
+        ordinaryPropertyJournalDirectory: URL,
+        archiveSource: AnyNativeImportedContextArchiveSource
+    ) async throws -> [AnyNativeImportedDocumentSummary] {
+        try await model.listImportedContent(expectedAccountID: expectedAccountID,
+            expectedSpaceID: expectedSpaceID, preservationReference: preservationReference,
+            preservationJournalDirectory: preservationJournalDirectory,
+            contentReference: contentReference, ordinaryPropertyReference: ordinaryPropertyReference,
+            ordinaryPropertyJournalDirectory: ordinaryPropertyJournalDirectory,
+            archiveSource: archiveSource)
+    }
+
+    public func mountImportedDocument(
+        expectedAccountID: String, expectedSpaceID: String,
+        preservationReference: AnyNativeImportedContextReference,
+        preservationJournalDirectory: URL,
+        contentReference: AnyNativeImportedContentContextReference,
+        archiveSource: AnyNativeImportedContextArchiveSource,
+        destinationObjectID: String
+    ) async throws -> AnyNativeImportedDocumentMount {
+        try await model.mountImportedDocument(expectedAccountID: expectedAccountID,
+            expectedSpaceID: expectedSpaceID, preservationReference: preservationReference,
+            preservationJournalDirectory: preservationJournalDirectory,
+            contentReference: contentReference, archiveSource: archiveSource,
+            destinationObjectID: destinationObjectID)
+    }
+
+    public func mountImportedDocument(
+        expectedAccountID: String, expectedSpaceID: String,
+        preservationReference: AnyNativeImportedContextReference,
+        preservationJournalDirectory: URL,
+        contentReference: AnyNativeImportedContentContextReference,
+        ordinaryPropertyReference: AnyNativeImportedOrdinaryPropertyReference,
+        ordinaryPropertyJournalDirectory: URL,
+        archiveSource: AnyNativeImportedContextArchiveSource,
+        destinationObjectID: String
+    ) async throws -> AnyNativeImportedDocumentMount {
+        try await model.mountImportedDocument(expectedAccountID: expectedAccountID,
+            expectedSpaceID: expectedSpaceID, preservationReference: preservationReference,
+            preservationJournalDirectory: preservationJournalDirectory,
+            contentReference: contentReference, ordinaryPropertyReference: ordinaryPropertyReference,
+            ordinaryPropertyJournalDirectory: ordinaryPropertyJournalDirectory,
+            archiveSource: archiveSource, destinationObjectID: destinationObjectID)
     }
 
     public func suspendAndWait() async {
@@ -81,13 +153,12 @@ public struct AnyNativeRootView: View {
                 spacesView
             case .workspace:
                 if let owner = model.workspace, let lifetime = model.presentationLifetime,
-                   let recovery = model.libraryRecovery {
-                    AnyNativeLibraryView(client: owner.client, session: owner.session,
-                        objects: owner.objects, blocks: owner.blocks, capabilities: owner.capabilities,
+                   let library = model.libraryPresentation,
+                   library.session === owner.session, library.lifetime === lifetime {
+                    AnyNativeLibraryView(presentation: library,
                         onRequestClose: { await model.closeWorkspace(expectedSession: owner.session) },
-                        lifetime: lifetime, recovery: recovery,
-                        onManageMembers: { model.showMembers() },
-                        personalNavigation: owner.personalNavigation)
+                        onManageMembers: { model.showMembers() })
+                        .id(lifetime.id)
                 } else {
                     ProgressView()
                 }
@@ -261,6 +332,13 @@ fileprivate final class AnyNativeDestinationOperationCompletion {
     }
 }
 
+/// Retains the actual created mount across the outer E operation's final
+/// delivery fence. Cleanup never waits on that outer operation's own completion.
+@MainActor
+fileprivate final class AnyNativeImportedMountDelivery {
+    var mount: AnyNativeImportedDocumentMount?
+}
+
 @Observable
 @MainActor
 fileprivate final class AnyNativeRootModel {
@@ -279,6 +357,7 @@ fileprivate final class AnyNativeRootModel {
     var showingJoin = false
     var presentationLifetime: AnyUIPresentationLifetime?
     var libraryRecovery: AnyNativeLibraryRecovery?
+    var libraryPresentation: AnyLibraryPresentation?
     private struct RecoveryKey: Hashable {
         let accountID: String
         let spaceID: String
@@ -492,6 +571,170 @@ fileprivate final class AnyNativeRootModel {
         return value
     }
 
+    func listImportedContent(
+        expectedAccountID: String, expectedSpaceID: String,
+        preservationReference: AnyNativeImportedContextReference,
+        preservationJournalDirectory: URL,
+        contentReference: AnyNativeImportedContentContextReference,
+        archiveSource: AnyNativeImportedContextArchiveSource
+    ) async throws -> [AnyNativeImportedDocumentSummary] {
+        try await listImportedContent(expectedAccountID: expectedAccountID,
+            expectedSpaceID: expectedSpaceID) { client, session in
+                try await AnyNativeImportedContextOwner.openContent(client: client, session: session,
+                    preservationReference: preservationReference,
+                    preservationJournalDirectory: preservationJournalDirectory,
+                    contentReference: contentReference, archiveSource: archiveSource)
+            }
+    }
+
+    func listImportedContent(
+        expectedAccountID: String, expectedSpaceID: String,
+        preservationReference: AnyNativeImportedContextReference,
+        preservationJournalDirectory: URL,
+        contentReference: AnyNativeImportedContentContextReference,
+        ordinaryPropertyReference: AnyNativeImportedOrdinaryPropertyReference,
+        ordinaryPropertyJournalDirectory: URL,
+        archiveSource: AnyNativeImportedContextArchiveSource
+    ) async throws -> [AnyNativeImportedDocumentSummary] {
+        try await listImportedContent(expectedAccountID: expectedAccountID,
+            expectedSpaceID: expectedSpaceID) { client, session in
+                try await AnyNativeImportedContextOwner.openContent(client: client, session: session,
+                    preservationReference: preservationReference,
+                    preservationJournalDirectory: preservationJournalDirectory,
+                    contentReference: contentReference,
+                    ordinaryPropertyReference: ordinaryPropertyReference,
+                    ordinaryPropertyJournalDirectory: ordinaryPropertyJournalDirectory,
+                    archiveSource: archiveSource)
+            }
+    }
+
+    private func listImportedContent(
+        expectedAccountID: String, expectedSpaceID: String,
+        opening: @escaping @Sendable (
+            AnyHTTPClient, AnyApplicationSession
+        ) async throws -> AnyNativeImportedContextOwner
+    ) async throws -> [AnyNativeImportedDocumentSummary] {
+        try await performDestinationOperation(expectedAccountID: expectedAccountID,
+            expectedSpaceID: expectedSpaceID) { client, session, outerLease in
+                let openingTask = Task { try await opening(client, session) }
+                do {
+                    let owner = try await withTaskCancellationHandler(operation: {
+                        try await openingTask.value
+                    }, onCancel: { openingTask.cancel() })
+                    let rows = try await owner.withContext { context, lease in
+                        try await outerLease.validate()
+                        guard lease.generation == outerLease.generation,
+                              Data(lease.engineStartedAt.utf8) == Data(outerLease.engineStartedAt.utf8),
+                              Data(lease.workspace.accountID.utf8) == Data(outerLease.workspace.accountID.utf8),
+                              Data(lease.workspace.spaceID.utf8) == Data(outerLease.workspace.spaceID.utf8),
+                              let content = context.content else {
+                            throw AnyHostError.wrongWorkspace
+                        }
+                        // Only completed content mappings are editable routes.
+                        // Catalog rows and source IDs never become destination IDs.
+                        return content.documents.map {
+                            AnyNativeImportedDocumentSummary(
+                                destinationObjectID: $0.objectID, nativeTypeID: $0.nativeTypeID)
+                        }
+                    }
+                    await owner.closeAndDrain()
+                    try await outerLease.validate()
+                    return rows
+                } catch {
+                    openingTask.cancel()
+                    // Preserve and close any actual late opening success, even
+                    // if cancellation or a later observation refused delivery.
+                    if case .success(let owner) = await openingTask.result {
+                        await owner.closeAndDrain()
+                    }
+                    throw error
+                }
+            }
+    }
+
+    func mountImportedDocument(
+        expectedAccountID: String, expectedSpaceID: String,
+        preservationReference: AnyNativeImportedContextReference,
+        preservationJournalDirectory: URL,
+        contentReference: AnyNativeImportedContentContextReference,
+        archiveSource: AnyNativeImportedContextArchiveSource,
+        destinationObjectID: String
+    ) async throws -> AnyNativeImportedDocumentMount {
+        try await mountImportedDocument(expectedAccountID: expectedAccountID,
+            expectedSpaceID: expectedSpaceID) { library in
+                try await AnyNativeImportedDocumentMount.open(library: library,
+                    preservationReference: preservationReference,
+                    preservationJournalDirectory: preservationJournalDirectory,
+                    contentReference: contentReference, archiveSource: archiveSource,
+                    destinationObjectID: destinationObjectID)
+            }
+    }
+
+    func mountImportedDocument(
+        expectedAccountID: String, expectedSpaceID: String,
+        preservationReference: AnyNativeImportedContextReference,
+        preservationJournalDirectory: URL,
+        contentReference: AnyNativeImportedContentContextReference,
+        ordinaryPropertyReference: AnyNativeImportedOrdinaryPropertyReference,
+        ordinaryPropertyJournalDirectory: URL,
+        archiveSource: AnyNativeImportedContextArchiveSource,
+        destinationObjectID: String
+    ) async throws -> AnyNativeImportedDocumentMount {
+        try await mountImportedDocument(expectedAccountID: expectedAccountID,
+            expectedSpaceID: expectedSpaceID) { library in
+                try await AnyNativeImportedDocumentMount.open(library: library,
+                    preservationReference: preservationReference,
+                    preservationJournalDirectory: preservationJournalDirectory,
+                    contentReference: contentReference,
+                    ordinaryPropertyReference: ordinaryPropertyReference,
+                    ordinaryPropertyJournalDirectory: ordinaryPropertyJournalDirectory,
+                    archiveSource: archiveSource, destinationObjectID: destinationObjectID)
+            }
+    }
+
+    private func mountImportedDocument(
+        expectedAccountID: String, expectedSpaceID: String,
+        opening: @escaping @MainActor @Sendable (
+            AnyLibraryPresentation
+        ) async throws -> AnyNativeImportedDocumentMount
+    ) async throws -> AnyNativeImportedDocumentMount {
+        try Task.checkCancellation()
+        guard let owner = workspace, let lifetime = presentationLifetime,
+              let library = libraryPresentation else { throw AnyHostError.sessionClosed }
+        let ticket = epoch
+        try requireDestinationOwner(owner, lifetime: lifetime, ticket: ticket,
+            expectedAccountID: expectedAccountID, expectedSpaceID: expectedSpaceID)
+        guard library.session === owner.session, library.lifetime === lifetime,
+              library.isReady else { throw AnyHostError.incompleteDocument }
+        let expectedSession = owner.session
+        let delivery = AnyNativeImportedMountDelivery()
+        do {
+            let mount = try await performDestinationOperation(expectedAccountID: expectedAccountID,
+                expectedSpaceID: expectedSpaceID) { _, session, lease in
+                    guard session === expectedSession else { throw AnyHostError.sessionClosed }
+                    let mount = try await opening(library)
+                    // Retain before the original outer lease or E delivery can
+                    // refuse a successful newly-created mount.
+                    await MainActor.run { delivery.mount = mount }
+                    try await lease.validate()
+                    return mount
+                }
+            try Task.checkCancellation()
+            try requireDestinationOwner(owner, lifetime: lifetime, ticket: ticket,
+                expectedAccountID: expectedAccountID, expectedSpaceID: expectedSpaceID)
+            guard libraryPresentation === library, delivery.mount === mount,
+                  !mount.isClosed else { throw AnyHostError.sessionClosed }
+            delivery.mount = nil
+            return mount
+        } catch {
+            if let mount = delivery.mount {
+                await mount.closeAndDrain()
+                delivery.mount = nil
+            }
+            throw error
+        }
+    }
+
     private func requireDestinationOwner(
         _ owner: AnyNativeWorkspaceOwner, lifetime: AnyUIPresentationLifetime,
         ticket: UUID, expectedAccountID: String, expectedSpaceID: String
@@ -559,9 +802,14 @@ fileprivate final class AnyNativeRootModel {
         let key = RecoveryKey(accountID: owner.workspace.accountID, spaceID: owner.workspace.spaceID)
         let recovery = recoveries[key] ?? AnyNativeLibraryRecovery(workspace: owner.workspace)
         recoveries[key] = recovery
+        let lifetime = AnyUIPresentationLifetime()
+        let library = AnyLibraryPresentation(client: owner.client, session: owner.session,
+            objects: owner.objects, blocks: owner.blocks, capabilities: owner.capabilities,
+            lifetime: lifetime, recovery: recovery, personalNavigation: owner.personalNavigation)
         libraryRecovery = recovery
         workspace = owner
-        presentationLifetime = AnyUIPresentationLifetime()
+        presentationLifetime = lifetime
+        libraryPresentation = library
         lastSpaceID = id
         page = .workspace
     }
@@ -579,6 +827,7 @@ fileprivate final class AnyNativeRootModel {
             try Task.checkCancellation()
             self.workspace = nil
             self.presentationLifetime = nil
+            self.libraryPresentation = nil
             self.lastSpaceID = nil
             try await self.loadSpaces()
         }
@@ -595,6 +844,7 @@ fileprivate final class AnyNativeRootModel {
             try await self.application.signOut()
             self.workspace = nil
             self.presentationLifetime = nil
+            self.libraryPresentation = nil
             self.account = nil
             self.lastAccountID = nil
             self.lastSpaceID = nil
@@ -633,6 +883,7 @@ fileprivate final class AnyNativeRootModel {
             await application.stop()
             workspace = nil
             presentationLifetime = nil
+            libraryPresentation = nil
             emergency = nil
             account = nil
             started = false

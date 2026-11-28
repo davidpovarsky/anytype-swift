@@ -40,6 +40,43 @@ public struct PinkhaEmbeddedAnyDestinationSelection: Sendable {
     public var grantsNativeAuthority: Bool { false }
 }
 
+/// Display/routing metadata, never a native lease or migration completion.
+public struct PinkhaEmbeddedAnyImportedDocument: Sendable, Identifiable {
+    public let destinationObjectID: String
+    public let nativeTypeID: String
+    public var id: Data { Data(destinationObjectID.utf8) }
+    public var grantsNativeAuthority: Bool { false }
+}
+
+/// The facade retains the same original imported mount owned by the actual
+/// workspace lifetime. Replacing a Scene route joins this exact close.
+@MainActor
+public final class PinkhaEmbeddedAnyImportedDocumentMount: Sendable {
+    fileprivate let mount: AnyNativeImportedDocumentMount
+    fileprivate init(_ mount: AnyNativeImportedDocumentMount) { self.mount = mount }
+
+    public var destinationObjectID: String { mount.destinationObjectID }
+    public var isClosed: Bool { mount.isClosed }
+    public var onOpenDocument: ((String, String?) -> Void)? {
+        get { mount.onOpenDocument }
+        set { mount.onOpenDocument = newValue }
+    }
+
+    public func requestClose() { mount.requestClose() }
+    public func closeAndDrain() async { await mount.closeAndDrain() }
+}
+
+@MainActor
+public struct PinkhaEmbeddedAnyImportedDocumentView: View {
+    private let content: AnyView
+
+    public init(mount: PinkhaEmbeddedAnyImportedDocumentMount) {
+        content = AnyView(AnyNativeImportedDocumentView(mount: mount.mount))
+    }
+
+    public var body: some View { content }
+}
+
 /// Lifecycle methods forward to the same original native presentation owner.
 @MainActor
 public final class PinkhaEmbeddedAnyPresentation {
@@ -67,6 +104,87 @@ public final class PinkhaEmbeddedAnyPresentation {
         try await session.performDestinationOperation(
             expectedAccountID: expectedAccountID, expectedSpaceID: expectedSpaceID,
             operation)
+    }
+
+    public func listImportedContent(
+        expectedAccountID: String, expectedSpaceID: String,
+        preservationReference: AnyNativeImportedContextReference,
+        preservationJournalDirectory: URL,
+        contentReference: AnyNativeImportedContentContextReference,
+        archiveSource: AnyNativeImportedContextArchiveSource
+    ) async throws -> [PinkhaEmbeddedAnyImportedDocument] {
+        let rows = try await session.listImportedContent(expectedAccountID: expectedAccountID,
+            expectedSpaceID: expectedSpaceID, preservationReference: preservationReference,
+            preservationJournalDirectory: preservationJournalDirectory,
+            contentReference: contentReference, archiveSource: archiveSource)
+        try Task.checkCancellation()
+        return rows.map { .init(destinationObjectID: $0.destinationObjectID, nativeTypeID: $0.nativeTypeID) }
+    }
+
+    public func listImportedContent(
+        expectedAccountID: String, expectedSpaceID: String,
+        preservationReference: AnyNativeImportedContextReference,
+        preservationJournalDirectory: URL,
+        contentReference: AnyNativeImportedContentContextReference,
+        ordinaryPropertyReference: AnyNativeImportedOrdinaryPropertyReference,
+        ordinaryPropertyJournalDirectory: URL,
+        archiveSource: AnyNativeImportedContextArchiveSource
+    ) async throws -> [PinkhaEmbeddedAnyImportedDocument] {
+        let rows = try await session.listImportedContent(expectedAccountID: expectedAccountID,
+            expectedSpaceID: expectedSpaceID, preservationReference: preservationReference,
+            preservationJournalDirectory: preservationJournalDirectory,
+            contentReference: contentReference, ordinaryPropertyReference: ordinaryPropertyReference,
+            ordinaryPropertyJournalDirectory: ordinaryPropertyJournalDirectory,
+            archiveSource: archiveSource)
+        try Task.checkCancellation()
+        return rows.map { .init(destinationObjectID: $0.destinationObjectID, nativeTypeID: $0.nativeTypeID) }
+    }
+
+    public func mountImportedDocument(
+        expectedAccountID: String, expectedSpaceID: String,
+        preservationReference: AnyNativeImportedContextReference,
+        preservationJournalDirectory: URL,
+        contentReference: AnyNativeImportedContentContextReference,
+        archiveSource: AnyNativeImportedContextArchiveSource,
+        destinationObjectID: String
+    ) async throws -> PinkhaEmbeddedAnyImportedDocumentMount {
+        let mount = try await session.mountImportedDocument(expectedAccountID: expectedAccountID,
+            expectedSpaceID: expectedSpaceID, preservationReference: preservationReference,
+            preservationJournalDirectory: preservationJournalDirectory,
+            contentReference: contentReference, archiveSource: archiveSource,
+            destinationObjectID: destinationObjectID)
+        do {
+            try Task.checkCancellation()
+            return PinkhaEmbeddedAnyImportedDocumentMount(mount)
+        } catch {
+            await mount.closeAndDrain()
+            throw error
+        }
+    }
+
+    public func mountImportedDocument(
+        expectedAccountID: String, expectedSpaceID: String,
+        preservationReference: AnyNativeImportedContextReference,
+        preservationJournalDirectory: URL,
+        contentReference: AnyNativeImportedContentContextReference,
+        ordinaryPropertyReference: AnyNativeImportedOrdinaryPropertyReference,
+        ordinaryPropertyJournalDirectory: URL,
+        archiveSource: AnyNativeImportedContextArchiveSource,
+        destinationObjectID: String
+    ) async throws -> PinkhaEmbeddedAnyImportedDocumentMount {
+        let mount = try await session.mountImportedDocument(expectedAccountID: expectedAccountID,
+            expectedSpaceID: expectedSpaceID, preservationReference: preservationReference,
+            preservationJournalDirectory: preservationJournalDirectory,
+            contentReference: contentReference, ordinaryPropertyReference: ordinaryPropertyReference,
+            ordinaryPropertyJournalDirectory: ordinaryPropertyJournalDirectory,
+            archiveSource: archiveSource, destinationObjectID: destinationObjectID)
+        do {
+            try Task.checkCancellation()
+            return PinkhaEmbeddedAnyImportedDocumentMount(mount)
+        } catch {
+            await mount.closeAndDrain()
+            throw error
+        }
     }
 
     public func suspendAndWait() async { await session.suspendAndWait() }
