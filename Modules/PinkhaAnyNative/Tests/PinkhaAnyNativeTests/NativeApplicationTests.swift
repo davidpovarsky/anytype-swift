@@ -271,3 +271,90 @@ private final class NativeAccountLifetimeWitness: PinkhaHanlinOwnedPresentation 
     func invalidate() { invalidated = true }
     func revokeAndDrain() async { }
 }
+
+// These cases exercise the actual Native capability projector without opening an account.
+extension NativeApplicationTests {
+    func testNativeSharingOwnerAndAdminMemberRoleProjection() throws {
+        let owner = try AnyNativeSharingService.sharingCapabilities(
+            currentMember: .init(id: "owner", name: "Owner", role: .owner, status: .active),
+            members: [
+                .init(id: "owner", name: "Owner", role: .owner, status: .active),
+                .init(id: "reader", name: "Reader", role: .reader, status: .active),
+                .init(id: "writer", name: "Writer", role: .writer, status: .active),
+                .init(id: "admin", name: "Admin", role: .admin, status: .active),
+                .init(id: "guest", name: "Guest", role: .guest, status: .active),
+                .init(id: "removed", name: "Removed", role: .reader, status: .removed),
+                .init(id: "pending", name: "Pending", role: .none, status: .joining, requestID: "request")
+            ], invitations: [])
+        XCTAssertEqual(owner.grantableRoles.map(\.rawValue), ["reader", "writer", "admin"])
+        XCTAssertEqual(owner.rolesForMemberChange("reader").filter { $0 != .reader }.map(\.rawValue), ["guest", "writer", "admin"])
+        XCTAssertEqual(owner.rolesForMemberChange("writer").filter { $0 != .writer }.map(\.rawValue), ["reader", "admin"])
+        XCTAssertEqual(owner.rolesForMemberChange("admin").filter { $0 != .admin }.map(\.rawValue), ["reader", "writer"])
+        XCTAssertEqual(owner.editableMemberIDs, Set(["reader", "writer", "admin"]))
+        XCTAssertEqual(owner.removableMemberIDs, Set(["reader", "writer", "admin", "guest"]))
+        for identity in ["owner", "guest", "removed", "pending", "absent"] {
+            XCTAssertTrue(owner.rolesForMemberChange(identity).isEmpty, identity)
+        }
+        XCTAssertTrue(owner.canCreateInvitation)
+        XCTAssertTrue(owner.canRevokeInvitation)
+        XCTAssertTrue(owner.canApproveRequests)
+
+        let admin = try AnyNativeSharingService.sharingCapabilities(
+            currentMember: .init(id: "admin", name: "Admin", role: .admin, status: .active),
+            members: [
+                .init(id: "owner", name: "Owner", role: .owner, status: .active),
+                .init(id: "admin", name: "Admin", role: .admin, status: .active),
+                .init(id: "other-admin", name: "Other admin", role: .admin, status: .active),
+                .init(id: "reader", name: "Reader", role: .reader, status: .active),
+                .init(id: "writer", name: "Writer", role: .writer, status: .active),
+                .init(id: "guest", name: "Guest", role: .guest, status: .active),
+                .init(id: "removed", name: "Removed", role: .reader, status: .removed),
+                .init(id: "pending", name: "Pending", role: .none, status: .joining, requestID: "request")
+            ], invitations: [])
+        XCTAssertEqual(admin.grantableRoles.map(\.rawValue), ["reader", "writer"])
+        XCTAssertEqual(admin.rolesForMemberChange("reader").filter { $0 != .reader }.map(\.rawValue), ["guest", "writer"])
+        XCTAssertEqual(admin.rolesForMemberChange("writer").filter { $0 != .writer }.map(\.rawValue), ["reader"])
+        XCTAssertEqual(admin.editableMemberIDs, Set(["reader", "writer"]))
+        XCTAssertEqual(admin.removableMemberIDs, Set(["reader", "writer", "guest"]))
+        for identity in ["owner", "admin", "other-admin", "guest", "removed", "pending", "absent"] {
+            XCTAssertTrue(admin.rolesForMemberChange(identity).isEmpty, identity)
+        }
+        XCTAssertFalse(admin.canCreateInvitation)
+        XCTAssertFalse(admin.canRevokeInvitation)
+        XCTAssertTrue(admin.canApproveRequests)
+        XCTAssertNotNil(owner.memberRoleOptions)
+        XCTAssertNotNil(admin.memberRoleOptions)
+    }
+
+    func testNativeSharingNonModeratorRoleProjectionIsClosed() throws {
+        let reader = try AnyNativeSharingService.sharingCapabilities(
+            currentMember: .init(id: "current", name: "Current", role: .reader, status: .active),
+            members: [
+                .init(id: "current", name: "Current", role: .reader, status: .active),
+                .init(id: "target", name: "Target", role: .writer, status: .active)
+            ], invitations: [])
+        let writer = try AnyNativeSharingService.sharingCapabilities(
+            currentMember: .init(id: "current", name: "Current", role: .writer, status: .active),
+            members: [
+                .init(id: "current", name: "Current", role: .writer, status: .active),
+                .init(id: "target", name: "Target", role: .reader, status: .active)
+            ], invitations: [])
+        let guest = try AnyNativeSharingService.sharingCapabilities(
+            currentMember: .init(id: "current", name: "Current", role: .guest, status: .active),
+            members: [
+                .init(id: "current", name: "Current", role: .guest, status: .active),
+                .init(id: "target", name: "Target", role: .reader, status: .active)
+            ], invitations: [])
+        for capabilities in [reader, writer, guest] {
+            XCTAssertFalse(capabilities.canCreateInvitation)
+            XCTAssertFalse(capabilities.canRevokeInvitation)
+            XCTAssertFalse(capabilities.canApproveRequests)
+            XCTAssertTrue(capabilities.grantableRoles.isEmpty)
+            XCTAssertTrue(capabilities.editableMemberIDs.isEmpty)
+            XCTAssertTrue(capabilities.removableMemberIDs.isEmpty)
+            XCTAssertNotNil(capabilities.memberRoleOptions)
+            XCTAssertEqual(capabilities.memberRoleOptions?.count, 0)
+            XCTAssertTrue(capabilities.rolesForMemberChange("target").isEmpty)
+        }
+    }
+}

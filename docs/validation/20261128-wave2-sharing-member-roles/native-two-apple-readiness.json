@@ -1,0 +1,107 @@
+{
+  "schema": "pinkha-sharing-native-projector-two-readiness-v1",
+  "status": "EXISTING_NATIVE_TARGET_REQUIRES_APPLE_DEPENDENCIES_LINUX_ROUTE_NOT_SUPPORTED",
+  "repository": "davidpovarsky/anytype-swift",
+  "inspectedBase": "6ade3661c261e66c987b7017a6181bdfcebc1d58",
+  "scope": "Bounded source-only feasibility for the two new Native projector methods. Editor owns Shared3. No new package, harness, runner, source projection or dependency census.",
+  "existingRoute": {
+    "package": "Modules/PinkhaAnyNative/Package.swift",
+    "testTarget": "PinkhaAnyNativeTests",
+    "fullTestInput": {
+      "path": "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeApplicationTests.swift",
+      "bytes": 22331,
+      "sha256": "4260d7ec74ac5697280f1883ca1590c774f22ba7735ee4ac6496cac6be1f41b3",
+      "gitBlob": "8c47027ada1038fb60452c731e4f156bbff66a7a",
+      "retainedAs": "candidate/Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeApplicationTests.swift"
+    },
+    "projectorInput": {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeSharingService.swift",
+      "bytes": 9825,
+      "sha256": "0f23393ed575e94354a0311d295cd077f7441e9c0303be67352119c22fc41e15",
+      "gitBlob": "79774663de1e2e735e4ece4f3a8c3d32704bdf8b",
+      "retainedAs": "candidate/Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeSharingService.swift"
+    },
+    "methods": [
+      "PinkhaAnyNativeTests/NativeApplicationTests/testNativeSharingOwnerAndAdminMemberRoleProjection",
+      "PinkhaAnyNativeTests/NativeApplicationTests/testNativeSharingNonModeratorRoleProjectionIsClosed"
+    ],
+    "selectorsAreIdentityOnly": "These are target/class/method identities, not a new invocation or runtime admission.",
+    "methodBodyScope": "Both new methods are synchronous XCTest methods invoking the actual internal nonisolated sharingCapabilities projector. They do not construct AnyNativeApplication, call account APIs or start AnyEmbeddedRuntime.",
+    "retainedWholeFile": "All 16585 bytes of original e0b3efcb remain the exact prefix of candidate 4260d7ec; all three original methods and imports remain compiled inputs. The two new methods do not authorize selecting that entire class."
+  },
+  "blockers": [
+    {
+      "source": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeCredentialVault.swift",
+      "finding": "The full native production target includes this file without a manifest source exclusion. It unconditionally imports Security, and contains real SecItemCopyMatching, SecItemUpdate, SecItemAdd and SecItemDelete calls plus Security constants/CF types. There is no Linux conditional implementation in this whole file.",
+      "implication": "The complete unchanged Native target is not a Foundation-only Linux component under the no-stub/no-stripped-source boundary. This is a concrete source dependency, not a conclusion inferred solely from platforms:[.iOS]."
+    },
+    {
+      "source": "Modules/PinkhaAnyRuntime/Package.swift",
+      "finding": "The existing Native production and test targets depend on PinkhaAnyRuntime. Its manifest always declares Security and SystemConfiguration framework links. Non-unified selections resolve AnyLib as an xcframework; verified-unified-v1 removes that binary target and uses ProtobufMessages but keeps the framework linkage.",
+      "implication": "Selecting the unified mode is not a demonstrated Linux escape. No artifact mode is changed or newly admitted by this review."
+    }
+  ],
+  "immediateDependencyScope": {
+    "nativePackage": "The real target depends on Sharing, Runtime, UI, Host, Engine, Integration and PinkhaHanlinCore. Its existing test target also includes the declared Hanlin, Kit and presentation products.",
+    "uiManifest": "Some UI products are platform-conditional, so the iOS/macOS labels or UI dependency alone were not used as a portability verdict.",
+    "artifactCustody": "Prior portable Host/Integration sources and retained Crypto dependencies do not supply the unconditional Apple Security module. No compatible Apple test bundle or native artifact was newly verified here, and no build cache is assumed.",
+    "originalTestSetup": "The retained full test class has no added setup/teardown hook. Existing test methods that launch native/accounts remain unchanged and must not be selected or replayed for this task.",
+    "hostStartupLimit": "The pure method bodies do not establish that an unspecified Apple application test host has no launch-time runtime behavior; the actual admitted bundle/host remains W3's ownership decision."
+  },
+  "minimalNextLocator": {
+    "owner": "W3 / existing Apple producer and test admission owner",
+    "requested": "Exact existing Apple package/test scheme or compiled test bundle containing PinkhaAnyNativeTests.NativeApplicationTests, with the current native artifact selection and its qualified product/dependency source identities, and explicit selection of these two new methods only.",
+    "candidateAdmission": "Bind the eventual integrated role candidate's NativeSharingService 0f23393e and full NativeApplicationTests 4260d7ec source identities in that bundle; do not transfer old-source test credit.",
+    "boundary": "If no approved bundle/selection currently includes this existing package target, that concrete target/admission locator is the remaining dependency. No new controller or copied/stripped Swift types are proposed.",
+    "artifactReuse": "Reuse an already coherent, verified Apple Native artifact for W3's existing selected mode (AnyLib xcframework or the corresponding unified bridge artifact). This assessment does not require an extra Native/backend compilation. The eventual Swift test bundle must still match the integrated role-source inputs.",
+    "priority": "Preserve first Apple 22/34 -> preparation -> UI4 priority. These two cases may join W3's matching product only if its existing supported target and explicit selection permit it."
+  },
+  "sourcePins": [
+    {
+      "path": "Modules/PinkhaAnyNative/Package.swift",
+      "bytes": 2344,
+      "sha256": "35ca8e72e30358c86d7a1380c925a7da152fb0d77497bdb1faa1f776a92fcb3f",
+      "gitBlob": "090cb08dd450b4e4c591903495644dbfdcbbc50b",
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/6ade3661c261e66c987b7017a6181bdfcebc1d58/Modules/PinkhaAnyNative/Package.swift"
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeCredentialVault.swift",
+      "bytes": 5391,
+      "sha256": "51d178aa74614364a40101a890029429abfcd71c6ac1eec4c32cd2b4307f291c",
+      "gitBlob": "b25bdb8143aa596f41d8527a28ef45870c0c94e0",
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/6ade3661c261e66c987b7017a6181bdfcebc1d58/Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeCredentialVault.swift"
+    },
+    {
+      "path": "Modules/PinkhaAnyRuntime/Package.swift",
+      "bytes": 5415,
+      "sha256": "e382900163fdd960f1e9c59df0ae5f4f336e5b049e0f608c540b741e57bc2bd5",
+      "gitBlob": "123ab4e2f156cec417c47d0948d9a2d17fa7c98b",
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/6ade3661c261e66c987b7017a6181bdfcebc1d58/Modules/PinkhaAnyRuntime/Package.swift"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Package.swift",
+      "bytes": 2328,
+      "sha256": "173395dde0549705a14b51a7d36fb2799e80f659cc7211d13798710e1f0b1096",
+      "gitBlob": "d45cd6ba0b21a92266942220e50f0d7c40d8b9f7",
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/6ade3661c261e66c987b7017a6181bdfcebc1d58/Modules/PinkhaAnyUI/Package.swift"
+    }
+  ],
+  "originalFullTests": {
+    "path": "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeApplicationTests.swift",
+    "bytes": 16585,
+    "sha256": "e0b3efcb40c1aaf9b167baf1f74623a5557bd3bbebbaed3acc8d069ab6db8ca9",
+    "gitBlob": "e7b76f796e9d195b5162c665d888133ba2bcae1d",
+    "reusedWholePrimary": true
+  },
+  "activity": {
+    "newPrimaryFilesRead": 4,
+    "sourceOrGitWrites": 0,
+    "hostProbesOrScripts": 0,
+    "compilerOrTests": 0,
+    "nativeOrAccountOperations": 0,
+    "MacOperations": 0,
+    "sourceGateChanges": 0,
+    "actualCompilerFailureClaim": false
+  },
+  "conclusion": "Stop after the concrete Apple dependency. Keep the two Native cases pending for the existing matching Apple target; do not create a Linux component by extracting the projector or faking its owner types."
+}

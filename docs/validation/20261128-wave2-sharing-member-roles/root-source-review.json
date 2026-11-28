@@ -1,0 +1,139 @@
+{
+  "schema": "pinkha-sharing-member-roles-root-source-review-v1",
+  "status": "PASS_SOURCE_REVIEW_ONLY_NEW_TESTS_NOT_RUN",
+  "baseCommit": "6ade3661c261e66c987b7017a6181bdfcebc1d58",
+  "baseTree": "1545f6dd051caf3e4f267716c3348a10835dadc7",
+  "candidateManifest": {
+    "bytes": 8061,
+    "sha256": "e00fbf6d6290984fba1bb2d66475484d3170f136a7637159befed54119f9dc26",
+    "gitBlob": "1ccd72ba3d1985d6cd5a80c6a50b5ebc7df97cbe"
+  },
+  "independentReview": {
+    "bytes": 12406,
+    "sha256": "3a4c8bc5969f4b4fc6cd6e7917346da4380647670432ab9a3324894d2e1aa3fd",
+    "gitBlob": "20088f767796f0710f81f00bfe4370592223b0a6"
+  },
+  "rootReconstruction": {
+    "status": "PASS",
+    "rules": 9,
+    "files": [
+      {
+        "path": "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceSharing.swift",
+        "bytes": 9079,
+        "sha256": "32b76990f19402c2975c751273d3aae87c579d8103339ace14a49d835a8ff028",
+        "gitBlob": "10a57636a2ab759a7d42a179f17f43f2c9e1cf1a",
+        "fullForwardExact": true,
+        "fullInverseExact": true
+      },
+      {
+        "path": "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceMembersView.swift",
+        "bytes": 18333,
+        "sha256": "fc7d5e41a2f79dc452d269e0412a4f01330e3a8ccf7cd96d20ce14eee3eed525",
+        "gitBlob": "e16e7b2bb40bfd2e8d4f4b7bcac8cfd4b11d061b",
+        "fullForwardExact": true,
+        "fullInverseExact": true
+      },
+      {
+        "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeSharingService.swift",
+        "bytes": 9825,
+        "sha256": "0f23393ed575e94354a0311d295cd077f7441e9c0303be67352119c22fc41e15",
+        "gitBlob": "79774663de1e2e735e4ece4f3a8c3d32704bdf8b",
+        "fullForwardExact": true,
+        "fullInverseExact": true
+      },
+      {
+        "path": "Modules/PinkhaSharing/Tests/PinkhaSharingTests/SharingAuthorityTests.swift",
+        "bytes": 11211,
+        "sha256": "e11a832e3f8f39bf05f821e420a90f67b883be2164630320bf793eba43d3f336",
+        "gitBlob": "5533a020c007359e751c3b794d9827d6e04adac7",
+        "fullForwardExact": true,
+        "fullInverseExact": true,
+        "wholeOriginalTestPrefix": true
+      },
+      {
+        "path": "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeApplicationTests.swift",
+        "bytes": 22331,
+        "sha256": "4260d7ec74ac5697280f1883ca1590c774f22ba7735ee4ac6496cac6be1f41b3",
+        "gitBlob": "8c47027ada1038fb60452c731e4f156bbff66a7a",
+        "fullForwardExact": true,
+        "fullInverseExact": true,
+        "wholeOriginalTestPrefix": true
+      }
+    ],
+    "existingAXIdentifiers": 28,
+    "allExistingIdentifiersExact": true
+  },
+  "sourceReview": [
+    "Optional memberRoleOptions validates member IDs, requires editable keys and rejects duplicate/None/Owner values. The accessor first rejects noneditable IDs; nil preserves existing global choices while supplied missing/empty targets deny. The role-change validator and UI use this same accessor.",
+    "Approval retains its separate global role list. Native normal approvals are Reader/Writer and Owner-only Admin. Existing-member options add Guest only for a current Reader, for both Owner and Admin. Original Owner/Admin/nonself/active filtering stays; Guest removal is kept independently while Guest editing is denied.",
+    "The exact current Native readSnapshot calls the pure internal nonisolated projector. The original fresh read, validate, lease-authorized HTTP and readback apply body remains outside the sole exact changed block. No new request, endpoint, stale-snapshot fallback or retry exists.",
+    "The shared tests exercise actual capability construction and mutation validation, including nil/empty/partial maps, malformed keys/roles, approval separation, Guest removal and the refreshed-target refusal. The Native tests call the same actual production projector and inspect Owner/Admin/nonmoderator matrices. No copied projector is tested.",
+    "All five sources reconstruct and reverse exactly through nine literals; both complete original test prefixes and all28 ordered sharing identifier occurrences are retained. Source inspection is not compiler, platform accessibility, invitation or Native authorization acceptance."
+  ],
+  "acceptedSourceAuthority": {
+    "w1Handoff": "Asana1220964836054670",
+    "upstreamRepository": "anyproto/any-sync",
+    "upstreamCommit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+    "validatorSHA256": "1a5240567026c3a55f62652cb812e3fc17c7a2081d0f1ddcc9afd6c5d8dafd75",
+    "modelsSHA256": "977bc8b5783ba6ee4c17c5685f7bb5a64d0e541a8c5eb5b8f28e21a0f2824860",
+    "basis": "W1 exact source contract and two independent full upstream/source reads; no new server permission action by W2."
+  },
+  "originalPacketMapping": {
+    "root": "/mnt/development/projects/evidence/pinkha-wave2-sharing-member-roles-20261128",
+    "files": 12,
+    "totalBytes": 147046,
+    "rule": "Each original candidate/<repo-path> byte body is installed at <repo-path>; the seven original metadata/evidence bodies are retained unchanged in this docs directory. Original paths and phase statuses describe the independently preserved Oracle packet, not a duplicate candidate directory in this Git commit.",
+    "rootReadScope": "Seven original evidence bodies are full primary reads. Five candidate bodies are independently reconstructed from five complete immutable Git originals plus the exact rules and matched to all frozen candidate identities."
+  },
+  "retainedIntakeFailure": {
+    "file": "literal-replacements.json",
+    "error": "MCP -32603 Internal error on first primary read",
+    "completion": "Only the same exact file was retried once; all23048bytes/d1106b41 matched. Other three already successful reads were not repeated."
+  },
+  "testStatus": {
+    "newXCTestMethods": 5,
+    "newDeclaredLeaves": 5,
+    "sharedNew": 3,
+    "nativeNew": 2,
+    "sharedOriginalMethodsRetained": 9,
+    "sharedSelection": "Three new authority methods only; original4authority+5presentation bodies compile but remain unselected.",
+    "nativeSelection": "Two new NativeApplicationTests methods only, separate complete Apple target/artifact admission required.",
+    "compiler": "NOT_RUN",
+    "tests": "NOT_RUN",
+    "UI": "NOT_RUN",
+    "NativePermissionFixtures": "NOT_RUN",
+    "oldProofReplay": 0
+  },
+  "bounds": [
+    "No backend/wire contract, Package/PBX/controller or Heart service source changes.",
+    "Decline remains identity-only without expected-request-record atomicity.",
+    "W1 consumed-request typed error mapping remains separate.",
+    "Guest request approval/ownership transfer/guest-key factory are not qualified by this packet.",
+    "Old removed recipient cannot supply fresh approve/decline fixtures.",
+    "Existing native authority, plan-limit errors and no automatic ambiguous-response retry remain final.",
+    "First Apple22/34 -> preparation -> fourStage1 UI and existing accepted cohorts retain their original scope."
+  ],
+  "workflow": {
+    "subtree": "6c902a0b4534a833972c3ba3e98ea16356b63d52",
+    "retainedFullRead": "8e6fe6d8f47c0229853e8948edbd58ca01dd1a9e",
+    "workflows": 83,
+    "pushDefinitions": 5,
+    "noMatchingBranchTrigger": true,
+    "noCreateEvent": true
+  },
+  "actions": {
+    "sourceWorktreeMutations": 0,
+    "compiler": 0,
+    "tests": 0,
+    "NativeAccounts": 0,
+    "Mac": 0,
+    "finalRef": 0
+  },
+  "nativeTargetReadiness": {
+    "filename": "native-two-apple-readiness.json",
+    "bytes": 8360,
+    "sha256": "6f6621a64f9d1577e28cad445c44b5ba189710fdfb1afb0dc29834a5560e7ac9",
+    "gitBlob": "afae4b8e48d708a1d48a6c61f4c08333ccc82c9c",
+    "basis": "Concrete unchanged Security import/use and Runtime framework linkage; no Linux stub or artifact-mode flip. Reuse a coherent verified Apple artifact when admitted by W3; no extra Native compilation is required by this source assessment."
+  }
+}

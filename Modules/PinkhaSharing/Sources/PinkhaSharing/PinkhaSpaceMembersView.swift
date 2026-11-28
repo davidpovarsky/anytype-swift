@@ -224,7 +224,7 @@ public struct PinkhaSpaceMembersView: View {
                 || state.capabilities.removableMemberIDs.contains(member.id) {
                 Menu {
                     if state.capabilities.editableMemberIDs.contains(member.id) {
-                        ForEach(state.capabilities.grantableRoles.filter { $0 != member.role }, id: \.rawValue) { role in
+                        ForEach(state.capabilities.rolesForMemberChange(member.id).filter { $0 != member.role }, id: \.rawValue) { role in
                             Button { propose(.changeRole(identity: member.id, role: role)) } label: {
                                 Text(LocalizedStringKey(role.rawValue), bundle: .module)
                             }

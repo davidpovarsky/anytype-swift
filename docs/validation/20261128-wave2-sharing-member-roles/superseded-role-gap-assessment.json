@@ -1,0 +1,127 @@
+{
+  "schema": "pinkha-wave2-sharing-contract-consumer-source-assessment-v1",
+  "status": "CONCRETE_NATIVE_ROLE_PROJECTION_GAP_PROPOSAL_ONLY",
+  "sourceOnly": true,
+  "refs": {
+    "repository": "davidpovarsky/anytype-swift",
+    "unchangedConsumersAt": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+    "identifierOnlyViewAt": "6ade3661c261e66c987b7017a6181bdfcebc1d58",
+    "w1Story": "1220964836054670",
+    "w1StoryCreatedAt": "2026-11-28T03:50:30Z"
+  },
+  "w1PrimaryArtifacts": [
+    {
+      "path": "/mnt/development/projects/evidence/pinkha-n-w2-sharing-source-contract-20261128-attempt1/sharing-contract.md",
+      "bytes": 10323,
+      "sha256": "fe5f03270fea6b918fb2b417b6fa55864d18bef421507a2e474b184874c638fd",
+      "gitBlob": "7f950da9a97cdca46aaf7fe9cf0607d6a237e8c9"
+    },
+    {
+      "path": "/mnt/development/projects/evidence/pinkha-n-w2-sharing-source-contract-20261128-attempt1/source-evidence.json",
+      "bytes": 5477,
+      "sha256": "f9452172c28fa100cef3c755e070d9e970ecc6e533d86426cbc78d3877f5d697",
+      "gitBlob": "76368e9ea99801e5fe8ff25d7459d256ea0c7c69"
+    }
+  ],
+  "custody": "Both fixed W1 files were fully read, untruncated, and independently byte/SHA/Git hashed. GitHub source bodies below were fully retained and independently hashed in V8. Underlying Go source pins are W1's reported contract evidence, not newly reread by this consumer assessment.",
+  "finding": {
+    "id": "SHARING-NATIVE-ROLE-01",
+    "nativeSource": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeSharingService.swift",
+    "actual": "readSnapshot gives Owner [.guest,.reader,.writer,.admin], and marks active non-self/non-Owner members editable without excluding Guest; Admin may edit a non-Admin Guest. The same global list drives both request approval and all editable-member change-role menus.",
+    "path": "PinkhaSpaceMembersView.memberRow filters only the current role out of grantableRoles. PinkhaSharingMutation.validate(changeRole) checks editableMemberIDs plus grantableRoles, then Native apply sends that role to the existing permissions endpoint.",
+    "provenInvalidOffers": [
+      "Existing Guest -> Reader or Writer (and Admin for an Owner actor): current native validator forbids upgrading an existing Guest.",
+      "Existing Writer or Admin -> Guest for an Owner actor: native Guest conversion is limited to a current Reader."
+    ],
+    "separateUnqualifiedOffer": "Owner request-approval menu also includes Guest. W1 does not advertise Guest as an ordinary human invitation grant, but its inspected approval validator does not explicitly reject Guest/None. This report therefore does not call Guest approval a proven native rejection.",
+    "unaffected": "Owner targets, self targets, non-active targets and Admin targets acted on by an Admin are already excluded. Owner cannot be granted by the shared capability constructor; ownership transfer remains separate."
+  },
+  "minimalProposal": {
+    "preferredScope": "A separate Native adapter-only correction, subject to Root's scope decision; no edits made.",
+    "changes": [
+      "Preserve the current eligible moderator/target set for removals.",
+      "Derive editableMemberIDs from that set with Guest targets excluded.",
+      "Advertise ordinary approval/change roles Owner=[Reader,Writer,Admin], Admin=[Reader,Writer], everyone else=[].",
+      "Preserve all current native request bodies, session/lease/account checks, shared UI identifiers, errors, actions and Heart policy."
+    ],
+    "explicitTradeoff": "Because the existing shared shape has one grantableRoles list for approval and every target, this smallest conservative correction would also remove the currently offered valid Reader->Guest transition from the common UI. It must not be described as complete native role-matrix support.",
+    "preservationAlternative": "If Reader->Guest must remain exposed now, use a separately reviewed narrow per-target change-role projection while keeping ordinary approval roles separate. That requires a shared capability/model/UI consumer delta; do not add Guest back globally or change Native APIs.",
+    "regressionObligations": "Exercise actual Native capability construction plus mutation validation for Owner/Admin and Guest/Reader/Writer/Admin targets, preserving removability and ordinary Reader/Writer/Admin grants. No tests were created, run or replayed."
+  },
+  "contractsThatMatch": {
+    "requestIdentity": "The real pending read retains each native identity and recordId. Approval carries both into the shared mutation, validates the exact row, and sends requestRecordId+permission. Decline intentionally carries identity only and sends only identity.",
+    "declineLimit": "Fresh client-side re-reading does not create an atomic expected-request-record guarantee. Current Native decline selects JoinRecord(identity) under its own lock; no expected-record fence is claimed.",
+    "ordinaryIdentity": "The shared row and You marker use actual member.identity, not invitation ID or request record ID. Native expected account is checked through /v1/auth by AnyHTTPClient; W1's ordinary-account equality excludes guest-key identities. No fresh guest-account or account-switch acceptance is inferred.",
+    "roleScope": "Reader/Writer ordinary grants; only Owner offers Admin; ownership transfer is not exposed as ordinary grant. Heart adapter already delegates member eligibility to original ParticipantSpaceViewData rules and advertises only Reader/Writer/Admin.",
+    "postRead": "Native apply validates against a newly read snapshot, sends one explicit mutation, then returns another real snapshot. Shared UI checks returned scope. No optimistic role assignment or automatic mutation resend was found.",
+    "currentErrorUI": "A refresh failure clears snapshot and invitation/control state. A failed action clears snapshot and displays the existing generic unconfirmed-action text with Refresh. Join failure is also generic; typed Native revocation is not uniquely observable from its visible text.",
+    "cancellation": "Shared view generation retires stale publication and cancels its operation on close. Native operations use the existing session.perform and lease checks; AnyHTTPClient checks expected account before and after requests. These source guards do not invent server-side generation admission on legacy ACL routes."
+  },
+  "remainingBoundaries": {
+    "consumedRequest": "W1 identified missing approval/decline sentinel mapping falling through to native500/internal. Its typed404 acl.record_not_found successor is source-only/not run in this handoff. Current AnyHTTPClient preserves HTTP status/code in AnyEngineError.http; do not advertise the future404 or add a guessed universal invite.consumed code.",
+    "uncertainty": "Shared UI preserves a generic unresolved state and avoids automatic replay, but does not retain a separate pending mutation/ACK record after its task completes. Native apply performs real readback without an explicit per-mutation expected-outcome comparator. This is not full uncertain-mutation recovery or recipient-convergence evidence; no broader design is proposed in this role-only assessment.",
+    "legacyAdmission": "Native17 account/run routing is not an atomic dispatch contract for the legacy ACL endpoints. Existing client/session fences are not relabeled as one.",
+    "historicalFixture": "W1's historical HTTP4 receipt e33a4309 and product84a4432a observed owner active and recipient removed/none, with zero membership changes. It is not a fresh approve/decline pair. Approval and decline acceptance need separately owned newly pending requests in a later authorized fixture window.",
+    "acceptance": "Compiled AX exposure, real recipient approval/decline, valid role transitions, typed failure display/recovery, account/Space changes, unknown-ACK reconciliation and recipient convergence remain unrun here. No HTTP4/old tests, Native account actions, Mac/Apple operations or runtime were invoked."
+  },
+  "sourcePins": [
+    {
+      "path": "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceMembersView.swift",
+      "commit": "6ade3661c261e66c987b7017a6181bdfcebc1d58",
+      "bytes": 18316,
+      "sha256": "389572bee9aae2688cae835c054041e302ccc8057a37c1972719a8968c7a5849",
+      "gitBlob": "2d9d5c2e7142b1d97af7b46a59704f2aa9e4813e"
+    },
+    {
+      "path": "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceSharing.swift",
+      "commit": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+      "bytes": 8004,
+      "sha256": "7d2dd76b72c5bcda23650b2e87069e72dc8e23cb823d5b7e5ff56e16f26002cc",
+      "gitBlob": "c80d25d2b7b3ce8af7842b1391bdc69c0d0a699a"
+    },
+    {
+      "path": "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSharingAccountOwner.swift",
+      "commit": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+      "bytes": 3146,
+      "sha256": "1d6ee98ff39296e564e8440ef494acfde8a94969811230e628c814550a139e36",
+      "gitBlob": "4791c74b77bfb365c1f1f48a54203a2e80c47a41"
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeSharingService.swift",
+      "commit": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+      "bytes": 8655,
+      "sha256": "4027c96ee71d587020935f69a47c94cd1ee36a87785cd0bebb29b159ef9982c4",
+      "gitBlob": "4f41190ef9bc0350b4fe0f673de3c4ff3cbecd07"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Sharing/HeartSpaceSharingService.swift",
+      "commit": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+      "bytes": 7218,
+      "sha256": "337e17f1e8df93111df29fd80d3b5d0edbf21ed5914577637f36003ba4936215",
+      "gitBlob": "ad052eec4fa2f1b8a2d46008ae4b50c8705f9e3f"
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeApplication.swift",
+      "commit": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+      "bytes": 23564,
+      "sha256": "c5474020ad3bababfef8fc43ea8624ecf0b9b8e80bfacfa5eb5caeb09142b40c",
+      "gitBlob": "110de501e91665280e4751da7b7b6a8392a47913"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyHTTPClient.swift",
+      "commit": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+      "bytes": 27831,
+      "sha256": "8fce86456dfdfd7237a999fb56b6dcdf6d0917c068a797ed5d9a88c5e33d5182",
+      "gitBlob": "c584a72be3fb60b7870ff89630eb26f6fa931986"
+    }
+  ],
+  "scope": {
+    "productEdits": 0,
+    "gitWrites": 0,
+    "tests": 0,
+    "compilers": 0,
+    "nativeCalls": 0,
+    "processQueries": 0,
+    "sourceReads": "Two explicitly named ordinary W1 evidence files and seven current full Swift source bodies; bounded directory discovery only."
+  }
+}

@@ -1,0 +1,223 @@
+{
+  "schema": "pinkha-catalog30-independent-dependency-join-v1",
+  "status": "SOURCE_EVIDENCE_JOIN_COMPLETE_CURRENT_APP_ACCEPTANCE_NOT_CLAIMED",
+  "donor": {
+    "commit": "0b8f03a13d332fc44ed89fc9d6389658d6cfc5e0",
+    "parent": "e6fedfdbc7390a5a4e934726806c952319ba4238",
+    "tree": "c8fd677a851fb466a9c8f6b62f97564151387df3",
+    "files": 30,
+    "bytes": 527885,
+    "intakePath": "/mnt/development/projects/evidence/pinkha-w3-catalog0b8-source-preparation-20261128/primary1/source-intake.json",
+    "intakeBytes": 42126,
+    "intakeSHA256": "f590e116f8a0c3b322b236707fefe68dd6b22f8f670b88d92e0f2bdcd9e6df32"
+  },
+  "originalReceipts": {
+    "Metadata6": {
+      "bytes": 30570,
+      "sha256": "c2c9713a4fc8fd99841d34dfec1b1fed25a8cc64d7687fc11919a4c893c53187",
+      "status": "PASS",
+      "methods": 6,
+      "skips": 0,
+      "closedCommands": 7
+    },
+    "C159Compiler": {
+      "bytes": 31052,
+      "sha256": "bd46d8b19f90ae4e544d530fb754426eecf244871b31dc14850ffec38fd9418a",
+      "status": "PASS_NATIVE_CATALOG1_COMPILED_NOT_RUN",
+      "methods": 0,
+      "closedCommands": 7
+    },
+    "C159ReadReopen": {
+      "bytes": 29246,
+      "sha256": "4c33526bc65840e444aa9db4e06e9d9e177f758969a3ae27c843ed7b15075d56",
+      "status": "PASS_ORIGINAL_CATALOG159_METADATA11_SIGNED_READ_AND_COLD_REOPEN",
+      "distinctMethods": 1,
+      "invocations": 2,
+      "nativeProcesses": 2,
+      "closedGroups": 6,
+      "nativeProducer": "retained native1dc",
+      "physicalNativeCustodySHA256": "3687de9ce7e0531e2c7cf60c19c027c1c6a2f46efb8cf9cc67cdd5daa4ba96cc",
+      "currentAppleAcceptance": false
+    },
+    "priorFailuresPreserved": [
+      "fa11738ec590a6ef6728da56f4f6a7eb51372f5978cb37c55710ff2135878db7",
+      "d8fc75ca82c6bfc545050562991d6fdd5ec690c6b8c1b0f23b0c0db7359d5c85"
+    ]
+  },
+  "exactCompiledSourceJoin": [
+    {
+      "manifest": {
+        "bytes": 766612,
+        "path": "/mnt/development/projects/evidence/pinkha-original-source-metadata6-20261127/components-attempt1/compiled-source-inputs.json",
+        "sha256": "0ec1a70166bb06465663974e63444719ed5b20ee4f7d65e19319c47967afdeae"
+      },
+      "counts": {
+        "compiledTestFiles": 2,
+        "excludedEarlierMethods": 3,
+        "httpFixtureInstances": 0,
+        "metadataCatalogMethods": 6,
+        "methods": 6,
+        "originalCoreCompiledFiles": 8,
+        "originalProjectCompiledFiles": 84,
+        "originalProjectReadFiles": 85,
+        "preparedProductionCompiledFiles": 2,
+        "productionCompiledFiles": 94
+      },
+      "originalInputs": 2128,
+      "isolatedCopies": 514,
+      "preparedJoins": [
+        {
+          "file": "AnyHeartOriginalMetadata.swift",
+          "bytes": 8689,
+          "sha256": "54710744dc013f3ab48c823d48a6310e0ca537957ccf9800ef0b3219f18cb6c0",
+          "originalMatches": 1,
+          "isolatedCopyMatches": 1
+        },
+        {
+          "file": "AnyNativeImportedCatalog.swift",
+          "bytes": 19519,
+          "sha256": "bf886d81f6b0fe7b724f0e347f991681e7ca9d6599476ee13dbce9fb1a84b50b",
+          "originalMatches": 1,
+          "isolatedCopyMatches": 1
+        },
+        {
+          "file": "NativeImportedCatalogMetadataTests.swift",
+          "bytes": 10933,
+          "sha256": "9fb7af655f0957c3682d3d96c3d38185c63dbc93de404c628d334aed9734effb",
+          "originalMatches": 1,
+          "isolatedCopyMatches": 1
+        }
+      ],
+      "projectRows": 85,
+      "coreRows": 8,
+      "projectProductionRows": 84,
+      "projectTestHelperRows": 1
+    },
+    {
+      "manifest": {
+        "bytes": 766096,
+        "path": "/mnt/development/projects/evidence/pinkha-original-catalog-native1-20261127/components-attempt1/compiled-source-inputs.json",
+        "sha256": "aaf375016654ebd0a44bf4ed48a934fdd971c9135b2049eb88aa52dc97fed445"
+      },
+      "counts": {
+        "compiledTestFiles": 2,
+        "excludedEarlierMethods": 3,
+        "httpFixtureInstances": 0,
+        "methods": 0,
+        "originalCoreCompiledFiles": 8,
+        "originalProjectCompiledFiles": 84,
+        "originalProjectReadFiles": 85,
+        "plannedNativeMethods": 1,
+        "preparedProductionCompiledFiles": 2,
+        "productionCompiledFiles": 94
+      },
+      "originalInputs": 2128,
+      "isolatedCopies": 514,
+      "preparedJoins": [
+        {
+          "file": "AnyHeartOriginalMetadata.swift",
+          "bytes": 8689,
+          "sha256": "54710744dc013f3ab48c823d48a6310e0ca537957ccf9800ef0b3219f18cb6c0",
+          "originalMatches": 1,
+          "isolatedCopyMatches": 1
+        },
+        {
+          "file": "AnyNativeImportedCatalog.swift",
+          "bytes": 19519,
+          "sha256": "bf886d81f6b0fe7b724f0e347f991681e7ca9d6599476ee13dbce9fb1a84b50b",
+          "originalMatches": 1,
+          "isolatedCopyMatches": 1
+        },
+        {
+          "file": "NativeImportedCatalogReadReopenTests.swift",
+          "bytes": 15568,
+          "sha256": "5e2d6d2d136727c4d4a567d1470694b719e9a990145f0f77b456fe4c843d3a65",
+          "originalMatches": 1,
+          "isolatedCopyMatches": 1
+        }
+      ],
+      "projectRows": 85,
+      "coreRows": 8,
+      "projectProductionRows": 84,
+      "projectTestHelperRows": 1
+    }
+  ],
+  "compiledScope": {
+    "originalProject": "12e49ea69efdde499a6b5343cbe77139073dfbd8",
+    "originalKit": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+    "originalProjectRows": 85,
+    "productionRows": 84,
+    "testHelperRows": 1,
+    "originalCoreRows": 8,
+    "preparedProductionRows": 2,
+    "totalProductionRows": 94,
+    "testFiles": 2,
+    "onlyManifestMetadataDifference": "The identical NativeCanonicalDefinitionSupplementTests helper uses MetadataCatalogTests versus CatalogNativeTests target names; paths/bytes/SHA/compile flags are equal.",
+    "twoProductsAndRespectivePublishedTestCopies": "Exact whole bytes/SHA in both corresponding originalInputs and isolatedCopies; no copied or synthetic test implementation substituted."
+  },
+  "current": {
+    "commit": "5c88cf89dd26c70c285cd7d23951b26aeb5bc2d8",
+    "tree": "c16392569b2fccf488e21d0bbced8cf0cc752a5c",
+    "immutableInventory": {
+      "path": "/mnt/development/projects/evidence/pinkha-w3-type25-sharing-sdk9af-kit414-source-integration-20261128/command-066-complete-final-preview-complete-leaves.stdout",
+      "bytes": 3463542,
+      "sha256": "979cb32db3c99666d6fa4f02d56d901da65d534f99bd4b752810f146a38585f8",
+      "leaves": 23744
+    },
+    "worktreeNotUsed": true,
+    "originalProjectSourceRowsUnchanged": 83,
+    "originalProjectSourceRowsChanged": 2,
+    "changed": [
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+        "oldBytes": 14656,
+        "oldSHA256": "0273ca566d58456569eeff7d90e6e582791fcf33aa2c6b2e48c280fe53dcb723",
+        "currentBytes": 19634,
+        "currentSHA256": "ae8faf092774401c595a63e389517aa2777fa83c9b2b9ffa31cc054355ed02f6",
+        "currentBlob": "2dd759fe5f70feead52b536e81520f4c27460a1e",
+        "delta": "Attachment kind/factory; optional guarded Bookmark frame with legacy nil-frame identity retained; intent-specific capability check; exact UTF-8 creation readback and cancellation check. Current file references new attachment/Bookmark types outside the old isolated source set."
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+        "oldBytes": 43999,
+        "oldSHA256": "bd78d4bed9ff005d05317a0f6eff1f40bc6b9bbe3495608ed1e4edd830b11a0c",
+        "currentBytes": 53698,
+        "currentSHA256": "b91ed64c54ec552caa68a3b49c272ff8f008722b3a41fc76d9eadf4eaf9ef93b",
+        "currentBlob": "b8de5482053e5f7e3bf6798608f09a98d291281a",
+        "delta": "Read-only Bookmark creation binding/intent validation and shared URL validation; nativeEquivalent walks strings/containers with exact UTF-8 keys and values before scalar equality, retaining numeric/date equivalence."
+      }
+    ],
+    "currentKit": "414e0d3e95d53509381d233a23fcdd28ef24167a",
+    "compiledCoreFilesStillByteIdenticalAtCurrentKit": 8,
+    "currentSwiftCrypto": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+    "originalSwiftCrypto": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+    "originalSwiftASN1": "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+    "currentAppSwiftASN1": "a54383ada6cecde007d374f58f864e29370ba5c3",
+    "currentAppSwiftASN1Version": "1.3.2",
+    "wholeCurrentKitOrResolverEquivalenceClaim": false
+  },
+  "conclusion": "No evidence-identity blocker was found in this bounded join. Exact original products/tests are established, while two shared source dependencies and the ASN1 revision differ from the current App graph. Original Metadata6 and C159 results remain valid only for their recorded Linux/compiler/native1dc tuples; current App/Apple compilation and mounted consumption are not established by those passes.",
+  "concreteRemaining": [
+    "The current complete Host/App graph includes changed ObjectCreator/PropertyStore and added attachment/Bookmark dependencies; it has not been compiled as part of this review.",
+    "The current App lock uses a different ASN1 revision; equal Crypto revision and equal eight Core source files do not prove full resolver/product equivalence.",
+    "C159's actual native1dc producer is not a new native84a/current Apple producer.",
+    "The two published tests remain in the dedicated Tools qualification path; this source join does not add them to or claim execution by the current App test selection."
+  ],
+  "execution": {
+    "candidateImports": 0,
+    "compilerCalls": 0,
+    "testCalls": 0,
+    "MacCalls": 0,
+    "processQueries": 0,
+    "GitCommands": 0,
+    "sourceOrRefMutation": false,
+    "reads": "Exact retained manifests/copies/immutable leaf inventory plus14 named primary GitHub source files",
+    "writes": "Independent source review packet only"
+  },
+  "sealedAtUTC": "2026-11-28T04:51:30.751302+00:00",
+  "byteProof": {
+    "path": "/mnt/development/projects/evidence/pinkha-w3-runtime18-apple-preparation-20261128-source/catalog30-dependency-peer1/dependency-byte-proof.json",
+    "bytes": 136760,
+    "sha256": "3aa0b0a1099d85322adbff2060ec596981e424f31c56342b14352a46725bd9ff"
+  }
+}

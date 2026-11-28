@@ -1,0 +1,350 @@
+{
+  "schema": "pinkha-sharing-member-roles-source-proof-v1",
+  "state": "SOURCE_RECONSTRUCTION_ONLY_NOT_COMPILED_OR_EXECUTED",
+  "base": "6ade3661c261e66c987b7017a6181bdfcebc1d58",
+  "fileCount": 5,
+  "literalOperationCount": 9,
+  "files": [
+    {
+      "path": "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceSharing.swift",
+      "original": {
+        "bytes": 8004,
+        "sha256": "7d2dd76b72c5bcda23650b2e87069e72dc8e23cb823d5b7e5ff56e16f26002cc",
+        "gitBlob": "c80d25d2b7b3ce8af7842b1391bdc69c0d0a699a"
+      },
+      "candidate": {
+        "bytes": 9079,
+        "sha256": "32b76990f19402c2975c751273d3aae87c579d8103339ace14a49d835a8ff028",
+        "gitBlob": "10a57636a2ab759a7d42a179f17f43f2c9e1cf1a"
+      },
+      "wholeForwardExact": true,
+      "wholeReverseExact": true,
+      "operations": [
+        {
+          "ordinal": 1,
+          "label": "add optional per-member capability projection",
+          "beforeUTF8Offset": 2986,
+          "beforeIdentity": {
+            "bytes": 63,
+            "sha256": "d7af556a48bd1ffdeb8743deab721ed15c49f8eea5ae9963ad57712e9cbf798d",
+            "gitBlob": "4ccf2bba24e0044d240b3cd36d11a4504619b55d"
+          },
+          "afterIdentity": {
+            "bytes": 269,
+            "sha256": "6a898d2e844534bbb7cedf4a6e07fa772e3abbc5c63a414fa0c678cafd1a4e51",
+            "gitBlob": "e8a3e87a74785990bfd9e400c200afc731cd27f9"
+          },
+          "appendOnly": false
+        },
+        {
+          "ordinal": 2,
+          "label": "preserve source-compatible initializer default",
+          "beforeUTF8Offset": 3389,
+          "beforeIdentity": {
+            "bytes": 89,
+            "sha256": "cd8d585f88ab529d957f6325b784bf173b55e5bffd584d6cde0269f7eff4ec1f",
+            "gitBlob": "33479f148e0db3289cea2b1a26df25a4cc2c7e98"
+          },
+          "afterIdentity": {
+            "bytes": 162,
+            "sha256": "bd072406361820042f6957de8d72fc5b3698c81dab493e1e5fabef835ca7ca51",
+            "gitBlob": "99395eeb5731cd11db34b101f308e0137c05f628"
+          },
+          "appendOnly": false
+        },
+        {
+          "ordinal": 3,
+          "label": "validate explicit map without widening approval roles",
+          "beforeUTF8Offset": 3912,
+          "beforeIdentity": {
+            "bytes": 55,
+            "sha256": "12a0f00f07a9ab19e2a0687caabaec16772fd8b3d03280c8d73314cef6c5781b",
+            "gitBlob": "06cbb526ec69f47d7a0162e18a12a89560a7c2b6"
+          },
+          "afterIdentity": {
+            "bytes": 557,
+            "sha256": "e0a6f7d3cbda31a6b9eb4fc9335a9e9987aca7e4d3825b4c10e180a00bc05ae4",
+            "gitBlob": "b26d552d8bb3cb9f70d1842e347f243470b573f8"
+          },
+          "appendOnly": false
+        },
+        {
+          "ordinal": 4,
+          "label": "store projection and centralize nil-versus-absent-target semantics",
+          "beforeUTF8Offset": 4673,
+          "beforeIdentity": {
+            "bytes": 97,
+            "sha256": "47fb52d4b1a31407efc4d1fe57f179f8fb485375cad9f7020624d690d96c82e6",
+            "gitBlob": "f240ac1a7521480f673550c378c22929061da9e0"
+          },
+          "afterIdentity": {
+            "bytes": 415,
+            "sha256": "15d49a89d5ba014103c81ad7930fb021497eb87073ef603e0cb5f1183061e46c",
+            "gitBlob": "e3116d2572cffa1312cdb307d88a7d434901e138"
+          },
+          "appendOnly": false
+        },
+        {
+          "ordinal": 5,
+          "label": "validate role change through same projection used by UI",
+          "beforeUTF8Offset": 7661,
+          "beforeIdentity": {
+            "bytes": 178,
+            "sha256": "a8c10bbe23a1d8327cbb43cc32124dfb1d9b00e9ebfb9da44a0f4849a33865b4",
+            "gitBlob": "65528b32e44db719659d579b5f15fd875a8b018d"
+          },
+          "afterIdentity": {
+            "bytes": 154,
+            "sha256": "d32c4d3dcc4284c861a593d00e979bf96175430af83c9830fb63fe0aae20d013",
+            "gitBlob": "ccc3ac2849654a6cbce767b659cd3aaba0befe5a"
+          },
+          "appendOnly": false
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceMembersView.swift",
+      "original": {
+        "bytes": 18316,
+        "sha256": "389572bee9aae2688cae835c054041e302ccc8057a37c1972719a8968c7a5849",
+        "gitBlob": "2d9d5c2e7142b1d97af7b46a59704f2aa9e4813e"
+      },
+      "candidate": {
+        "bytes": 18333,
+        "sha256": "fc7d5e41a2f79dc452d269e0412a4f01330e3a8ccf7cd96d20ce14eee3eed525",
+        "gitBlob": "e16e7b2bb40bfd2e8d4f4b7bcac8cfd4b11d061b"
+      },
+      "wholeForwardExact": true,
+      "wholeReverseExact": true,
+      "operations": [
+        {
+          "ordinal": 1,
+          "label": "use exact per-member roles in original change-role menu",
+          "beforeUTF8Offset": 10314,
+          "beforeIdentity": {
+            "bytes": 121,
+            "sha256": "08fe80dcd55a8e90fc07b0040d1473376c6f95f734ec7b99b463f32942286f65",
+            "gitBlob": "c2450c0c0e33cf4d24008c178d23d2ba3cf136f1"
+          },
+          "afterIdentity": {
+            "bytes": 138,
+            "sha256": "d553a16d6c774d746159c32c4af6bac53b6b3babb8d927e80aa056149d8a4df6",
+            "gitBlob": "37f62c55217a268b2b44f3ba3be6684cd5876478"
+          },
+          "appendOnly": false
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeSharingService.swift",
+      "original": {
+        "bytes": 8655,
+        "sha256": "4027c96ee71d587020935f69a47c94cd1ee36a87785cd0bebb29b159ef9982c4",
+        "gitBlob": "4f41190ef9bc0350b4fe0f673de3c4ff3cbecd07"
+      },
+      "candidate": {
+        "bytes": 9825,
+        "sha256": "0f23393ed575e94354a0311d295cd077f7441e9c0303be67352119c22fc41e15",
+        "gitBlob": "79774663de1e2e735e4ece4f3a8c3d32704bdf8b"
+      },
+      "wholeForwardExact": true,
+      "wholeReverseExact": true,
+      "operations": [
+        {
+          "ordinal": 1,
+          "label": "project target-specific native role options, preserving original removal restrictions",
+          "beforeUTF8Offset": 7229,
+          "beforeIdentity": {
+            "bytes": 882,
+            "sha256": "ceaa024856c040c6dc8bfc37868819deb4d0d49708c7f14337d8351a47a0877e",
+            "gitBlob": "15cc201997cf9085e9d6baba7eb240b843d9e66b"
+          },
+          "afterIdentity": {
+            "bytes": 2052,
+            "sha256": "e4fdf3bfa07fbf79b0be95a3b309fc1760efb610d7f761f3b5ecd337d009d03a",
+            "gitBlob": "5a2ed3e70b8453fce6e1d10831c6bbf4bc58c3af"
+          },
+          "appendOnly": false
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaSharing/Tests/PinkhaSharingTests/SharingAuthorityTests.swift",
+      "original": {
+        "bytes": 5693,
+        "sha256": "20d7f5498d08a27c418ade667bd64a7be6555a1fce47c688d1462d103634c627",
+        "gitBlob": "6c661955e61a79c261545b9b3844efa69010a077"
+      },
+      "candidate": {
+        "bytes": 11211,
+        "sha256": "e11a832e3f8f39bf05f821e420a90f67b883be2164630320bf793eba43d3f336",
+        "gitBlob": "5533a020c007359e751c3b794d9827d6e04adac7"
+      },
+      "wholeForwardExact": true,
+      "wholeReverseExact": true,
+      "operations": [
+        {
+          "ordinal": 1,
+          "label": "append focused tests preserving whole original source",
+          "beforeUTF8Offset": 5437,
+          "beforeIdentity": {
+            "bytes": 256,
+            "sha256": "4dd44023b861a326103f5df312ca34b4b9af4a6e49c26e2bae634080fc198323",
+            "gitBlob": "b9e5c9022376a077101ca5390edb02a8a8e3f336"
+          },
+          "afterIdentity": {
+            "bytes": 5774,
+            "sha256": "ac8b8d26448f25dff092aca0ed922739df86367a774dec22034be2578799de74",
+            "gitBlob": "e8e64faafd88bb4a76661d3e1572924ccad2b1b7"
+          },
+          "appendOnly": true
+        }
+      ],
+      "originalPrefixBytes": 5693,
+      "originalPrefixExact": true,
+      "originalMethods": [
+        "testMutationRequiresCurrentRequestAndExplicitRoleAuthority",
+        "testSnapshotRejectsDuplicateMembersAndSelfEditing",
+        "testInvitationDescriptionsDoNotExposeShareCapability",
+        "testAccountDrainRejectsStaleCompletionAndKeepsOtherEngineActive"
+      ],
+      "appendedMethods": [
+        "testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets",
+        "testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval",
+        "testPerMemberRoleOptionsRejectMalformedEntries"
+      ],
+      "suffix": {
+        "bytes": 5518,
+        "sha256": "dc3e84428f4e39ce9d490390ea76b1c640c1456a1b39bd939df8e11236547d2b",
+        "gitBlob": "f856c3e47969e3a647a692a6ff9a9e0e750cdaad"
+      }
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeApplicationTests.swift",
+      "original": {
+        "bytes": 16585,
+        "sha256": "e0b3efcb40c1aaf9b167baf1f74623a5557bd3bbebbaed3acc8d069ab6db8ca9",
+        "gitBlob": "e7b76f796e9d195b5162c665d888133ba2bcae1d"
+      },
+      "candidate": {
+        "bytes": 22331,
+        "sha256": "4260d7ec74ac5697280f1883ca1590c774f22ba7735ee4ac6496cac6be1f41b3",
+        "gitBlob": "8c47027ada1038fb60452c731e4f156bbff66a7a"
+      },
+      "wholeForwardExact": true,
+      "wholeReverseExact": true,
+      "operations": [
+        {
+          "ordinal": 1,
+          "label": "append focused tests preserving whole original source",
+          "beforeUTF8Offset": 16329,
+          "beforeIdentity": {
+            "bytes": 256,
+            "sha256": "ce0a6c5b554e64006db297c41da952a9efc303326506e7708c79f9183312dbd6",
+            "gitBlob": "c9ec2df062d06a26fe8156ba7a53202953da84fb"
+          },
+          "afterIdentity": {
+            "bytes": 6002,
+            "sha256": "47064ccb06f451bcff881347c7039aea3bb4402de87e25846980a8c890d528f2",
+            "gitBlob": "696fe549438196bc592837f5ae8cdf5a7c0f80e1"
+          },
+          "appendOnly": true
+        }
+      ],
+      "originalPrefixBytes": 16585,
+      "originalPrefixExact": true,
+      "originalMethods": [
+        "testRealAccountWorkspaceJournalEditorAndColdReopen",
+        "testPostAuthKeychainFailureRevokesNativeAuthorityAndRecoversSameAccount",
+        "testRealKeychainNamespaceAndRecoveryMetadataIsolation"
+      ],
+      "appendedMethods": [
+        "testNativeSharingOwnerAndAdminMemberRoleProjection",
+        "testNativeSharingNonModeratorRoleProjectionIsClosed"
+      ],
+      "suffix": {
+        "bytes": 5746,
+        "sha256": "7f239381b9e37a8c71a7c79a78e53ab5d361c35737c9a4421876b5b3a2ea85e3",
+        "gitBlob": "3a1b6211ba5160dd8731d8579f77bb61c0e8aff0"
+      }
+    }
+  ],
+  "sharingIdentifiers": {
+    "orderedCount": 28,
+    "originalFiveAndPublished23AdditionsExact": true,
+    "orderedLiterals": [
+      "pinkha.sharing.members.error",
+      "pinkha.sharing.members.refresh",
+      "pinkha.sharing.shareInvitation",
+      "pinkha.sharing.invitation.revoke.\\(invitation.id)",
+      "pinkha.sharing.invitation.row.\\(invitation.id)",
+      "pinkha.sharing.createInvitation",
+      "pinkha.sharing.members.close",
+      "pinkha.sharing.confirmation.cancel",
+      "pinkha.sharing.confirmation.confirm",
+      "pinkha.sharing.members",
+      "pinkha.sharing.member.role.\\(member.id)",
+      "pinkha.sharing.member.status.\\(member.id)",
+      "pinkha.sharing.member.changeRole.\\(member.id).\\(role.rawValue)",
+      "pinkha.sharing.member.remove.\\(member.id)",
+      "pinkha.sharing.member.actions.\\(member.id)",
+      "pinkha.sharing.member.row.\\(member.id)",
+      "pinkha.sharing.request.approveAs.\\(member.id).\\(role.rawValue)",
+      "pinkha.sharing.request.approve.\\(member.id)",
+      "pinkha.sharing.request.decline.\\(member.id)",
+      "pinkha.sharing.request.row.\\(member.id)",
+      "pinkha.sharing.join.result.active",
+      "pinkha.sharing.join.result.awaitingApproval",
+      "pinkha.sharing.join.result.loading",
+      "pinkha.sharing.invitationInput",
+      "pinkha.sharing.join",
+      "pinkha.sharing.join.error",
+      "pinkha.sharing.join.close",
+      "pinkha.sharing.join.screen"
+    ]
+  },
+  "nativeRetainedFunctions": [
+    {
+      "name": "snapshot",
+      "bytes": 263,
+      "sha256": "0b93000466d28c5f77cfdba014963394de0bca102cbc3c563f5ad8ecfc5a24b4",
+      "gitBlob": "a943f4e3e97bcd494d3d4e5f0ab0388e7a2f640b",
+      "exact": true
+    },
+    {
+      "name": "createInvitation",
+      "bytes": 1291,
+      "sha256": "e140fc0eae9d2f04ca82178c92c1387910924d14bbebf131c6549764965f8759",
+      "gitBlob": "a2ead1e6946fca875fcb85d55b816d2a8f18f2e4",
+      "exact": true
+    },
+    {
+      "name": "apply",
+      "bytes": 1757,
+      "sha256": "d0bb9debb3cc1e6efc8c7b0f3f47131a3522b77c397adec349a583230f639fa0",
+      "gitBlob": "e1ebb01ec173e45d6c0b9ce7fddcb83f27955a4b",
+      "exact": true
+    },
+    {
+      "name": "decodeMember-and-file-ending",
+      "bytes": 592,
+      "sha256": "824cd0b6829f6cc9c490cb95d938d9797967c7ae9b1d2f2c70b2e8225763d85d",
+      "gitBlob": "f031806cc9c63632fa4bf5c046dd64418db4efb1",
+      "exact": true
+    }
+  ],
+  "tests": {
+    "newMethods": [
+      "testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets",
+      "testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval",
+      "testPerMemberRoleOptionsRejectMalformedEntries",
+      "testNativeSharingOwnerAndAdminMemberRoleProjection",
+      "testNativeSharingNonModeratorRoleProjectionIsClosed"
+    ],
+    "newXCTestMethodCount": 5,
+    "originalMethodsRetained": 7,
+    "sourceOnly": true,
+    "actualDiscovery": "NOT_RUN",
+    "runtime": "NOT_RUN"
+  }
+}

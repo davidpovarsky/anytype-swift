@@ -1,0 +1,232 @@
+{
+  "schema": "pinkha-wave2-sharing-per-member-role-proposal-v2",
+  "status": "SOURCE_CONFIRMED_PROPOSAL_ONLY_NO_PRODUCT_EDITS",
+  "refs": {
+    "repository": "davidpovarsky/anytype-swift",
+    "consumerBase": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+    "identifierViewBase": "6ade3661c261e66c987b7017a6181bdfcebc1d58",
+    "w1ContractStory": "1220964836054670"
+  },
+  "predecessor": {
+    "bytes": 10580,
+    "sha256": "46108494579027192716be82f4652c82d32c230668db187db5129cb28495ec62",
+    "gitBlob": "63da9c5494c1c513c8d2d98f72ef18771e1fd499",
+    "reason": "Preserves the initial role-gap assessment. Its conservative removal of Reader-to-Guest is superseded by this per-member proposal at Root's direction."
+  },
+  "contract": {
+    "primary": "Exact public anyproto/any-sync tag v0.13.8 resolved to the immutable commit below; whole validator.go and models.go independently match the SHA256 and bytes reported by W1.",
+    "nativeCommit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+    "nativeTree": "12314eb7d19ab40fc34d7b1baed5519c7976b154",
+    "sourcePins": [
+      {
+        "path": "commonspace/object/acl/list/validator.go",
+        "bytes": 20656,
+        "sha256": "1a5240567026c3a55f62652cb812e3fc17c7a2081d0f1ddcc9afd6c5d8dafd75",
+        "gitBlob": "715675081f8d9510abe8f1a5783fb8c598d4c788"
+      },
+      {
+        "path": "commonspace/object/acl/list/models.go",
+        "bytes": 3938,
+        "sha256": "977bc8b5783ba6ee4c17c5685f7bb5a64d0e541a8c5eb5b8f28e21a0f2824860",
+        "gitBlob": "7c91235f4ca8d3cb626aad22d7a6c208a2443fd8"
+      }
+    ],
+    "authorityRule": "AclPermissions.CanManageAccounts() is true only for Owner or Admin. ValidatePermissionChange rejects a Guest target or Owner target; only Owner may alter an Admin or grant Admin. Granting Guest is rejected unless the target's current role is Reader. That Guest-specific check imposes no additional Owner-only condition. Thus Owner and Admin may change a current Reader to Guest, subject to the unchanged shared active/non-self target restrictions.",
+    "removal": "ValidateAccountRemove has a distinct path: rejects self, missing/None, Owner, and Admin target unless actor is Owner, but does not reject a Guest target. Preserve Guest removal separately.",
+    "approval": "Reader/Writer remain ordinary request-approval roles; Admin is included only for Owner. No Owner transfer, Guest-key factory or unqualified Guest approval is added."
+  },
+  "concreteMismatch": {
+    "source": "AnyNativeSharingService.readSnapshot",
+    "behavior": "Current Owner global grantableRoles includes Guest for every target and approval; editableMemberIDs includes Guest targets. Shared memberRow and mutation.validate use the same global grant list.",
+    "rejectedNativeTransitions": [
+      "Existing Guest -> Reader/Writer/Admin",
+      "Existing Writer/Admin -> Guest"
+    ],
+    "currentlyMissingValidTransition": "Current Admin global list lacks Guest, so Admin -> current Reader -> Guest is not offered, although the exact Native validator permits it.",
+    "noNativeAcceptanceClaim": true
+  },
+  "sharedAPI": {
+    "path": "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceSharing.swift",
+    "additiveProperty": "public let memberRoleOptions: [String: [PinkhaSharingRole]]?",
+    "initializer": "Append memberRoleOptions: [String: [PinkhaSharingRole]]? = nil as a trailing labeled initializer argument. Keep every existing argument and default caller behavior.",
+    "accessor": "public func rolesForMemberChange(_ identity: String) -> [PinkhaSharingRole]",
+    "accessorSemantics": [
+      "First require editableMemberIDs contains identity; otherwise return [].",
+      "If memberRoleOptions is nil, return the existing grantableRoles list.",
+      "If a map is supplied, return only map[identity] ?? []; never fall back to the global list for an absent target."
+    ],
+    "mapValidation": "When present, require keys be valid IDs and a subset of editableMemberIDs; each list is duplicate-free and contains neither None nor Owner. Empty/partial maps are allowed and fail closed through the accessor. Do not require a per-member Guest option to belong to ordinary grantableRoles, because the operation semantics are intentionally separate.",
+    "mutationValidation": "Use this same accessor in changeRole validation; approval continues to use grantableRoles plus the exact native pending identity/requestID checks. Remove/decline/revoke behavior remains untouched.",
+    "compatibility": "Nil preserves existing Heart/other callers without changing their initializer call sites, native roles, participant policy or wire formats. An explicit empty map is restrictive, not equivalent to nil."
+  },
+  "nativeAdapter": {
+    "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeSharingService.swift",
+    "ordinaryRoles": "Owner: [Reader,Writer,Admin]; Admin: [Reader,Writer]; others: [].",
+    "targetScope": "Preserve the current active/non-self/non-Owner/Owner-or-Admin-target restrictions as the removable set. Derive editable members by excluding existing Guests. Preserve Guest removal in the separate removable set.",
+    "perMemberMap": "Supply an explicit map (including empty for no editable members). For each editable current Reader, include Guest plus the actor's ordinary roles; other editable targets receive only ordinary roles. Existing UI filters out the current role exactly as before.",
+    "testableProductionBoundary": "Move only the current pure capabilities-construction block into an internal nonisolated static function on AnyNativeSharingService called by readSnapshot after its original full native reads and consistency checks. It takes decoded current member/members/invitations and returns the actual capabilities. This allows a direct source-level role-matrix test of the production projection without HTTP/runtime injection, a new manager, a setter or an external API.",
+    "preserved": "All request paths/bodies, decodeMember, account/session/lease/cancellation checks and current snapshot sequencing remain untouched. Native authorizes every mutation."
+  },
+  "ui": {
+    "path": "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceMembersView.swift",
+    "edit": "In the member change-role ForEach, replace access to global grantableRoles with rolesForMemberChange(member.id), preserving the existing filter excluding member.role.",
+    "preserved": "Keep all23 added identifiers, all original identifiers/labels/confirmation actions/privacy/state/lifecycle, approval's global grantableRoles, and removal's separate membership check."
+  },
+  "displayedTransitionMatrix": [
+    {
+      "actor": "Owner",
+      "currentTarget": "Reader",
+      "offeredChanges": [
+        "Guest",
+        "Writer",
+        "Admin"
+      ],
+      "removal": "unchanged permitted"
+    },
+    {
+      "actor": "Owner",
+      "currentTarget": "Writer",
+      "offeredChanges": [
+        "Reader",
+        "Admin"
+      ],
+      "removal": "unchanged permitted"
+    },
+    {
+      "actor": "Owner",
+      "currentTarget": "Admin",
+      "offeredChanges": [
+        "Reader",
+        "Writer"
+      ],
+      "removal": "unchanged permitted"
+    },
+    {
+      "actor": "Admin",
+      "currentTarget": "Reader",
+      "offeredChanges": [
+        "Guest",
+        "Writer"
+      ],
+      "removal": "unchanged permitted"
+    },
+    {
+      "actor": "Admin",
+      "currentTarget": "Writer",
+      "offeredChanges": [
+        "Reader"
+      ],
+      "removal": "unchanged permitted"
+    },
+    {
+      "actor": "Admin",
+      "currentTarget": "Admin",
+      "offeredChanges": [],
+      "removal": "unchanged denied"
+    },
+    {
+      "actor": "Owner or Admin",
+      "currentTarget": "Guest",
+      "offeredChanges": [],
+      "removal": "preserved when originally permitted"
+    },
+    {
+      "actor": "any",
+      "currentTarget": "Owner, self or non-active",
+      "offeredChanges": [],
+      "removal": "unchanged restrictions"
+    },
+    {
+      "actor": "Reader/Writer/Guest/None",
+      "currentTarget": "any",
+      "offeredChanges": [],
+      "removal": "unchanged denied"
+    }
+  ],
+  "validationPlan": {
+    "sourceOnly": "No test authoring or execution is authorized by this proposal. Existing whole file prefixes must remain exact when candidate work is authorized.",
+    "files": [
+      "Modules/PinkhaSharing/Tests/PinkhaSharingTests/SharingAuthorityTests.swift",
+      "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeApplicationTests.swift"
+    ],
+    "sharedCases": [
+      "Omitted/nil map preserves existing Heart role-change validation.",
+      "Explicit per-member Guest permits Reader-to-Guest while ordinary approval Guest remains rejected.",
+      "A supplied empty map or missing target refuses changeRole even when the global list and editable ID would otherwise permit it.",
+      "A mapped but noneditable/foreign target cannot gain authority; malformed duplicate/None/Owner entries are refused.",
+      "Existing pending requestID matching, removal and Owner/self restrictions retain their behavior."
+    ],
+    "nativeCases": [
+      "Call the actual extracted production projection over the independent Native contract matrix above.",
+      "Assert both Owner and Admin Reader-to-Guest options survive.",
+      "Assert Guest cannot be edited but its original authorized removal survives.",
+      "Assert Writer/Admin targets never receive Guest; Admin cannot alter Admin/grant Admin.",
+      "Assert ordinary approval roles contain no Guest/Owner/None, and self/inactive/nonmoderator restrictions survive."
+    ],
+    "targetImpact": "Append focused tests to the existing two test files/targets; no new target/controller/fixture or accepted Native journey replay. NativeApplicationTests already imports the production Native module with @testable; test input/expected-role type inference can use the production helper's typed signature without a new shared import. Package/PBX changes are not planned. Actual compile/discovery/selection remains pending, not proved by source."
+  },
+  "exactProductFileSet": [
+    "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceSharing.swift",
+    "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceMembersView.swift",
+    "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeSharingService.swift"
+  ],
+  "originalPins": [
+    {
+      "path": "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceSharing.swift",
+      "commit": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+      "bytes": 8004,
+      "sha256": "7d2dd76b72c5bcda23650b2e87069e72dc8e23cb823d5b7e5ff56e16f26002cc",
+      "gitBlob": "c80d25d2b7b3ce8af7842b1391bdc69c0d0a699a"
+    },
+    {
+      "path": "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceMembersView.swift",
+      "commit": "6ade3661c261e66c987b7017a6181bdfcebc1d58",
+      "bytes": 18316,
+      "sha256": "389572bee9aae2688cae835c054041e302ccc8057a37c1972719a8968c7a5849",
+      "gitBlob": "2d9d5c2e7142b1d97af7b46a59704f2aa9e4813e"
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeSharingService.swift",
+      "commit": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+      "bytes": 8655,
+      "sha256": "4027c96ee71d587020935f69a47c94cd1ee36a87785cd0bebb29b159ef9982c4",
+      "gitBlob": "4f41190ef9bc0350b4fe0f673de3c4ff3cbecd07"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Sharing/HeartSpaceSharingService.swift",
+      "commit": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+      "bytes": 7218,
+      "sha256": "337e17f1e8df93111df29fd80d3b5d0edbf21ed5914577637f36003ba4936215",
+      "gitBlob": "ad052eec4fa2f1b8a2d46008ae4b50c8705f9e3f"
+    },
+    {
+      "path": "Modules/PinkhaSharing/Tests/PinkhaSharingTests/SharingAuthorityTests.swift",
+      "commit": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+      "bytes": 5693,
+      "sha256": "20d7f5498d08a27c418ade667bd64a7be6555a1fce47c688d1462d103634c627",
+      "gitBlob": "6c661955e61a79c261545b9b3844efa69010a077"
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeApplicationTests.swift",
+      "commit": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+      "bytes": 16585,
+      "sha256": "e0b3efcb40c1aaf9b167baf1f74623a5557bd3bbebbaed3acc8d069ab6db8ca9",
+      "gitBlob": "e7b76f796e9d195b5162c665d888133ba2bcae1d"
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Package.swift",
+      "commit": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+      "bytes": 2344,
+      "sha256": "35ca8e72e30358c86d7a1380c925a7da152fb0d77497bdb1faa1f776a92fcb3f",
+      "gitBlob": "090cb08dd450b4e4c591903495644dbfdcbbc50b"
+    }
+  ],
+  "retainedBoundaries": [
+    "Decline remains identity-only, with no caller expected-requestRecordId guarantee.",
+    "W1 consumed-request500 mapping successor remains their source/qualification scope.",
+    "No direct-add invitation, transfer ownership or guest-key route is invented.",
+    "Generic error/Refresh and lack of automatic resend are unchanged; full unknown-ACK retention/expected-effect readback/recipient convergence are not newly qualified.",
+    "Historical HTTP4's removed recipient is not a fresh pending request fixture.",
+    "No Native/API/account/host process/Mac/test/compiler/source/Git mutation was performed."
+  ]
+}

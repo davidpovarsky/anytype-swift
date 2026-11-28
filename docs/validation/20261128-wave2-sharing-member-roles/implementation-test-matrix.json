@@ -1,0 +1,110 @@
+{
+  "schema": "pinkha-sharing-member-roles-implementation-matrix-v1",
+  "status": "FROZEN_SOURCE_ONLY_NOT_RUN",
+  "base": "6ade3661c261e66c987b7017a6181bdfcebc1d58",
+  "implementation": {
+    "shared": "Optional memberRoleOptions default nil; invalid keys/duplicates/None/Owner refused. rolesForMemberChange first checks editable IDs; nil uses original global roles; supplied missing target returns [].",
+    "native": "Original removal predicate retained. Existing Guests excluded only from editing. Ordinary approval Reader/Writer (+Admin for Owner); explicit member map adds Guest only for current Reader, for Owner and Admin. Same current native readSnapshot invokes the actual internal nonisolated pure projection.",
+    "ui": "Only the original member-role menu's collection expression changes to the accessor also used by mutation.validate. Approval still uses global ordinary roles.",
+    "preserved": [
+      "All28 existing literal sharing AX IDs, including prior23 additions",
+      "Whole original shared view model and error/Refresh/confirmation behavior",
+      "Original snapshot/createInvitation/apply/decodeMember bodies",
+      "Identity-only decline with no expected-record fence",
+      "Heart service and its nil/default initializer use",
+      "All original5,693B and16,585B test prefixes",
+      "Original Package/PBX/controller/wire/backend source"
+    ]
+  },
+  "tests": [
+    {
+      "file": "Modules/PinkhaSharing/Tests/PinkhaSharingTests/SharingAuthorityTests.swift",
+      "originalMethods": 4,
+      "appendedMethods": [
+        {
+          "name": "testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets",
+          "covers": [
+            "Actual original Heart snapshot uses nil fallback",
+            "Noneditable self denied",
+            "Explicit empty map denies otherwise grantable change",
+            "Partial map allows declared Reader->Guest and denies missing Writer target"
+          ]
+        },
+        {
+          "name": "testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval",
+          "covers": [
+            "Per-member Reader->Guest valid while pending Guest approval denied",
+            "Writer->Admin valid; Writer->Guest and Guest upgrade denied",
+            "Guest removal preserved; Owner removal denied",
+            "Exact request record required",
+            "Fresh Writer snapshot rejects previously permitted Guest selection"
+          ]
+        },
+        {
+          "name": "testPerMemberRoleOptionsRejectMalformedEntries",
+          "covers": [
+            "Six source rows: duplicate role, Owner grant, None grant, foreign key, noneditable Guest key, self key",
+            "Explicit mapped empty role list denies change"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeApplicationTests.swift",
+      "originalMethods": 3,
+      "appendedMethods": [
+        {
+          "name": "testNativeSharingOwnerAndAdminMemberRoleProjection",
+          "covers": [
+            "Calls actual production projector for Owner and Admin",
+            "Owner Reader->[Guest,Writer,Admin]; Writer->[Reader,Admin]; Admin->[Reader,Writer]",
+            "Admin Reader->[Guest,Writer]; Writer->[Reader]",
+            "Separate editable/removable sets retain Guest removal",
+            "Current/self, Owner, Guest edit, removed, joining and absent targets denied",
+            "Ordinary approval grants and invitation/moderation flags preserved"
+          ]
+        },
+        {
+          "name": "testNativeSharingNonModeratorRoleProjectionIsClosed",
+          "covers": [
+            "Three source rows: Reader, Writer, Guest actor",
+            "All role/invitation/moderation/removal grants closed; explicit empty map retained"
+          ]
+        }
+      ]
+    }
+  ],
+  "counts": {
+    "newXCTestMethods": 5,
+    "newSourceDeclaredXCTestLeaves": 5,
+    "sharedClassMethodsBefore": 4,
+    "sharedClassMethodsAfter": 7,
+    "nativeApplicationClassMethodsBefore": 3,
+    "nativeApplicationClassMethodsAfter": 5,
+    "parameterRowsAreNotAdditionalXCTestLeaves": true
+  },
+  "validation": {
+    "fullForwardAndReverse": "All5 complete sources reconstructed and reversed exactly using9 literals; no Swift source executed",
+    "wholeTestPrefixes": "PASS_SOURCE_BYTE_COMPARISON",
+    "newMethodExecution": "NOT_RUN",
+    "swiftTypecheck": "NOT_RUN",
+    "AppleTargetAndAX": "NOT_RUN",
+    "nativeAccountOrPermissionAcceptance": "NOT_RUN",
+    "realFreshRecipientFixture": "NOT_AVAILABLE_FROM_HISTORICAL_HTTP4",
+    "selectionAdmission": "A future exact method selection must account for Shared4->7 and NativeApplication3->5. Existing whole-class/old-source gates are unchanged; no automatic replay or count update."
+  },
+  "sourceAuthority": {
+    "repository": "anyproto/any-sync",
+    "commit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+    "validatorSHA256": "1a5240567026c3a55f62652cb812e3fc17c7a2081d0f1ddcc9afd6c5d8dafd75",
+    "modelsSHA256": "977bc8b5783ba6ee4c17c5685f7bb5a64d0e541a8c5eb5b8f28e21a0f2824860",
+    "bothMatchW1": true
+  },
+  "limits": [
+    "Native remains final authorizer and plan-limit owner",
+    "No change to consumed-request500 mapping or future W1 typed404",
+    "No Guest-key/ownership/direct-add factory",
+    "No new unknown-ACK persistence or atomic legacy ACL generation fence",
+    "Removed historical recipient is not a pending approve/decline fixture"
+  ]
+}

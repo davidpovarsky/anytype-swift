@@ -1,0 +1,382 @@
+--- prior-e3dd/run_navigation_components.py
++++ retained23-targeted3/run_navigation_components.py
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
+-"""Isolated real-source qualification of 26 new original-navigation and personal-navigation component methods.
++"""Complete Navigation26 with 23 retained passes and three corrected fixture methods.
+ 
+ SOURCE-ONLY until this controller actually completes. It opens no native
+ account, compiles no dependency, and does not replay any FilesV2 or migration
+@@ -37,10 +37,10 @@
+ NAVIGATION_PRIOR_MANIFEST_SHA = '2c2b82a39693c477ccd9fe255351d5f52dd78e3b0f378b12056fe18c02e91fd7'
+ TYPE25_PARENT = Path('/mnt/development/projects/evidence/pinkha-original-type-runtime-provider25-20261127')
+ METADATA6_PARENT = Path('/mnt/development/projects/evidence/pinkha-original-source-metadata6-20261127')
+-PREPARED = PARENT/'prepared2'
++PREPARED = PARENT/'prepared3'
+ CONTROL = Path(__file__).parent
+ MANIFEST = CONTROL/'navigation-component-inputs.json'
+-MANIFEST_SHA = '27396e6a6d5899029816edc457863c39426c9b4a0c6f0123c4efa594305c802a'
++MANIFEST_SHA = 'fdac37214d2f8c1ac561278df5ac37ad2606ea1e2333023a502b0ba3d8e5c0cf'
+ CRYPTO_HELPER = CONTROL/'qualify_provider_crypto_c3.py'
+ CRYPTO_HELPER_SHA = '9ec68e6db7ad722866236ab4494df3108fee60791a40a8d218c93a82d817805b'
+ SHARED_CRYPTO_HELPER = CONTROL/'qualify_current_c3_crypto.py'
+@@ -94,6 +94,24 @@
+ METADATA6_RECEIPT_SHA = 'c2c9713a4fc8fd99841d34dfec1b1fed25a8cc64d7687fc11919a4c893c53187'
+ METADATA6_MANIFEST = METADATA6_PARENT/'prepared2/metadata-component-inputs.json'
+ METADATA6_MANIFEST_SHA = 'cb47fb0293e32e7e4d8f9c2c89c0c4e21640b47439ca9d1b2a8199b710df2ec4'
++
++RETAINED_NAVIGATION_ROOT = PARENT/'components-attempt2'
++RETAINED_NAVIGATION_RESULT = RETAINED_NAVIGATION_ROOT/'result.json'
++RETAINED_NAVIGATION_RESULT_SHA = 'f266f1f7dcc61be8ae8664b50b25e7078ab3ffc29572d07e4626b29eb1394a00'
++RETAINED_NAVIGATION_LOG = RETAINED_NAVIGATION_ROOT/'commands/swift-components/original.log'
++RETAINED_NAVIGATION_LOG_SHA = '3c77d6e2d017f23795e64131ba32a7c7ed69dfeb1223fc8e5e26c2f5ae11cad2'
++RETAINED_NAVIGATION_INPUTS = RETAINED_NAVIGATION_ROOT/'compiled-source-inputs.json'
++RETAINED_NAVIGATION_INPUTS_SHA = 'ce38612884f316845702391f443989f19fbef0cd493af915b7f75d3ea536c499'
++RETAINED_NAVIGATION_CONTROLLER = PARENT/'prepared2/run_navigation_components.py'
++RETAINED_NAVIGATION_CONTROLLER_SHA = 'e3dd22632d26fd6b7c2e9bc6adf911c99808193926beda8fccf68addc2860150'
++RETAINED_NAVIGATION_MANIFEST = PARENT/'prepared2/navigation-component-inputs.json'
++RETAINED_NAVIGATION_MANIFEST_SHA = '27396e6a6d5899029816edc457863c39426c9b4a0c6f0123c4efa594305c802a'
++NEW_SELECTED_METHODS = {
++    'NativePersonalNavigationContractTests.testOriginalLastOpenedDescriptorAndDecodedBindingKeepExactSourceIdentity',
++    'NativePersonalNavigationContractTests.testHomePreservesAbsentEmptyUnknownAndClosedWireVariants',
++    'NativePersonalNavigationHTTPTests.testAcknowledgmentSurvivesAnEnclosingSessionRetirementWithoutPrivateReadback',
++}
++
+ CHUNK = MIB
+ _save_serial = 0
+ 
+@@ -317,11 +335,12 @@
+     return '// swift-tools-version: 6.0\nimport PackageDescription\nlet package = Package(name: "OriginalNavigationProof", targets: [\n'+',\n'.join(rows)+'\n])\n'
+ 
+ 
+-def fixture_audit(root, owner_record, owner, base, manifest):
++def fixture_audit(root, owner_record, owner, base, manifest, retained_failed_owner=False):
+     """Retain exact synthetic request/ACK scope inside the qualified owner group."""
+     assert root.resolve() == root and stat.S_IMODE(root.stat().st_mode) == 0o700
+     directories = sorted(root.iterdir())
+-    assert len(directories) == 13, 'exact 13 actual navigation HTTP fixtures required'
++    expected_instances = 13 if retained_failed_owner else 1
++    assert len(directories) == expected_instances, 'exact retained or targeted fixture inventory required'
+     owner_sha = base.sha(owner_record)
+     identities, rows, all_requests, modes, normal_writes = set(), [], [], [], []
+     mandatory = {'config.json','server.py','account.txt','run.txt','port.json',
+@@ -356,6 +375,8 @@
+         assert set(config) == {'mode','controlToken'} and config['controlToken'] == 'a'*64
+         mode = config['mode']
+         assert mode in allowed_modes
++        if not retained_failed_owner:
++            assert mode == 'retire-after-write', 'only the selected retirement method opens a new fixture'
+         modes.append(mode)
+         assert text_files['account.txt'] == 'account'
+         assert text_files['run.txt'] in ('a'*64,'b'*64)
+@@ -446,21 +467,183 @@
+         rows.append({'directory':str(directory),'fixturePID':started['pid'],'ownedGroup':started['pgid'],
+                      'mode':mode,'stdinEOFExit':True,'requestCount':len(requests),
+                      'syntheticWriteCount':len(writes),'artifacts':artifacts})
+-    assert {mode:modes.count(mode) for mode in set(modes)} == {
++    expected_modes = ({
+         'normal':5,'retire-after-write':1,'missing-ack':1,'foreign-ack':1,'shared-ack':1,
+         'nonlocal':1,'foreign-target':1,'unmaterialized':1,'guest-member':1}
+-    assert sorted(normal_writes) == [0,0,1,1,3]
++        if retained_failed_owner else {'retire-after-write':1})
++    assert {mode:modes.count(mode) for mode in set(modes)} == expected_modes
++    assert sorted(normal_writes) == ([0,0,1,1,3] if retained_failed_owner else [])
+     posts = sum(request['method'] == 'POST' for request in all_requests)
+     patches = sum(request['method'] == 'PATCH' for request in all_requests)
+     gets = sum(request['method'] == 'GET' for request in all_requests)
+-    assert posts == 6 and patches == 3 and gets+posts+patches == len(all_requests)
+-    assert owner['processGroupAbsent'] and owner['exitCode'] == 0 and not owner['forcedCleanup']
+-    return {'instances':13,'requestCount':len(all_requests),'GETCount':gets,'POSTCount':posts,
+-            'PATCHCount':patches,'syntheticWriteCount':9,'nativeEffectsQualified':False,
++    assert posts == (6 if retained_failed_owner else 1) and patches == (3 if retained_failed_owner else 0)
++    assert gets+posts+patches == len(all_requests)
++    assert owner['processGroupAbsent'] and owner['exitCode'] == (1 if retained_failed_owner else 0)
++    assert not owner['forcedCleanup'] and not owner['signals'] and not owner['cleanupErrors']
++    return {'instances':expected_instances,'requestCount':len(all_requests),'GETCount':gets,'POSTCount':posts,
++            'PATCHCount':patches,'syntheticWriteCount':posts+patches,'nativeEffectsQualified':False,
++            'historicalFailedOwner':retained_failed_owner,'observedOwnerExitCode':owner['exitCode'],
+             'allOwnedOriginalGroup':True,'allCleanEOF':True,
+-            'syntheticGuestRefusedBeforeEffect':True,'nativeGuestAuthorityQualified':False,
++            'syntheticGuestRefusedBeforeEffect':True if retained_failed_owner else None,'nativeGuestAuthorityQualified':False,
+             'groupAbsenceSource':'qualified unreaped owner closure; no post-reap PID probing',
+             'fixtureRows':rows}
++
++
++
++def admit_retained_navigation(base, current_manifest, guard):
++    """Read the exact failed command and retain only its 23 unaffected passes.
++
++    Historical exit 1, both failures and the superseded Home pass remain
++    explicit. This opens public source/evidence and synthetic fixture records;
++    it neither imports historical build products nor probes historical PIDs.
++    """
++    guard()
++    prior = json.loads(base.read(RETAINED_NAVIGATION_RESULT, maximum=RECEIPT_CAP))
++    old_manifest = json.loads(base.read(RETAINED_NAVIGATION_MANIFEST, maximum=256*1024))
++    source_ledger = json.loads(base.read(RETAINED_NAVIGATION_INPUTS, maximum=2*MIB))
++    raw_log = base.read(RETAINED_NAVIGATION_LOG, maximum=LOG_CAP).decode('utf-8')
++    assert prior['status'] == 'FAIL' and prior['errors'] == [
++        {'message':'owned command did not finish normally: swift-components','type':'RuntimeError'},
++        {'message':'','phase':'final-lifecycle-and-budget','type':'AssertionError'}]
++    assert prior['controllerSHA256'] == RETAINED_NAVIGATION_CONTROLLER_SHA
++    assert prior['inputManifestSHA256'] == RETAINED_NAVIGATION_MANIFEST_SHA
++    assert prior['compiledSourceInputs'] == {
++        'path':str(RETAINED_NAVIGATION_INPUTS),'bytes':777175,'sha256':RETAINED_NAVIGATION_INPUTS_SHA}
++    assert all(prior[key] is True for key in ('sourceUnchanged','admittedInputsUnchanged',
++        'compiledSourceInputsUnchanged','originalSourceFixtureInputsAndCopiesUnchanged',
++        'allStartedOwnedGroupsPositivelyAbsent'))
++    assert prior['earlierTestStarts'] == [] and prior['earlierTestReplayStatus'] == 'NOT_RUN'
++    assert prior['nativeAccountsOpened'] is False and prior['nativeStorageQualified'] is False
++    assert 'compiledProducts' not in prior, 'no historical qualified Products map is inferred'
++    assert len(prior['commands']) == 4 and [row['exitCode'] for row in prior['commands']] == [0,0,0,1]
++    assert all(row['processGroupAbsent'] and not row['forcedCleanup'] and not row['signals'] and
++               not row['cleanupErrors'] and row['stopReason'] is None for row in prior['commands'])
++    prior_swift = prior['commands'][3]
++    assert prior_swift['logSHA256'] == RETAINED_NAVIGATION_LOG_SHA
++    assert prior_swift['cwd'] == str(RETAINED_NAVIGATION_ROOT/'package')
++    assert prior_swift['argv'] == [
++        str(TOOLCHAIN/'swift'),'test','--package-path',str(RETAINED_NAVIGATION_ROOT/'package'),
++        '--scratch-path',str(RETAINED_NAVIGATION_ROOT/'build'),
++        '--cache-path',str(RETAINED_NAVIGATION_ROOT/'swift-cache'),
++        '--config-path',str(RETAINED_NAVIGATION_ROOT/'swift-config'),
++        '--security-path',str(RETAINED_NAVIGATION_ROOT/'swift-security'),
++        '--disable-automatic-resolution','--jobs','2','--filter','|'.join(old_manifest['methods'])]
++    original_names = {name+'.'+method for name,methods in old_manifest['methods'].items() for method in methods}
++    current_names = {name+'.'+method for name,methods in current_manifest['methods'].items() for method in methods}
++    selected_names = {name+'.'+method for name,methods in current_manifest['selectedMethods'].items() for method in methods}
++    starts = re.findall(r"Test Case '([^']+)' started", raw_log)
++    passes = re.findall(r"Test Case '([^']+)' passed", raw_log)
++    failures = re.findall(r"Test Case '([^']+)' failed", raw_log)
++    failed_names = {
++        'NativePersonalNavigationContractTests.testOriginalLastOpenedDescriptorAndDecodedBindingKeepExactSourceIdentity',
++        'NativePersonalNavigationHTTPTests.testAcknowledgmentSurvivesAnEnclosingSessionRetirementWithoutPrivateReadback',
++    }
++    superseded = ['NativePersonalNavigationContractTests.testHomePreservesAbsentEmptyUnknownAndClosedWireVariants']
++    assert original_names == current_names and len(original_names) == 26
++    assert len(starts) == len(set(starts)) == 26 and set(starts) == original_names
++    assert len(passes) == len(set(passes)) == 24 and set(passes) == original_names-failed_names
++    assert len(failures) == 2 and set(failures) == failed_names
++    assert selected_names == NEW_SELECTED_METHODS == failed_names | set(superseded)
++    assert re.search(r'Build complete! \(62\.57 secs\)', raw_log)
++    assert re.search(r'Executed 26 tests, with 2 failures \(2 unexpected\)', raw_log)
++    assert 'The given data was not valid JSON.' in raw_log and 'CancellationError()' in raw_log
++    assert not re.search(r"Test Case '[^']+' skipped|Skipping XCTest discovery|XCTSkip", raw_log)
++    retained = sorted(set(passes)-selected_names)
++    assert len(retained) == 23 and retained == current_manifest['retainedMethods']
++    assert set(retained).isdisjoint(selected_names)
++    assert source_ledger['counts'] == old_manifest['expectedCounts']
++    assert source_ledger['noExistingProjectModuleImportDirectories'] is True
++    assert source_ledger['indexStore'] == 'enabled; no disable-index-store flag'
++    assert len(source_ledger['originalInputs']) == 2159 and len(source_ledger['isolatedCopies']) == 530
++
++    # All 112 whole sources are joined to the actual compiler input ledger.
++    # Only two test-source byte sequences differ in the new composition.
++    for key in ('originalProjectRoot','originalProjectFiles','originalCoreRoot','originalCoreFiles',
++                'dependencySourcePins','originalCoreCommit','originalProjectCommit','fixtureScript',
++                'methods','excludedEarlierMethods','sourceModes'):
++        assert current_manifest[key] == old_manifest[key], 'unchanged source closure: '+key
++    old_prepared = {row['path']:row for row in old_manifest['preparedSources']}
++    new_prepared = {row['path']:row for row in current_manifest['preparedSources']}
++    assert set(old_prepared) == set(new_prepared) and len(old_prepared) == 16
++    corrected = current_manifest['fixtureCompletion']['correctedSources']
++    assert set(corrected) == {
++        'Tests/NativePersonalNavigationContractTests.swift',
++        'Tests/NativePersonalNavigationHTTPTests.swift'}
++    for name in old_prepared:
++        if name not in corrected:
++            assert old_prepared[name] == new_prepared[name]
++        else:
++            assert old_prepared[name]['kind'] == new_prepared[name]['kind'] == 'test'
++            assert old_prepared[name]['target'] == new_prepared[name]['target'] == 'NavigationContractTests'
++            assert old_prepared[name]['sha256'] == corrected[name]['before']['sha256']
++            assert old_prepared[name]['bytes'] == corrected[name]['before']['bytes']
++            assert new_prepared[name]['sha256'] == corrected[name]['after']['sha256']
++            assert new_prepared[name]['bytes'] == corrected[name]['after']['bytes']
++    joined = 0
++    for entry in old_manifest['originalProjectFiles']:
++        guard()
++        if not entry['compile']:
++            continue
++        original = Path(old_manifest['originalProjectRoot'])/entry['path']
++        isolated = ('Tests/NavigationContractTests' if entry['kind']=='test-helper'
++                    else 'Sources/'+entry['target'])+'/'+original.name
++        row = {key:entry[key] for key in ('bytes','sha256')}
++        assert source_ledger['originalInputs'][str(original)] == row
++        assert source_ledger['isolatedCopies'][str(RETAINED_NAVIGATION_ROOT/'package'/isolated)] == row
++        joined += 1
++    for entry in old_manifest['originalCoreFiles']:
++        guard()
++        original = Path(old_manifest['originalCoreRoot'])/entry['path']
++        row = {key:entry[key] for key in ('bytes','sha256')}
++        assert source_ledger['originalInputs'][str(original)] == row
++        assert source_ledger['isolatedCopies'][str(RETAINED_NAVIGATION_ROOT/'package'/'Sources/TorahInspectorCore'/original.name)] == row
++        joined += 1
++    for entry in old_manifest['preparedSources']:
++        guard()
++        original = PARENT/'prepared2'/entry['path']
++        isolated = ('Tests/NavigationContractTests' if entry['kind']=='test'
++                    else 'Sources/'+entry['target'])+'/'+original.name
++        row = {key:entry[key] for key in ('bytes','sha256')}
++        assert base.row(original) == row
++        assert source_ledger['originalInputs'][str(original)] == row
++        assert source_ledger['isolatedCopies'][str(RETAINED_NAVIGATION_ROOT/'package'/isolated)] == row
++        joined += 1
++    assert joined == 112
++
++    for name, correction in corrected.items():
++        guard()
++        old_bytes = base.read(PARENT/'prepared2'/name, maximum=65536)
++        new_bytes = base.read(PREPARED/name, maximum=65536)
++        assert {'bytes':len(old_bytes),'sha256':hashlib.sha256(old_bytes).hexdigest()} == correction['before']
++        assert {'bytes':len(new_bytes),'sha256':hashlib.sha256(new_bytes).hexdigest()} == correction['after']
++        inverse = new_bytes.decode('utf-8')
++        for before, after in correction['replacements']:
++            assert inverse.count(after) == 1 and old_bytes.decode('utf-8').count(before) == 1
++            inverse = inverse.replace(after,before)
++        addition = correction.get('addedHelper')
++        if addition is not None:
++            assert inverse.count(addition) == 1
++            inverse = inverse.replace(addition,'')
++        assert inverse.encode('utf-8') == old_bytes, 'precise fixture-only inverse'
++    guard()
++    assert allocation(RETAINED_NAVIGATION_ROOT/'http-fixtures') <= FIXTURE_CAP
++    historical_fixtures = fixture_audit(RETAINED_NAVIGATION_ROOT/'http-fixtures',
++        RETAINED_NAVIGATION_ROOT/'commands/swift-components/started.json',
++        prior_swift, base, old_manifest, retained_failed_owner=True)
++    guard()
++    return {
++        'receipt':str(RETAINED_NAVIGATION_RESULT),'receiptSHA256':RETAINED_NAVIGATION_RESULT_SHA,
++        'log':str(RETAINED_NAVIGATION_LOG),'logSHA256':RETAINED_NAVIGATION_LOG_SHA,
++        'compiledSourceInputsSHA256':RETAINED_NAVIGATION_INPUTS_SHA,
++        'originalStatus':'FAIL','historicalExitCodes':[0,0,0,1],
++        'historicalGroups':4,'historicalTestStarts':26,'historicalPasses':24,'historicalFailures':sorted(failed_names),
++        'retainedPassedMethods':retained,'supersededHistoricalPasses':superseded,
++        'retainedMethods':23,'newSelectedMethods':sorted(selected_names),
++        'fullCompilerSourceCorrespondence':112,'unchangedWholeSources':110,'productionSourcesChanged':0,
++        'testSourcesChanged':2,'historicalProductsQualifiedOrReused':False,
++        'oldGroupsReprobedOrReplayed':False,'historicalHTTPObserved':historical_fixtures,
++        'historicalHTTPIsNotAClaimThatFailedMethodPassed':True,
++    }
+ 
+ 
+ def main():
+@@ -493,7 +676,12 @@
+                 NAVIGATION_FAILURE:NAVIGATION_FAILURE_SHA,NAVIGATION_FAILURE_LOG:NAVIGATION_FAILURE_LOG_SHA,
+                 NAVIGATION_FAILURE_INPUTS:NAVIGATION_FAILURE_INPUTS_SHA,
+                 NAVIGATION_PRIOR_CONTROLLER:NAVIGATION_PRIOR_CONTROLLER_SHA,
+-                NAVIGATION_PRIOR_MANIFEST:NAVIGATION_PRIOR_MANIFEST_SHA}
++                NAVIGATION_PRIOR_MANIFEST:NAVIGATION_PRIOR_MANIFEST_SHA,
++                RETAINED_NAVIGATION_RESULT:RETAINED_NAVIGATION_RESULT_SHA,
++                RETAINED_NAVIGATION_LOG:RETAINED_NAVIGATION_LOG_SHA,
++                RETAINED_NAVIGATION_INPUTS:RETAINED_NAVIGATION_INPUTS_SHA,
++                RETAINED_NAVIGATION_CONTROLLER:RETAINED_NAVIGATION_CONTROLLER_SHA,
++                RETAINED_NAVIGATION_MANIFEST:RETAINED_NAVIGATION_MANIFEST_SHA}
+     for path, expected in controls.items():
+         base.pinned(path, expected)
+     lifecycle = json.loads(base.read(LIFECYCLE_RECEIPT, maximum=MIB))
+@@ -582,7 +770,7 @@
+     owned.install_interrupt_handlers()
+     owned_output = False
+     started_at = time.monotonic()
+-    result = {'status':'RUNNING', 'scope':'26 new original-navigation and personal-navigation components; original source bytes and synthetic loopback HTTP only',
++    result = {'status':'RUNNING', 'scope':'Navigation26 completion: 23 retained passes plus three corrected fixture methods; source and synthetic loopback HTTP only',
+               'nativeAccountsOpened':False, 'nativeStorageQualified':False, 'cloudDurabilityQualified':False,
+               'earlierTestReplayRequested':False, 'earlierTestReplayStatus':'NOT_DISPATCHED',
+               'priorMigrationOrFilesV2MethodsReplayed':0, 'priorUpload35MethodsReplayed':0, 'priorType25MethodsReplayed':0, 'priorMetadata6MethodsReplayed':0, 'errors':[], 'commands':[], 'sourceUnchanged':False,
+@@ -629,6 +817,7 @@
+     fixture_input_helper = None
+     fixture_input_admission = None
+     final_deadline = None
++    retained_navigation = None
+ 
+     def observe():
+         nonlocal last_allocation
+@@ -719,8 +908,11 @@
+                    CLANG_MODULE_CACHE_PATH=str(output/'clang-module-cache'), XDG_CACHE_HOME=str(output/'swift-cache'),
+                    GIT_OPTIONAL_LOCKS='0', SWIFTPM_MAXIMUM_CONCURRENT_OPERATIONS='2')
+         manifest = json.loads(base.read(MANIFEST, maximum=256*1024))
+-        assert manifest['schema'] == 1 and manifest['scope'] == 'ISOLATED_ORIGINAL_NAVIGATION26_FULL_SOURCE_ONLY'
++        assert manifest['schema'] == 1 and manifest['scope'] == 'ISOLATED_NAVIGATION26_RETAINED23_TARGETED3_COMPLETION'
+         assert manifest['expectedCounts']['methods']==26 and len(manifest['preparedSources'])==16
++        assert manifest['expectedCounts']['newSelectedMethods']==3 and manifest['expectedCounts']['retainedMethods']==23
++        retained_navigation = admit_retained_navigation(base, manifest, guard)
++        result['retainedNavigationEvidence'] = retained_navigation
+         assert manifest['expectedCounts']['compiledTestFiles']==5 and manifest['expectedCounts']['excludedEarlierMethods']==34
+         assert manifest['expectedCounts']['compiledEarlierCanonicalMethods']==3
+         assert set(manifest['excludedEarlierMethods'])=={'NativeCanonicalDefinitionSupplementTests',
+@@ -796,7 +988,8 @@
+         # manifest and merely compare a new self-consistent set of copies.
+         result['compiledSourceInputs'] = dict(path=str(source_input_file), **base.row(source_input_file))
+         copies[str(source_input_file)] = {key:result['compiledSourceInputs'][key] for key in ('bytes','sha256')}
+-        filter_names = '|'.join(manifest['methods'])
++        filter_names = '|'.join(re.escape(name)+r'[/\.]'+re.escape(method)+r'$'
++                                for name,methods in manifest['selectedMethods'].items() for method in methods)
+         swift_folder = output/'commands'/'swift-components'
+         test_env = dict(env, PINKHA_RUNTIME_STATE_FIXTURE_ROOT=str(output/'http-fixtures'),
+                         PINKHA_RUNTIME_STATE_OWNER_RECORD=str(swift_folder/'started.json'),
+@@ -809,20 +1002,31 @@
+                 '--filter',filter_names]
+         raw, swift = command('swift-components', argv, package, test_env, SWIFT_SECONDS)
+         log = raw.decode(errors='strict')
+-        expected = {name+'.'+method for name,methods in manifest['methods'].items() for method in methods}
++        expected = {name+'.'+method for name,methods in manifest['selectedMethods'].items() for method in methods}
+         starts = re.findall(r"Test Case '([^']+)' started", log)
+         passes = re.findall(r"Test Case '([^']+)' passed", log)
+         excluded = {name+'.'+method for name,methods in manifest['excludedEarlierMethods'].items() for method in methods}
+         result['earlierTestStarts'] = [name for name in starts if name in excluded]
+         result['earlierTestReplayStatus'] = 'NOT_RUN' if not result['earlierTestStarts'] else 'UNEXPECTED_COMPONENT_START'
+         assert not result['earlierTestStarts'], 'original canonical methods were not selected by this controller'
+-        assert len(expected) == len(starts) == len(passes) == 26
+-        assert set(starts) == set(passes) == expected, 'actual XCTest inventory differs from the frozen 26 new methods'
++        assert expected == NEW_SELECTED_METHODS and len(expected) == len(starts) == len(passes) == 3
++        assert set(starts) == set(passes) == expected, 'actual XCTest inventory differs from the three exact corrected methods'
+         assert all(starts.count(name) == passes.count(name) == 1 for name in expected)
+         assert not re.search(r"Test Case '[^']+' (?:failed|skipped)|Skipping XCTest discovery|XCTSkip", log)
+-        assert re.search(r'Executed 26 tests?, with 0 failures', log)
++        assert re.search(r'Executed 3 tests?, with 0 failures', log)
+         result['actualMethods'] = {'started':starts, 'passed':passes, 'skipped':0,
+-                                  'personalContract':7, 'engineBinding':7, 'originalNavigation':5, 'personalHTTP':7, 'total':26}
++                                  'personalContract':2, 'engineBinding':0, 'originalNavigation':0, 'personalHTTP':1, 'total':3}
++        retained_names = retained_navigation['retainedPassedMethods']
++        assert len(retained_names) == 23 and not set(retained_names) & expected
++        aggregate_names = sorted(set(retained_names) | expected)
++        assert len(aggregate_names) == 26
++        assert set(aggregate_names) == {name+'.'+method for name,methods in manifest['methods'].items() for method in methods}
++        result['qualifiedMethods'] = {'total':26,'retained':23,'newlyExecuted':3,
++            'passed':aggregate_names,'retainedPassedMethods':retained_names,
++            'newlyPassedMethods':passes,'aggregateIsNotOneExecution':True,
++            'historicalFailedCommandRemainsFail':True,'supersededHistoricalPasses':retained_navigation['supersededHistoricalPasses']}
++        result['historicalCommands'] = {'retainedFailureGroups':4,'newlyExecutedGroups':7,
++            'oldGroupsReprobedOrReplayed':False,'historicalBuildProductsReused':False}
+         result['httpFixtureQualification'] = fixture_audit(output/'http-fixtures', swift_folder/'started.json', swift, base, manifest)
+         result['retainedDependencyProducts'] = reused['receipt']
+         product_closure = retained_products(output/'build', base, guard)
+@@ -865,6 +1069,9 @@
+             for path, expected in controls.items():
+                 guard()
+                 base.pinned(path, expected)
++            if retained_navigation is not None:
++                assert admit_retained_navigation(base, manifest, guard) == retained_navigation
++                result['retainedNavigationEvidenceUnchanged'] = True
+             if reused is not None:
+                 helper.validate_after(reused, guard)
+             if fixture_input_admission is not None:
+@@ -890,11 +1097,13 @@
+                 raise RuntimeError(reason)
+             assert all(row['exitCode'] == 0 and row['processGroupAbsent'] and not row['forcedCleanup'] and not row['cleanupErrors'] for row in result['commands'])
+             if result['status'] == 'PASS':
+-                assert len(result['commands']) == 7 and result['actualMethods']['total'] == 26
+-                assert result['httpFixtureQualification']['instances'] == 13
+-                assert result['httpFixtureQualification']['syntheticWriteCount'] == 9
+-                assert result['httpFixtureQualification']['POSTCount'] == 6
+-                assert result['httpFixtureQualification']['PATCHCount'] == 3
++                assert len(result['commands']) == 7 and result['actualMethods']['total'] == 3
++                assert result['qualifiedMethods']['total'] == 26 and result['qualifiedMethods']['retained'] == 23
++                assert result['retainedNavigationEvidenceUnchanged'] is True
++                assert result['httpFixtureQualification']['instances'] == 1
++                assert result['httpFixtureQualification']['syntheticWriteCount'] == 1
++                assert result['httpFixtureQualification']['POSTCount'] == 1
++                assert result['httpFixtureQualification']['PATCHCount'] == 0
+         except BaseException as error:
+             result['status'] = 'FAIL'
+             result['errors'].append({'phase':'final-lifecycle-and-budget', 'type':type(error).__name__, 'message':str(error)})

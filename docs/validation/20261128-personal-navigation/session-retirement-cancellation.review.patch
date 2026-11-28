@@ -1,0 +1,17 @@
+--- /mnt/development/projects/evidence/pinkha-w1-original-navigation-preparation-20261128/personal-current-http-optional-chain1/NativePersonalNavigationHTTPTests.swift
++++ /mnt/development/projects/evidence/pinkha-w1-original-navigation-preparation-20261128/personal-current-http-cancellation1/NativePersonalNavigationHTTPTests.swift
+@@ -91,8 +91,12 @@
+                 return result
+             }
+             XCTFail("the enclosing retired session delivered a receipt")
+-        } catch let error as AnyHostError {
+-            XCTAssertTrue(error == .engineRestarted || error == .sessionClosed)
++        } catch is CancellationError {
++            // Run invalidation revokes this session and cancels its registered
++            // task before the outer perform fence checks cancellation again.
++            let active = await session.isActive
++            XCTAssertFalse(active, "the retired owner remained active")
++            XCTAssertTrue(fixture.hasRetiredOwner(), "cancellation preceded native retirement")
+         }
+         let retained = await store.acknowledgment(for: intent.operationID)
+         XCTAssertEqual(retained?.operationID, intent.operationID)

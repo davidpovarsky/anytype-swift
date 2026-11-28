@@ -1,0 +1,244 @@
+{
+  "schema": "pinkha-sharing-member-roles-independent-source-review-v1",
+  "reviewer": "torah_continue",
+  "status": "PASS_SOURCE_REVIEW_ONLY",
+  "concreteBlockers": [],
+  "repository": "davidpovarsky/anytype-swift",
+  "base": "6ade3661c261e66c987b7017a6181bdfcebc1d58",
+  "candidateManifest": {
+    "path": "/mnt/development/projects/evidence/pinkha-wave2-sharing-member-roles-20261128/candidate-manifest.json",
+    "bytes": 8061,
+    "sha256": "e00fbf6d6290984fba1bb2d66475484d3170f136a7637159befed54119f9dc26",
+    "gitBlob": "1ccd72ba3d1985d6cd5a80c6a50b5ebc7df97cbe"
+  },
+  "artifactCensus": {
+    "filesIncludingManifest": 12,
+    "declaredBytesIncludingManifest": 147046,
+    "candidateSwiftFiles": 5,
+    "candidateSwiftBytes": 70779,
+    "scope": "Three product files and two append-only existing test files; this review does not authorize publication or runtime."
+  },
+  "candidateSources": [
+    {
+      "path": "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceSharing.swift",
+      "bytes": 9079,
+      "sha256": "32b76990f19402c2975c751273d3aae87c579d8103339ace14a49d835a8ff028",
+      "gitBlob": "10a57636a2ab759a7d42a179f17f43f2c9e1cf1a"
+    },
+    {
+      "path": "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceMembersView.swift",
+      "bytes": 18333,
+      "sha256": "fc7d5e41a2f79dc452d269e0412a4f01330e3a8ccf7cd96d20ce14eee3eed525",
+      "gitBlob": "e16e7b2bb40bfd2e8d4f4b7bcac8cfd4b11d061b"
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeSharingService.swift",
+      "bytes": 9825,
+      "sha256": "0f23393ed575e94354a0311d295cd077f7441e9c0303be67352119c22fc41e15",
+      "gitBlob": "79774663de1e2e735e4ece4f3a8c3d32704bdf8b"
+    },
+    {
+      "path": "Modules/PinkhaSharing/Tests/PinkhaSharingTests/SharingAuthorityTests.swift",
+      "bytes": 11211,
+      "sha256": "e11a832e3f8f39bf05f821e420a90f67b883be2164630320bf793eba43d3f336",
+      "gitBlob": "5533a020c007359e751c3b794d9827d6e04adac7"
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeApplicationTests.swift",
+      "bytes": 22331,
+      "sha256": "4260d7ec74ac5697280f1883ca1590c774f22ba7735ee4ac6496cac6be1f41b3",
+      "gitBlob": "8c47027ada1038fb60452c731e4f156bbff66a7a"
+    }
+  ],
+  "sourceAuthority": [
+    {
+      "path": "/mnt/development/projects/evidence/pinkha-n-w2-sharing-source-contract-20261128-attempt1/sharing-contract.md",
+      "bytes": 10323,
+      "sha256": "fe5f03270fea6b918fb2b417b6fa55864d18bef421507a2e474b184874c638fd"
+    },
+    {
+      "path": "/mnt/development/projects/evidence/pinkha-n-w2-sharing-source-contract-20261128-attempt1/source-evidence.json",
+      "bytes": 5477,
+      "sha256": "f9452172c28fa100cef3c755e070d9e970ecc6e533d86426cbc78d3877f5d697"
+    },
+    {
+      "repository": "anyproto/any-sync",
+      "commit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+      "path": "commonspace/object/acl/list/validator.go",
+      "bytes": 20656,
+      "sha256": "1a5240567026c3a55f62652cb812e3fc17c7a2081d0f1ddcc9afd6c5d8dafd75",
+      "gitBlob": "715675081f8d9510abe8f1a5783fb8c598d4c788"
+    },
+    {
+      "repository": "anyproto/any-sync",
+      "commit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+      "path": "commonspace/object/acl/list/models.go",
+      "bytes": 3938,
+      "sha256": "977bc8b5783ba6ee4c17c5685f7bb5a64d0e541a8c5eb5b8f28e21a0f2824860",
+      "gitBlob": "7c91235f4ca8d3cb626aad22d7a6c208a2443fd8"
+    }
+  ],
+  "independentByteVerification": {
+    "method": "Fetched and fully read all five original sources from exact 6ade primary GitHub files. Independently applied each pinned replacement once, verified all five complete candidate UTF-8 sizes/SHA256/Git blobs, reversed rules in reverse order, and recovered each complete original exactly. Read the complete reconstructed source/test deltas; no Swift code or test was executed.",
+    "literalReplacements": {
+      "path": "literal-replacements.json",
+      "bytes": 23048,
+      "sha256": "d1106b4181cea1c5d6d09eaba9f87d1f313e1bb01cc814131dc71a2731c1ad06",
+      "gitBlob": "8355cd7b357bf0b23baf7129307bb7396c1f5290"
+    },
+    "rules": 9,
+    "forwardAndInverseOccurrencesEach": 1,
+    "allFiveWholeInversesExact": true,
+    "originalTestPrefixes": [
+      {
+        "bytes": 5693,
+        "sha256": "20d7f5498d08a27c418ade667bd64a7be6555a1fce47c688d1462d103634c627",
+        "exact": true
+      },
+      {
+        "bytes": 16585,
+        "sha256": "e0b3efcb40c1aaf9b167baf1f74623a5557bd3bbebbaed3acc8d069ab6db8ca9",
+        "exact": true
+      }
+    ],
+    "orderedAccessibilityIdentifierOccurrences": 28,
+    "allOriginalOrderedIdentifiersExact": true,
+    "prior23AdditionsProtectedByCompleteOrderedList": true,
+    "protectedOriginalSlices": [
+      {
+        "label": "native.apply",
+        "bytes": 1757,
+        "sha256": "d0bb9debb3cc1e6efc8c7b0f3f47131a3522b77c397adec349a583230f639fa0",
+        "retainedExact": true
+      },
+      {
+        "label": "native.createInvitation",
+        "bytes": 1291,
+        "sha256": "e140fc0eae9d2f04ca82178c92c1387910924d14bbebf131c6549764965f8759",
+        "retainedExact": true
+      },
+      {
+        "label": "native.decodeMember",
+        "bytes": 592,
+        "sha256": "824cd0b6829f6cc9c490cb95d938d9797967c7ae9b1d2f2c70b2e8225763d85d",
+        "retainedExact": true
+      },
+      {
+        "label": "shared.approve-decline",
+        "bytes": 607,
+        "sha256": "0e540c26de1f6fe1e19b57353965778559502a6d399531efa98151e317721ade",
+        "retainedExact": true
+      }
+    ]
+  },
+  "codeFindings": [
+    "memberRoleOptions defaults to nil. For an editable identity, nil yields the exact former global grant list. A supplied map with a missing identity or an explicitly empty list yields no roles; noneditable identities always yield no roles. The initializer validates all map keys as valid/editable and rejects duplicate roles, None and Owner. This preserves existing Heart initializer/default semantics.",
+    "The shared role-change validator and the existing member-role menu both call rolesForMemberChange. The UI continues to omit the target's current role. The approval menu and approval validation continue to use the separate global grantableRoles list; remove/approve/identity-only-decline semantics remain exact.",
+    "The actual Native readSnapshot calls the new internal nonisolated static projector. The projector uses Sendable member/invitation/value data without actor state or new asynchronous work. The original active, nonself, nonOwner and Owner-only Admin-target removal predicate is retained. Guest is excluded from editable members while retaining independent removal eligibility.",
+    "The Native ordinary approval list is Reader/Writer, plus Admin for an Owner actor. A per-member Guest option is added only for a current Reader, for either Owner or Admin. Current Writer/Admin targets cannot be changed to Guest; an existing Guest cannot be upgraded. Owner targets and Admin actors targeting another Admin remain unavailable under the existing restrictions.",
+    "Native apply is byte-exact: session.perform obtains the current lease, readSnapshot refreshes the actual authority, mutation.validate consumes that refreshed projection, the original request uses lease.validate, and the original readback follows. Scope/member decoding, request IDs, HTTP routes and bodies are unchanged. A previously displayed Reader-to-Guest choice is therefore revalidated against the latest read snapshot before dispatch.",
+    "The exact official any-sync validator and models match the W1 hashes. CanManageAccounts is Owner/Admin; ValidatePermissionChange rejects Guest and Owner targets, restricts Admin target/grant to Owner, and permits Guest only from Reader. AccountRemove separately permits eligible Guest removal. Request approval has a distinct validator; this review does not infer a qualified Guest/None approval operation from parser or validator permissiveness."
+  ],
+  "expectedNativeVisibleRoleChoices": [
+    {
+      "actor": "Owner",
+      "target": "Reader",
+      "choices": [
+        "Guest",
+        "Writer",
+        "Admin"
+      ]
+    },
+    {
+      "actor": "Owner",
+      "target": "Writer",
+      "choices": [
+        "Reader",
+        "Admin"
+      ]
+    },
+    {
+      "actor": "Owner",
+      "target": "Admin",
+      "choices": [
+        "Reader",
+        "Writer"
+      ]
+    },
+    {
+      "actor": "Admin",
+      "target": "Reader",
+      "choices": [
+        "Guest",
+        "Writer"
+      ]
+    },
+    {
+      "actor": "Admin",
+      "target": "Writer",
+      "choices": [
+        "Reader"
+      ]
+    },
+    {
+      "actor": "Owner or Admin",
+      "target": "Guest",
+      "choices": [],
+      "removal": "Available only under the unchanged active/nonself/Owner/Admin restrictions."
+    },
+    {
+      "actor": "Reader, Writer or Guest",
+      "target": "Any",
+      "choices": [],
+      "removal": "No management capability is projected."
+    }
+  ],
+  "testReview": {
+    "newXCTestMethods": 5,
+    "newSourceDeclaredXCTestLeaves": 5,
+    "methods": [
+      "testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets",
+      "testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval",
+      "testPerMemberRoleOptionsRejectMalformedEntries",
+      "testNativeSharingOwnerAndAdminMemberRoleProjection",
+      "testNativeSharingNonModeratorRoleProjectionIsClosed"
+    ],
+    "originalMethodsRetained": 7,
+    "sharedClassCount": "4 -> 7",
+    "nativeApplicationClassCount": "3 -> 5",
+    "assessment": "The three shared methods exercise real capability construction and mutation validation: legacy nil, empty/partial/closed maps, separate approval/removal, refreshed target role, and six malformed map rows. The two Native methods call the same production projector invoked by readSnapshot and verify Owner/Admin and three nonmoderator matrices. No copied projector or native transport seam was introduced.",
+    "compilerAssessment": "Original imports and all original helpers remain exact. Same-file extensions use the existing private shared snapshot helpers. The Native tests reach the internal projector through the original @testable Native import and infer shared values from its real typed signature. No concrete source/actor/type-construction blocker was found; actual Swift typecheck and target discovery remain NOT_RUN.",
+    "counting": "Internal fixture rows/assertions are not additional XCTest cases. No old test method was executed or replayed.",
+    "boundary": "The refreshed-snapshot check is a pure source-level matrix regression; it is not a mounted UI/HTTP concurrency or Native account result."
+  },
+  "retainedMetadata": [
+    {
+      "path": "source-proof.json",
+      "sha256": "a6672c95b764939239a4a36d805a8ddb42e0b91ee217c0fb208d13ce9cce244e"
+    },
+    {
+      "path": "implementation-test-matrix.json",
+      "sha256": "d427a97d10deb13f37a5fbc0c12b05915ba9c1e1c496ec6bdfc7e3f95c8ccb8e"
+    },
+    {
+      "path": "README.md",
+      "sha256": "d5f6f5a1c8dfad362c3b90c96814093ef28105709e294bf222bd5c64db7f6378"
+    }
+  ],
+  "reviewInspectionStop": {
+    "operation": "First exact read of implementation-test-matrix.json",
+    "result": "Sentinel MCP -32603 Internal error before a file body was returned",
+    "resolution": "One exact-file retry returned the complete 5424-byte d427a97d body matching the final manifest.",
+    "candidateOrTestFailure": false,
+    "sourceChanged": false
+  },
+  "limitations": [
+    "Source-only review. No compiler, tests, account/permission mutation, Native engine, HTTP fixture, Apple UI, Mac or process query was invoked.",
+    "Native remains the final authorizer. Existing legacy ACL account-generation/unknown-ACK guarantees were not expanded.",
+    "Decline remains identity-selected; no atomic expected-request-record guarantee is introduced.",
+    "No consumed-request error mapping is changed; W1 owns that separate correction.",
+    "Historical removed recipients are not fresh approval/decline fixtures. No invitation identity or private share capability is copied into this review.",
+    "Future exact selection, compiler-input/source admission and any hosted/native runtime require their own existing ownership gates.",
+    "The final manifest census and the reconstructed five source bodies are bound here. Full-body review of the original proposal and superseded assessment is outside this narrow source verdict."
+  ]
+}

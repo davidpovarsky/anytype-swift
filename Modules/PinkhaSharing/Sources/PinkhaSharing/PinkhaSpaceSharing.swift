@@ -77,15 +77,29 @@ public struct PinkhaSharingCapabilities: Sendable, Equatable {
     public let grantableRoles: [PinkhaSharingRole]
     public let editableMemberIDs: Set<String>
     public let removableMemberIDs: Set<String>
+    /// Nil preserves the existing global role choices. A supplied map denies
+    /// role changes for any member without an explicit entry.
+    public let memberRoleOptions: [String: [PinkhaSharingRole]]?
 
     public init(canCreateInvitation: Bool, canRevokeInvitation: Bool,
                 canApproveRequests: Bool, grantableRoles: [PinkhaSharingRole],
-                editableMemberIDs: Set<String>, removableMemberIDs: Set<String>) throws {
+                editableMemberIDs: Set<String>, removableMemberIDs: Set<String>,
+                memberRoleOptions: [String: [PinkhaSharingRole]]? = nil) throws {
         guard Set(grantableRoles).count == grantableRoles.count,
               !grantableRoles.contains(.owner), !grantableRoles.contains(.none),
               editableMemberIDs.allSatisfy(PinkhaSharingScope.validID),
               removableMemberIDs.allSatisfy(PinkhaSharingScope.validID) else {
             throw PinkhaSharingError.invalidResponse
+        }
+        if let memberRoleOptions {
+            guard memberRoleOptions.keys.allSatisfy(PinkhaSharingScope.validID),
+                  Set(memberRoleOptions.keys).isSubset(of: editableMemberIDs),
+                  memberRoleOptions.values.allSatisfy({ roles in
+                      Set(roles).count == roles.count
+                          && !roles.contains(.owner) && !roles.contains(.none)
+                  }) else {
+                throw PinkhaSharingError.invalidResponse
+            }
         }
         self.canCreateInvitation = canCreateInvitation
         self.canRevokeInvitation = canRevokeInvitation
@@ -93,6 +107,13 @@ public struct PinkhaSharingCapabilities: Sendable, Equatable {
         self.grantableRoles = grantableRoles
         self.editableMemberIDs = editableMemberIDs
         self.removableMemberIDs = removableMemberIDs
+        self.memberRoleOptions = memberRoleOptions
+    }
+
+    public func rolesForMemberChange(_ identity: String) -> [PinkhaSharingRole] {
+        guard editableMemberIDs.contains(identity) else { return [] }
+        if let memberRoleOptions { return memberRoleOptions[identity] ?? [] }
+        return grantableRoles
     }
 }
 
@@ -147,8 +168,9 @@ public enum PinkhaSharingMutation: Sendable, Equatable {
                 throw PinkhaSharingError.permissionDenied
             }
         case let .changeRole(identity, role):
-            guard permissions.editableMemberIDs.contains(identity),
-                  permissions.grantableRoles.contains(role) else { throw PinkhaSharingError.permissionDenied }
+            guard permissions.rolesForMemberChange(identity).contains(role) else {
+                throw PinkhaSharingError.permissionDenied
+            }
         case let .remove(identity):
             guard permissions.removableMemberIDs.contains(identity) else {
                 throw PinkhaSharingError.permissionDenied

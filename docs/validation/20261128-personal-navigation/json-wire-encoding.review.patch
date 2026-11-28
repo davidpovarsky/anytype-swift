@@ -1,0 +1,49 @@
+--- original39c2/NativePersonalNavigationContractTests.swift
++++ json-wire-successor/NativePersonalNavigationContractTests.swift
+@@ -36,7 +36,7 @@
+         var fields = try XCTUnwrap(JSONDecoder().decode(AnyJSON.self, from: encoded).object)
+         fields["readContract"] = .string("caller-selected-current-provider")
+         XCTAssertThrowsError(try JSONDecoder().decode(AnyHeartLastOpenedBinding.self,
+-            from: canonical(.object(fields))))
++            from: jsonBytes(.object(fields))))
+         XCTAssertThrowsError(try AnyHeartLastOpenedBinding(evidence: fixture.evidence("rel-createdDate")))
+ 
+         // A self-consistent outer source from another Space is still foreign
+@@ -46,7 +46,7 @@
+         view["SpaceID"] = .string(foreignSpace)
+         let foreign = try AnyHeartLastOpenedBinding(evidence: .init(
+             sourceSpaceID: foreignSpace, sourceObjectID: evidence.sourceObjectID,
+-            protobufBytes: evidence.protobufBytes, jsonViewBytes: canonical(.object(view))))
++            protobufBytes: evidence.protobufBytes, jsonViewBytes: jsonBytes(.object(view))))
+         XCTAssertThrowsError(try foreign.requireSource(fixture.plan.source))
+ 
+         for (key, replacement) in [
+@@ -319,8 +319,18 @@
+         try AnyHostCanonical.bytes(value, maximumBytes: 65_536)
+     }
+ 
++    // Native wire/evidence payloads are JSON. Canonical typed bytes above are
++    // used only for exact value comparisons and must never reach a JSON parser.
++    private func jsonBytes(_ value: AnyJSON) throws -> Data {
++        let encoder = JSONEncoder()
++        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
++        let bytes = try encoder.encode(value)
++        guard bytes.count <= 65_536 else { throw AnyEngineError.readLimit }
++        return bytes
++    }
++
+     private func homeWire(_ fields: [String: AnyJSON]) throws -> AnyJSON {
+-        .string(String(decoding: try canonical(.object(fields)), as: UTF8.self))
++        .string(String(decoding: try jsonBytes(.object(fields)), as: UTF8.self))
+     }
+ 
+     private func changedDescriptorBinding(_ evidence: AnyDestinationDefinitionEvidence,
+@@ -333,7 +343,7 @@
+         outer["Snapshot"] = .object(snapshot)
+         return try .init(evidence: .init(sourceSpaceID: evidence.sourceSpaceID,
+             sourceObjectID: evidence.sourceObjectID, protobufBytes: evidence.protobufBytes,
+-            jsonViewBytes: canonical(.object(outer))))
++            jsonViewBytes: jsonBytes(.object(outer))))
+     }
+ 
+     private static let lastOpenedDefinition: AnyJSON = .object([

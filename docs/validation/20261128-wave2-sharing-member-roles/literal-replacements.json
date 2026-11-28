@@ -1,0 +1,140 @@
+{
+  "schema": "pinkha-sharing-member-roles-exact-literal-replacements-v1",
+  "base": "6ade3661c261e66c987b7017a6181bdfcebc1d58",
+  "instructions": "For each file, apply its ordered rules to the complete pinned original. Each before literal must occur exactly once at that step. Reverse rules in reverse order with after->before. Verify whole resulting byte/hash/Git identities. Test rules append only after the complete original prefix.",
+  "files": [
+    {
+      "path": "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceSharing.swift",
+      "original": {
+        "bytes": 8004,
+        "sha256": "7d2dd76b72c5bcda23650b2e87069e72dc8e23cb823d5b7e5ff56e16f26002cc",
+        "gitBlob": "c80d25d2b7b3ce8af7842b1391bdc69c0d0a699a"
+      },
+      "candidate": {
+        "bytes": 9079,
+        "sha256": "32b76990f19402c2975c751273d3aae87c579d8103339ace14a49d835a8ff028",
+        "gitBlob": "10a57636a2ab759a7d42a179f17f43f2c9e1cf1a"
+      },
+      "rules": [
+        {
+          "label": "add optional per-member capability projection",
+          "before": "    public let removableMemberIDs: Set<String>\n\n    public init",
+          "after": "    public let removableMemberIDs: Set<String>\n    /// Nil preserves the existing global role choices. A supplied map denies\n    /// role changes for any member without an explicit entry.\n    public let memberRoleOptions: [String: [PinkhaSharingRole]]?\n\n    public init",
+          "expectedOccurrences": 1
+        },
+        {
+          "label": "preserve source-compatible initializer default",
+          "before": "                editableMemberIDs: Set<String>, removableMemberIDs: Set<String>) throws {",
+          "after": "                editableMemberIDs: Set<String>, removableMemberIDs: Set<String>,\n                memberRoleOptions: [String: [PinkhaSharingRole]]? = nil) throws {",
+          "expectedOccurrences": 1
+        },
+        {
+          "label": "validate explicit map without widening approval roles",
+          "before": "        self.canCreateInvitation = canCreateInvitation\n",
+          "after": "        if let memberRoleOptions {\n            guard memberRoleOptions.keys.allSatisfy(PinkhaSharingScope.validID),\n                  Set(memberRoleOptions.keys).isSubset(of: editableMemberIDs),\n                  memberRoleOptions.values.allSatisfy({ roles in\n                      Set(roles).count == roles.count\n                          && !roles.contains(.owner) && !roles.contains(.none)\n                  }) else {\n                throw PinkhaSharingError.invalidResponse\n            }\n        }\n        self.canCreateInvitation = canCreateInvitation\n",
+          "expectedOccurrences": 1
+        },
+        {
+          "label": "store projection and centralize nil-versus-absent-target semantics",
+          "before": "        self.removableMemberIDs = removableMemberIDs\n    }\n}\n\npublic struct PinkhaSharingSnapshot",
+          "after": "        self.removableMemberIDs = removableMemberIDs\n        self.memberRoleOptions = memberRoleOptions\n    }\n\n    public func rolesForMemberChange(_ identity: String) -> [PinkhaSharingRole] {\n        guard editableMemberIDs.contains(identity) else { return [] }\n        if let memberRoleOptions { return memberRoleOptions[identity] ?? [] }\n        return grantableRoles\n    }\n}\n\npublic struct PinkhaSharingSnapshot",
+          "expectedOccurrences": 1
+        },
+        {
+          "label": "validate role change through same projection used by UI",
+          "before": "            guard permissions.editableMemberIDs.contains(identity),\n                  permissions.grantableRoles.contains(role) else { throw PinkhaSharingError.permissionDenied }",
+          "after": "            guard permissions.rolesForMemberChange(identity).contains(role) else {\n                throw PinkhaSharingError.permissionDenied\n            }",
+          "expectedOccurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceMembersView.swift",
+      "original": {
+        "bytes": 18316,
+        "sha256": "389572bee9aae2688cae835c054041e302ccc8057a37c1972719a8968c7a5849",
+        "gitBlob": "2d9d5c2e7142b1d97af7b46a59704f2aa9e4813e"
+      },
+      "candidate": {
+        "bytes": 18333,
+        "sha256": "fc7d5e41a2f79dc452d269e0412a4f01330e3a8ccf7cd96d20ce14eee3eed525",
+        "gitBlob": "e16e7b2bb40bfd2e8d4f4b7bcac8cfd4b11d061b"
+      },
+      "rules": [
+        {
+          "label": "use exact per-member roles in original change-role menu",
+          "before": "                        ForEach(state.capabilities.grantableRoles.filter { $0 != member.role }, id: \\.rawValue) { role in",
+          "after": "                        ForEach(state.capabilities.rolesForMemberChange(member.id).filter { $0 != member.role }, id: \\.rawValue) { role in",
+          "expectedOccurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeSharingService.swift",
+      "original": {
+        "bytes": 8655,
+        "sha256": "4027c96ee71d587020935f69a47c94cd1ee36a87785cd0bebb29b159ef9982c4",
+        "gitBlob": "4f41190ef9bc0350b4fe0f673de3c4ff3cbecd07"
+      },
+      "candidate": {
+        "bytes": 9825,
+        "sha256": "0f23393ed575e94354a0311d295cd077f7441e9c0303be67352119c22fc41e15",
+        "gitBlob": "79774663de1e2e735e4ece4f3a8c3d32704bdf8b"
+      },
+      "rules": [
+        {
+          "label": "project target-specific native role options, preserving original removal restrictions",
+          "before": "        let editable = Set(members.filter {\n            $0.status == .active && $0.id != me.id && $0.role != .owner\n                && (me.role == .owner || (me.role == .admin && $0.role != .admin))\n        }.map(\\.id))\n        let capabilities = try PinkhaSharingCapabilities(\n            canCreateInvitation: me.role == .owner && invitations.isEmpty,\n            canRevokeInvitation: me.role == .owner,\n            canApproveRequests: moderator,\n            grantableRoles: me.role == .owner ? [.guest, .reader, .writer, .admin]\n                : (me.role == .admin ? [.reader, .writer] : []),\n            editableMemberIDs: editable, removableMemberIDs: editable)\n        return try .init(scope: scope, currentIdentity: me.id, members: members,\n                         invitations: invitations, capabilities: capabilities)\n    }\n\n    private nonisolated static func decodeMember",
+          "after": "        let capabilities = try sharingCapabilities(currentMember: me, members: members, invitations: invitations)\n        return try .init(scope: scope, currentIdentity: me.id, members: members,\n                         invitations: invitations, capabilities: capabilities)\n    }\n\n    /// A projection of the current native snapshot, never mutation authority.\n    /// Approval grants and existing-member transitions have distinct ACL rules.\n    nonisolated static func sharingCapabilities(\n        currentMember me: PinkhaSharingMember,\n        members: [PinkhaSharingMember], invitations: [PinkhaSharingInvitation]\n    ) throws -> PinkhaSharingCapabilities {\n        let moderator = me.role == .owner || me.role == .admin\n        let removable = Set(members.filter {\n            $0.status == .active && $0.id != me.id && $0.role != .owner\n                && (me.role == .owner || (me.role == .admin && $0.role != .admin))\n        }.map(\\.id))\n        // Guest membership may be removed, but its role cannot be upgraded.\n        let editableMembers = members.filter { removable.contains($0.id) && $0.role != .guest }\n        let editable = Set(editableMembers.map(\\.id))\n        let approvalRoles: [PinkhaSharingRole] = me.role == .owner ? [.reader, .writer, .admin]\n            : (me.role == .admin ? [.reader, .writer] : [])\n        var memberRoleOptions: [String: [PinkhaSharingRole]] = [:]\n        for member in editableMembers {\n            // Both Owner and Admin may convert a current Reader to Guest.\n            memberRoleOptions[member.id] = member.role == .reader ? [.guest] + approvalRoles : approvalRoles\n        }\n        return try PinkhaSharingCapabilities(\n            canCreateInvitation: me.role == .owner && invitations.isEmpty,\n            canRevokeInvitation: me.role == .owner,\n            canApproveRequests: moderator, grantableRoles: approvalRoles,\n            editableMemberIDs: editable, removableMemberIDs: removable,\n            memberRoleOptions: memberRoleOptions)\n    }\n\n    private nonisolated static func decodeMember",
+          "expectedOccurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaSharing/Tests/PinkhaSharingTests/SharingAuthorityTests.swift",
+      "original": {
+        "bytes": 5693,
+        "sha256": "20d7f5498d08a27c418ade667bd64a7be6555a1fce47c688d1462d103634c627",
+        "gitBlob": "6c661955e61a79c261545b9b3844efa69010a077"
+      },
+      "candidate": {
+        "bytes": 11211,
+        "sha256": "e11a832e3f8f39bf05f821e420a90f67b883be2164630320bf793eba43d3f336",
+        "gitBlob": "5533a020c007359e751c3b794d9827d6e04adac7"
+      },
+      "rules": [
+        {
+          "label": "append focused tests preserving whole original source",
+          "before": "    if ready { return }\n        await withCheckedContinuation { waiting.append($0) }\n    }\n    func signal() {\n        ready = true\n        let callbacks = waiting\n        waiting.removeAll()\n        for callback in callbacks { callback.resume() }\n    }\n}\n",
+          "after": "    if ready { return }\n        await withCheckedContinuation { waiting.append($0) }\n    }\n    func signal() {\n        ready = true\n        let callbacks = waiting\n        waiting.removeAll()\n        for callback in callbacks { callback.resume() }\n    }\n}\n\n// Per-member permissions are a source-level projection; native authorization remains final.\nextension SharingAuthorityTests {\n    func testPerMemberRoleOptionsPreserveLegacyAndDenyMissingTargets() throws {\n        let legacy = try snapshot()\n        XCTAssertNil(legacy.capabilities.memberRoleOptions)\n        XCTAssertEqual(legacy.capabilities.rolesForMemberChange(\"writer\"), legacy.capabilities.grantableRoles)\n        try PinkhaSharingMutation.changeRole(identity: \"writer\", role: .reader).validate(in: legacy)\n        XCTAssertTrue(legacy.capabilities.rolesForMemberChange(\"owner\").isEmpty)\n\n        let empty = try memberRoleSnapshot(options: [:])\n        XCTAssertTrue(empty.capabilities.rolesForMemberChange(\"reader\").isEmpty)\n        XCTAssertThrowsError(try PinkhaSharingMutation.changeRole(identity: \"reader\", role: .writer).validate(in: empty)) {\n            XCTAssertEqual($0 as? PinkhaSharingError, .permissionDenied)\n        }\n        let partial = try memberRoleSnapshot(options: [\"reader\": [.guest, .writer]])\n        try PinkhaSharingMutation.changeRole(identity: \"reader\", role: .guest).validate(in: partial)\n        XCTAssertTrue(partial.capabilities.rolesForMemberChange(\"writer\").isEmpty)\n        XCTAssertThrowsError(try PinkhaSharingMutation.changeRole(identity: \"writer\", role: .reader).validate(in: partial)) {\n            XCTAssertEqual($0 as? PinkhaSharingError, .permissionDenied)\n        }\n    }\n\n    func testPerMemberRoleChangesStaySeparateFromApprovalAndRemoval() throws {\n        let current = try memberRoleSnapshot(options: [\n            \"reader\": [.guest, .reader, .writer, .admin],\n            \"writer\": [.reader, .writer, .admin],\n            \"admin\": [.reader, .writer, .admin]\n        ])\n        try PinkhaSharingMutation.changeRole(identity: \"reader\", role: .guest).validate(in: current)\n        try PinkhaSharingMutation.changeRole(identity: \"writer\", role: .admin).validate(in: current)\n        XCTAssertThrowsError(try PinkhaSharingMutation.changeRole(identity: \"writer\", role: .guest).validate(in: current))\n        XCTAssertThrowsError(try PinkhaSharingMutation.changeRole(identity: \"guest\", role: .reader).validate(in: current))\n        XCTAssertTrue(current.capabilities.rolesForMemberChange(\"guest\").isEmpty)\n        try PinkhaSharingMutation.remove(identity: \"guest\").validate(in: current)\n        XCTAssertThrowsError(try PinkhaSharingMutation.remove(identity: \"owner\").validate(in: current))\n        try PinkhaSharingMutation.approve(identity: \"pending\", requestID: \"current-request\", role: .admin).validate(in: current)\n        XCTAssertThrowsError(try PinkhaSharingMutation.approve(identity: \"pending\", requestID: \"current-request\", role: .guest).validate(in: current))\n        XCTAssertThrowsError(try PinkhaSharingMutation.approve(identity: \"pending\", requestID: \"old-request\", role: .reader).validate(in: current))\n\n        // The same confirmed target may no longer be a Reader at dispatch.\n        let refreshed = try memberRoleSnapshot(options: [\"reader\": [.reader, .writer, .admin]], readerRole: .writer)\n        XCTAssertThrowsError(try PinkhaSharingMutation.changeRole(identity: \"reader\", role: .guest).validate(in: refreshed)) {\n            XCTAssertEqual($0 as? PinkhaSharingError, .permissionDenied)\n        }\n    }\n\n    func testPerMemberRoleOptionsRejectMalformedEntries() throws {\n        let malformed: [(String, [String: [PinkhaSharingRole]])] = [\n            (\"duplicate role\", [\"reader\": [.writer, .writer]]),\n            (\"owner grant\", [\"reader\": [.owner]]),\n            (\"none grant\", [\"reader\": [.none]]),\n            (\"foreign member\", [\"foreign\": [.writer]]),\n            (\"noneditable guest\", [\"guest\": [.reader]]),\n            (\"self member\", [\"owner\": [.writer]])\n        ]\n        for (label, options) in malformed {\n            XCTAssertThrowsError(try memberRoleSnapshot(options: options), label) {\n                XCTAssertEqual($0 as? PinkhaSharingError, .invalidResponse, label)\n            }\n        }\n        let explicitlyClosed = try memberRoleSnapshot(options: [\"reader\": []])\n        XCTAssertTrue(explicitlyClosed.capabilities.rolesForMemberChange(\"reader\").isEmpty)\n        XCTAssertThrowsError(try PinkhaSharingMutation.changeRole(identity: \"reader\", role: .writer).validate(in: explicitlyClosed))\n    }\n\n    private func memberRoleSnapshot(\n        options: [String: [PinkhaSharingRole]]?, readerRole: PinkhaSharingRole = .reader\n    ) throws -> PinkhaSharingSnapshot {\n        let members: [PinkhaSharingMember] = [\n            try .init(id: \"owner\", name: \"Owner\", role: .owner, status: .active),\n            try .init(id: \"reader\", name: \"Reader\", role: readerRole, status: .active),\n            try .init(id: \"writer\", name: \"Writer\", role: .writer, status: .active),\n            try .init(id: \"admin\", name: \"Admin\", role: .admin, status: .active),\n            try .init(id: \"guest\", name: \"Guest\", role: .guest, status: .active),\n            try .init(id: \"pending\", name: \"Pending\", role: .none, status: .joining, requestID: \"current-request\")\n        ]\n        return try .init(scope: scope(.any), currentIdentity: \"owner\", members: members, invitations: [],\n            capabilities: .init(canCreateInvitation: true, canRevokeInvitation: true,\n                canApproveRequests: true, grantableRoles: [.reader, .writer, .admin],\n                editableMemberIDs: [\"reader\", \"writer\", \"admin\"],\n                removableMemberIDs: [\"reader\", \"writer\", \"admin\", \"guest\"], memberRoleOptions: options))\n    }\n}\n",
+          "expectedOccurrences": 1,
+          "appendOnly": true,
+          "originalPrefixBytes": 5693
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeApplicationTests.swift",
+      "original": {
+        "bytes": 16585,
+        "sha256": "e0b3efcb40c1aaf9b167baf1f74623a5557bd3bbebbaed3acc8d069ab6db8ca9",
+        "gitBlob": "e7b76f796e9d195b5162c665d888133ba2bcae1d"
+      },
+      "candidate": {
+        "bytes": 22331,
+        "sha256": "4260d7ec74ac5697280f1883ca1590c774f22ba7735ee4ac6496cac6be1f41b3",
+        "gitBlob": "8c47027ada1038fb60452c731e4f156bbff66a7a"
+      },
+      "rules": [
+        {
+          "label": "append focused tests preserving whole original source",
+          "before": ": namespace,\n            sceneID: UUID(), generation: UUID(), objectReference: nil,\n            selectionReferences: [], sourceRevision: nil, localeIdentifier: \"en\"))\n    }\n    func invalidate() { invalidated = true }\n    func revokeAndDrain() async { }\n}\n",
+          "after": ": namespace,\n            sceneID: UUID(), generation: UUID(), objectReference: nil,\n            selectionReferences: [], sourceRevision: nil, localeIdentifier: \"en\"))\n    }\n    func invalidate() { invalidated = true }\n    func revokeAndDrain() async { }\n}\n\n// These cases exercise the actual Native capability projector without opening an account.\nextension NativeApplicationTests {\n    func testNativeSharingOwnerAndAdminMemberRoleProjection() throws {\n        let owner = try AnyNativeSharingService.sharingCapabilities(\n            currentMember: .init(id: \"owner\", name: \"Owner\", role: .owner, status: .active),\n            members: [\n                .init(id: \"owner\", name: \"Owner\", role: .owner, status: .active),\n                .init(id: \"reader\", name: \"Reader\", role: .reader, status: .active),\n                .init(id: \"writer\", name: \"Writer\", role: .writer, status: .active),\n                .init(id: \"admin\", name: \"Admin\", role: .admin, status: .active),\n                .init(id: \"guest\", name: \"Guest\", role: .guest, status: .active),\n                .init(id: \"removed\", name: \"Removed\", role: .reader, status: .removed),\n                .init(id: \"pending\", name: \"Pending\", role: .none, status: .joining, requestID: \"request\")\n            ], invitations: [])\n        XCTAssertEqual(owner.grantableRoles.map(\\.rawValue), [\"reader\", \"writer\", \"admin\"])\n        XCTAssertEqual(owner.rolesForMemberChange(\"reader\").filter { $0 != .reader }.map(\\.rawValue), [\"guest\", \"writer\", \"admin\"])\n        XCTAssertEqual(owner.rolesForMemberChange(\"writer\").filter { $0 != .writer }.map(\\.rawValue), [\"reader\", \"admin\"])\n        XCTAssertEqual(owner.rolesForMemberChange(\"admin\").filter { $0 != .admin }.map(\\.rawValue), [\"reader\", \"writer\"])\n        XCTAssertEqual(owner.editableMemberIDs, Set([\"reader\", \"writer\", \"admin\"]))\n        XCTAssertEqual(owner.removableMemberIDs, Set([\"reader\", \"writer\", \"admin\", \"guest\"]))\n        for identity in [\"owner\", \"guest\", \"removed\", \"pending\", \"absent\"] {\n            XCTAssertTrue(owner.rolesForMemberChange(identity).isEmpty, identity)\n        }\n        XCTAssertTrue(owner.canCreateInvitation)\n        XCTAssertTrue(owner.canRevokeInvitation)\n        XCTAssertTrue(owner.canApproveRequests)\n\n        let admin = try AnyNativeSharingService.sharingCapabilities(\n            currentMember: .init(id: \"admin\", name: \"Admin\", role: .admin, status: .active),\n            members: [\n                .init(id: \"owner\", name: \"Owner\", role: .owner, status: .active),\n                .init(id: \"admin\", name: \"Admin\", role: .admin, status: .active),\n                .init(id: \"other-admin\", name: \"Other admin\", role: .admin, status: .active),\n                .init(id: \"reader\", name: \"Reader\", role: .reader, status: .active),\n                .init(id: \"writer\", name: \"Writer\", role: .writer, status: .active),\n                .init(id: \"guest\", name: \"Guest\", role: .guest, status: .active),\n                .init(id: \"removed\", name: \"Removed\", role: .reader, status: .removed),\n                .init(id: \"pending\", name: \"Pending\", role: .none, status: .joining, requestID: \"request\")\n            ], invitations: [])\n        XCTAssertEqual(admin.grantableRoles.map(\\.rawValue), [\"reader\", \"writer\"])\n        XCTAssertEqual(admin.rolesForMemberChange(\"reader\").filter { $0 != .reader }.map(\\.rawValue), [\"guest\", \"writer\"])\n        XCTAssertEqual(admin.rolesForMemberChange(\"writer\").filter { $0 != .writer }.map(\\.rawValue), [\"reader\"])\n        XCTAssertEqual(admin.editableMemberIDs, Set([\"reader\", \"writer\"]))\n        XCTAssertEqual(admin.removableMemberIDs, Set([\"reader\", \"writer\", \"guest\"]))\n        for identity in [\"owner\", \"admin\", \"other-admin\", \"guest\", \"removed\", \"pending\", \"absent\"] {\n            XCTAssertTrue(admin.rolesForMemberChange(identity).isEmpty, identity)\n        }\n        XCTAssertFalse(admin.canCreateInvitation)\n        XCTAssertFalse(admin.canRevokeInvitation)\n        XCTAssertTrue(admin.canApproveRequests)\n        XCTAssertNotNil(owner.memberRoleOptions)\n        XCTAssertNotNil(admin.memberRoleOptions)\n    }\n\n    func testNativeSharingNonModeratorRoleProjectionIsClosed() throws {\n        let reader = try AnyNativeSharingService.sharingCapabilities(\n            currentMember: .init(id: \"current\", name: \"Current\", role: .reader, status: .active),\n            members: [\n                .init(id: \"current\", name: \"Current\", role: .reader, status: .active),\n                .init(id: \"target\", name: \"Target\", role: .writer, status: .active)\n            ], invitations: [])\n        let writer = try AnyNativeSharingService.sharingCapabilities(\n            currentMember: .init(id: \"current\", name: \"Current\", role: .writer, status: .active),\n            members: [\n                .init(id: \"current\", name: \"Current\", role: .writer, status: .active),\n                .init(id: \"target\", name: \"Target\", role: .reader, status: .active)\n            ], invitations: [])\n        let guest = try AnyNativeSharingService.sharingCapabilities(\n            currentMember: .init(id: \"current\", name: \"Current\", role: .guest, status: .active),\n            members: [\n                .init(id: \"current\", name: \"Current\", role: .guest, status: .active),\n                .init(id: \"target\", name: \"Target\", role: .reader, status: .active)\n            ], invitations: [])\n        for capabilities in [reader, writer, guest] {\n            XCTAssertFalse(capabilities.canCreateInvitation)\n            XCTAssertFalse(capabilities.canRevokeInvitation)\n            XCTAssertFalse(capabilities.canApproveRequests)\n            XCTAssertTrue(capabilities.grantableRoles.isEmpty)\n            XCTAssertTrue(capabilities.editableMemberIDs.isEmpty)\n            XCTAssertTrue(capabilities.removableMemberIDs.isEmpty)\n            XCTAssertNotNil(capabilities.memberRoleOptions)\n            XCTAssertEqual(capabilities.memberRoleOptions?.count, 0)\n            XCTAssertTrue(capabilities.rolesForMemberChange(\"target\").isEmpty)\n        }\n    }\n}\n",
+          "expectedOccurrences": 1,
+          "appendOnly": true,
+          "originalPrefixBytes": 16585
+        }
+      ]
+    }
+  ]
+}
