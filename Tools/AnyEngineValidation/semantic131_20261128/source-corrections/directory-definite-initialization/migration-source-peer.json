@@ -1,0 +1,88 @@
+{
+  "schema": "pinkha.c-directory-definite-initialization-source-peer.v1",
+  "status": "CLEAR_FOCUSED_SOURCE_ONLY_NOT_COMPILED_OR_RUN",
+  "repository": "davidpovarsky/anytype-swift",
+  "reviewer": "C / migration",
+  "scope": "W3's actual-source correction; no competing production edit or runtime controller",
+  "source": {
+    "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedDefinitionDirectory.swift",
+    "before": {
+      "blob": "6cd38819232f457f04f9eab1b93c538670403e05",
+      "bytes": 22948,
+      "sha256": "f8706b054757b2601a1e094558989c2a66d44b7a9ddcaee94a543563db38ff27"
+    },
+    "after": {
+      "publishedCommit": "73a7d25658c18aa9cb846dd578e064f058b9a981",
+      "blob": "0c3e70cfad3d46a872ce575e69e9fe036d4a1bae",
+      "bytes": 22974,
+      "sha256": "ca3c57dedb7388d6b10a44a39778b9a1339b36f6dbcf52d67fbb572cc5cbc2b4"
+    }
+  },
+  "exactWholeFileVerification": {
+    "fullAfterBlobFetchedAndSHA256Verified": true,
+    "completeBeforeBodyAlreadyHeld": true,
+    "exactForward": true,
+    "exactInverse": true,
+    "onlyTwoPreservationPrefixes": true,
+    "delta": {
+      "before": "        unresolvedSourceDefinitionIDs = source.sourceObjectIDs.filter {\n            guard let member = source.definitionMembers[Data($0.utf8)] else { return false }",
+      "after": "        unresolvedSourceDefinitionIDs = preservation.source.sourceObjectIDs.filter {\n            guard let member = preservation.source.definitionMembers[Data($0.utf8)] else { return false }",
+      "occurrences": 1,
+      "insertions": 2,
+      "addedBytes": 26,
+      "wholeForwardAndInverseExact": true
+    }
+  },
+  "semanticFindings": [
+    "The initializer's preservation parameter is an immutable fully initialized directory. The existing assignment source = preservation.source is unchanged.",
+    "The new closure reads preservation.source directly and therefore does not capture self while unresolvedSourceDefinitionIDs is still uninitialized.",
+    "The enumerated sourceObjectIDs and definitionMembers are exactly the same values as before; [528,521,529] filtering, merged-membership test and UTF8 lexical sort are byte-identical.",
+    "Original account/Space/store/source/namespace equality, nonempty supplemental rows, immutable intent/mapping checks, duplicate-address refusal, canonical definitions and supplemental binding retention are byte-identical.",
+    "No mutation, reference construction, source authority, native authorization or lifecycle behavior is added."
+  ],
+  "ordinary129Compatibility": {
+    "publishedGraphBlob": "ab2fa69e478fd51eb41280fb5a4b88b6f20b55e9",
+    "publishedGraphUnchanged": true,
+    "sameCompleteOriginalDirectoryRowAsFrozen131": true,
+    "replacement": {
+      "sourceRowCountChange": 0,
+      "bytesDelta": 26,
+      "beforeSHA256": "f8706b054757b2601a1e094558989c2a66d44b7a9ddcaee94a543563db38ff27",
+      "afterSHA256": "ca3c57dedb7388d6b10a44a39778b9a1339b36f6dbcf52d67fbb572cc5cbc2b4"
+    },
+    "allPresent": "Uses the original directory; the all-present no-second-plan branch is unaffected.",
+    "partialAndAllNew": "The merged-directory initializer retains each actual creation binding and the exact original-source unresolved set.",
+    "noImplicitGraphRewrite": true
+  },
+  "provenance": {
+    "actualMacFailure": {
+      "taskStory": "1220967241349316",
+      "HQStory": "1220967241349540",
+      "job": "job_cb9b97f61090",
+      "diagnostic": "AnyNativeImportedDefinitionDirectory.swift:325:71: constant self.unresolvedSourceDefinitionIDs captured by a closure before being initialized",
+      "receipt": {
+        "path": "/Users/m1/builds/pinkha-c20-portable-20261128-1/run/receipt.json",
+        "bytes": 29510,
+        "sha256": "80431a62bbe7569713214b2125f7b7e8d526387057dc437df90bbc5000c1bd96"
+      },
+      "log": {
+        "bytes": 203305,
+        "sha256": "b807857e7ccfeed1b10616837bb0c0cd4029ae207be2868b0aab21af495eb3e1"
+      },
+      "CObservation": "Read the exact reported actual diagnostic and pins from HQ/C; raw private Mac receipt/log were not reread in this peer.",
+      "preservedStatus": "FAIL; zero20method events"
+    },
+    "W3PublicationHQStory": "1220967242863256",
+    "correctionGitBodyReadDirectly": true
+  },
+  "limits": {
+    "CCompilerInvocations": 0,
+    "CNativeInvocations": 0,
+    "CSourceEdits": 0,
+    "OracleReads": 0,
+    "existingFailureRelabelled": false,
+    "correctedTypecheckAcceptance": false,
+    "newTwentyOrEightTestAcceptance": false,
+    "earlierSevenControlObligation": "Still unrun and separate; this source correction does not discharge it."
+  }
+}

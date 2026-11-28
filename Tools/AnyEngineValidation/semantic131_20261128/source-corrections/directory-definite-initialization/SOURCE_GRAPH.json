@@ -1,0 +1,2597 @@
+{
+  "schema": "pinkha-semantic131-one-row-corrected-graph-data-v1",
+  "status": "SOURCE_ONLY_DATA_NO_RUNNABLE_CONTROLLER_OR_EXECUTION_ADMISSION",
+  "baseGraph": {
+    "repository": "davidpovarsky/anytype-swift",
+    "commit": "c85f8950c3b7b5d2234edaf992b185688ff9fad1",
+    "path": "Tools/AnyEngineValidation/direct_capture_producer_20261128/qualification/SOURCE_GRAPH.json",
+    "gitBlobSHA": "46476f8b9f48801029d327a84b1c322350aeb5d3",
+    "bytes": 134037,
+    "sha256": "748a0eb40a29a79198bbc396e7fb03061f7be1988a0259b670a76aeeeddb3597"
+  },
+  "correction": {
+    "sourceCommit": "73a7d25658c18aa9cb846dd578e064f058b9a981",
+    "sourceParent": "e7e77dedd80f2c4c2c470076ff7e31d242ed7459",
+    "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedDefinitionDirectory.swift",
+    "gitBlobSHA": "0c3e70cfad3d46a872ce575e69e9fe036d4a1bae",
+    "bytes": 22974,
+    "sha256": "ca3c57dedb7388d6b10a44a39778b9a1339b36f6dbcf52d67fbb572cc5cbc2b4",
+    "beforeGitBlobSHA": "6cd38819232f457f04f9eab1b93c538670403e05",
+    "beforeBytes": 22948,
+    "beforeSHA256": "f8706b054757b2601a1e094558989c2a66d44b7a9ddcaee94a543563db38ff27",
+    "addedBytes": 26,
+    "purpose": "Resolve the actual Swift definite-initialization error by reading the identical immutable preservation.source argument before the final stored property is initialized.",
+    "wholeBeforeAfterInverse": true,
+    "codeChanges": {
+      "before": "unresolvedSourceDefinitionIDs = source.sourceObjectIDs.filter {\n            guard let member = source.definitionMembers[Data($0.utf8)] else { return false }",
+      "after": "unresolvedSourceDefinitionIDs = preservation.source.sourceObjectIDs.filter {\n            guard let member = preservation.source.definitionMembers[Data($0.utf8)] else { return false }",
+      "oldSHA256": "f8706b054757b2601a1e094558989c2a66d44b7a9ddcaee94a543563db38ff27",
+      "newSHA256": "ca3c57dedb7388d6b10a44a39778b9a1339b36f6dbcf52d67fbb572cc5cbc2b4",
+      "oldBytes": 22948,
+      "newBytes": 22974,
+      "addedBytes": 26,
+      "wholeForwardInverse": true
+    }
+  },
+  "counts": {
+    "wholeSwiftFiles": 131,
+    "productionFiles": 127,
+    "testFiles": 4,
+    "selectedNewMethods": 20,
+    "sourceBytes": 1652947,
+    "productionSourceBytes": 1550601,
+    "testSourceBytes": 102346,
+    "unchangedFrozenSourceRows": 130,
+    "replacedFrozenSourceRows": 1,
+    "addedSourceRows": 0,
+    "removedSourceRows": 0,
+    "physicalSourceRows": 101,
+    "gitSuppliedSourceRows": 30,
+    "oldMethodEventsReused": 0,
+    "oldCompiledProductsReused": 0,
+    "nativeAccounts": 0,
+    "nativeHTTPRequests": 0
+  },
+  "sourceFiles": [
+    {
+      "bytes": 9870,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyEngine/AnyGuardedTorahClaimsRepository.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahClaimsRepository.swift",
+      "role": "original-c313",
+      "sha256": "cc9ee5e3eb159ef5ea68e7a87928fd94f047a8668c2f2483890faffdac8d73a1",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahClaimsRepository.swift",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 11996,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyEngine/AnyGuardedTorahContract.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahContract.swift",
+      "role": "original-c313",
+      "sha256": "048ebd2d82e3a22265c3fea4ead6ba406b4f8d7d8f00367ec0c7779fac1b0d8f",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahContract.swift",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 6644,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyEngine/AnyGuardedTorahOperationRead.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahOperationRead.swift",
+      "role": "original-c313",
+      "sha256": "7205b72e687975bfda695bcccbcdbdd486af45c13ef7f0ddd20fcf58c9d5a312",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahOperationRead.swift",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 30415,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyEngine/AnyHTTPClient.swift",
+      "kind": "production",
+      "mode": 384,
+      "origin": "new-navigation-production-source",
+      "path": "Sources/AnyHTTPClient.swift",
+      "role": "prepared-source",
+      "sha256": "256b97b27f0806e7355bd8e8478983bc64e5688f3e69678efdaf04ecaf86505f",
+      "sourcePath": "/mnt/development/projects/evidence/pinkha-w1-original-navigation-preparation-20261128/EngineSources/AnyHTTPClient.swift",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 2600,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyEngine/AnyJSON.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyJSON.swift",
+      "role": "original-c313",
+      "sha256": "fb8937994d7db5728a7872386670eaeb2e74dcb84abba92814316bb3d458008d",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyJSON.swift",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 12640,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyEngine/AnyLiveQuery.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyLiveQuery.swift",
+      "role": "original-c313",
+      "sha256": "445930138f7aefe46f6d41995059acafad9363178da4bc17574d2a0e399c8cf4",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyLiveQuery.swift",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 4716,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyEngine/AnyNativeAccountRunBinding.swift",
+      "kind": "production",
+      "mode": 384,
+      "origin": "new-navigation-production-source",
+      "path": "Sources/AnyNativeAccountRunBinding.swift",
+      "role": "prepared-source",
+      "sha256": "cdf064530bda6f738545e6025dbb1e53cfad9d2739c10f20b4f1c581fb2fadaa",
+      "sourcePath": "/mnt/development/projects/evidence/pinkha-w1-original-navigation-preparation-20261128/personal-current-source2/AnyNativeAccountRunBinding.swift",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 6439,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyEngine/AnyNativeFileDurability.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileDurability.swift",
+      "role": "original-c313",
+      "sha256": "364a1bea4e4cae6134c9bb5935c0432f257657f3ae0c889a669354de975c2dc6",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileDurability.swift",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 16139,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyEngine/AnyNativeObjectLinks.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeObjectLinks.swift",
+      "role": "original-c313",
+      "sha256": "d402ca99e4aecc6d379ba35c1e59c8a7b6a8c4db570a871565164370f224f410",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeObjectLinks.swift",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 2695,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyEngine/AnyObjectCreationUncertain.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyObjectCreationUncertain.swift",
+      "role": "original-c313",
+      "sha256": "c4635b23304e60b1d27b546c53e8901a841160bd79bd43a066b50bc02b2b0704",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyObjectCreationUncertain.swift",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 10163,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyEngine/AnySSEParser.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnySSEParser.swift",
+      "role": "original-c313",
+      "sha256": "1b5b55f99d357418d0df7ec43bc61e8bac1e1f246c613019f8c8b025c03cbdad",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnySSEParser.swift",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 13237,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyEngine/AnyTorahClaimsRepository.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahClaimsRepository.swift",
+      "role": "original-c313",
+      "sha256": "cd11b4cc0e54b4593d5a9111ca37ef7556bf3bcaa71ddb1532e900dd94ac0145",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahClaimsRepository.swift",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 3828,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyEngine/AnyTorahLiveQuery.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahLiveQuery.swift",
+      "role": "original-c313",
+      "sha256": "d2cdada5bf2a639127e58dbbe7b422188df76cb145d32023d4b1011006fd69af",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahLiveQuery.swift",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 12417,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyEngine/AnyTorahOperation.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahOperation.swift",
+      "role": "original-c313",
+      "sha256": "c5cdbf04c36554a1c4a74dc164014a3cc9bd33b201479702d7c1224d3d661980",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahOperation.swift",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 5633,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+      "role": "original-c313",
+      "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 2574,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyDestinationAnchoredText.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationAnchoredText.swift",
+      "role": "original-c313",
+      "sha256": "519b06bac9334e8483895daa66e3028e51a55347c543be55d59604a083f030b5",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationAnchoredText.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 13314,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyDestinationContentProjection.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationContentProjection.swift",
+      "role": "original-c313",
+      "sha256": "80cd6bb0ba2ff87ca917a0c83ab1864c3bfd17ad8fcf0438b7dbf69ecd441f78",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationContentProjection.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 27878,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyDestinationDefinitionCoverage.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationDefinitionCoverage.swift",
+      "role": "original-c313",
+      "sha256": "e2095c83e1fe238184db7adf0220db40a5521ee9dca31302a810af203d59fbd4",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationDefinitionCoverage.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 2446,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyDestinationImmutableRecordAuthority.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationImmutableRecordAuthority.swift",
+      "role": "original-c313",
+      "sha256": "86aac99f4399349166257a7523a748d8f388c1877ae4cad1fd53a67dd3df3fb7",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationImmutableRecordAuthority.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 3645,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyDestinationImmutableRecordChecks.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationImmutableRecordChecks.swift",
+      "role": "original-c313",
+      "sha256": "c61c901522875690a5d5178b5583cf3a5e136d1a6ba448d0f9187d6fad6a6889",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationImmutableRecordChecks.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationImportedPropertyNamespace.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyDestinationImportedPropertyNamespace.swift",
+      "target": "PinkhaAnyHost",
+      "kind": "production",
+      "compile": true,
+      "role": "exact-current-C14-production-preserved",
+      "bytes": 13010,
+      "sha256": "3076e98bd0d7a1106f376faa8e04de9252e47756c2ff806856a4334eae2457cb",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "commit": "05ef820f404db4d2cc9088009b90927fe59394b0",
+        "path": "source-carriers/ordinary14-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationImportedPropertyNamespace.swift",
+        "bytes": 13010,
+        "sha256": "3076e98bd0d7a1106f376faa8e04de9252e47756c2ff806856a4334eae2457cb"
+      },
+      "sourceMode": 384,
+      "proposedPreparedRelativePath": "Sources/AnyDestinationImportedPropertyNamespace.swift",
+      "physicalAdmission": "Requires separate current installed-source admission; original mode is retained as historical source metadata."
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationExecutor.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyDestinationMigrationExecutor.swift",
+      "target": "PinkhaAnyHost",
+      "kind": "production",
+      "compile": true,
+      "role": "exact-current-C14-production-preserved",
+      "bytes": 25038,
+      "sha256": "37a827abab7f8458ff0274bc0cc99a65ba62ea6068e7498d025be7fee1fee8dd",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "commit": "05ef820f404db4d2cc9088009b90927fe59394b0",
+        "path": "source-carriers/ordinary14-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationExecutor.swift",
+        "bytes": 25038,
+        "sha256": "37a827abab7f8458ff0274bc0cc99a65ba62ea6068e7498d025be7fee1fee8dd"
+      },
+      "sourceMode": 384,
+      "proposedPreparedRelativePath": "Sources/AnyDestinationMigrationExecutor.swift",
+      "physicalAdmission": "Requires separate current installed-source admission; original mode is retained as historical source metadata."
+    },
+    {
+      "bytes": 21624,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyDestinationMigrationJournal.swift",
+      "kind": "production",
+      "mode": 384,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationJournal.swift",
+      "role": "cold-context-draft6",
+      "sha256": "f0846218cf0ceb933271ff87985eca590e11edaf8fb429a3ed2381cc7b70d6db",
+      "sourcePath": "/mnt/development/projects/evidence/pinkha-c-imported-context-preparation-20261128-draft6/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationJournal.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationPlan.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyDestinationMigrationPlan.swift",
+      "target": "PinkhaAnyHost",
+      "kind": "production",
+      "compile": true,
+      "role": "exact-current-C14-production-preserved",
+      "bytes": 41312,
+      "sha256": "878a1d994dbbfd98de0f4b1a6ac4fbd9cfd3ea369b66d659e5e0b6667ba8d59e",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "commit": "05ef820f404db4d2cc9088009b90927fe59394b0",
+        "path": "source-carriers/ordinary14-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationPlan.swift",
+        "bytes": 41312,
+        "sha256": "878a1d994dbbfd98de0f4b1a6ac4fbd9cfd3ea369b66d659e5e0b6667ba8d59e"
+      },
+      "sourceMode": 384,
+      "proposedPreparedRelativePath": "Sources/AnyDestinationMigrationPlan.swift",
+      "physicalAdmission": "Requires separate current installed-source admission; original mode is retained as historical source metadata."
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationVerifier.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyDestinationMigrationVerifier.swift",
+      "target": "PinkhaAnyHost",
+      "kind": "production",
+      "compile": true,
+      "role": "exact-current-C14-production-preserved",
+      "bytes": 38447,
+      "sha256": "e258557056b1cc699026c08ace93250248dfc626cc29c853ce39eb3cbf4576a9",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "commit": "05ef820f404db4d2cc9088009b90927fe59394b0",
+        "path": "source-carriers/ordinary14-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationVerifier.swift",
+        "bytes": 38447,
+        "sha256": "e258557056b1cc699026c08ace93250248dfc626cc29c853ce39eb3cbf4576a9"
+      },
+      "sourceMode": 384,
+      "proposedPreparedRelativePath": "Sources/AnyDestinationMigrationVerifier.swift",
+      "physicalAdmission": "Requires separate current installed-source admission; original mode is retained as historical source metadata."
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationNativeMigration.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyDestinationNativeMigration.swift",
+      "target": "PinkhaAnyHost",
+      "kind": "production",
+      "compile": true,
+      "role": "exact-current-C14-production-preserved",
+      "bytes": 24363,
+      "sha256": "b47533f131f3919336c9667d80be1911aedcd131544b5e73ee8910f100d18850",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "commit": "05ef820f404db4d2cc9088009b90927fe59394b0",
+        "path": "source-carriers/ordinary14-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationNativeMigration.swift",
+        "bytes": 24363,
+        "sha256": "b47533f131f3919336c9667d80be1911aedcd131544b5e73ee8910f100d18850"
+      },
+      "sourceMode": 384,
+      "proposedPreparedRelativePath": "Sources/AnyDestinationNativeMigration.swift",
+      "physicalAdmission": "Requires separate current installed-source admission; original mode is retained as historical source metadata."
+    },
+    {
+      "bytes": 4116,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyDestinationSystemCoverage.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationSystemCoverage.swift",
+      "role": "original-c313",
+      "sha256": "ffc3caca0ed71a6a68671f5a0f94c7722e8c78ef6ce4ed237ccea247630381a6",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationSystemCoverage.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 8318,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyEditorSnapshot.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorSnapshot.swift",
+      "role": "original-c313",
+      "sha256": "d2956d5e698631a7ab90c039b2647ac518da2dea224f4e01c59dd4ca0cf9ea9f",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorSnapshot.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 6237,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartInlineConversion.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartInlineConversion.swift",
+      "role": "original-c313",
+      "sha256": "7caee65ae45891383412987e2a471a2281510e4bdba21c0f880e2eadea86e7e4",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartInlineConversion.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 7375,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartLastOpenedBinding.swift",
+      "kind": "production",
+      "mode": 384,
+      "origin": "new-navigation-production-source",
+      "path": "Sources/AnyHeartLastOpenedBinding.swift",
+      "role": "prepared-source",
+      "sha256": "da045f52875d778dced99c6e5120e3c35653a66cd6291409aa35260240c97166",
+      "sourcePath": "/mnt/development/projects/evidence/pinkha-w1-original-navigation-preparation-20261128/personal-current-source2/AnyHeartLastOpenedBinding.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartMigrationPrivateStorage.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartMigrationPrivateStorage.swift",
+      "target": "PinkhaAnyHost",
+      "kind": "production",
+      "compile": true,
+      "role": "direct-capture-source-addition-to-component-graph",
+      "bytes": 18809,
+      "sha256": "5822ead21af2235459f73670ad37f92fcfe2f1fe4f619a04f11a2cb90edd7dfe",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "854de837370b8e280ab109da5a99276db75426bf",
+        "bytes": 18809,
+        "sha256": "5822ead21af2235459f73670ad37f92fcfe2f1fe4f619a04f11a2cb90edd7dfe"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Sources/PinkhaAnyHost/AnyHeartMigrationPrivateStorage.swift",
+      "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+    },
+    {
+      "bytes": 13872,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeBookmarkComposition.swift",
+      "kind": "production",
+      "mode": 384,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeBookmarkComposition.swift",
+      "role": "bookmark-family-draft1",
+      "sha256": "ae6ba66142c227b24a75ecc40de780e409dc15bfe6774c58b5a74e069c1ab6a8",
+      "sourcePath": "/mnt/development/projects/evidence/pinkha-w1-bookmark-family-preparation-20261128-draft1/AnyHeartNativeBookmarkComposition.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeCaptureDescriptor.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeCaptureDescriptor.swift",
+      "target": "PinkhaAnyHost",
+      "kind": "production",
+      "compile": true,
+      "role": "direct-capture-source-addition-to-component-graph",
+      "bytes": 17627,
+      "sha256": "87ae4d9282aedc813879947f319d854d0bb55496ab796c497e9a7f58af86bfd9",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "03f22b12ff63f05be04f1c8430f02a90c4566590",
+        "bytes": 17627,
+        "sha256": "87ae4d9282aedc813879947f319d854d0bb55496ab796c497e9a7f58af86bfd9"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Sources/PinkhaAnyHost/AnyHeartNativeCaptureDescriptor.swift",
+      "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+    },
+    {
+      "bytes": 3869,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeComputedRelationBinding.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeComputedRelationBinding.swift",
+      "role": "original-c313",
+      "sha256": "d20f3a5227a79c64d9b7dd81e2679a56ab53f6400c7f0baefbd11a08cd75e411",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeComputedRelationBinding.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 6771,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeContentComposition.swift",
+      "kind": "production",
+      "mode": 384,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeContentComposition.swift",
+      "role": "bookmark-family-draft1",
+      "sha256": "0890a16d2d9a6d8074db7d02d88eaea33186ee5be9069693e62e12938936ec1f",
+      "sourcePath": "/mnt/development/projects/evidence/pinkha-w1-bookmark-family-preparation-20261128-draft1/AnyHeartNativeContentComposition.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 14004,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeContentSelection.swift",
+      "kind": "production",
+      "mode": 384,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeContentSelection.swift",
+      "role": "bookmark-family-draft1",
+      "sha256": "bd4acc0a73f7b733b43b3823e82f0e7523013a7155e94562bc7e965e4dc97b57",
+      "sourcePath": "/mnt/development/projects/evidence/pinkha-w1-bookmark-family-preparation-20261128-draft1/AnyHeartNativeContentSelection.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 38683,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeDefinitionPlan.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeDefinitionPlan.swift",
+      "role": "original-c313",
+      "sha256": "66cebc79a53506c6a34cbc12801706f7eb1dc73ce5a1a915953ffc6e444b90e4",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeDefinitionPlan.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 2630,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeFileBinding.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeFileBinding.swift",
+      "role": "original-c313",
+      "sha256": "c530fc9e12af92a3c1ab557f04dbdf32bc27f0decdc5223226f069fed0696158",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeFileBinding.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+      "target": "PinkhaAnyHost",
+      "kind": "production",
+      "compile": true,
+      "role": "direct-capture-source-addition-to-component-graph",
+      "bytes": 17059,
+      "sha256": "3d69a030340e8718bd082726e69abebb32cc8428cd9201c1a00afa7803055e01",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "19892c31e9c027395f0e89fcc59edefcabe9f4ab",
+        "bytes": 17059,
+        "sha256": "3d69a030340e8718bd082726e69abebb32cc8428cd9201c1a00afa7803055e01"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+      "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeOrdinaryPropertySupplement.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeOrdinaryPropertySupplement.swift",
+      "target": "PinkhaAnyHost",
+      "kind": "production",
+      "compile": true,
+      "role": "exact-current-C14-production-preserved",
+      "bytes": 9026,
+      "sha256": "8023022c6740bc88fb9502e1e572bfdf4299e0b8e1b9a24e03217e2c790e72dd",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "commit": "05ef820f404db4d2cc9088009b90927fe59394b0",
+        "path": "source-carriers/ordinary14-20261128/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeOrdinaryPropertySupplement.swift",
+        "bytes": 9026,
+        "sha256": "8023022c6740bc88fb9502e1e572bfdf4299e0b8e1b9a24e03217e2c790e72dd"
+      },
+      "sourceMode": 384,
+      "proposedPreparedRelativePath": "Sources/AnyHeartNativeOrdinaryPropertySupplement.swift",
+      "physicalAdmission": "Requires separate current installed-source admission; original mode is retained as historical source metadata."
+    },
+    {
+      "bytes": 13296,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativePageComposition.swift",
+      "kind": "production",
+      "mode": 384,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativePageComposition.swift",
+      "role": "bookmark-family-draft1",
+      "sha256": "bbd81ee8d2fc7cb762b3583830e59c3ad39b27dac47eac46e80627abfa73b1a0",
+      "sourcePath": "/mnt/development/projects/evidence/pinkha-w1-bookmark-family-preparation-20261128-draft1/AnyHeartNativePageComposition.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 6014,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeRuntimeRelationBinding.swift",
+      "kind": "production",
+      "mode": 384,
+      "origin": "previously-qualified-whole-source",
+      "originalLocalPath": "root-relay/original-runtime-providers/Sources/AnyHeartNativeRuntimeRelationBinding.swift",
+      "path": "Sources/AnyHeartNativeRuntimeRelationBinding.swift",
+      "role": "prepared-source",
+      "sha256": "58be6e04b76a5844d8ba116878dabe542d16e5e1a56250d175a0fc2aca351472",
+      "sourcePath": "/mnt/development/projects/evidence/pinkha-original-type-runtime-provider25-20261127/prepared3/Sources/AnyHeartNativeRuntimeRelationBinding.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourceAccountController.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeSourceAccountController.swift",
+      "target": "PinkhaAnyHost",
+      "kind": "production",
+      "compile": true,
+      "role": "direct-capture-source-addition-to-component-graph",
+      "bytes": 10161,
+      "sha256": "87ae93153c2f425c20e842dac6b60d18fae867978fe6d180a717faee9bf465cd",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "63f2a6083f487acd925e525e4922ccc98c900d67",
+        "bytes": 10161,
+        "sha256": "87ae93153c2f425c20e842dac6b60d18fae867978fe6d180a717faee9bf465cd"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Sources/PinkhaAnyHost/AnyHeartNativeSourceAccountController.swift",
+      "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourceCaptureCoordinator.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeSourceCaptureCoordinator.swift",
+      "target": "PinkhaAnyHost",
+      "kind": "production",
+      "compile": true,
+      "role": "direct-capture-source-addition-to-component-graph",
+      "bytes": 13243,
+      "sha256": "3d77b08c4d3c14c9520d116fdd382244cfad796378fa6e4b065ef5e7061c3da7",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "f8bb507c5604ffcc7556693403bb4af10ce7a446",
+        "bytes": 13243,
+        "sha256": "3d77b08c4d3c14c9520d116fdd382244cfad796378fa6e4b065ef5e7061c3da7"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Sources/PinkhaAnyHost/AnyHeartNativeSourceCaptureCoordinator.swift",
+      "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+    },
+    {
+      "bytes": 4591,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeSourceFacts.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourceFacts.swift",
+      "role": "original-c313",
+      "sha256": "48af3651539d55983cc1e6383282ca6866353b1cb2070de7f8bab71946f3f6c9",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourceFacts.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourcePreservation.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeSourcePreservation.swift",
+      "target": "PinkhaAnyHost",
+      "kind": "production",
+      "compile": true,
+      "role": "direct-capture-whole-source-successor",
+      "bytes": 19633,
+      "sha256": "c9560ed1180340391944b01b66386b9bc56d7f9b4e559aaf0229293f9bc8e175",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "6f59b8fb49546d9f2cc42971a73863c0756b8e8e",
+        "bytes": 19633,
+        "sha256": "c9560ed1180340391944b01b66386b9bc56d7f9b4e559aaf0229293f9bc8e175"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Sources/PinkhaAnyHost/AnyHeartNativeSourcePreservation.swift",
+      "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+    },
+    {
+      "bytes": 13818,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeTextBlockPlan.swift",
+      "kind": "production",
+      "mode": 384,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeTextBlockPlan.swift",
+      "role": "bookmark-family-draft1",
+      "sha256": "87d0a6a4071a3052fef77adc6fd36389c35253585d8d9bc93696fbb61b62c1cb",
+      "sourcePath": "/mnt/development/projects/evidence/pinkha-w1-bookmark-family-preparation-20261128-draft1/AnyHeartNativeTextBlockPlan.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 16987,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeTypeReferencePlan.swift",
+      "kind": "production",
+      "mode": 384,
+      "origin": "previously-qualified-whole-source",
+      "originalLocalPath": "migration-relay/type-provider-references/Sources/AnyHeartNativeTypeReferencePlan.swift",
+      "path": "Sources/AnyHeartNativeTypeReferencePlan.swift",
+      "role": "prepared-source",
+      "sha256": "f2224f30d30f99c33a71a6b6ae91eef1c3ce56c7d3aec34a9c32618513adb676",
+      "sourcePath": "/mnt/development/projects/evidence/pinkha-original-type-runtime-provider25-20261127/prepared3/Sources/AnyHeartNativeTypeReferencePlan.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 8689,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartOriginalMetadata.swift",
+      "kind": "production",
+      "mode": 384,
+      "origin": "previously-qualified-whole-source",
+      "originalLocalPath": "root-relay/original-source-metadata/Sources/AnyHeartOriginalMetadata.swift",
+      "path": "Sources/AnyHeartOriginalMetadata.swift",
+      "role": "prepared-source",
+      "sha256": "54710744dc013f3ab48c823d48a6310e0ca537957ccf9800ef0b3219f18cb6c0",
+      "sourcePath": "/mnt/development/projects/evidence/pinkha-original-source-metadata6-20261127/prepared2/Sources/AnyHeartOriginalMetadata.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 6035,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartOriginalNavigation.swift",
+      "kind": "production",
+      "mode": 384,
+      "origin": "new-navigation-production-source",
+      "path": "Sources/AnyHeartOriginalNavigation.swift",
+      "role": "prepared-source",
+      "sha256": "0b846d64f70a28d9ee46cd865b85c6233d83b45aed0018c3031935698860984f",
+      "sourcePath": "/mnt/development/projects/evidence/pinkha-w1-original-navigation-preparation-20261128/Sources/AnyHeartOriginalNavigation.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 2773,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyHostCanonical.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHostCanonical.swift",
+      "role": "original-c313",
+      "sha256": "d234b3d87ab9ec8317f159d413eb140eb94c1ae0aa0b1e20f30391b4e51c4840",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHostCanonical.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 41061,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyInlineMarkdown.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyInlineMarkdown.swift",
+      "role": "original-c313",
+      "sha256": "c537820797785b9f4f3bd00533706c16145c91e5f6999936a9b97243c4d9a483",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyInlineMarkdown.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 12014,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeBlockCreator.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeBlockCreator.swift",
+      "role": "original-c313",
+      "sha256": "6bea1d2f1108cf737d68f91cf891c901e0140212b574aaf9e42fa63b392fd652",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeBlockCreator.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 2955,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeComputedRelationStore.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeComputedRelationStore.swift",
+      "role": "original-c313",
+      "sha256": "7d5d99b84f15b64e8cec448d2586c0478df270174f0178a131315ac3a7bf0b16",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeComputedRelationStore.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 1927,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeFilePropertyFormat.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFilePropertyFormat.swift",
+      "role": "original-c313",
+      "sha256": "d068f7dc5ca478788a3457e7114da87b154bac46efacc89fe7a81401b7d887a1",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFilePropertyFormat.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 2019,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeFileReference.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFileReference.swift",
+      "role": "original-c313",
+      "sha256": "19babf809e1c6c7ec8f517f89a9eb19f6e7a67e6ec743a02a5d523ab3aa5308f",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFileReference.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 12275,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeHistoryReader.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeHistoryReader.swift",
+      "role": "original-c313",
+      "sha256": "097a4c59dd7cdce04d9ae7951190a4b57918a9184386942be552691a1aca3fe8",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeHistoryReader.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedCatalog.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeImportedCatalog.swift",
+      "target": "PinkhaAnyHost",
+      "kind": "production",
+      "compile": true,
+      "role": "direct-capture-whole-source-successor",
+      "bytes": 20932,
+      "sha256": "4adc898366a011542266731568b32014189641d3250a8cf778ee25d1ecfa8291",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "d45211748deacc9fa3d59215c8e15e74a72dd95a",
+        "bytes": 20932,
+        "sha256": "4adc898366a011542266731568b32014189641d3250a8cf778ee25d1ecfa8291"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Sources/PinkhaAnyHost/AnyNativeImportedCatalog.swift",
+      "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContentContext.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeImportedContentContext.swift",
+      "target": "PinkhaAnyHost",
+      "kind": "production",
+      "compile": true,
+      "role": "new-cold-ordinary14-join-source-only",
+      "bytes": 20451,
+      "sha256": "5379e04f9c1833956e18fced28517559bb3b889f394b67c475bb3e4b71880500",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "446d4d920b540645b62c752429bf79494d7f85d0",
+        "bytes": 20451,
+        "sha256": "5379e04f9c1833956e18fced28517559bb3b889f394b67c475bb3e4b71880500"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Sources/AnyNativeImportedContentContext.swift",
+      "physicalAdmission": "Not installed. The proposed0600 mode is an explicit new-source policy, not an observed physical mode."
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift",
+      "target": "PinkhaAnyHost",
+      "kind": "production",
+      "compile": true,
+      "role": "direct-capture-whole-source-successor",
+      "bytes": 36356,
+      "sha256": "be03fc564171c720a91bd79d060d6edd9798da49cb7a19f88f57ade79e31acec",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "b041309e13291cb41c9cec48d32865bb66af5553",
+        "bytes": 36356,
+        "sha256": "be03fc564171c720a91bd79d060d6edd9798da49cb7a19f88f57ade79e31acec"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift",
+      "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextReference.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeImportedContextReference.swift",
+      "target": "PinkhaAnyHost",
+      "kind": "production",
+      "compile": true,
+      "role": "direct-capture-whole-source-successor",
+      "bytes": 12903,
+      "sha256": "5594056fd2e8a5e08a02bd670f0f534187eab0ca7722c9c6cbedcf474bc929cd",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "dc6e21e129a02cf75ff6b1bd0598dedaac1d9267",
+        "bytes": 12903,
+        "sha256": "5594056fd2e8a5e08a02bd670f0f534187eab0ca7722c9c6cbedcf474bc929cd"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Sources/PinkhaAnyHost/AnyNativeImportedContextReference.swift",
+      "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+    },
+    {
+      "bytes": 4547,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeImportedDefaultMetadata.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedDefaultMetadata.swift",
+      "role": "original-c313",
+      "sha256": "b8ac71373d973d19b8d452a6f994087f2b8aa20245ce018ca4b46d776e996adb",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedDefaultMetadata.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedDefinitionDirectory.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeImportedDefinitionDirectory.swift",
+      "target": "PinkhaAnyHost",
+      "kind": "production",
+      "compile": true,
+      "role": "same-foundation-production-with-exact-definite-initialization-correction",
+      "bytes": 22974,
+      "sha256": "ca3c57dedb7388d6b10a44a39778b9a1339b36f6dbcf52d67fbb572cc5cbc2b4",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "commit": "73a7d25658c18aa9cb846dd578e064f058b9a981",
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedDefinitionDirectory.swift",
+        "gitBlobSHA": "0c3e70cfad3d46a872ce575e69e9fe036d4a1bae",
+        "bytes": 22974,
+        "sha256": "ca3c57dedb7388d6b10a44a39778b9a1339b36f6dbcf52d67fbb572cc5cbc2b4"
+      },
+      "sourceMode": 384,
+      "proposedPreparedRelativePath": "Sources/AnyNativeImportedDefinitionDirectory.swift",
+      "physicalAdmission": "Requires separate current installed-source admission; original mode is retained as historical source metadata."
+    },
+    {
+      "bytes": 10792,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeImportedDefinitionStore.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedDefinitionStore.swift",
+      "role": "original-c313",
+      "sha256": "e209c44b174e3ec6a0a1c967135e5d8313a49600ac58161e08dd98969fd9c9c2",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedDefinitionStore.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedOrdinaryPropertyContext.swift",
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeImportedOrdinaryPropertyContext.swift",
+      "target": "PinkhaAnyHost",
+      "kind": "production",
+      "compile": true,
+      "role": "new-cold-ordinary14-join-source-only",
+      "bytes": 16143,
+      "sha256": "9db172a43ec08a46d8e06d9f128e493389c727ef02426b95b294ab520ee1fe8f",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "b906b29ec8afb91cac40c5350f60a12bef6cda92",
+        "bytes": 16143,
+        "sha256": "9db172a43ec08a46d8e06d9f128e493389c727ef02426b95b294ab520ee1fe8f"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Sources/AnyNativeImportedOrdinaryPropertyContext.swift",
+      "physicalAdmission": "Not installed. The proposed0600 mode is an explicit new-source policy, not an observed physical mode."
+    },
+    {
+      "bytes": 21281,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeImportedSourceFacts.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedSourceFacts.swift",
+      "role": "original-c313",
+      "sha256": "7db9678676b2d691388befbc6955ed4863694adab9ade6870dba336671cf078f",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedSourceFacts.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 3865,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeImportedTypeOrder.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedTypeOrder.swift",
+      "role": "original-c313",
+      "sha256": "4516a77ba08a02fdfb714d58629c03deb62856e8a250114bbc913d41f45be5a2",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedTypeOrder.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 8198,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeImportedTypePresentation.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedTypePresentation.swift",
+      "role": "original-c313",
+      "sha256": "9cc30290575197f7cc2b8f3c8fdd700b8967223b035726f314ea11b2e1991e1a",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedTypePresentation.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 14656,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+      "role": "original-c313",
+      "sha256": "0273ca566d58456569eeff7d90e6e582791fcf33aa2c6b2e48c280fe53dcb723",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 23420,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativePersonalNavigation.swift",
+      "kind": "production",
+      "mode": 384,
+      "origin": "new-navigation-production-source",
+      "path": "Sources/AnyNativePersonalNavigation.swift",
+      "role": "prepared-source",
+      "sha256": "c3dd3dc0255d2c6265693ced3bd7d7dbd6d4ed7772f2b851f7424c9dfb57b73b",
+      "sourcePath": "/mnt/development/projects/evidence/pinkha-w1-original-navigation-preparation-20261128/personal-current-source3/AnyNativePersonalNavigation.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 19838,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativePreparedDefinitionMigration.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedDefinitionMigration.swift",
+      "role": "original-c313",
+      "sha256": "8d44ac127127a59dc1826f3716b41948ee89f846c42221e35e4f7171476af925",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedDefinitionMigration.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 15234,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativePreparedFileMigration.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedFileMigration.swift",
+      "role": "original-c313",
+      "sha256": "16b230914002ef5700397e6596671ee201852d6bb962e63a519521f3b2d15009",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedFileMigration.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 18393,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativePreparedImmutableRecord.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedImmutableRecord.swift",
+      "role": "original-c313",
+      "sha256": "83e543085c6911be85076f097eb55f3b054e24422378c32e99e5ab7dc1693e30",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedImmutableRecord.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 13543,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativePreparedInlineFileMigration.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedInlineFileMigration.swift",
+      "role": "original-c313",
+      "sha256": "4c134d514014b021bfd346ca93fe11f2cbc4af12ee6c263e9b42276e0065591f",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedInlineFileMigration.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 18794,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativePreparedMigration.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedMigration.swift",
+      "role": "original-c313",
+      "sha256": "e8c0e084b0a18a7c4892529054f9b9d393d8cdd72d357aef4d330ea2a4ae059d",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedMigration.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 12743,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativePreparedPropertyUpdate.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedPropertyUpdate.swift",
+      "role": "original-c313",
+      "sha256": "d2265107059c571af533fe0996b29dfafc7bc0ec3d63f46e46158319b37e3c9c",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedPropertyUpdate.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 43999,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "role": "original-c313",
+      "sha256": "bd78d4bed9ff005d05317a0f6eff1f40bc6b9bbe3495608ed1e4edd830b11a0c",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 18005,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeRuntimeStateStore.swift",
+      "kind": "production",
+      "mode": 384,
+      "origin": "previously-qualified-whole-source",
+      "originalLocalPath": "root-relay/original-runtime-providers/Sources/AnyNativeRuntimeStateStore.swift",
+      "path": "Sources/AnyNativeRuntimeStateStore.swift",
+      "role": "prepared-source",
+      "sha256": "1410dab3907f2e571e634f657a4653a800c7ce4a78f844cb2a225fc7f199e419",
+      "sourcePath": "/mnt/development/projects/evidence/pinkha-original-type-runtime-provider25-20261127/prepared3/Sources/AnyNativeRuntimeStateStore.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 6865,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeSharedSpacesLimitStore.swift",
+      "kind": "production",
+      "mode": 384,
+      "origin": "previously-qualified-whole-source",
+      "originalLocalPath": "root-relay/original-runtime-providers/Sources/AnyNativeSharedSpacesLimitStore.swift",
+      "path": "Sources/AnyNativeSharedSpacesLimitStore.swift",
+      "role": "prepared-source",
+      "sha256": "1cc5fd036514c2a2c0fdebd2b866d0c45af63a08572c404de3644e1890ad3f4b",
+      "sourcePath": "/mnt/development/projects/evidence/pinkha-original-type-runtime-provider25-20261127/prepared3/Sources/AnyNativeSharedSpacesLimitStore.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 13171,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeTypeReferenceStore.swift",
+      "kind": "production",
+      "mode": 384,
+      "origin": "previously-qualified-whole-source",
+      "originalLocalPath": "migration-relay/type-provider-references/Sources/AnyNativeTypeReferenceStore.swift",
+      "path": "Sources/AnyNativeTypeReferenceStore.swift",
+      "role": "prepared-source",
+      "sha256": "ce1ca08959e5d4472e6e2b47c4a420ff1dae6c00e7e10acb3b0319224011527f",
+      "sourcePath": "/mnt/development/projects/evidence/pinkha-original-type-runtime-provider25-20261127/prepared3/Sources/AnyNativeTypeReferenceStore.swift",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 2695,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyConditionalPropertyFence.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyConditionalPropertyFence.swift",
+      "role": "original-c313",
+      "sha256": "baec5f9838f1bdbf6d6aedb557998cd334b3a77bbc73ce42f0c1408e14d40129",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyConditionalPropertyFence.swift",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 2949,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyHeartInlineProjection.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartInlineProjection.swift",
+      "role": "original-c313",
+      "sha256": "ecd9e751715263ab6c592be9d2cf22129d5e295c5b7510595ff5886d630529fe",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartInlineProjection.swift",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 9365,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyHeartNativeBookmarkLayout.swift",
+      "kind": "production",
+      "mode": 384,
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeBookmarkLayout.swift",
+      "role": "bookmark-family-draft1",
+      "sha256": "754e7187ea7bee52ca7e1fccbf5d8c7e7edee412f1307df0cd64886e3ad1aacc",
+      "sourcePath": "/mnt/development/projects/evidence/pinkha-w1-bookmark-family-preparation-20261128-draft1/AnyHeartNativeBookmarkLayout.swift",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 3335,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyHeartNativeBundledDefinition.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeBundledDefinition.swift",
+      "role": "original-c313",
+      "sha256": "524deb8119421132b0b802c7dfc40d0718a4e01235afc3e7697aa5c09ee79a3c",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeBundledDefinition.swift",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 5012,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyHeartNativeCompiledRelation.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeCompiledRelation.swift",
+      "role": "original-c313",
+      "sha256": "abce8533e20f169fc431bd1d851d0c56fde878974d6eadef8a42fc1035de4096",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeCompiledRelation.swift",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 23399,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionCatalog.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionCatalog.swift",
+      "role": "original-c313",
+      "sha256": "437131d2f7095af0a450e7c695aa9c9bed13ea290f576d49870c5224b60a3965",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionCatalog.swift",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionEvidence.swift",
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionEvidence.swift",
+      "target": "PinkhaAnyIntegration",
+      "kind": "production",
+      "compile": true,
+      "role": "direct-capture-source-addition-to-component-graph",
+      "bytes": 2251,
+      "sha256": "9f53864a7bf97627789e7cb2702a76e280bfc05859a2b8ec5c5130d9075881e3",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "e6785a066c68143eca97fc199851aeac7da6be94",
+        "bytes": 2251,
+        "sha256": "9f53864a7bf97627789e7cb2702a76e280bfc05859a2b8ec5c5130d9075881e3"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionEvidence.swift",
+      "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+    },
+    {
+      "bytes": 8326,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyHeartNativePageLayout.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePageLayout.swift",
+      "role": "original-c313",
+      "sha256": "be3ac5f21dfa71fc61be05d910bdc37a8832d252acb1d48ac2c03b88959f5e10",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePageLayout.swift",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePinkhaSource.swift",
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyHeartNativePinkhaSource.swift",
+      "target": "PinkhaAnyIntegration",
+      "kind": "production",
+      "compile": true,
+      "role": "unchanged-current-af1-whole-dependency",
+      "bytes": 19720,
+      "sha256": "235d4eb714cc8d577571336f265faa36dad2afde756265092020e5d717e7e2de",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "1a2058e4953df51acffac68e86de51286d1d7fc7",
+        "bytes": 19720,
+        "sha256": "235d4eb714cc8d577571336f265faa36dad2afde756265092020e5d717e7e2de"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Sources/PinkhaAnyIntegration/AnyHeartNativePinkhaSource.swift",
+      "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePreservationArchive.swift",
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyHeartNativePreservationArchive.swift",
+      "target": "PinkhaAnyIntegration",
+      "kind": "production",
+      "compile": true,
+      "role": "direct-capture-whole-source-successor",
+      "bytes": 25677,
+      "sha256": "7ae154b210a0aad7f7f9c06a5cfc9b69adcaeb02f4b87f7952e4bf5a19f062b9",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "9ae2c11b553016cd2559787fa5b796989263b4c2",
+        "bytes": 25677,
+        "sha256": "7ae154b210a0aad7f7f9c06a5cfc9b69adcaeb02f4b87f7952e4bf5a19f062b9"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Sources/PinkhaAnyIntegration/AnyHeartNativePreservationArchive.swift",
+      "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+    },
+    {
+      "bytes": 13436,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyHeartNativeRecoveredDefinitions.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeRecoveredDefinitions.swift",
+      "role": "original-c313",
+      "sha256": "de4b8b0596954a3f476bfff2c3af63b15f789d6ed17d806e54a2cd221c9bd449",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeRecoveredDefinitions.swift",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 12396,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyHeartNativeSnapshotView.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeSnapshotView.swift",
+      "role": "original-c313",
+      "sha256": "8128c8e00ff10f4904ea1bf1638741a0de1d68565b8a2e30f9a8b5c97ebfc0d0",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeSnapshotView.swift",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 23124,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyHeartNativeSpaceBundle.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeSpaceBundle.swift",
+      "role": "original-c313",
+      "sha256": "9f7aa90550b3ab54cd86928a5c254b6f4af13762e14ce80fb62199f444879977",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeSpaceBundle.swift",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 18654,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyHeartNativeStoreContext.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeStoreContext.swift",
+      "role": "original-c313",
+      "sha256": "42617085d07295f4eb8a67973380d6a5174ef29bba4b9b29b1e58105d99c6a81",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeStoreContext.swift",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 20551,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyHeartSpaceArchive.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartSpaceArchive.swift",
+      "role": "original-c313",
+      "sha256": "6a6535670cc9128704f6aabab1c5afd694ac695d4310f59c5e9b5b3acb15292e",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartSpaceArchive.swift",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 24167,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyHeartSpaceMigrationDryRun.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartSpaceMigrationDryRun.swift",
+      "role": "original-c313",
+      "sha256": "c96bc27e447087cfe845b311cd21e5d99d68b4815b5d337848a4f54ee03b274c",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartSpaceMigrationDryRun.swift",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 16048,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyHierarchyModels.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHierarchyModels.swift",
+      "role": "original-c313",
+      "sha256": "0a594737c72b9f065cd4e70aff425f521a6d7ff86ce7b1ebd21dd1221d150700",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHierarchyModels.swift",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 8273,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyLexicographicPosition.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyLexicographicPosition.swift",
+      "role": "original-c313",
+      "sha256": "079984b4d7aabdb375ca7bb466337db3f6282e5cd3f535ad8f8ae90b4ad86c73",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyLexicographicPosition.swift",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 6882,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyNativeDocumentPolicy.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyNativeDocumentPolicy.swift",
+      "role": "original-c313",
+      "sha256": "a4fa5fc4fc1185b1778ae960b60e39a03e3d4ce487c34bd4d69401946ff7e366",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyNativeDocumentPolicy.swift",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahMigration.swift",
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyTorahMigration.swift",
+      "target": "PinkhaAnyIntegration",
+      "kind": "production",
+      "compile": true,
+      "role": "unchanged-current-af1-whole-dependency",
+      "bytes": 21673,
+      "sha256": "4b535020276c2ce467ebc86204e3bcc70b1006cdb7160c2533272ee05a26f90d",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "f88ca6c16fb9c5fbcc897e61f08f33716640415a",
+        "bytes": 21673,
+        "sha256": "4b535020276c2ce467ebc86204e3bcc70b1006cdb7160c2533272ee05a26f90d"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Sources/PinkhaAnyIntegration/AnyTorahMigration.swift",
+      "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+    },
+    {
+      "bytes": 1870,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyTorahSemanticAnchorMigration.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahSemanticAnchorMigration.swift",
+      "role": "original-c313",
+      "sha256": "a8968f34c5f3af00537ba9b183ce0065ff7dadd31e55ca413dddc26fbe96728d",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahSemanticAnchorMigration.swift",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahSemanticTargetAccess.swift",
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyTorahSemanticTargetAccess.swift",
+      "target": "PinkhaAnyIntegration",
+      "kind": "production",
+      "compile": true,
+      "role": "unchanged-current-af1-whole-dependency",
+      "bytes": 400,
+      "sha256": "a7b7db78763d7d47ca7e3482dbd4ba4a5d7bca4b8b2b92f3109983b17426095f",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "d2e346b8231c15ed9105ee9294b46fc76e278f2a",
+        "bytes": 400,
+        "sha256": "a7b7db78763d7d47ca7e3482dbd4ba4a5d7bca4b8b2b92f3109983b17426095f"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Sources/PinkhaAnyIntegration/AnyTorahSemanticTargetAccess.swift",
+      "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+    },
+    {
+      "bytes": 1537,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyTorahSourceJSONGuard.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahSourceJSONGuard.swift",
+      "role": "original-c313",
+      "sha256": "a40e49f4d3424e5625498e1a95baad171e22391a786d16c3f3e0c4c1ea926541",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahSourceJSONGuard.swift",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 10327,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaAnyIntegration/AnyTorahWorkspace.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahWorkspace.swift",
+      "role": "original-c313",
+      "sha256": "7a51c02baafba146fac43ab0b5737ab3db6465ebdc142bce3d1a6ea33bf36c56",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahWorkspace.swift",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaBootstrapProtocols.swift",
+      "isolatedPath": "Sources/PinkhaKit/PinkhaBootstrapProtocols.swift",
+      "target": "PinkhaKit",
+      "kind": "production",
+      "compile": true,
+      "role": "unchanged-current-af1-whole-dependency",
+      "bytes": 4878,
+      "sha256": "1d3b20b5f88c2415a10ab21ba696bcfd821cca1b42979ffa51ad24c97818b525",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "c2e0b92df6fe5912c7e0452a1d866fd58942e676",
+        "bytes": 4878,
+        "sha256": "1d3b20b5f88c2415a10ab21ba696bcfd821cca1b42979ffa51ad24c97818b525"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Sources/PinkhaKit/PinkhaBootstrapProtocols.swift",
+      "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+    },
+    {
+      "bytes": 3339,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaKit/PinkhaHierarchyBuilder.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyBuilder.swift",
+      "role": "original-c313",
+      "sha256": "7ac6eea3d287c43afd9849e82093466987764c518d81880208dd5452c4112b97",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyBuilder.swift",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 5447,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaKit/PinkhaHierarchyModels.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyModels.swift",
+      "role": "original-c313",
+      "sha256": "7f201585eb76b34271e49fe686770302ece2d67d3e2ba4304167637ea0ddcb0b",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyModels.swift",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 1804,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaKit/PinkhaHierarchyMutationValidator.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyMutationValidator.swift",
+      "role": "original-c313",
+      "sha256": "3f5f9e21035851c171ee5c64e4789048ce2fcf78163d839ef69155499fbf0d21",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyMutationValidator.swift",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 6164,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaKit/PinkhaHierarchyOrdering.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyOrdering.swift",
+      "role": "original-c313",
+      "sha256": "7e33fc757c7c2888a8715fa7f110503bf9dc577ea06cf5bbbcd71e0793a9adf8",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyOrdering.swift",
+      "target": "PinkhaKit"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSchemaRoles.swift",
+      "isolatedPath": "Sources/PinkhaKit/PinkhaSchemaRoles.swift",
+      "target": "PinkhaKit",
+      "kind": "production",
+      "compile": true,
+      "role": "unchanged-current-af1-whole-dependency",
+      "bytes": 1555,
+      "sha256": "891033c5597706f043026fbfa21cfe7eb010117bdbb0a6cdd194ba62e26103a3",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "83e42de4bf880d13ce20a841410681c6e6fa0f8d",
+        "bytes": 1555,
+        "sha256": "891033c5597706f043026fbfa21cfe7eb010117bdbb0a6cdd194ba62e26103a3"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Sources/PinkhaKit/PinkhaSchemaRoles.swift",
+      "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+    },
+    {
+      "bytes": 16150,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaKit/PinkhaSemanticTextAnchor.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSemanticTextAnchor.swift",
+      "role": "original-c313",
+      "sha256": "bfefc94965cfe6dbdf910452eaec3a9530854a6d5b6a09a1a9b10339c6c30274",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSemanticTextAnchor.swift",
+      "target": "PinkhaKit"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSpaceManifest.swift",
+      "isolatedPath": "Sources/PinkhaKit/PinkhaSpaceManifest.swift",
+      "target": "PinkhaKit",
+      "kind": "production",
+      "compile": true,
+      "role": "unchanged-current-af1-whole-dependency",
+      "bytes": 12178,
+      "sha256": "d3d55b7b7c2ee1ea060af93ec42921a1634f97fd14254c2dc3ac49582c07f0f1",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "d42050a84d5f232d05493c3f1787390c094db0fc",
+        "bytes": 12178,
+        "sha256": "d3d55b7b7c2ee1ea060af93ec42921a1634f97fd14254c2dc3ac49582c07f0f1"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Sources/PinkhaKit/PinkhaSpaceManifest.swift",
+      "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+    },
+    {
+      "bytes": 5165,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaKit/TorahAssociationIdentity.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationIdentity.swift",
+      "role": "original-c313",
+      "sha256": "85738df63c9ae987c1180c20e661cd21cd4acc20afcd376592f87ca32dcdb626",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationIdentity.swift",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 15128,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaKit/TorahAssociationModels.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationModels.swift",
+      "role": "original-c313",
+      "sha256": "0007274a78d39fd4c8e0105eb50cec106c807cf53735caa0de1f4a85cd7fbde1",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationModels.swift",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 6237,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaKit/TorahAssociationPayloadCodec.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationPayloadCodec.swift",
+      "role": "original-c313",
+      "sha256": "9956aa25174812c5878927b5c62cff5f5d1d16e8becb536e23dadb25a01422d1",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationPayloadCodec.swift",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 2445,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaKit/TorahAssociationRepository.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationRepository.swift",
+      "role": "original-c313",
+      "sha256": "63c789b1e14b85fb8032f2cf8fecb4fcb7e768453c03b9304e78ac77775fb66e",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationRepository.swift",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 8403,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaKit/TorahCanonicalAssociations.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahCanonicalAssociations.swift",
+      "role": "original-c313",
+      "sha256": "e5c988ebb64572e5228592f8a833ca8e5c2638fd991d0f7fc7e9bb114e4e3f3d",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahCanonicalAssociations.swift",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 3789,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaKit/TorahSemanticAnchorAssociation.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahSemanticAnchorAssociation.swift",
+      "role": "original-c313",
+      "sha256": "17c469ea127bf01211c7e819c00a2e15ea07facbe2c6d86505a5f0fce82cb3f4",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahSemanticAnchorAssociation.swift",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 7503,
+      "compile": true,
+      "isolatedPath": "Sources/PinkhaKit/TorahSourceJSONGuard.swift",
+      "kind": "production",
+      "mode": 420,
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahSourceJSONGuard.swift",
+      "role": "original-c313",
+      "sha256": "ad856a6ed49f645ec2d5cb6a0bc3c7b6e7566c5cd7ad2a3081ccd748849ab9f6",
+      "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahSourceJSONGuard.swift",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 24592,
+      "compile": true,
+      "isolatedPath": "Sources/TorahInspectorCore/Models.swift",
+      "kind": "production",
+      "mode": 292,
+      "path": "Sources/TorahInspectorCore/Models.swift",
+      "role": "original-core",
+      "sha256": "59a0c8639c8c778c67ff9c60db4b979e3ba7a39dff4c3fb669a54ae23dc113a0",
+      "sourcePath": "/mnt/development/projects/caches/pinkha-w1-migration-swift-20261127/checkouts/TorahInspectorKit/Sources/TorahInspectorCore/Models.swift",
+      "target": "TorahInspectorCore"
+    },
+    {
+      "bytes": 510,
+      "compile": true,
+      "isolatedPath": "Sources/TorahInspectorCore/ProviderProtocols.swift",
+      "kind": "production",
+      "mode": 292,
+      "path": "Sources/TorahInspectorCore/ProviderProtocols.swift",
+      "role": "original-core",
+      "sha256": "9f5f28f1d71a97831827dce5dfe2324a60460fc7760137b9527e4c3815d20273",
+      "sourcePath": "/mnt/development/projects/caches/pinkha-w1-migration-swift-20261127/checkouts/TorahInspectorKit/Sources/TorahInspectorCore/ProviderProtocols.swift",
+      "target": "TorahInspectorCore"
+    },
+    {
+      "bytes": 461,
+      "compile": true,
+      "isolatedPath": "Sources/TorahInspectorCore/TorahInspectorCoordinator.swift",
+      "kind": "production",
+      "mode": 292,
+      "path": "Sources/TorahInspectorCore/TorahInspectorCoordinator.swift",
+      "role": "original-core",
+      "sha256": "fccfc25ee56e165c6559aba52a1ccec39d10db6fd6a94a91c867cd38dc693116",
+      "sourcePath": "/mnt/development/projects/caches/pinkha-w1-migration-swift-20261127/checkouts/TorahInspectorKit/Sources/TorahInspectorCore/TorahInspectorCoordinator.swift",
+      "target": "TorahInspectorCore"
+    },
+    {
+      "bytes": 17499,
+      "compile": true,
+      "isolatedPath": "Sources/TorahInspectorCore/TorahInspectorRepository.swift",
+      "kind": "production",
+      "mode": 292,
+      "path": "Sources/TorahInspectorCore/TorahInspectorRepository.swift",
+      "role": "original-core",
+      "sha256": "519828f3d602811758d2698e00a06567b41d31d465b143175441f08873300040",
+      "sourcePath": "/mnt/development/projects/caches/pinkha-w1-migration-swift-20261127/checkouts/TorahInspectorKit/Sources/TorahInspectorCore/TorahInspectorRepository.swift",
+      "target": "TorahInspectorCore"
+    },
+    {
+      "bytes": 3444,
+      "compile": true,
+      "isolatedPath": "Sources/TorahInspectorCore/TorahReaderScrollStateMachine.swift",
+      "kind": "production",
+      "mode": 292,
+      "path": "Sources/TorahInspectorCore/TorahReaderScrollStateMachine.swift",
+      "role": "original-core",
+      "sha256": "90173f3198133c6a746d00c9a6af9ad8cd854f5643f924d98e9095133da5bbdc",
+      "sourcePath": "/mnt/development/projects/caches/pinkha-w1-migration-swift-20261127/checkouts/TorahInspectorKit/Sources/TorahInspectorCore/TorahReaderScrollStateMachine.swift",
+      "target": "TorahInspectorCore"
+    },
+    {
+      "bytes": 355,
+      "compile": true,
+      "isolatedPath": "Sources/TorahInspectorCore/TorahRelatedDocumentsAccessError.swift",
+      "kind": "production",
+      "mode": 292,
+      "path": "Sources/TorahInspectorCore/TorahRelatedDocumentsAccessError.swift",
+      "role": "original-core",
+      "sha256": "0ff22bb5a56ddff0235e7b6c5188c737b110cb2848d7e17dcaefc3ca1d6df2e6",
+      "sourcePath": "/mnt/development/projects/caches/pinkha-w1-migration-swift-20261127/checkouts/TorahInspectorKit/Sources/TorahInspectorCore/TorahRelatedDocumentsAccessError.swift",
+      "target": "TorahInspectorCore"
+    },
+    {
+      "bytes": 3410,
+      "compile": true,
+      "isolatedPath": "Sources/TorahInspectorCore/TorahSourceTransfer.swift",
+      "kind": "production",
+      "mode": 292,
+      "path": "Sources/TorahInspectorCore/TorahSourceTransfer.swift",
+      "role": "original-core",
+      "sha256": "994da5da2cb6b163083c7f3dea20cfe74c781211eea0f144b394a6d047affc97",
+      "sourcePath": "/mnt/development/projects/caches/pinkha-w1-migration-swift-20261127/checkouts/TorahInspectorKit/Sources/TorahInspectorCore/TorahSourceTransfer.swift",
+      "target": "TorahInspectorCore"
+    },
+    {
+      "bytes": 2005,
+      "compile": true,
+      "isolatedPath": "Sources/TorahInspectorCore/TorahToolSelectorStateMachine.swift",
+      "kind": "production",
+      "mode": 292,
+      "path": "Sources/TorahInspectorCore/TorahToolSelectorStateMachine.swift",
+      "role": "original-core",
+      "sha256": "34dda44a571764ea98e43449422340ad7a00dbe4b0d43c0036d7d48ad8119729",
+      "sourcePath": "/mnt/development/projects/caches/pinkha-w1-migration-swift-20261127/checkouts/TorahInspectorKit/Sources/TorahInspectorCore/TorahToolSelectorStateMachine.swift",
+      "target": "TorahInspectorCore"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCaptureDescriptorTests.swift",
+      "isolatedPath": "Tests/CaptureProducerContractTests/NativeCaptureDescriptorTests.swift",
+      "target": "CaptureProducerContractTests",
+      "kind": "test",
+      "compile": true,
+      "role": "new-direct-capture-component-tests",
+      "bytes": 23514,
+      "sha256": "90d0f70b5f9c08d733c132319c3a0c821c7671f71ff927aba8d3a1f7d45cac6b",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "7e3242682b32353fce800a573ac0e72e51e72827",
+        "bytes": 23514,
+        "sha256": "90d0f70b5f9c08d733c132319c3a0c821c7671f71ff927aba8d3a1f7d45cac6b"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Tests/NativeCaptureDescriptorTests.swift",
+      "selectedMethods": [
+        "NativeCaptureDescriptorTests/testPreservationExportRetainsOnlyDeclaredBytesAndNoAuthority",
+        "NativeCaptureDescriptorTests/testPreservationExportKeepsOriginalBytesAndRefusesSubstitutedMemberDescriptor",
+        "NativeCaptureDescriptorTests/testPreservationExportCountsManifestInAggregateLimitBeforeMemberIO",
+        "NativeCaptureDescriptorTests/testPreservationExportRetainsDescriptorAndPrivateMemberGuards"
+      ],
+      "excludedMethods": [
+        "NativeCaptureDescriptorTests/testDescriptorRequiresExactCallerIdentityAndUnambiguousCapturedOnlyContract",
+        "NativeCaptureDescriptorTests/testPrivateBundleReadVerifiesAllBytesWithoutPromotingSourceOrDestinationAuthority",
+        "NativeCaptureDescriptorTests/testChangedManifestSourceBytesCountsAndFlagsAreRefused",
+        "NativeCaptureDescriptorTests/testParentEscapeSymlinksAndNonPrivatePermissionsAreRefused",
+        "NativeCaptureDescriptorTests/testOriginalNativeCapturesReadThroughPrivateDescriptorAndKeepTheirSemanticBlockers"
+      ],
+      "scope": "Four additive export/private-reader controls; five original methods compile unchanged but are excluded.",
+      "physicalAdmission": "Git whole-source readback only; no physical test source installation or compiler admission."
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeDirectCapturePreservationTests.swift",
+      "isolatedPath": "Tests/CaptureProducerContractTests/NativeDirectCapturePreservationTests.swift",
+      "target": "CaptureProducerContractTests",
+      "kind": "test",
+      "compile": true,
+      "role": "new-direct-capture-component-tests",
+      "bytes": 31708,
+      "sha256": "7c6f5bc27d287a725a604f653eafc104a3bcd6c61e2452cad7704d3f6d031712",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "a52f10dfc99e00cb3df1a4bb3329862caf7ec99b",
+        "bytes": 31708,
+        "sha256": "7c6f5bc27d287a725a604f653eafc104a3bcd6c61e2452cad7704d3f6d031712"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Tests/NativeDirectCapturePreservationTests.swift",
+      "selectedMethods": [
+        "NativeDirectCapturePreservationTests/testDirectArchiveRetainsCompleteCapturedDescriptorsWithoutRecovery",
+        "NativeDirectCapturePreservationTests/testDirectCaptureRequiresExplicitCompleteDescriptorCensus",
+        "NativeDirectCapturePreservationTests/testDirectArchiveRejectsOppositeEvidenceHeadersAndCrossVersionBindings",
+        "NativeDirectCapturePreservationTests/testDirectArchiveRejectsPayloadCorruptionExtraBytesAndRecoveryMembers",
+        "NativeDirectCapturePreservationTests/testHistoricalReferenceEncodingRetainsExactlyTheOriginalClosedV1Keys",
+        "NativeDirectCapturePreservationTests/testDirectReferenceRejectsNullEmptyMissingAndOppositeEvidenceFields",
+        "NativeDirectCapturePreservationTests/testActualRetainedV1ArchiveAnd182PlanRemainByteIdentical",
+        "NativeDirectCapturePreservationTests/testSyntheticCompleteCaptureDerivativeAdmitsV2PlanCatalogAndLocatorPair"
+      ],
+      "excludedMethods": [],
+      "scope": "Six new synthetic archive/reference controls, one exact retained v1 archive/182-plan byte regression, and one explicitly synthetic complete-capture derivative with positive v2 plan/catalog and paired locator codec checks.",
+      "physicalAdmission": "Git whole-source readback only; no physical test source installation or compiler admission."
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeMigrationPrivateStorageTests.swift",
+      "isolatedPath": "Tests/CaptureProducerContractTests/NativeMigrationPrivateStorageTests.swift",
+      "target": "CaptureProducerContractTests",
+      "kind": "test",
+      "compile": true,
+      "role": "new-direct-capture-component-tests",
+      "bytes": 14238,
+      "sha256": "3770f8a8029da34c096495157655fd00ba69c0b209fe769e17b5f31c61c57eb4",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "f3fb604a7a4eef2067e694114dc7203fdc1ee19a",
+        "bytes": 14238,
+        "sha256": "3770f8a8029da34c096495157655fd00ba69c0b209fe769e17b5f31c61c57eb4"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Tests/NativeMigrationPrivateStorageTests.swift",
+      "selectedMethods": [
+        "NativeMigrationPrivateStorageTests/testFreshArchiveAndExactReuseKeepOnePrivateVerifiedFile",
+        "NativeMigrationPrivateStorageTests/testCaptureAndUnlistedDescendantAreRefusedAsEitherOutputParent",
+        "NativeMigrationPrivateStorageTests/testPartialOrWritableExistingArchiveIsRetainedAndNeverOverwritten",
+        "NativeMigrationPrivateStorageTests/testReplacedOutputOrExistingJournalScopeRefusesBeforeMaterialization"
+      ],
+      "excludedMethods": [],
+      "scope": "Four synthetic private storage controls; no mount, injected fsync fault, crash recovery or actual journal/native acceptance.",
+      "physicalAdmission": "Git whole-source readback only; no physical test source installation or compiler admission."
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeMigrationProducerLifetimeTests.swift",
+      "isolatedPath": "Tests/CaptureProducerContractTests/NativeMigrationProducerLifetimeTests.swift",
+      "target": "CaptureProducerContractTests",
+      "kind": "test",
+      "compile": true,
+      "role": "new-direct-capture-component-tests",
+      "bytes": 32886,
+      "sha256": "1281c6e7fe7718ee0225af0a42bf3f3cb9f30f36adf2f7eaccf02d6004709732",
+      "sourcePin": {
+        "repository": "davidpovarsky/anytype-swift",
+        "gitBlobSHA": "30480edf10256c5bd367da92ce49db07a2216cc9",
+        "bytes": 32886,
+        "sha256": "1281c6e7fe7718ee0225af0a42bf3f3cb9f30f36adf2f7eaccf02d6004709732"
+      },
+      "proposedPreparedMode": 384,
+      "proposedPreparedRelativePath": "Tests/NativeMigrationProducerLifetimeTests.swift",
+      "selectedMethods": [
+        "NativeMigrationProducerLifetimeTests/testBusyRefusalKeepsTheRegisteredOperationAndReleasesItsSlotAtTerminal",
+        "NativeMigrationProducerLifetimeTests/testExternalInvalidationCancelsAndWaitsForTheLateOuterDestinationResult",
+        "NativeMigrationProducerLifetimeTests/testNativeCloseFailureStillJoinsTheOuterResultAndRetriesTheSameOwnedGrant",
+        "NativeMigrationProducerLifetimeTests/testSourceBindingRefusalClosesTheOriginalGrantWithoutJoiningItsAwaitingProducer"
+      ],
+      "excludedMethods": [],
+      "scope": "Four generic registered-operation/source-owner controls using synthetic grants/observations; execute/produce and a native Completion are never invoked or manufactured.",
+      "physicalAdmission": "Git whole-source readback only; no physical test source installation or compiler admission."
+    }
+  ],
+  "inheritedContract": {
+    "selectedMethods": [
+      "NativeDirectCapturePreservationTests/testDirectArchiveRetainsCompleteCapturedDescriptorsWithoutRecovery",
+      "NativeDirectCapturePreservationTests/testDirectCaptureRequiresExplicitCompleteDescriptorCensus",
+      "NativeDirectCapturePreservationTests/testDirectArchiveRejectsOppositeEvidenceHeadersAndCrossVersionBindings",
+      "NativeDirectCapturePreservationTests/testDirectArchiveRejectsPayloadCorruptionExtraBytesAndRecoveryMembers",
+      "NativeDirectCapturePreservationTests/testHistoricalReferenceEncodingRetainsExactlyTheOriginalClosedV1Keys",
+      "NativeDirectCapturePreservationTests/testDirectReferenceRejectsNullEmptyMissingAndOppositeEvidenceFields",
+      "NativeDirectCapturePreservationTests/testActualRetainedV1ArchiveAnd182PlanRemainByteIdentical",
+      "NativeDirectCapturePreservationTests/testSyntheticCompleteCaptureDerivativeAdmitsV2PlanCatalogAndLocatorPair",
+      "NativeCaptureDescriptorTests/testPreservationExportRetainsOnlyDeclaredBytesAndNoAuthority",
+      "NativeCaptureDescriptorTests/testPreservationExportKeepsOriginalBytesAndRefusesSubstitutedMemberDescriptor",
+      "NativeCaptureDescriptorTests/testPreservationExportCountsManifestInAggregateLimitBeforeMemberIO",
+      "NativeCaptureDescriptorTests/testPreservationExportRetainsDescriptorAndPrivateMemberGuards",
+      "NativeMigrationPrivateStorageTests/testFreshArchiveAndExactReuseKeepOnePrivateVerifiedFile",
+      "NativeMigrationPrivateStorageTests/testCaptureAndUnlistedDescendantAreRefusedAsEitherOutputParent",
+      "NativeMigrationPrivateStorageTests/testPartialOrWritableExistingArchiveIsRetainedAndNeverOverwritten",
+      "NativeMigrationPrivateStorageTests/testReplacedOutputOrExistingJournalScopeRefusesBeforeMaterialization",
+      "NativeMigrationProducerLifetimeTests/testBusyRefusalKeepsTheRegisteredOperationAndReleasesItsSlotAtTerminal",
+      "NativeMigrationProducerLifetimeTests/testExternalInvalidationCancelsAndWaitsForTheLateOuterDestinationResult",
+      "NativeMigrationProducerLifetimeTests/testNativeCloseFailureStillJoinsTheOuterResultAndRetriesTheSameOwnedGrant",
+      "NativeMigrationProducerLifetimeTests/testSourceBindingRefusalClosesTheOriginalGrantWithoutJoiningItsAwaitingProducer"
+    ],
+    "excludedMethods": [
+      "NativeCaptureDescriptorTests/testDescriptorRequiresExactCallerIdentityAndUnambiguousCapturedOnlyContract",
+      "NativeCaptureDescriptorTests/testPrivateBundleReadVerifiesAllBytesWithoutPromotingSourceOrDestinationAuthority",
+      "NativeCaptureDescriptorTests/testChangedManifestSourceBytesCountsAndFlagsAreRefused",
+      "NativeCaptureDescriptorTests/testParentEscapeSymlinksAndNonPrivatePermissionsAreRefused",
+      "NativeCaptureDescriptorTests/testOriginalNativeCapturesReadThroughPrivateDescriptorAndKeepTheirSemanticBlockers"
+    ],
+    "excludedSourceFiles": [
+      {
+        "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCanonicalDefinitionSupplementTests.swift",
+        "isolatedPath": "Tests/ColdOrdinary14ContractTests/NativeCanonicalDefinitionSupplementTests.swift",
+        "bytes": 10755,
+        "sha256": "e8a40030d0cca49e7978869e487ba1422bc135e65f88469ba61ee852a73b7319",
+        "reason": "Not needed by this independent twenty-method cohort; no prior canonical/cold method replay."
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeImportedOrdinaryPropertyContextTests.swift",
+        "isolatedPath": "Tests/ColdOrdinary14ContractTests/NativeImportedOrdinaryPropertyContextTests.swift",
+        "bytes": 41410,
+        "sha256": "b2a9c2f9fed99eaa0abea3b687026b186b38b02e10194057c09cbe637c1fbdfe",
+        "reason": "Not needed by this independent twenty-method cohort; no prior canonical/cold method replay."
+      }
+    ],
+    "fixtureInputs": {
+      "count": 2,
+      "totalBytes": 3458499,
+      "actualInputAdmissionProof": {
+        "blob": "a454802f6b3afaf6e9a74b3855f38554c4db859a",
+        "bytes": 3809,
+        "sha256": "8fb7eb0e6ac3e57c81943050f3337c61cdc6d8ec084fb7f11ad1c3fec505cd9f"
+      },
+      "originalResult": {
+        "path": "/var/lib/pinkha-c-native-preservation-20261126/linux-resume-attempt1/result.json",
+        "bytes": 7510,
+        "sha256": "f7f4a5b34465907c3285229a266a488229a92eb1c3a7c04c5b4cdd162ed1b32b"
+      },
+      "files": [
+        {
+          "role": "retained-v1-archive",
+          "path": "/var/lib/pinkha-c-native-preservation-20261126/linux-resume-attempt1/private-work/original-source.pinkha-heart-source",
+          "bytes": 1634696,
+          "sha256": "5d72e36849884da3da3fe9ddde0a01f49a03cde3b417f49456e3558bea8db463",
+          "environment": "PINKHA_CAPTURE_PRODUCER_RETAINED_V1_ARCHIVE"
+        },
+        {
+          "role": "retained-accepted-plan",
+          "path": "/var/lib/pinkha-c-native-preservation-20261126/linux-resume-attempt1/private-work/source-preservation-plan.json",
+          "bytes": 1823803,
+          "sha256": "4a61914d5dbd3ccb4874f81444e4d0770c9e7e2dfe4259b8b93f15796accb930",
+          "environment": "PINKHA_CAPTURE_PRODUCER_RETAINED_V1_PLAN"
+        }
+      ],
+      "futureQualificationPolicy": "The controller must O_NOATIME/O_NOFOLLOW-admit exact original bytes and stable full metadata, create only its owned immutable input copies, bind environment to those copies, and recheck originals/copies before final success. No private input bytes are published. Both original/synthetic methods are mandatory if this twenty-method selection is run; any skip is failure.",
+      "noOriginalOperationsExecuted": true,
+      "noLooseOriginal156PayloadCopies": true,
+      "syntheticDerivative": "Original recovered descriptor bytes are declared as captured members only inside a clearly synthetic derivative. It is not an actual App capture, native migration, completed checkpoint or authority proof.",
+      "earlierUnavailableLocator": {
+        "proofBlob": "d8cb35d5a4c0ed6678d4635321ac2a888c8e6d5c",
+        "status": "PRESERVED_FAILED_PATH_OBSERVATION_NOT_RETRIED"
+      }
+    },
+    "protectedSourceChecks": {
+      "journalSHA256": "f0846218cf0ceb933271ff87985eca590e11edaf8fb429a3ed2381cc7b70d6db",
+      "executorSHA256": "37a827abab7f8458ff0274bc0cc99a65ba62ea6068e7498d025be7fee1fee8dd",
+      "directorySHA256": "f8706b054757b2601a1e094558989c2a66d44b7a9ddcaee94a543563db38ff27",
+      "allCurrentC14GuardsPreserved": true,
+      "sourceAccountControllerAndCoordinatorUnchanged": true
+    },
+    "separateCompatibilityChanges": [
+      {
+        "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeSourcePreservationTests.swift",
+        "blob": "4c2f66a5dd6bb0026c191c9af658589e9c0997ef",
+        "bytes": 28485,
+        "sha256": "50905e9048d8a24cbfc70197db527eebf213f82cbadb64a289c97c212bdf7934"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/RecoveredCompiledDefinitionTests.swift",
+        "blob": "563bed95bdd822165d5a2479ee9eb948579b21e6",
+        "bytes": 36659,
+        "sha256": "a521190e904d3b32993ed1754e2628be7173471a73a6f69a56c818c9a7a0fadc"
+      }
+    ],
+    "compatibilityScope": "Two full legacy test-file successors add strict XCTUnwrap at four known-v1 optional dereferences, preserving old assertions. They are publication compatibility changes, not compiled/selected in this isolated graph; no old acceptance is claimed.",
+    "runnerRequirements": {
+      "skipIsFailure": true,
+      "expectedUniqueStarts": 20,
+      "expectedUniquePasses": 20,
+      "expectedFailures": 0,
+      "coreDumpLimitBytes": 0,
+      "onCleanupAbort": "Preserve the synthetic fixture, process failure and whole-cohort FAIL. Do not infer task drain, cleanup completion, or absent method passes.",
+      "physicalSourceAdmissionRequired": true,
+      "sourceOnlyGraphDoesNotAuthorizeExecution": true
+    },
+    "resourceProposal": {
+      "status": "UNRELEASED_REQUIRES_CONTROLLER_AND_PEER",
+      "rootAdmissionBytes": 2181038080,
+      "developmentAdmissionBytes": 973078528,
+      "minimumAvailableMemoryBytes": 3221225472,
+      "ownedOutputCapBytes": 402653184,
+      "mainSeconds": 900,
+      "finalSeconds": 120,
+      "outerSeconds": 1080,
+      "policy": "Keep the newer component donor floors/caps unchanged. A different root policy is not justified merely by placing outputs in DEV.",
+      "isolation": "Fresh owned DEV package, output, scratch/cache/config/security/TMP; original C3 Crypto remains read-only. No E97/Swift23 cache mutation, native runtime, account opening or Native159/Nav3 Products.",
+      "workingSetLimitation": "The complete source graph is finite; successful compiler working-set fit within the unchanged cap has not been observed."
+    },
+    "currentApplicationScope": {
+      "notTheQualifiedSourceGraph": true,
+      "knownDifferentSource": {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+        "graph": {
+          "bytes": 43999,
+          "sha256": "bd78d4bed9ff005d05317a0f6eff1f40bc6b9bbe3495608ed1e4edd830b11a0c",
+          "gitBlob": "7fee8b7ae36c626dd921e14024a6a5a0466d3a2d",
+          "sourceCommit": "d1b04526825ad10b07c59313727629cec35f9559"
+        },
+        "currentApp": {
+          "bytes": 53698,
+          "sha256": "b91ed64c54ec552caa68a3b49c272ff8f008722b3a41fc76d9eadf4eaf9ef93b",
+          "gitBlob": "b8de5482053e5f7e3bf6798608f09a98d291281a",
+          "observation": "This full-file difference was actually observed at daa/af1; it is not an independently repeated ff577 full-App graph census."
+        }
+      },
+      "requirement": "This new131-row component graph is the exact historical cold Ordinary14 basis plus enumerated direct-capture bodies and six current af1 whole dependencies. It does not assert a complete active-App graph equivalence; current App PropertyStore remains a known different full file.",
+      "observedSourceCollectionCommit": "af1aca9c33c0b38101c20ab24c88b1cfc07d7a17",
+      "intendedIntakeCommit": "ff5777896ced23171522a0d6d735e2b235b11ffc",
+      "intendedIntakeTree": "0a2b71e59efa409c26644fab8ec39b7797a0c313",
+      "intakeObservationScope": "Exactly nine declared active beforeimages and eight unchanged dependency bodies were whole-read from ff577 and match the held source provenance. This is not a complete ff577 graph/API census.",
+      "declaredIntakeProof": {
+        "blob": "10e15c0420fecbb096052b4eda3dc6089e4a0f71",
+        "bytes": 8926,
+        "sha256": "8ac0ea200f558acaca43848883a3218c7c5d9598f5cfe220f892497048753f32"
+      }
+    },
+    "applicationIntegration": {
+      "destinationOperationSourceCommit": "43b7413c2debb2aac23666f5fe51f36c3618bcb8",
+      "sameOwnerDestinationOperationRequired": true,
+      "sourceLifetimeAndStorageOwnership": "W3 must invoke producer.execute with the existing presentation operation as its adapter, supply explicit intended actual destination IDs, retain the live capture owner and private namespace ownership through full outer drain, and persist actual completion through its App owner.",
+      "appCallsiteChanged": false,
+      "platformNativeCoexistenceQualified": false,
+      "currentAccountRunBackendQualified": false,
+      "ordinary14FollowOn": "Current producer19892 returns the preservation and content locators only. It neither executes the separate fourteen-property supplement nor supplies its third locator. C owns a later explicit same-lifetime executor/verifier/checkpoint join; the finite supplement source must be checked before revalidating the original complete capture, without weakening coordinator full-census checks."
+    },
+    "acceptanceLimits": [
+      "No current native authority, real App producer execution, migration completion or destination Writer qualification from these component tests.",
+      "No whole-source behavior acceptance, original native history semantic acceptance, unsupported format/layout capability, max-count extension, file-derived provider or cloud quota claim.",
+      "Strict captured-complete route requires exact explicit captured descriptor census; legacy recovery semantics remain separate and unchanged.",
+      "No original 182 operation replay and no synthetic completed checkpoint promoted to actual evidence."
+    ],
+    "publicOptionalAPICensus": {
+      "commit": "af1aca9c33c0b38101c20ab24c88b1cfc07d7a17",
+      "blob": "be66d9a2e0c349103a10c499d4ce74ba62a06336",
+      "bytes": 28172,
+      "sha256": "2520ff819606cbb2ed108700625f342856a63ad50eb2a706739983c39e1e879c",
+      "status": "ACTUAL_TRACKED_SOURCE_READ_ONLY_NOT_COMPILED",
+      "scope": "Ten declared tracked Swift roots; 9 files, 56 matches, 190294 whole source bytes. No current ff577 full census is inferred."
+    }
+  },
+  "inheritedContractQualification": "Every copied contract field above is whole-JSON identical to the frozen131 graph. Current-application and compatibility statements remain historical statements of that graph, not a full73a or current-App equivalence claim.",
+  "historicalFoundationLineage": {
+    "basis": {
+      "repository": "davidpovarsky/anytype-swift",
+      "coldOrdinary14": {
+        "commit": "60ad6ce0f7449bb68bd0cebdd3477ee96025ab0e",
+        "graph": {
+          "blob": "ad8807ffb05ebdf0595219ccce176f302d9cfca6",
+          "bytes": 109244,
+          "sha256": "97e9b677e2d7862f8b7caa1e5cbe05a62492865ef144b36ee892178735542656"
+        },
+        "productionFiles": 115,
+        "status": "SOURCE_ONLY_NOT_RUN"
+      },
+      "frozenC22": {
+        "commit": "bcd4518793abda5f4183c81ddd150ae94abdb20e",
+        "graph": {
+          "blob": "99b9ce2537b74ef92d6140ca4fb3be4fb7e3a0af",
+          "bytes": 101601,
+          "sha256": "be001f4ecebd9143580fc6d67b21dd60e6c6c65698382c8e1be521145cc01867",
+          "wholeReadback": true
+        },
+        "wholeFiles": 118,
+        "productionFiles": 112,
+        "selectedMethods": 22,
+        "status": "SOURCE_ONLY_NOT_RUN"
+      },
+      "currentC14": {
+        "commit": "05ef820f404db4d2cc9088009b90927fe59394b0",
+        "sevenProductionFilesPreserved": true,
+        "journalSHA256": "f0846218cf0ceb933271ff87985eca590e11edaf8fb429a3ed2381cc7b70d6db",
+        "original111andNative112GraphsUnchanged": true
+      },
+      "observedCurrentApplicationCommit": "af1aca9c33c0b38101c20ab24c88b1cfc07d7a17",
+      "wholeFileComposition": [
+        "Retain 110 of the 115 production rows of the exact cold Ordinary14 graph whole-JSON unchanged.",
+        "Replace only Archive, Preservation, Catalog, Reference and current Ordinary14-aware Owner with the reviewed direct-capture successors.",
+        "Add twelve complete production files: three new Evidence/Producer/Storage files, Root capture export, two unchanged live-source controller/coordinator files and six unchanged af1 Integration/PinkhaKit dependencies.",
+        "Remove both prior test sources from this new isolated graph. Compile four exact whole test files; select exactly twenty new methods and exclude the five included original descriptor methods.",
+        "Do not reuse old compiled Products or events, mutate C3, replay 182 migration operations, or copy the 317 loose original fixture members."
+      ]
+    },
+    "counts": {
+      "wholeSwiftFiles": 131,
+      "productionFiles": 127,
+      "testFiles": 4,
+      "selectedNewMethods": 20,
+      "excludedIncludedOldMethods": 5,
+      "unchangedPriorProductionRows": 110,
+      "replacedPriorProductionRows": 5,
+      "addedProductionRows": 12,
+      "productionSourceBytes": 1550575,
+      "testSourceBytes": 102346,
+      "sourceBytes": 1652921,
+      "oldMethodEventsReused": 0,
+      "oldCompiledProductsReused": 0,
+      "nativeAccounts": 0,
+      "nativeHTTPRequests": 0
+    },
+    "modifiedProduction": [
+      {
+        "before": {
+          "bytes": 15167,
+          "compile": true,
+          "isolatedPath": "Sources/PinkhaAnyIntegration/AnyHeartNativePreservationArchive.swift",
+          "kind": "production",
+          "mode": 384,
+          "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePreservationArchive.swift",
+          "role": "cold-context-draft6",
+          "sha256": "b1b7f69afe8a0248dc98471dd4c0a93a87e9670859b253a84d784ba7791bc642",
+          "sourcePath": "/mnt/development/projects/evidence/pinkha-c-imported-context-preparation-20261128-draft6/overlay/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePreservationArchive.swift",
+          "target": "PinkhaAnyIntegration"
+        },
+        "after": {
+          "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePreservationArchive.swift",
+          "isolatedPath": "Sources/PinkhaAnyIntegration/AnyHeartNativePreservationArchive.swift",
+          "target": "PinkhaAnyIntegration",
+          "kind": "production",
+          "compile": true,
+          "role": "direct-capture-whole-source-successor",
+          "bytes": 25677,
+          "sha256": "7ae154b210a0aad7f7f9c06a5cfc9b69adcaeb02f4b87f7952e4bf5a19f062b9",
+          "sourcePin": {
+            "repository": "davidpovarsky/anytype-swift",
+            "gitBlobSHA": "9ae2c11b553016cd2559787fa5b796989263b4c2",
+            "bytes": 25677,
+            "sha256": "7ae154b210a0aad7f7f9c06a5cfc9b69adcaeb02f4b87f7952e4bf5a19f062b9"
+          },
+          "proposedPreparedMode": 384,
+          "proposedPreparedRelativePath": "Sources/PinkhaAnyIntegration/AnyHeartNativePreservationArchive.swift",
+          "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+        }
+      },
+      {
+        "before": {
+          "bytes": 17751,
+          "compile": true,
+          "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeSourcePreservation.swift",
+          "kind": "production",
+          "mode": 420,
+          "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourcePreservation.swift",
+          "role": "original-c313",
+          "sha256": "ff103d4110e17fbb9ed6375ba0dc59968cf59fbb5bc77d8740dc53a40ce1cf98",
+          "sourcePath": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourcePreservation.swift",
+          "target": "PinkhaAnyHost"
+        },
+        "after": {
+          "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourcePreservation.swift",
+          "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeSourcePreservation.swift",
+          "target": "PinkhaAnyHost",
+          "kind": "production",
+          "compile": true,
+          "role": "direct-capture-whole-source-successor",
+          "bytes": 19633,
+          "sha256": "c9560ed1180340391944b01b66386b9bc56d7f9b4e559aaf0229293f9bc8e175",
+          "sourcePin": {
+            "repository": "davidpovarsky/anytype-swift",
+            "gitBlobSHA": "6f59b8fb49546d9f2cc42971a73863c0756b8e8e",
+            "bytes": 19633,
+            "sha256": "c9560ed1180340391944b01b66386b9bc56d7f9b4e559aaf0229293f9bc8e175"
+          },
+          "proposedPreparedMode": 384,
+          "proposedPreparedRelativePath": "Sources/PinkhaAnyHost/AnyHeartNativeSourcePreservation.swift",
+          "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+        }
+      },
+      {
+        "before": {
+          "bytes": 19519,
+          "compile": true,
+          "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeImportedCatalog.swift",
+          "kind": "production",
+          "mode": 384,
+          "origin": "previously-qualified-whole-source",
+          "originalLocalPath": "root-relay/original-source-metadata/Sources/AnyNativeImportedCatalog.swift",
+          "path": "Sources/AnyNativeImportedCatalog.swift",
+          "role": "prepared-source",
+          "sha256": "bf886d81f6b0fe7b724f0e347f991681e7ca9d6599476ee13dbce9fb1a84b50b",
+          "sourcePath": "/mnt/development/projects/evidence/pinkha-original-source-metadata6-20261127/prepared2/Sources/AnyNativeImportedCatalog.swift",
+          "target": "PinkhaAnyHost"
+        },
+        "after": {
+          "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedCatalog.swift",
+          "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeImportedCatalog.swift",
+          "target": "PinkhaAnyHost",
+          "kind": "production",
+          "compile": true,
+          "role": "direct-capture-whole-source-successor",
+          "bytes": 20932,
+          "sha256": "4adc898366a011542266731568b32014189641d3250a8cf778ee25d1ecfa8291",
+          "sourcePin": {
+            "repository": "davidpovarsky/anytype-swift",
+            "gitBlobSHA": "d45211748deacc9fa3d59215c8e15e74a72dd95a",
+            "bytes": 20932,
+            "sha256": "4adc898366a011542266731568b32014189641d3250a8cf778ee25d1ecfa8291"
+          },
+          "proposedPreparedMode": 384,
+          "proposedPreparedRelativePath": "Sources/PinkhaAnyHost/AnyNativeImportedCatalog.swift",
+          "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+        }
+      },
+      {
+        "before": {
+          "bytes": 10952,
+          "compile": true,
+          "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeImportedContextReference.swift",
+          "kind": "production",
+          "mode": 384,
+          "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextReference.swift",
+          "role": "cold-context-draft6",
+          "sha256": "950a947e9c3ad57ae70e627042747ef1dff4b6e890e22d2246cf776c2a3f7e87",
+          "sourcePath": "/mnt/development/projects/evidence/pinkha-c-imported-context-preparation-20261128-draft6/overlay/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextReference.swift",
+          "target": "PinkhaAnyHost"
+        },
+        "after": {
+          "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextReference.swift",
+          "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeImportedContextReference.swift",
+          "target": "PinkhaAnyHost",
+          "kind": "production",
+          "compile": true,
+          "role": "direct-capture-whole-source-successor",
+          "bytes": 12903,
+          "sha256": "5594056fd2e8a5e08a02bd670f0f534187eab0ca7722c9c6cbedcf474bc929cd",
+          "sourcePin": {
+            "repository": "davidpovarsky/anytype-swift",
+            "gitBlobSHA": "dc6e21e129a02cf75ff6b1bd0598dedaac1d9267",
+            "bytes": 12903,
+            "sha256": "5594056fd2e8a5e08a02bd670f0f534187eab0ca7722c9c6cbedcf474bc929cd"
+          },
+          "proposedPreparedMode": 384,
+          "proposedPreparedRelativePath": "Sources/PinkhaAnyHost/AnyNativeImportedContextReference.swift",
+          "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+        }
+      },
+      {
+        "before": {
+          "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift",
+          "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift",
+          "target": "PinkhaAnyHost",
+          "kind": "production",
+          "compile": true,
+          "role": "new-cold-ordinary14-join-source-only",
+          "bytes": 36425,
+          "sha256": "b4891b47901f6243cdad5cb45b000f94fbe8b2b309b4de85692cfda75382b4d7",
+          "sourcePin": {
+            "repository": "davidpovarsky/anytype-swift",
+            "gitBlobSHA": "5e75478bae4f1f426625ac4d44ecd4ec144bdc4b",
+            "bytes": 36425,
+            "sha256": "b4891b47901f6243cdad5cb45b000f94fbe8b2b309b4de85692cfda75382b4d7"
+          },
+          "proposedPreparedMode": 384,
+          "proposedPreparedRelativePath": "Sources/AnyNativeImportedContextOwner.swift",
+          "physicalAdmission": "Not installed. The proposed0600 mode is an explicit new-source policy, not an observed physical mode."
+        },
+        "after": {
+          "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift",
+          "isolatedPath": "Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift",
+          "target": "PinkhaAnyHost",
+          "kind": "production",
+          "compile": true,
+          "role": "direct-capture-whole-source-successor",
+          "bytes": 36356,
+          "sha256": "be03fc564171c720a91bd79d060d6edd9798da49cb7a19f88f57ade79e31acec",
+          "sourcePin": {
+            "repository": "davidpovarsky/anytype-swift",
+            "gitBlobSHA": "b041309e13291cb41c9cec48d32865bb66af5553",
+            "bytes": 36356,
+            "sha256": "be03fc564171c720a91bd79d060d6edd9798da49cb7a19f88f57ade79e31acec"
+          },
+          "proposedPreparedMode": 384,
+          "proposedPreparedRelativePath": "Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift",
+          "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+        }
+      }
+    ],
+    "addedProduction": [
+      {
+        "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionEvidence.swift",
+        "isolatedPath": "Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionEvidence.swift",
+        "target": "PinkhaAnyIntegration",
+        "kind": "production",
+        "compile": true,
+        "role": "direct-capture-source-addition-to-component-graph",
+        "bytes": 2251,
+        "sha256": "9f53864a7bf97627789e7cb2702a76e280bfc05859a2b8ec5c5130d9075881e3",
+        "sourcePin": {
+          "repository": "davidpovarsky/anytype-swift",
+          "gitBlobSHA": "e6785a066c68143eca97fc199851aeac7da6be94",
+          "bytes": 2251,
+          "sha256": "9f53864a7bf97627789e7cb2702a76e280bfc05859a2b8ec5c5130d9075881e3"
+        },
+        "proposedPreparedMode": 384,
+        "proposedPreparedRelativePath": "Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionEvidence.swift",
+        "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+        "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+        "target": "PinkhaAnyHost",
+        "kind": "production",
+        "compile": true,
+        "role": "direct-capture-source-addition-to-component-graph",
+        "bytes": 17059,
+        "sha256": "3d69a030340e8718bd082726e69abebb32cc8428cd9201c1a00afa7803055e01",
+        "sourcePin": {
+          "repository": "davidpovarsky/anytype-swift",
+          "gitBlobSHA": "19892c31e9c027395f0e89fcc59edefcabe9f4ab",
+          "bytes": 17059,
+          "sha256": "3d69a030340e8718bd082726e69abebb32cc8428cd9201c1a00afa7803055e01"
+        },
+        "proposedPreparedMode": 384,
+        "proposedPreparedRelativePath": "Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+        "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartMigrationPrivateStorage.swift",
+        "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartMigrationPrivateStorage.swift",
+        "target": "PinkhaAnyHost",
+        "kind": "production",
+        "compile": true,
+        "role": "direct-capture-source-addition-to-component-graph",
+        "bytes": 18809,
+        "sha256": "5822ead21af2235459f73670ad37f92fcfe2f1fe4f619a04f11a2cb90edd7dfe",
+        "sourcePin": {
+          "repository": "davidpovarsky/anytype-swift",
+          "gitBlobSHA": "854de837370b8e280ab109da5a99276db75426bf",
+          "bytes": 18809,
+          "sha256": "5822ead21af2235459f73670ad37f92fcfe2f1fe4f619a04f11a2cb90edd7dfe"
+        },
+        "proposedPreparedMode": 384,
+        "proposedPreparedRelativePath": "Sources/PinkhaAnyHost/AnyHeartMigrationPrivateStorage.swift",
+        "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeCaptureDescriptor.swift",
+        "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeCaptureDescriptor.swift",
+        "target": "PinkhaAnyHost",
+        "kind": "production",
+        "compile": true,
+        "role": "direct-capture-source-addition-to-component-graph",
+        "bytes": 17627,
+        "sha256": "87ae4d9282aedc813879947f319d854d0bb55496ab796c497e9a7f58af86bfd9",
+        "sourcePin": {
+          "repository": "davidpovarsky/anytype-swift",
+          "gitBlobSHA": "03f22b12ff63f05be04f1c8430f02a90c4566590",
+          "bytes": 17627,
+          "sha256": "87ae4d9282aedc813879947f319d854d0bb55496ab796c497e9a7f58af86bfd9"
+        },
+        "proposedPreparedMode": 384,
+        "proposedPreparedRelativePath": "Sources/PinkhaAnyHost/AnyHeartNativeCaptureDescriptor.swift",
+        "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourceAccountController.swift",
+        "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeSourceAccountController.swift",
+        "target": "PinkhaAnyHost",
+        "kind": "production",
+        "compile": true,
+        "role": "direct-capture-source-addition-to-component-graph",
+        "bytes": 10161,
+        "sha256": "87ae93153c2f425c20e842dac6b60d18fae867978fe6d180a717faee9bf465cd",
+        "sourcePin": {
+          "repository": "davidpovarsky/anytype-swift",
+          "gitBlobSHA": "63f2a6083f487acd925e525e4922ccc98c900d67",
+          "bytes": 10161,
+          "sha256": "87ae93153c2f425c20e842dac6b60d18fae867978fe6d180a717faee9bf465cd"
+        },
+        "proposedPreparedMode": 384,
+        "proposedPreparedRelativePath": "Sources/PinkhaAnyHost/AnyHeartNativeSourceAccountController.swift",
+        "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourceCaptureCoordinator.swift",
+        "isolatedPath": "Sources/PinkhaAnyHost/AnyHeartNativeSourceCaptureCoordinator.swift",
+        "target": "PinkhaAnyHost",
+        "kind": "production",
+        "compile": true,
+        "role": "direct-capture-source-addition-to-component-graph",
+        "bytes": 13243,
+        "sha256": "3d77b08c4d3c14c9520d116fdd382244cfad796378fa6e4b065ef5e7061c3da7",
+        "sourcePin": {
+          "repository": "davidpovarsky/anytype-swift",
+          "gitBlobSHA": "f8bb507c5604ffcc7556693403bb4af10ce7a446",
+          "bytes": 13243,
+          "sha256": "3d77b08c4d3c14c9520d116fdd382244cfad796378fa6e4b065ef5e7061c3da7"
+        },
+        "proposedPreparedMode": 384,
+        "proposedPreparedRelativePath": "Sources/PinkhaAnyHost/AnyHeartNativeSourceCaptureCoordinator.swift",
+        "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+      },
+      {
+        "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePinkhaSource.swift",
+        "isolatedPath": "Sources/PinkhaAnyIntegration/AnyHeartNativePinkhaSource.swift",
+        "target": "PinkhaAnyIntegration",
+        "kind": "production",
+        "compile": true,
+        "role": "unchanged-current-af1-whole-dependency",
+        "bytes": 19720,
+        "sha256": "235d4eb714cc8d577571336f265faa36dad2afde756265092020e5d717e7e2de",
+        "sourcePin": {
+          "repository": "davidpovarsky/anytype-swift",
+          "gitBlobSHA": "1a2058e4953df51acffac68e86de51286d1d7fc7",
+          "bytes": 19720,
+          "sha256": "235d4eb714cc8d577571336f265faa36dad2afde756265092020e5d717e7e2de"
+        },
+        "proposedPreparedMode": 384,
+        "proposedPreparedRelativePath": "Sources/PinkhaAnyIntegration/AnyHeartNativePinkhaSource.swift",
+        "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+      },
+      {
+        "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahMigration.swift",
+        "isolatedPath": "Sources/PinkhaAnyIntegration/AnyTorahMigration.swift",
+        "target": "PinkhaAnyIntegration",
+        "kind": "production",
+        "compile": true,
+        "role": "unchanged-current-af1-whole-dependency",
+        "bytes": 21673,
+        "sha256": "4b535020276c2ce467ebc86204e3bcc70b1006cdb7160c2533272ee05a26f90d",
+        "sourcePin": {
+          "repository": "davidpovarsky/anytype-swift",
+          "gitBlobSHA": "f88ca6c16fb9c5fbcc897e61f08f33716640415a",
+          "bytes": 21673,
+          "sha256": "4b535020276c2ce467ebc86204e3bcc70b1006cdb7160c2533272ee05a26f90d"
+        },
+        "proposedPreparedMode": 384,
+        "proposedPreparedRelativePath": "Sources/PinkhaAnyIntegration/AnyTorahMigration.swift",
+        "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+      },
+      {
+        "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahSemanticTargetAccess.swift",
+        "isolatedPath": "Sources/PinkhaAnyIntegration/AnyTorahSemanticTargetAccess.swift",
+        "target": "PinkhaAnyIntegration",
+        "kind": "production",
+        "compile": true,
+        "role": "unchanged-current-af1-whole-dependency",
+        "bytes": 400,
+        "sha256": "a7b7db78763d7d47ca7e3482dbd4ba4a5d7bca4b8b2b92f3109983b17426095f",
+        "sourcePin": {
+          "repository": "davidpovarsky/anytype-swift",
+          "gitBlobSHA": "d2e346b8231c15ed9105ee9294b46fc76e278f2a",
+          "bytes": 400,
+          "sha256": "a7b7db78763d7d47ca7e3482dbd4ba4a5d7bca4b8b2b92f3109983b17426095f"
+        },
+        "proposedPreparedMode": 384,
+        "proposedPreparedRelativePath": "Sources/PinkhaAnyIntegration/AnyTorahSemanticTargetAccess.swift",
+        "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+      },
+      {
+        "path": "Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSchemaRoles.swift",
+        "isolatedPath": "Sources/PinkhaKit/PinkhaSchemaRoles.swift",
+        "target": "PinkhaKit",
+        "kind": "production",
+        "compile": true,
+        "role": "unchanged-current-af1-whole-dependency",
+        "bytes": 1555,
+        "sha256": "891033c5597706f043026fbfa21cfe7eb010117bdbb0a6cdd194ba62e26103a3",
+        "sourcePin": {
+          "repository": "davidpovarsky/anytype-swift",
+          "gitBlobSHA": "83e42de4bf880d13ce20a841410681c6e6fa0f8d",
+          "bytes": 1555,
+          "sha256": "891033c5597706f043026fbfa21cfe7eb010117bdbb0a6cdd194ba62e26103a3"
+        },
+        "proposedPreparedMode": 384,
+        "proposedPreparedRelativePath": "Sources/PinkhaKit/PinkhaSchemaRoles.swift",
+        "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+      },
+      {
+        "path": "Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSpaceManifest.swift",
+        "isolatedPath": "Sources/PinkhaKit/PinkhaSpaceManifest.swift",
+        "target": "PinkhaKit",
+        "kind": "production",
+        "compile": true,
+        "role": "unchanged-current-af1-whole-dependency",
+        "bytes": 12178,
+        "sha256": "d3d55b7b7c2ee1ea060af93ec42921a1634f97fd14254c2dc3ac49582c07f0f1",
+        "sourcePin": {
+          "repository": "davidpovarsky/anytype-swift",
+          "gitBlobSHA": "d42050a84d5f232d05493c3f1787390c094db0fc",
+          "bytes": 12178,
+          "sha256": "d3d55b7b7c2ee1ea060af93ec42921a1634f97fd14254c2dc3ac49582c07f0f1"
+        },
+        "proposedPreparedMode": 384,
+        "proposedPreparedRelativePath": "Sources/PinkhaKit/PinkhaSpaceManifest.swift",
+        "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+      },
+      {
+        "path": "Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaBootstrapProtocols.swift",
+        "isolatedPath": "Sources/PinkhaKit/PinkhaBootstrapProtocols.swift",
+        "target": "PinkhaKit",
+        "kind": "production",
+        "compile": true,
+        "role": "unchanged-current-af1-whole-dependency",
+        "bytes": 4878,
+        "sha256": "1d3b20b5f88c2415a10ab21ba696bcfd821cca1b42979ffa51ad24c97818b525",
+        "sourcePin": {
+          "repository": "davidpovarsky/anytype-swift",
+          "gitBlobSHA": "c2e0b92df6fe5912c7e0452a1d866fd58942e676",
+          "bytes": 4878,
+          "sha256": "1d3b20b5f88c2415a10ab21ba696bcfd821cca1b42979ffa51ad24c97818b525"
+        },
+        "proposedPreparedMode": 384,
+        "proposedPreparedRelativePath": "Sources/PinkhaKit/PinkhaBootstrapProtocols.swift",
+        "physicalAdmission": "Git whole source readback only. Proposed0600 prepared mode is explicit; no physical source installation or compiler admission."
+      }
+    ],
+    "sourceClosure": {
+      "method": "Finite complete-file derivation. Every unchanged prior row is equal as whole JSON; every new or replaced body is fully read from its immutable Git blob and SHA256/byte-count matched. No token extraction, stubs or source pruning.",
+      "newDependencyChain": [
+        {
+          "from": "AnyHeartNativeSourceCaptureCoordinator.swift",
+          "to": "AnyHeartNativePinkhaSource.swift"
+        },
+        {
+          "from": "AnyHeartNativePinkhaSource.swift",
+          "to": [
+            "AnyTorahMigration.swift",
+            "PinkhaSchemaRoles.swift",
+            "PinkhaSpaceManifest.swift"
+          ]
+        },
+        {
+          "from": "AnyTorahMigration.swift",
+          "to": [
+            "AnyTorahSemanticTargetAccess.swift",
+            "existing AnyTorahSourceJSONGuard.swift, AnyTorahWorkspace.swift and AnyTorahOperation.swift"
+          ]
+        },
+        {
+          "from": "PinkhaSpaceManifest.swift",
+          "to": "PinkhaBootstrapProtocols.swift"
+        }
+      ],
+      "canonicalPathCorrection": "The inherited prepared Catalog row's repository path is stated explicitly as Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedCatalog.swift. The three PinkhaKit source paths retain their actual Schema/Bootstrap subdirectories while isolated compilation paths are deliberately flat.",
+      "compilerValidationPerformed": false,
+      "physicalModes": "Inherited modes are historical observations; new prepared 0600 modes are proposed explicitly. Every source and physical mode requires later installer/runtime admission."
+    },
+    "qualification": "These are the original frozen graph's lineage descriptions, preserved verbatim as historical metadata; the one-row correction is described separately above."
+  },
+  "executionBoundary": {
+    "runnableControllerIncluded": false,
+    "currentOracleControllersAdmitThisGraph": false,
+    "oracleAttempt3ModifiedOrRun": false,
+    "macContinuationOwner": "Wave3 under Root release",
+    "typecheckOrCompilePassClaimed": false,
+    "testMethodsRun": 0,
+    "nativeCalls": 0,
+    "originalFailuresPreserved": true,
+    "ordinary14Distinct128or129GraphAdopted": false,
+    "sourceOnlyDataRequiresFreshExplicitConsumerAdmission": true
+  }
+}

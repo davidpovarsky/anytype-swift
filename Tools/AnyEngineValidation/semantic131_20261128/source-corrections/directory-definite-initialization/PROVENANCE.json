@@ -1,0 +1,130 @@
+{
+  "schema": "pinkha-semantic131-directory-correction-provenance-v1",
+  "status": "PASS_SOURCE_ONLY_EXACT_SINGLE_ROW_COMPOSITION",
+  "baseGraph": {
+    "gitBlobSHA": "46476f8b9f48801029d327a84b1c322350aeb5d3",
+    "bytes": 134037,
+    "sha256": "748a0eb40a29a79198bbc396e7fb03061f7be1988a0259b670a76aeeeddb3597"
+  },
+  "correctedGraph": {
+    "bytes": 138877,
+    "sha256": "e038ff584135e63fa5cc1eb521a8c72539df0cd398ea29f9dcae27a0e6e2c632"
+  },
+  "correction": {
+    "before": "unresolvedSourceDefinitionIDs = source.sourceObjectIDs.filter {\n            guard let member = source.definitionMembers[Data($0.utf8)] else { return false }",
+    "after": "unresolvedSourceDefinitionIDs = preservation.source.sourceObjectIDs.filter {\n            guard let member = preservation.source.definitionMembers[Data($0.utf8)] else { return false }",
+    "oldSHA256": "f8706b054757b2601a1e094558989c2a66d44b7a9ddcaee94a543563db38ff27",
+    "newSHA256": "ca3c57dedb7388d6b10a44a39778b9a1339b36f6dbcf52d67fbb572cc5cbc2b4",
+    "oldBytes": 22948,
+    "newBytes": 22974,
+    "addedBytes": 26,
+    "wholeForwardInverse": true
+  },
+  "afterSource": {
+    "repository": "davidpovarsky/anytype-swift",
+    "commit": "73a7d25658c18aa9cb846dd578e064f058b9a981",
+    "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedDefinitionDirectory.swift",
+    "gitBlobSHA": "0c3e70cfad3d46a872ce575e69e9fe036d4a1bae",
+    "bytes": 22974,
+    "sha256": "ca3c57dedb7388d6b10a44a39778b9a1339b36f6dbcf52d67fbb572cc5cbc2b4"
+  },
+  "sourceCommitVerified": {
+    "tree": "042cfde3d08e22b549bde4112ca87103adb2cf14",
+    "parents": [
+      "e7e77dedd80f2c4c2c470076ff7e31d242ed7459"
+    ],
+    "wholeFixedPathBodyEqual": true
+  },
+  "graphInverse": {
+    "sourceRowIndex": 62,
+    "unchangedRows": 130,
+    "sourceRowForwardInverse": true,
+    "completeOriginalGraphRecovered": true,
+    "originalGraphSHA256": "748a0eb40a29a79198bbc396e7fb03061f7be1988a0259b670a76aeeeddb3597",
+    "correctedGraphSHA256": "e038ff584135e63fa5cc1eb521a8c72539df0cd398ea29f9dcae27a0e6e2c632",
+    "allContractFieldsExact": [
+      "selectedMethods",
+      "excludedMethods",
+      "excludedSourceFiles",
+      "fixtureInputs",
+      "protectedSourceChecks",
+      "separateCompatibilityChanges",
+      "compatibilityScope",
+      "runnerRequirements",
+      "resourceProposal",
+      "currentApplicationScope",
+      "applicationIntegration",
+      "acceptanceLimits",
+      "publicOptionalAPICensus"
+    ],
+    "modules": {
+      "PinkhaAnyEngine": {
+        "files": 14,
+        "bytes": 143799
+      },
+      "PinkhaAnyHost": {
+        "files": 66,
+        "bytes": 972274
+      },
+      "PinkhaAnyIntegration": {
+        "files": 24,
+        "bytes": 282067
+      },
+      "PinkhaKit": {
+        "files": 15,
+        "bytes": 100185
+      },
+      "TorahInspectorCore": {
+        "files": 8,
+        "bytes": 52276
+      },
+      "CaptureProducerContractTests": {
+        "files": 4,
+        "bytes": 102346
+      }
+    }
+  },
+  "literalPatch": {
+    "bytes": 854,
+    "sha256": "c41a2696ce5ce1f7fa38688e897745ecb5d058a3930aaf541f7059efa7e32943"
+  },
+  "rootPeer": {
+    "gitBlobSHA": "b25b7e4ecf8ec800b9a69dc350677e8abf718e3d",
+    "bytes": 4217,
+    "sha256": "06d470679d8158c81c81781ac4bb5820dec50452171f69f7855e58441cc54057"
+  },
+  "migrationPeer": {
+    "gitBlobSHA": "1cdf4d65fe36171595da6913bc24e25b05efdab9",
+    "bytes": 4581,
+    "sha256": "2aef76a157bb5f1de4fd3930407e52bae33a5cd7ae8827aef799407a8864c92b"
+  },
+  "actualFailureEvidence": {
+    "handoffStoryGID": "1220967241349540",
+    "macJob": "job_cb9b97f61090",
+    "receipt": {
+      "path": "/Users/m1/builds/pinkha-c20-portable-20261128-1/run/receipt.json",
+      "bytes": 29510,
+      "sha256": "80431a62bbe7569713214b2125f7b7e8d526387057dc437df90bbc5000c1bd96"
+    },
+    "log": {
+      "bytes": 203305,
+      "sha256": "b807857e7ccfeed1b10616837bb0c0cd4029ae207be2868b0aab21af495eb3e1"
+    },
+    "rootQualification": {
+      "path": "/mnt/development/projects/evidence/pinkha-w3-c20-portable-mac-route-20261128-prepared1/actual-c20-mac1/root-failure-qualification.json",
+      "bytes": 1534,
+      "sha256": "01689c3b6d09a032f5a357ad16eb0cace1e1d2f922cefcd5781d49b3ad7da100"
+    },
+    "qualification": "Original run remains FAIL, zero20 method events. E read the complete handoff and Root/C source peers, not these physical Mac files."
+  },
+  "limits": {
+    "newRunnableController": false,
+    "oracleController3Changed": false,
+    "oracleController3StagedOrExecutedByE": false,
+    "compiledOrTypecheckedByThisCorrection": false,
+    "testMethodsRun": 0,
+    "nativeCalls": 0,
+    "ordinary14OtherGraphAdopted": false,
+    "macContinuationOwnedByW3": true
+  }
+}
