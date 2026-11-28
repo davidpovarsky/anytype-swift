@@ -187,7 +187,8 @@ public actor AnyNativeImportedContextOwner {
                 let value = try AnyNativeImportedOrdinaryPropertyContext(reference: completedOrdinary,
                     preservationReference: reference, bundle: restored.bundle,
                     completedPreservationPlan: checkpoint.plan,
-                    completedPreservationMappings: checkpoint.mappings, checkpoint: savedOrdinary)
+                    completedPreservationMappings: checkpoint.mappings, checkpoint: savedOrdinary,
+                    preservationCheckpoint: checkpoint)
                 definitions = try value.merging(into: definitions)
                 try await admission.validateOrdinary(value, definitions: definitions,
                     journalDirectory: ordinaryJournalDirectory)
@@ -458,11 +459,19 @@ private struct AnyImportedContextAdmission: Sendable {
                           definitions: AnyNativeImportedDefinitionDirectory,
                           journalDirectory: URL) async throws {
         guard Self.sameWorkspace(ordinary.savedPlan.binding.workspace, lease.workspace),
-              AnyNativeImportedContextReference.sameBinding(definitions.binding, ordinary.namespace.binding),
-              definitions.supplementalPropertyBindings.count == 1,
-              AnyNativeImportedContextReference.sameBinding(
-                definitions.supplementalPropertyBindings[0], ordinary.savedPlan.binding) else {
+              AnyNativeImportedContextReference.sameBinding(definitions.binding, ordinary.namespace.binding) else {
             throw AnyHostError.wrongWorkspace
+        }
+        if let expected = ordinary.expectedSupplementalBinding {
+            guard definitions.supplementalPropertyBindings.count == 1,
+                  AnyNativeImportedContextReference.sameBinding(
+                    definitions.supplementalPropertyBindings[0], expected) else {
+                throw AnyHostError.wrongWorkspace
+            }
+        } else {
+            guard definitions.supplementalPropertyBindings.isEmpty else {
+                throw AnyHostError.wrongWorkspace
+            }
         }
         try await validate()
         let before = try AnyDestinationMigrationExecutor.readCompletedCheckpoint(
@@ -472,6 +481,7 @@ private struct AnyImportedContextAdmission: Sendable {
             authorize: { try await validate() })
         let reader = try AnyNativeImportedDefinitionStore(client: client, workspace: lease.workspace)
         try await ordinary.observe(using: driver, authorize: { try await validate() }) { sourceID in
+            let expectedBinding = try ordinary.expectedCreationBinding(sourceObjectID: sourceID)
             let observed = try await reader.read(sourceObjectID: sourceID,
                 directory: definitions, lease: lease)
             guard Self.sameWorkspace(observed.workspace, lease.workspace),
@@ -479,7 +489,7 @@ private struct AnyImportedContextAdmission: Sendable {
                   Data(observed.engineStartedAt.utf8) == Data(lease.engineStartedAt.utf8),
                   observed.matchesOriginalDescriptor, observed.nativeCreationOutcome == "committed",
                   observed.entry.intent.map({ AnyNativeImportedContextReference.sameBinding(
-                    $0.binding, ordinary.savedPlan.binding) }) == true else {
+                    $0.binding, expectedBinding) }) == true else {
                 throw AnyNativeImportedOrdinaryPropertyContextError.changedDefinition(sourceID)
             }
         }

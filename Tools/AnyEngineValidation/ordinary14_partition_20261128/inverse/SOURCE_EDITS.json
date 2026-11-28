@@ -1,0 +1,210 @@
+{
+  "schema": "pinkha.ordinary14.partition.source-draft.v1",
+  "status": "SOURCE_ONLY_NOT_PARSED_COMPILED_TESTED_OR_EXECUTED",
+  "baseSourceCommit": "d9855b4b7e3b292e833ffa4576ee449b9c9d7159",
+  "baseEvidenceTip": "e7791bfd3c7aea1a2771066196083919a01ade79",
+  "scope": "Exact strict14 descriptor partition, missing-only plan, explicit no-second-execution all-present case, v2 cold reference and correct original/supplement current definition reads",
+  "strictLegacySupplement": {
+    "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeOrdinaryPropertySupplement.swift",
+    "blob": "21f6afa06a05eb694e289a14c488a666efc2dfe3",
+    "bytes": 9026,
+    "sha256": "8023022c6740bc88fb9502e1e572bfdf4299e0b8e1b9a24e03217e2c790e72dd",
+    "unchanged": true
+  },
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeOrdinaryPropertyCompletionPlan.swift",
+      "blob": "38ced39313dd522541a69b5e2517288059495b9f",
+      "bytes": 21252,
+      "sha256": "dc8852c773a98b8b1814222f051a4b5b0eeee0dbbb05649fb40561555df3e213",
+      "before": null,
+      "literalEdits": [],
+      "wholeForwardInverseVerified": null
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedOrdinaryPropertyContext.swift",
+      "blob": "dd5df2fa60acf37488129e0ce3cc81f6e2eac773",
+      "bytes": 24927,
+      "sha256": "d0222574ec452b039f17608bc5896ed09106c5838d85f032e094482a004dcda9",
+      "before": {
+        "bytes": 16143,
+        "sha256": "9db172a43ec08a46d8e06d9f128e493389c727ef02426b95b294ab520ee1fe8f"
+      },
+      "literalEdits": [
+        {
+          "before": "    public static let maximumBytes = 4096\n",
+          "after": "    public static let maximumBytes = 4096\n    public static let partitionVersion = \"pinkha-native-imported-ordinary14-partition-context-v2\"\n"
+        },
+        {
+          "before": "    public let mappingsSHA256: String\n    public var grantsNativeAuthority: Bool { false }",
+          "after": "    public let mappingsSHA256: String\n    public private(set) var partition: AnyHeartNativeOrdinaryPropertyPartition? = nil\n    public var hasSupplementalCheckpoint: Bool { partition?.newSourceObjectIDs.isEmpty != true }\n    public var grantsNativeAuthority: Bool { false }"
+        },
+        {
+          "before": "    public func binding(preservation: AnyNativeImportedContextReference) throws\n",
+          "after": "    /// A partial overlap has a real missing-only checkpoint. An all-present\n    /// partition binds the original checkpoint and has no second completion.\n    /// All-new input delegates to the exact legacy v1 constructor.\n    public init(preservationReference: AnyNativeImportedContextReference,\n                bundle: AnyHeartNativeSpaceBundle,\n                preservationCheckpoint: AnyDestinationSavedCheckpoint,\n                supplementalCheckpoint: AnyDestinationSavedCheckpoint?) throws {\n        let completion = try Self.completion(preservationReference: preservationReference,\n            bundle: bundle, checkpoint: preservationCheckpoint)\n        if completion.partition.reusedSourceObjectIDs.isEmpty {\n            guard let supplementalCheckpoint else {\n                throw AnyNativeImportedOrdinaryPropertyContextError.missingCheckpoint\n            }\n            try self.init(preservationReference: preservationReference, bundle: bundle,\n                completedPreservationPlan: preservationCheckpoint.plan,\n                completedPreservationMappings: preservationCheckpoint.mappings,\n                checkpoint: supplementalCheckpoint)\n            return\n        }\n        let checkpoint: AnyDestinationSavedCheckpoint\n        if completion.missingPlan != nil {\n            guard let supplementalCheckpoint else {\n                throw AnyNativeImportedOrdinaryPropertyContextError.missingCheckpoint\n            }\n            try completion.requireCheckpoint(supplementalCheckpoint)\n            checkpoint = supplementalCheckpoint\n            checkpointScope = \"completed-missing-ordinary14-on-preservation\"\n        } else {\n            guard supplementalCheckpoint == nil else {\n                throw AnyNativeImportedOrdinaryPropertyContextError.changedCheckpoint\n            }\n            checkpoint = preservationCheckpoint\n            checkpointScope = \"ordinary14-already-imported-in-preservation\"\n        }\n        contract = Self.partitionVersion\n        partition = completion.partition\n        preservationReferenceSHA256 = AnyContentDigest.sha256(try preservationReference.encoded())\n        supplementPlanID = checkpoint.plan.binding.planID\n        supplementPlanSHA256 = checkpoint.plan.binding.planSHA256\n        supplementCheckpointSHA256 = checkpoint.checkpointSHA256\n        namespaceOwnerID = completion.namespace.ownerID\n        namespaceIntentID = completion.namespace.intent.intentID\n        namespaceSHA256 = AnyContentDigest.sha256(\n            try AnyDestinationMigrationJournal.encoded(completion.namespace))\n        mappingsSHA256 = AnyContentDigest.sha256(\n            try AnyDestinationMigrationJournal.encoded(checkpoint.mappings))\n        try validate(); try Task.checkCancellation()\n    }\n\n    public func binding(preservation: AnyNativeImportedContextReference) throws\n"
+        },
+        {
+          "before": "        guard AnyContentDigest.sha256(try preservation.encoded()) == preservationReferenceSHA256,\n              supplementPlanID != preservation.planID else {",
+          "after": "        guard AnyContentDigest.sha256(try preservation.encoded()) == preservationReferenceSHA256,\n              hasSupplementalCheckpoint ? supplementPlanID != preservation.planID :\n                (supplementPlanID == preservation.planID &&\n                 supplementPlanSHA256 == preservation.planSHA256 &&\n                 supplementCheckpointSHA256 == preservation.checkpointSHA256) else {"
+        },
+        {
+          "before": "    private func validate() throws {\n        guard Self.same(contract, Self.version),\n              Self.same(checkpointScope, \"completed-ordinary14-on-preservation\"),\n              AnyEditorBlock.validID(namespaceOwnerID),\n              [preservationReferenceSHA256, supplementPlanID, supplementPlanSHA256,\n               supplementCheckpointSHA256, namespaceIntentID, namespaceSHA256, mappingsSHA256]\n                .allSatisfy(AnyDestinationPlanChecks.digest) else {\n            throw AnyNativeImportedOrdinaryPropertyContextError.invalidReference\n        }\n    }\n\n",
+          "after": "    private func validate() throws {\n        if Self.same(contract, Self.version) {\n            guard partition == nil,\n                  Self.same(checkpointScope, \"completed-ordinary14-on-preservation\") else {\n                throw AnyNativeImportedOrdinaryPropertyContextError.invalidReference\n            }\n        } else {\n            guard Self.same(contract, Self.partitionVersion), let partition,\n                  !partition.reusedSourceObjectIDs.isEmpty else {\n                throw AnyNativeImportedOrdinaryPropertyContextError.invalidReference\n            }\n            try partition.validate()\n            let expected = partition.newSourceObjectIDs.isEmpty\n                ? \"ordinary14-already-imported-in-preservation\"\n                : \"completed-missing-ordinary14-on-preservation\"\n            guard Self.same(checkpointScope, expected) else {\n                throw AnyNativeImportedOrdinaryPropertyContextError.invalidReference\n            }\n        }\n        guard AnyEditorBlock.validID(namespaceOwnerID),\n              [preservationReferenceSHA256, supplementPlanID, supplementPlanSHA256,\n               supplementCheckpointSHA256, namespaceIntentID, namespaceSHA256, mappingsSHA256]\n                .allSatisfy(AnyDestinationPlanChecks.digest) else {\n            throw AnyNativeImportedOrdinaryPropertyContextError.invalidReference\n        }\n    }\n\n"
+        },
+        {
+          "before": "        case namespaceOwnerID, namespaceIntentID, namespaceSHA256, mappingsSHA256\n",
+          "after": "        case namespaceOwnerID, namespaceIntentID, namespaceSHA256, mappingsSHA256, partition\n"
+        },
+        {
+          "before": "        guard Set(all.allKeys.map(\\.stringValue)) == Set(CodingKeys.allCases.map(\\.rawValue)) else {",
+          "after": "        let contract = try all.decode(String.self, forKey: AnyImportedOrdinaryPropertyCodingKey(stringValue: \"contract\")!)\n        let keys = Set(CodingKeys.allCases.map(\\.rawValue))\n        let expectedKeys = Self.same(contract, Self.version) ? keys.subtracting([\"partition\"]) : keys\n        guard Set(all.allKeys.map(\\.stringValue)) == expectedKeys else {"
+        },
+        {
+          "before": "        contract = try c.decode(String.self, forKey: .contract)\n",
+          "after": "        self.contract = contract\n"
+        },
+        {
+          "before": "        mappingsSHA256 = try c.decode(String.self, forKey: .mappingsSHA256)\n        try validate()",
+          "after": "        mappingsSHA256 = try c.decode(String.self, forKey: .mappingsSHA256)\n        if !Self.same(contract, Self.version) {\n            partition = try c.decode(AnyHeartNativeOrdinaryPropertyPartition.self, forKey: .partition)\n        }\n        try validate()"
+        },
+        {
+          "before": "    static func supplement(preservationReference:",
+          "after": "    static func completion(preservationReference: AnyNativeImportedContextReference,\n                           bundle: AnyHeartNativeSpaceBundle,\n                           checkpoint: AnyDestinationSavedCheckpoint) throws\n        -> AnyHeartNativeOrdinaryPropertyCompletionPlan {\n        let plan = checkpoint.plan, source = plan.source\n        guard AnyNativeImportedContextReference.sameBinding(plan.binding, preservationReference.binding),\n              checkpoint.checkpointSHA256 == preservationReference.checkpointSHA256,\n              try AnyDestinationSavedCheckpoint.fingerprint(plan: plan, mappings: checkpoint.mappings) ==\n                preservationReference.checkpointSHA256,\n              Self.same(source.accountID, preservationReference.sourceAccountID),\n              Self.same(source.spaceID, preservationReference.sourceSpaceID),\n              source.captureManifestSHA256 == preservationReference.captureManifestSHA256,\n              source.witnessSHA256 == preservationReference.sourceWitnessSHA256 else {\n            throw AnyNativeImportedOrdinaryPropertyContextError.invalidReference\n        }\n        return try AnyHeartNativeOrdinaryPropertyCompletionPlan(bundle: bundle, preservation: checkpoint,\n            supplementalCanonicalDefinitions: preservationReference.supplementalCanonicalDefinitions)\n    }\n\n    static func supplement(preservationReference:"
+        },
+        {
+          "before": "            try self.init(preservationReference: preservationReference, bundle: bundle,\n",
+          "after": "            self = try Self(preservationReference: preservationReference, bundle: bundle,\n",
+          "reason": "Use explicit whole-value initialization on legacy branch; avoid mixed initializer delegation."
+        },
+        {
+          "before": "    private let propertyDirectory: AnyNativeImportedDefinitionDirectory\n",
+          "after": "    private let propertyDirectory: AnyNativeImportedDefinitionDirectory?\n"
+        },
+        {
+          "before": "    init(reference: AnyNativeImportedOrdinaryPropertyReference,\n         preservationReference: AnyNativeImportedContextReference,\n         bundle: AnyHeartNativeSpaceBundle,\n         completedPreservationPlan: AnyDestinationMigrationPlan,\n         completedPreservationMappings: [AnyDestinationMigrationMapping],\n         checkpoint: AnyDestinationSavedCheckpoint) throws {\n        let expected = try AnyNativeImportedOrdinaryPropertyReference(\n            preservationReference: preservationReference, bundle: bundle,\n            completedPreservationPlan: completedPreservationPlan,\n            completedPreservationMappings: completedPreservationMappings, checkpoint: checkpoint)\n        guard try reference.encoded() == expected.encoded() else {\n            throw AnyNativeImportedOrdinaryPropertyContextError.changedCheckpoint\n        }\n        let supplement = try AnyNativeImportedOrdinaryPropertyReference.supplement(\n            preservationReference: preservationReference, bundle: bundle,\n            plan: completedPreservationPlan, mappings: completedPreservationMappings)\n        self.reference = reference; savedPlan = checkpoint.plan; mappings = checkpoint.mappings\n        namespace = supplement.namespace; sourceObjectIDs = supplement.sourceRelations.map(\\.objectID)\n        propertyDirectory = try AnyNativeImportedDefinitionDirectory(plan: checkpoint.plan,\n            mappings: checkpoint.mappings)\n        intents = checkpoint.intents\n        try Task.checkCancellation()\n    }\n\n",
+          "after": "    init(reference: AnyNativeImportedOrdinaryPropertyReference,\n         preservationReference: AnyNativeImportedContextReference,\n         bundle: AnyHeartNativeSpaceBundle,\n         completedPreservationPlan: AnyDestinationMigrationPlan,\n         completedPreservationMappings: [AnyDestinationMigrationMapping],\n         checkpoint: AnyDestinationSavedCheckpoint,\n         preservationCheckpoint: AnyDestinationSavedCheckpoint? = nil) throws {\n        if reference.partition != nil {\n            guard let preservationCheckpoint,\n                  try AnyDestinationMigrationJournal.encoded(preservationCheckpoint.plan) ==\n                    AnyDestinationMigrationJournal.encoded(completedPreservationPlan),\n                  try AnyDestinationMigrationJournal.encoded(preservationCheckpoint.mappings) ==\n                    AnyDestinationMigrationJournal.encoded(completedPreservationMappings) else {\n                throw AnyNativeImportedOrdinaryPropertyContextError.changedCheckpoint\n            }\n            let completion = try AnyNativeImportedOrdinaryPropertyReference.completion(\n                preservationReference: preservationReference, bundle: bundle,\n                checkpoint: preservationCheckpoint)\n            let additional = reference.hasSupplementalCheckpoint ? checkpoint : nil\n            let expected = try AnyNativeImportedOrdinaryPropertyReference(\n                preservationReference: preservationReference, bundle: bundle,\n                preservationCheckpoint: preservationCheckpoint, supplementalCheckpoint: additional)\n            guard try reference.encoded() == expected.encoded() else {\n                throw AnyNativeImportedOrdinaryPropertyContextError.changedCheckpoint\n            }\n            self.reference = reference\n            namespace = completion.namespace\n            sourceObjectIDs = completion.sourceRelations.map(\\.objectID)\n            if let plan = completion.missingPlan {\n                try completion.requireCheckpoint(checkpoint)\n                savedPlan = plan; mappings = checkpoint.mappings; intents = checkpoint.intents\n                propertyDirectory = try AnyNativeImportedDefinitionDirectory(\n                    plan: plan, mappings: checkpoint.mappings)\n            } else {\n                savedPlan = preservationCheckpoint.plan\n                mappings = preservationCheckpoint.mappings; intents = preservationCheckpoint.intents\n                propertyDirectory = nil\n            }\n            try requireCheckpoint(checkpoint)\n            try Task.checkCancellation()\n        } else {\n            let expected = try AnyNativeImportedOrdinaryPropertyReference(\n                preservationReference: preservationReference, bundle: bundle,\n                completedPreservationPlan: completedPreservationPlan,\n                completedPreservationMappings: completedPreservationMappings, checkpoint: checkpoint)\n            guard try reference.encoded() == expected.encoded() else {\n                throw AnyNativeImportedOrdinaryPropertyContextError.changedCheckpoint\n            }\n            let supplement = try AnyNativeImportedOrdinaryPropertyReference.supplement(\n                preservationReference: preservationReference, bundle: bundle,\n                plan: completedPreservationPlan, mappings: completedPreservationMappings)\n            self.reference = reference; savedPlan = checkpoint.plan; mappings = checkpoint.mappings\n            namespace = supplement.namespace; sourceObjectIDs = supplement.sourceRelations.map(\\.objectID)\n            propertyDirectory = try AnyNativeImportedDefinitionDirectory(plan: checkpoint.plan,\n                mappings: checkpoint.mappings)\n            intents = checkpoint.intents\n            try Task.checkCancellation()\n        }\n    }\n\n    var expectedSupplementalBinding: AnyPreparedMigrationPlanBinding? {\n        reference.hasSupplementalCheckpoint ? savedPlan.binding : nil\n    }\n\n    func expectedCreationBinding(sourceObjectID: String) throws -> AnyPreparedMigrationPlanBinding {\n        guard sourceObjectIDs.contains(where: { Data($0.utf8) == Data(sourceObjectID.utf8) }) else {\n            throw AnyNativeImportedOrdinaryPropertyContextError.changedDefinition(sourceObjectID)\n        }\n        if reference.partition?.reusedSourceObjectIDs.contains(where: {\n            Data($0.utf8) == Data(sourceObjectID.utf8)\n        }) == true {\n            return namespace.binding\n        }\n        return savedPlan.binding\n    }\n\n"
+        },
+        {
+          "before": "        return try .init(preservation: preservation, propertySupplement: propertyDirectory)\n",
+          "after": "        guard let propertyDirectory else { return preservation }\n        return try .init(preservation: preservation, propertySupplement: propertyDirectory)\n"
+        },
+        {
+          "before": "/// Historical routing for the exact fourteen committed definitions. It keeps\n/// their own plan/intent bindings distinct from the original182 checkpoint.\n",
+          "after": "/// Historical routing for the exact fourteen committed definitions. New rows\n/// retain their supplemental binding; reused rows retain the original binding.\n"
+        },
+        {
+          "before": "        let contract = try all.decode(String.self, forKey: AnyImportedOrdinaryPropertyCodingKey(stringValue: \"contract\")!)",
+          "after": "        let c = try decoder.container(keyedBy: CodingKeys.self)\n        let contract = try c.decode(String.self, forKey: .contract)"
+        },
+        {
+          "before": "        let c = try decoder.container(keyedBy: CodingKeys.self)\n        self.contract = contract",
+          "after": "        self.contract = contract"
+        }
+      ],
+      "wholeForwardInverseVerified": true
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift",
+      "blob": "8b412c87c407a022c728ace30954775479e53f38",
+      "bytes": 36792,
+      "sha256": "1e8fc76310e4a34d93ab72491a003e652c0b8792e723f519a53c8c6356ae4623",
+      "before": {
+        "bytes": 36356,
+        "sha256": "be03fc564171c720a91bd79d060d6edd9798da49cb7a19f88f57ade79e31acec"
+      },
+      "literalEdits": [
+        {
+          "before": "                    completedPreservationMappings: checkpoint.mappings, checkpoint: savedOrdinary)",
+          "after": "                    completedPreservationMappings: checkpoint.mappings, checkpoint: savedOrdinary,\n                    preservationCheckpoint: checkpoint)"
+        },
+        {
+          "before": "        guard Self.sameWorkspace(ordinary.savedPlan.binding.workspace, lease.workspace),\n              AnyNativeImportedContextReference.sameBinding(definitions.binding, ordinary.namespace.binding),\n              definitions.supplementalPropertyBindings.count == 1,\n              AnyNativeImportedContextReference.sameBinding(\n                definitions.supplementalPropertyBindings[0], ordinary.savedPlan.binding) else {\n            throw AnyHostError.wrongWorkspace\n        }\n",
+          "after": "        guard Self.sameWorkspace(ordinary.savedPlan.binding.workspace, lease.workspace),\n              AnyNativeImportedContextReference.sameBinding(definitions.binding, ordinary.namespace.binding) else {\n            throw AnyHostError.wrongWorkspace\n        }\n        if let expected = ordinary.expectedSupplementalBinding {\n            guard definitions.supplementalPropertyBindings.count == 1,\n                  AnyNativeImportedContextReference.sameBinding(\n                    definitions.supplementalPropertyBindings[0], expected) else {\n                throw AnyHostError.wrongWorkspace\n            }\n        } else {\n            guard definitions.supplementalPropertyBindings.isEmpty else {\n                throw AnyHostError.wrongWorkspace\n            }\n        }\n"
+        },
+        {
+          "before": "            let observed = try await reader.read(sourceObjectID: sourceID,\n",
+          "after": "            let expectedBinding = try ordinary.expectedCreationBinding(sourceObjectID: sourceID)\n            let observed = try await reader.read(sourceObjectID: sourceID,\n"
+        },
+        {
+          "before": "                    $0.binding, ordinary.savedPlan.binding) }) == true else {",
+          "after": "                    $0.binding, expectedBinding) }) == true else {"
+        }
+      ],
+      "wholeForwardInverseVerified": true
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+      "blob": "44f934e77ba85730a3c136a144c6eebeef63edab",
+      "bytes": 35352,
+      "sha256": "014ef0ee8268783b574b5e76ab8c945b95545f0ef6a1822ec874a1443a85bfa3",
+      "before": {
+        "bytes": 34082,
+        "sha256": "8f20637c4f856f00f8e1b05f45195cb6f65d3dff659e72c64e73a0380fb12404"
+      },
+      "literalEdits": [
+        {
+          "before": "/// Each checkpoint comes from its own completed journal and native verifier.\n",
+          "after": "/// A supplemental checkpoint/verifier exists only when new definitions were\n/// executed. All-present completion retains the actual preservation checkpoint\n/// and current definition observations, without inventing a second journal.\n"
+        },
+        {
+          "before": "    public let ordinaryCheckpoint: AnyDestinationSavedCheckpoint\n    public let ordinaryVerification: AnyDestinationContentVerification\n",
+          "after": "    public let ordinaryCheckpoint: AnyDestinationSavedCheckpoint?\n    public let ordinaryVerification: AnyDestinationContentVerification?\n    public let partition: AnyHeartNativeOrdinaryPropertyPartition\n"
+        },
+        {
+          "before": "        let ordinaryStorage: AnyHeartMigrationPrivateStorage\n",
+          "after": "        let ordinaryStorage: AnyHeartMigrationPrivateStorage?\n"
+        },
+        {
+          "before": "    /// fourteen-property supplement in the same existing destination operation.\n",
+          "after": "    /// fourteen-property capability in the same existing destination operation.\n    /// Exact existing definitions are revalidated; only missing definitions\n    /// receive supplemental effects. All-present input creates no second plan.\n"
+        },
+        {
+          "before": "    private func produceOrdinary(\n        _ request: AnyHeartNativeMigrationRequest, client: AnyHTTPClient,\n        session: AnyApplicationSession, lease: AnyHostLease, ticket: UUID\n    ) async throws -> AnyHeartNativeOrdinaryMigrationCompletion {\n        try requireCurrentTicket(ticket)\n        guard ordinaryPending == nil else { throw AnyHeartNativeMigrationProducerError.busy }\n        ordinaryPending = .init(ticket: ticket, prepared: nil)\n\n        guard Self.same(request.workspace, lease.workspace), Self.same(session.workspace, lease.workspace),\n              Data(client.expectedAccountID.utf8) == Data(lease.workspace.accountID.utf8),\n              session.generation == lease.generation,\n              Data(session.engineStartedAt.utf8) == Data(lease.engineStartedAt.utf8) else {\n            throw AnyHostError.wrongWorkspace\n        }\n        try await lease.validate()\n        guard await session.isActive else { throw AnyHostError.sessionClosed }\n        // Select one destination run before either stage. Both the unchanged\n        // first-stage path and every supplemental admission require this run.\n        let run = try await client.nativeAccountRunBinding(expectedNetworkID: request.networkID)\n        let destination = AnyHeartMigrationDestinationAdmission(client: client, lease: lease, run: run)\n        try await destination.validate()\n        try requireCurrentTicket(ticket)\n        let preservation = try await produce(request, client: client, session: session,\n            lease: lease, ticket: ticket, requiredDestinationRun: run)\n        let stage = try AnyHeartNativeOrdinaryExecutionStage(bundle: review.bundle,\n            preservationReference: preservation.preservationReference,\n            checkpoint: preservation.checkpoint)\n        let plan = stage.supplement.plan\n        try plan.requireExecutable()\n        try await verifySource(stage.preservation.plan.source, ticket: ticket)\n        try await destination.validate()\n        try requireCurrentTicket(ticket)\n\n        // Both original and new binding-specific journal paths are admitted.\n        // The real App namespace owner still prevents relocation through drain.\n        let preservationStorage = try AnyHeartMigrationPrivateStorage(captureParent: captureParent,\n            captureDirectory: review.descriptor.privateBundleDirectory,\n            journalParent: request.journalParent, payloadParent: request.payloadParent,\n            planBinding: preservation.checkpoint.plan.binding)\n        let ordinaryStorage = try AnyHeartMigrationPrivateStorage(captureParent: captureParent,\n            captureDirectory: review.descriptor.privateBundleDirectory,\n            journalParent: request.journalParent, payloadParent: request.payloadParent,\n            planBinding: plan.binding)\n        try stage.requirePreservation(AnyDestinationMigrationExecutor.readCompletedCheckpoint(\n            journalDirectory: request.journalParent, binding: preservation.checkpoint.plan.binding))\n\n        let verify: @Sendable (AnyDestinationSourceBinding) async throws -> Void = { supplied in\n            // Refuse a foreign/changed subset before invoking the live verifier.\n            // Its complete-census requirement is never weakened to fourteen IDs.\n            let complete = try stage.completeCaptureSource(for: supplied)\n            try await self.verifySource(complete, ticket: ticket)\n        }\n        let authorize: @Sendable () async throws -> Void = {\n            try await self.requireCurrentTicket(ticket)\n            try preservationStorage.validate(); try ordinaryStorage.validate()\n            try await destination.validate()\n            try preservationStorage.validate(); try ordinaryStorage.validate()\n            try await self.requireCurrentTicket(ticket)\n        }\n        let executor = AnyDestinationMigrationExecutor(client: client, journalDirectory: request.journalParent)\n        let progress = try await executor.execute(plan: plan, payloads: { key in\n            // This plan is property-definition-only, with no payload operation.\n            throw AnyDestinationMigrationError.payloadMismatch(key)\n        }, verifySource: verify, authorize: authorize)\n        let verification = try await AnyDestinationMigrationVerifier(client: client).verify(\n            plan: plan, progress: progress, verifySource: verify, authorize: authorize)\n        var checkpoint = try AnyDestinationMigrationExecutor.readCompletedCheckpoint(\n            journalDirectory: request.journalParent, binding: plan.binding)\n        try Self.requireCheckpoint(checkpoint, plan: plan, progress: progress)\n        let reference = try stage.reference(checkpoint: checkpoint)\n        let encoded = try reference.encoded()\n        let preservationDirectory = try AnyNativeImportedDefinitionDirectory(\n            plan: preservation.checkpoint.plan, mappings: preservation.checkpoint.mappings,\n            supplementalCanonicalDefinitions: preservation.preservationReference.supplementalCanonicalDefinitions)\n        let ordinaryDirectory = try AnyNativeImportedDefinitionDirectory(plan: plan, mappings: checkpoint.mappings)\n        let directory = try AnyNativeImportedDefinitionDirectory(\n            preservation: preservationDirectory, propertySupplement: ordinaryDirectory)\n        try await verify(plan.source)\n        try await authorize()\n        checkpoint = try AnyDestinationMigrationExecutor.readCompletedCheckpoint(\n            journalDirectory: request.journalParent, binding: plan.binding)\n        try Self.requireCheckpoint(checkpoint, plan: plan, progress: progress)\n        guard checkpoint.checkpointSHA256 == reference.supplementCheckpointSHA256 else {\n            throw AnyHeartNativeMigrationProducerError.changedCheckpoint\n        }\n        try stage.requirePreservation(AnyDestinationMigrationExecutor.readCompletedCheckpoint(\n            journalDirectory: request.journalParent, binding: preservation.checkpoint.plan.binding))\n        try preservationStorage.validate(); try ordinaryStorage.validate()\n        try requireCurrentTicket(ticket)\n        let completion = AnyHeartNativeOrdinaryMigrationCompletion(preservation: preservation,\n            ordinaryCheckpoint: checkpoint, ordinaryVerification: verification,\n            ordinaryReference: reference, encodedOrdinaryReference: encoded,\n            definitionDirectory: directory, outsideSliceIssues: stage.supplement.outsideSliceIssues,\n            outsideSliceRelationObjectIDs: stage.supplement.outsideSliceRelationObjectIDs)\n        ordinaryPending = .init(ticket: ticket, prepared: .init(completion: completion, stage: stage,\n            preservationStorage: preservationStorage, ordinaryStorage: ordinaryStorage))\n        return completion\n    }\n\n",
+          "after": "    private func produceOrdinary(\n        _ request: AnyHeartNativeMigrationRequest, client: AnyHTTPClient,\n        session: AnyApplicationSession, lease: AnyHostLease, ticket: UUID\n    ) async throws -> AnyHeartNativeOrdinaryMigrationCompletion {\n        try requireCurrentTicket(ticket)\n        guard ordinaryPending == nil else { throw AnyHeartNativeMigrationProducerError.busy }\n        ordinaryPending = .init(ticket: ticket, prepared: nil)\n\n        guard Self.same(request.workspace, lease.workspace), Self.same(session.workspace, lease.workspace),\n              Data(client.expectedAccountID.utf8) == Data(lease.workspace.accountID.utf8),\n              session.generation == lease.generation,\n              Data(session.engineStartedAt.utf8) == Data(lease.engineStartedAt.utf8) else {\n            throw AnyHostError.wrongWorkspace\n        }\n        try await lease.validate()\n        guard await session.isActive else { throw AnyHostError.sessionClosed }\n        // Select one destination run before either stage. Both the unchanged\n        // first-stage path and every supplemental admission require this run.\n        let run = try await client.nativeAccountRunBinding(expectedNetworkID: request.networkID)\n        let destination = AnyHeartMigrationDestinationAdmission(client: client, lease: lease, run: run)\n        try await destination.validate()\n        try requireCurrentTicket(ticket)\n        let preservation = try await produce(request, client: client, session: session,\n            lease: lease, ticket: ticket, requiredDestinationRun: run)\n        let stage = try AnyHeartNativeOrdinaryExecutionStage(bundle: review.bundle,\n            preservationReference: preservation.preservationReference,\n            checkpoint: preservation.checkpoint)\n        if let plan = stage.completion.missingPlan { try plan.requireExecutable() }\n        try await verifySource(stage.preservation.plan.source, ticket: ticket)\n        try await destination.validate()\n        try requireCurrentTicket(ticket)\n\n        // Retain the original scope and, only when needed, the actual new scope\n        // through the entire destination operation. The App owns stable names.\n        let preservationStorage = try AnyHeartMigrationPrivateStorage(captureParent: captureParent,\n            captureDirectory: review.descriptor.privateBundleDirectory,\n            journalParent: request.journalParent, payloadParent: request.payloadParent,\n            planBinding: preservation.checkpoint.plan.binding)\n        let ordinaryStorage: AnyHeartMigrationPrivateStorage?\n        if let plan = stage.completion.missingPlan {\n            ordinaryStorage = try AnyHeartMigrationPrivateStorage(captureParent: captureParent,\n                captureDirectory: review.descriptor.privateBundleDirectory,\n                journalParent: request.journalParent, payloadParent: request.payloadParent,\n                planBinding: plan.binding)\n        } else { ordinaryStorage = nil }\n        try stage.requirePreservation(AnyDestinationMigrationExecutor.readCompletedCheckpoint(\n            journalDirectory: request.journalParent, binding: preservation.checkpoint.plan.binding))\n\n        let verify: @Sendable (AnyDestinationSourceBinding) async throws -> Void = { supplied in\n            let complete = try stage.completeCaptureSource(for: supplied)\n            try await self.verifySource(complete, ticket: ticket)\n        }\n        let authorize: @Sendable () async throws -> Void = {\n            try await self.requireCurrentTicket(ticket)\n            try preservationStorage.validate(); try ordinaryStorage?.validate()\n            try await destination.validate()\n            try preservationStorage.validate(); try ordinaryStorage?.validate()\n            try await self.requireCurrentTicket(ticket)\n        }\n        // Retained bytes alone cannot justify reuse. Current prepared status,\n        // exact descriptor and the original namespace are observed before effects.\n        try await stage.completion.observeDefinitions(\n            sourceObjectIDs: stage.completion.partition.reusedSourceObjectIDs,\n            directory: stage.completion.preservationDirectory,\n            client: client, lease: lease, authorize: authorize)\n        var checkpoint: AnyDestinationSavedCheckpoint?\n        let verification: AnyDestinationContentVerification?\n        if let plan = stage.completion.missingPlan {\n            let executor = AnyDestinationMigrationExecutor(client: client, journalDirectory: request.journalParent)\n            let progress = try await executor.execute(plan: plan, payloads: { key in\n                throw AnyDestinationMigrationError.payloadMismatch(key)\n            }, verifySource: verify, authorize: authorize)\n            verification = try await AnyDestinationMigrationVerifier(client: client).verify(\n                plan: plan, progress: progress, verifySource: verify, authorize: authorize)\n            let saved = try AnyDestinationMigrationExecutor.readCompletedCheckpoint(\n                journalDirectory: request.journalParent, binding: plan.binding)\n            try Self.requireCheckpoint(saved, plan: plan, progress: progress)\n            try stage.completion.requireCheckpoint(saved)\n            checkpoint = saved\n        } else {\n            // There is no empty plan, executor call, supplemental journal or\n            // second verification. The original checkpoint remains the source\n            // of every selected creation receipt.\n            checkpoint = nil; verification = nil\n        }\n        let reference = try stage.reference(checkpoint: checkpoint)\n        let encoded = try reference.encoded()\n        let directory = try stage.completion.directory(checkpoint: checkpoint)\n        try await verifySource(stage.preservation.plan.source, ticket: ticket)\n        try await stage.completion.observeDefinitions(\n            sourceObjectIDs: stage.completion.sourceRelations.map(\\.objectID),\n            directory: directory, client: client, lease: lease, authorize: authorize)\n        try await authorize()\n        if let plan = stage.completion.missingPlan {\n            let saved = try AnyDestinationMigrationExecutor.readCompletedCheckpoint(\n                journalDirectory: request.journalParent, binding: plan.binding)\n            try stage.completion.requireCheckpoint(saved)\n            guard saved.checkpointSHA256 == reference.supplementCheckpointSHA256 else {\n                throw AnyHeartNativeMigrationProducerError.changedCheckpoint\n            }\n            checkpoint = saved\n        }\n        try stage.requirePreservation(AnyDestinationMigrationExecutor.readCompletedCheckpoint(\n            journalDirectory: request.journalParent, binding: preservation.checkpoint.plan.binding))\n        try preservationStorage.validate(); try ordinaryStorage?.validate()\n        try requireCurrentTicket(ticket)\n        let completion = AnyHeartNativeOrdinaryMigrationCompletion(preservation: preservation,\n            ordinaryCheckpoint: checkpoint, ordinaryVerification: verification,\n            partition: stage.completion.partition,\n            ordinaryReference: reference, encodedOrdinaryReference: encoded,\n            definitionDirectory: directory, outsideSliceIssues: stage.completion.outsideSliceIssues,\n            outsideSliceRelationObjectIDs: stage.completion.outsideSliceRelationObjectIDs)\n        ordinaryPending = .init(ticket: ticket, prepared: .init(completion: completion, stage: stage,\n            preservationStorage: preservationStorage, ordinaryStorage: ordinaryStorage))\n        return completion\n    }\n\n"
+        },
+        {
+          "before": "              returned.ordinaryCheckpoint.checkpointSHA256 == expected.ordinaryCheckpoint.checkpointSHA256,\n",
+          "after": "              returned.ordinaryCheckpoint?.checkpointSHA256 == expected.ordinaryCheckpoint?.checkpointSHA256,\n"
+        },
+        {
+          "before": "        try prepared.preservationStorage.validate(); try prepared.ordinaryStorage.validate()",
+          "after": "        try prepared.preservationStorage.validate(); try prepared.ordinaryStorage?.validate()",
+          "occurrences": 2
+        },
+        {
+          "before": "        let ordinary = try AnyDestinationMigrationExecutor.readCompletedCheckpoint(\n            journalDirectory: expected.preservation.journalParent,\n            binding: prepared.stage.supplement.plan.binding)\n        let reference = try prepared.stage.reference(checkpoint: ordinary)\n        guard ordinary.checkpointSHA256 == expected.ordinaryCheckpoint.checkpointSHA256,\n",
+          "after": "        let ordinary: AnyDestinationSavedCheckpoint?\n        if let plan = prepared.stage.completion.missingPlan {\n            ordinary = try AnyDestinationMigrationExecutor.readCompletedCheckpoint(\n                journalDirectory: expected.preservation.journalParent, binding: plan.binding)\n        } else { ordinary = nil }\n        let reference = try prepared.stage.reference(checkpoint: ordinary)\n        guard ordinary?.checkpointSHA256 == expected.ordinaryCheckpoint?.checkpointSHA256,\n"
+        },
+        {
+          "before": "    let supplement: AnyHeartNativeOrdinaryPropertySupplement\n",
+          "after": "    let completion: AnyHeartNativeOrdinaryPropertyCompletionPlan\n"
+        },
+        {
+          "before": "        supplement = try AnyNativeImportedOrdinaryPropertyReference.supplement(\n            preservationReference: preservationReference, bundle: bundle,\n            plan: checkpoint.plan, mappings: checkpoint.mappings)\n",
+          "after": "        completion = try AnyNativeImportedOrdinaryPropertyReference.completion(\n            preservationReference: preservationReference, bundle: bundle, checkpoint: checkpoint)\n"
+        },
+        {
+          "before": "        try Self.completeCaptureSource(for: supplied, expectedSubset: supplement.plan.source,\n                                       completeSource: preservation.plan.source)\n",
+          "after": "        try Self.completeCaptureSource(for: supplied,\n            expectedSubset: completion.missingPlan?.source ?? preservation.plan.source,\n            completeSource: preservation.plan.source)\n"
+        },
+        {
+          "before": "    func reference(checkpoint: AnyDestinationSavedCheckpoint) throws\n        -> AnyNativeImportedOrdinaryPropertyReference {\n        try AnyNativeImportedOrdinaryPropertyReference(preservationReference: preservationReference,\n            bundle: bundle, completedPreservationPlan: preservation.plan,\n            completedPreservationMappings: preservation.mappings, checkpoint: checkpoint)\n    }\n",
+          "after": "    func reference(checkpoint: AnyDestinationSavedCheckpoint?) throws\n        -> AnyNativeImportedOrdinaryPropertyReference {\n        try AnyNativeImportedOrdinaryPropertyReference(preservationReference: preservationReference,\n            bundle: bundle, preservationCheckpoint: preservation, supplementalCheckpoint: checkpoint)\n    }\n"
+        }
+      ],
+      "wholeForwardInverseVerified": true
+    }
+  ],
+  "retainedFindings": {
+    "hq": "1220966953994394",
+    "task": "1220966963773309"
+  },
+  "tests": "Focused source controls in preparation; no qualification claimed",
+  "limits": [
+    "No frozen131 changes",
+    "No compiler, native, account or fixture execution",
+    "No App source or integration-ref edit",
+    "Current descriptor reuse still requires exact committed status; changed schema refuses",
+    "Finalizer has no async body/native call; final actor-hop/App persistence remains separately owned"
+  ]
+}

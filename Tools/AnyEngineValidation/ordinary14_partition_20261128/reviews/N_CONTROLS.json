@@ -1,0 +1,428 @@
+{
+  "schema": "pinkha.ordinary14.partition-eight-controls-independent-source-peer.v1",
+  "status": "CLEAR_SCOPED_CONSTRUCTOR_API_REFUSAL_SOURCE_REVIEW_NOT_EXECUTED",
+  "reviewer": "N /root/network_files",
+  "repository": "davidpovarsky/anytype-swift",
+  "scope": "Complete eight-control body, exact original retained-input helper and constructor/typed-refusal joins against current partition builder and context. Root retains provenance/cold semantics and whole graph ownership; E retains separate producer lifetime ownership.",
+  "inputs": {
+    "tests": {
+      "blob": "6d68d304e2b68b519ff7b4c25853b7196ecc9f38",
+      "bytes": 33485,
+      "sha256": "240d737648aa4624e32e405fc805f5a53a514a70c28c6277772c51dbd67dc38f"
+    },
+    "tests2": {
+      "blob": "bcec972ee80374440061f84b470efbe5adce280c",
+      "bytes": 34534,
+      "sha256": "80cf96ad5403db7bec9070bf6982685b72c5d768179e7cd464e171d085ac7380"
+    },
+    "builder": {
+      "blob": "38ced39313dd522541a69b5e2517288059495b9f",
+      "bytes": 21252,
+      "sha256": "dc8852c773a98b8b1814222f051a4b5b0eeee0dbbb05649fb40561555df3e213"
+    },
+    "builder2": {
+      "blob": "c238cb671f83ddcc81d9b150175b3a160ec181f6",
+      "bytes": 21263,
+      "sha256": "13ba01cc3beaa236495ab72496b3f91c9529070aae416c65a5b15ad1ae440858"
+    },
+    "context": {
+      "blob": "dd5df2fa60acf37488129e0ce3cc81f6e2eac773",
+      "bytes": 24927,
+      "sha256": "d0222574ec452b039f17608bc5896ed09106c5838d85f032e094482a004dcda9"
+    },
+    "donor": {
+      "blob": "a52f10dfc99e00cb3df1a4bb3329862caf7ec99b",
+      "bytes": 31708,
+      "sha256": "7c6f5bc27d287a725a604f653eafc104a3bcd6c61e2452cad7704d3f6d031712"
+    },
+    "sourceIDProof": {
+      "blob": "290c94bfbbc9472f8ac80145fc98fb725568def9",
+      "bytes": 3218,
+      "sha256": "84487e2e725e8a2a7f575049a8ff9d9bf5c4389bf434588402e78d19e39edd6d"
+    },
+    "proof": {
+      "blob": "080a7d6a0766521469da3a76f9e29ea86abe9d72",
+      "bytes": 5064,
+      "sha256": "536cb0b18fe5524dfe06445cac78139b85ac48220169ee59840d08f18054e351"
+    },
+    "proof2": {
+      "blob": "42392b6923475fba1e47a083cbb860ce0e51914d",
+      "bytes": 18964,
+      "sha256": "fab4f87205e35209303a19464d765b01c0e047f5d3115f52fabe8a4acb8a463a"
+    },
+    "proof3": {
+      "blob": "6c206722e72f0fce1797d5cc8084fa5e5ecdeeda",
+      "bytes": 20275,
+      "sha256": "3b0512ffb3fc0ae6819630361f0daeee43ce7670e0e4c4a3c0dc4338b4bd081a"
+    },
+    "directory": {
+      "blob": "6cd38819232f457f04f9eab1b93c538670403e05",
+      "bytes": 22948,
+      "sha256": "f8706b054757b2601a1e094558989c2a66d44b7a9ddcaee94a543563db38ff27"
+    },
+    "namespace": {
+      "blob": "850edf99029a1512b020875b8d2c051b1e3f1ecc",
+      "bytes": 13010,
+      "sha256": "3076e98bd0d7a1106f376faa8e04de9252e47756c2ff806856a4334eae2457cb"
+    },
+    "nativeIntent": {
+      "blob": "f4f23e111468ca494ae661019610463247161df5",
+      "bytes": 24363,
+      "sha256": "b47533f131f3919336c9667d80be1911aedcd131544b5e73ee8910f100d18850"
+    },
+    "preparedDefinition": {
+      "blob": "fee19777fa796f9d1392b7862bb2368b9212b810",
+      "bytes": 19838,
+      "sha256": "8d44ac127127a59dc1826f3716b41948ee89f846c42221e35e4f7171476af925"
+    },
+    "catalog": {
+      "blob": "5977b6d5ed7ad32bb66aea734e7598f172d800ce",
+      "bytes": 23399,
+      "sha256": "437131d2f7095af0a450e7c695aa9c9bed13ea290f576d49870c5224b60a3965"
+    },
+    "sourceSelection": {
+      "blob": "241823f262c9b874796723db6969320865c23fb8",
+      "bytes": 20344,
+      "sha256": "4c9764a07eb42e43430cd062376432aa41beda293a6cd26700bd3514d66289cc"
+    },
+    "inventoryProjection": {
+      "blob": "9f3629c3b7487bb321a9ae529feabbb3d302913b",
+      "bytes": 95335,
+      "sha256": "66debcb1d5667dae42e56dda9a6d87a2a794945f031e81bb47d286eb339a6d33"
+    }
+  },
+  "dependencies": {
+    "AnyDestinationMigrationPlan.swift": {
+      "blob": "df49d5572d0a91a68a48bee7f88882703ad2ad5c",
+      "bytes": 41312,
+      "sha256": "878a1d994dbbfd98de0f4b1a6ac4fbd9cfd3ea369b66d659e5e0b6667ba8d59e"
+    },
+    "AnyDestinationMigrationExecutor.swift": {
+      "blob": "aeca8507f67581edb57d315fe43322c6946edc0d",
+      "bytes": 25038,
+      "sha256": "37a827abab7f8458ff0274bc0cc99a65ba62ea6068e7498d025be7fee1fee8dd"
+    },
+    "AnyHeartNativeOrdinaryPropertySupplement.swift": {
+      "blob": "21f6afa06a05eb694e289a14c488a666efc2dfe3",
+      "bytes": 9026,
+      "sha256": "8023022c6740bc88fb9502e1e572bfdf4299e0b8e1b9a24e03217e2c790e72dd"
+    },
+    "AnyNativeImportedContextReference.swift": {
+      "blob": "dc6e21e129a02cf75ff6b1bd0598dedaac1d9267",
+      "bytes": 12903,
+      "sha256": "5594056fd2e8a5e08a02bd670f0f534187eab0ca7722c9c6cbedcf474bc929cd"
+    }
+  },
+  "currentTuple": {
+    "tests": {
+      "blob": "bcec972ee80374440061f84b470efbe5adce280c",
+      "bytes": 34534,
+      "sha256": "80cf96ad5403db7bec9070bf6982685b72c5d768179e7cd464e171d085ac7380"
+    },
+    "builder": {
+      "blob": "c238cb671f83ddcc81d9b150175b3a160ec181f6",
+      "bytes": 21263,
+      "sha256": "13ba01cc3beaa236495ab72496b3f91c9529070aae416c65a5b15ad1ae440858"
+    },
+    "context": {
+      "blob": "dd5df2fa60acf37488129e0ce3cc81f6e2eac773",
+      "bytes": 24927,
+      "sha256": "d0222574ec452b039f17608bc5896ed09106c5838d85f032e094482a004dcda9"
+    },
+    "testProof": {
+      "blob": "6c206722e72f0fce1797d5cc8084fa5e5ecdeeda",
+      "bytes": 20275,
+      "sha256": "3b0512ffb3fc0ae6819630361f0daeee43ce7670e0e4c4a3c0dc4338b4bd081a"
+    }
+  },
+  "sourceReadLimits": [
+    "All source/metadata reads used fixed public Git blobs. No Oracle, original archive/plan bytes, loose capture payload, retained account, executable or cache was opened.",
+    "No parser, typechecker, compiler, test, native command, HTTP request, journal operation or original182-operation replay was performed.",
+    "The separately supplied 129-row graph was not rereviewed here; this peer does not replace its source closure/resource review."
+  ],
+  "exactCorrespondence": {
+    "builderOnePredicateForwardInverse": true,
+    "testThirteenLineInsertionForwardInverse": true,
+    "sourceIdentityContract": "AnyDestinationPlanChecks.identity → AnyPreparedMigrationPlanBinding.validOpaque(value, maximum:4096), matching original SourceBinding. Native namespace/owner IDs retain their existing AnyEditorBlock.validID guard.",
+    "byteDistinctUnicodeControl": "Two canonically similar but UTF8-distinct source spellings are admitted by the original SourceBinding and partition, round-trip as exact Data(utf8) arrays, and are explicitly unequal as bytes.",
+    "originalReader": {
+      "donor": {
+        "blob": "a52f10dfc99e00cb3df1a4bb3329862caf7ec99b",
+        "bytes": 31708,
+        "sha256": "7c6f5bc27d287a725a604f653eafc104a3bcd6c61e2452cad7704d3f6d031712"
+      },
+      "selectedBlockBytes": 5780,
+      "selectedBlockSHA256": "a03d4bc206fac9397172e1b76dbf71a752b68ad47ca4611369cef20e03173e0c",
+      "wholeSelectedBlockEqual": true,
+      "selection": "Retained, retained(), requireRetainedInputsUnchanged(), fixedInput(), sameFile(). Remaining donor helpers and all donor tests are excluded."
+    },
+    "selectedMethods": [
+      "testAllNewKeepsExactLegacyPlanAndClosedV1ReferenceBytes",
+      "testPartialOverlapImportsOnlyMissingAndPreservesOriginalCreationBindings",
+      "testAllPresentKeepsOriginalCheckpointAndHasNoSecondPlanOrCompletion",
+      "testReusedMappingIntentAndExactDescriptorProvenanceCannotBeSubstituted",
+      "testColdPartialReferenceReconstructsBothExactBindingsAndRejectsChangedPartition",
+      "testColdAllPresentUsesOnlyOriginalCheckpointAndRejectsForeignBinding",
+      "testPartitionCodecRefusesDuplicatesUnknownFieldsAndLegacyFieldInjection",
+      "testCancellationRefusesPartitionBeforeReturningHistoricalCorrespondence"
+    ],
+    "selectedCount": 8,
+    "excludedDonorMethods": [
+      "testDirectArchiveRetainsCompleteCapturedDescriptorsWithoutRecovery",
+      "testDirectCaptureRequiresExplicitCompleteDescriptorCensus",
+      "testDirectArchiveRejectsOppositeEvidenceHeadersAndCrossVersionBindings",
+      "testDirectArchiveRejectsPayloadCorruptionExtraBytesAndRecoveryMembers",
+      "testHistoricalReferenceEncodingRetainsExactlyTheOriginalClosedV1Keys",
+      "testDirectReferenceRejectsNullEmptyMissingAndOppositeEvidenceFields",
+      "testActualRetainedV1ArchiveAnd182PlanRemainByteIdentical",
+      "testSyntheticCompleteCaptureDerivativeAdmitsV2PlanCatalogAndLocatorPair"
+    ],
+    "selectedDonorOverlap": []
+  },
+  "capturedDescriptorFinding": {
+    "question": "Does fixture(retained, reused:) have actual captured relation snapshots, or does it rely only on recovered compiled descriptors?",
+    "answer": "The 14 selected relations are public-source-metadata-bound captured rows. No capture derivative is constructed by these tests.",
+    "originalCaptureManifestSHA256": "cbfb3aa1fd89707138adeccbce7389c40dc0a993f2285f6e517120e4e4239ed4",
+    "originalInventory": {
+      "bytes": 111754,
+      "sha256": "e21fa90e257ef05500aab96e33682fca3342d6bb47c9e08f215d7a8270515906"
+    },
+    "independentlyCheckedPublicProjection": {
+      "blob": "9f3629c3b7487bb321a9ae529feabbb3d302913b",
+      "bytes": 95335,
+      "sha256": "66debcb1d5667dae42e56dda9a6d87a2a794945f031e81bb47d286eb339a6d33"
+    },
+    "independentlyCheckedSelection": {
+      "blob": "241823f262c9b874796723db6969320865c23fb8",
+      "bytes": 20344,
+      "sha256": "4c9764a07eb42e43430cd062376432aa41beda293a6cd26700bd3514d66289cc"
+    },
+    "rows": [
+      {
+        "key": "aperture",
+        "matchedSelectionID": true,
+        "matchedBothSelectionMemberPins": true,
+        "matchedOriginalRow": true,
+        "matchedJSONInput": true
+      },
+      {
+        "key": "artist",
+        "matchedSelectionID": true,
+        "matchedBothSelectionMemberPins": true,
+        "matchedOriginalRow": true,
+        "matchedJSONInput": true
+      },
+      {
+        "key": "audioAlbum",
+        "matchedSelectionID": true,
+        "matchedBothSelectionMemberPins": true,
+        "matchedOriginalRow": true,
+        "matchedJSONInput": true
+      },
+      {
+        "key": "audioAlbumTrackNumber",
+        "matchedSelectionID": true,
+        "matchedBothSelectionMemberPins": true,
+        "matchedOriginalRow": true,
+        "matchedJSONInput": true
+      },
+      {
+        "key": "audioGenre",
+        "matchedSelectionID": true,
+        "matchedBothSelectionMemberPins": true,
+        "matchedOriginalRow": true,
+        "matchedJSONInput": true
+      },
+      {
+        "key": "audioLyrics",
+        "matchedSelectionID": true,
+        "matchedBothSelectionMemberPins": true,
+        "matchedOriginalRow": true,
+        "matchedJSONInput": true
+      },
+      {
+        "key": "camera",
+        "matchedSelectionID": true,
+        "matchedBothSelectionMemberPins": true,
+        "matchedOriginalRow": true,
+        "matchedJSONInput": true
+      },
+      {
+        "key": "cameraIso",
+        "matchedSelectionID": true,
+        "matchedBothSelectionMemberPins": true,
+        "matchedOriginalRow": true,
+        "matchedJSONInput": true
+      },
+      {
+        "key": "done",
+        "matchedSelectionID": true,
+        "matchedBothSelectionMemberPins": true,
+        "matchedOriginalRow": true,
+        "matchedJSONInput": true
+      },
+      {
+        "key": "exposure",
+        "matchedSelectionID": true,
+        "matchedBothSelectionMemberPins": true,
+        "matchedOriginalRow": true,
+        "matchedJSONInput": true
+      },
+      {
+        "key": "focalRatio",
+        "matchedSelectionID": true,
+        "matchedBothSelectionMemberPins": true,
+        "matchedOriginalRow": true,
+        "matchedJSONInput": true
+      },
+      {
+        "key": "releasedYear",
+        "matchedSelectionID": true,
+        "matchedBothSelectionMemberPins": true,
+        "matchedOriginalRow": true,
+        "matchedJSONInput": true
+      },
+      {
+        "key": "source",
+        "matchedSelectionID": true,
+        "matchedBothSelectionMemberPins": true,
+        "matchedOriginalRow": true,
+        "matchedJSONInput": true
+      },
+      {
+        "key": "tag",
+        "matchedSelectionID": true,
+        "matchedBothSelectionMemberPins": true,
+        "matchedOriginalRow": true,
+        "matchedJSONInput": true
+      }
+    ],
+    "catalogJoin": "Catalog5977 init(bundle:) passes bundle.objects as snapshots. Its nativeType521 branch builds relations; relation(key:) reads that captured relation dictionary. Compiled/recovered definitions are kept in a separate array and cannot satisfy this lookup.",
+    "limitation": "This is an independent source/public-metadata join, not a new read of the private archive. Future execution must still admit exact archive5d72 and plan4a619, restore their bound content, and pass all eight methods without skips."
+  },
+  "syntheticFixture": {
+    "originalMaterial": "The two already-admitted retained inputs supply the original archive, original plan, restored outer bundle and original14 descriptor bytes.",
+    "syntheticMaterial": "Destination workspace/store/plan IDs, collection coverage carriers, namespace destination ID, property destination IDs, mappings, signed-change labels, receipt fingerprints, immutable native intents and context locators are explicit synthetic correspondence fixtures.",
+    "namespace": "Exactly one collection has only heartSourceSpaceID, heartCaptureSHA256 and heartPropertyNamespace metadata. Original Namespace3076 requires that exact metadata, a nativeType521 source member, unique namespace candidate, original encoded plan and matching collection intent/mapping.",
+    "inertCarriers": "The other 13 collection operations cover the selected source identities. DefinitionDirectoryf870 records their owner kinds but its entry switch handles only original Type/property definitions, so these synthetic collection carriers do not masquerade as imported relations.",
+    "actualIntentConstructors": "NativeIntentb475 resolves mapped references first and calls the unchanged PreparedDefinition8d44 collection/property factories. sequence/inline/schema arguments are nil as required for these two operation kinds.",
+    "checkpoint": "Mappings carry the exact resulting intent IDs. SavedCheckpoint uses the original plan-plus-mappings fingerprint. It is a DTO with zero nativeOperationsPerformed and provesCurrentNativeState=false, never a fabricated native completion."
+  },
+  "cases": [
+    {
+      "method": "testAllNewKeepsExactLegacyPlanAndClosedV1ReferenceBytes",
+      "checked": "All-new completion delegates to the legacy supplement path; encoded complete plan and closed v1 locator bytes are compared exactly. Current locator has no partition field and decodes/re-encodes identically."
+    },
+    {
+      "method": "testPartialOverlapImportsOnlyMissingAndPreservesOriginalCreationBindings",
+      "checked": "source and tag reuse their original creation bindings; only12 property operations remain. Coverage is disjoint/exhaustive and every merged entry checks captured snapshot/view SHA. The unchanged strict legacy builder refuses at invalidPlan('ordinary14 original definition: source')."
+    },
+    {
+      "method": "testAllPresentKeepsOriginalCheckpointAndHasNoSecondPlanOrCompletion",
+      "checked": "All-present14 yields no missing plan, no supplemental binding/checkpoint and the original checkpoint identity. Providing a second checkpoint is refused as changedCheckpoint; it is not silently accepted or replayed."
+    },
+    {
+      "method": "testReusedMappingIntentAndExactDescriptorProvenanceCannotBeSubstituted",
+      "checked": "Swapping immutable checkpoint intents survives the DTO fingerprint but fails requireReused as changedDefinition. Replacing a mapping intent ID while recomputing the checkpoint fails Directory.requireIntent as invalidMappings. Changed original name reaches changedDefinition; a changed pinkhaHeart snapshot hash fails Directory.requireOrigin as invalidOrigin."
+    },
+    {
+      "method": "testColdPartialReferenceReconstructsBothExactBindingsAndRejectsChangedPartition",
+      "checked": "Cold partial context reconstructs both exact bindings, uses the corresponding original or supplemental intent per source ID and compares rebuilt reference bytes. A valid-shape but changed partition is refused as changedCheckpoint."
+    },
+    {
+      "method": "testColdAllPresentUsesOnlyOriginalCheckpointAndRejectsForeignBinding",
+      "checked": "Cold all-present uses only the preservation checkpoint, has no supplemental binding, and every source ID resolves to the original creation binding. A foreign preservation binding changes the reference digest and is refused as invalidReference. Current native state/replay authority remain false."
+    },
+    {
+      "method": "testPartitionCodecRefusesDuplicatesUnknownFieldsAndLegacyFieldInjection",
+      "checked": "Closed two-array partition codec rejects duplicate IDs and unknown authority field. UTF8-distinct Unicode IDs round-trip under the original source identity predicate. Legacy v1 reference rejects a partition:null injection rather than silently ignoring it."
+    },
+    {
+      "method": "testCancellationRefusesPartitionBeforeReturningHistoricalCorrespondence",
+      "checked": "A typed child Task cancels itself before constructing completion, asserts CancellationError and is awaited. This checks entry cancellation only; it does not imply cancellation of arbitrary external callbacks or native work."
+    }
+  ],
+  "retainedInputBoundary": {
+    "files": [
+      {
+        "role": "retained-v1-archive",
+        "bytes": 1634696,
+        "sha256": "5d72e36849884da3da3fe9ddde0a01f49a03cde3b417f49456e3558bea8db463",
+        "environment": "PINKHA_CAPTURE_PRODUCER_RETAINED_V1_ARCHIVE"
+      },
+      {
+        "role": "retained-accepted-plan",
+        "bytes": 1823803,
+        "sha256": "4a61914d5dbd3ccb4874f81444e4d0770c9e7e2dfe4259b8b93f15796accb930",
+        "environment": "PINKHA_CAPTURE_PRODUCER_RETAINED_V1_PLAN"
+      }
+    ],
+    "totalBytes": 3458499,
+    "unchangedReader": "The exact old helper checks O_NOFOLLOW/nonblocking/CLOEXEC descriptor admission, regular one-link file, exact size/hash, finite size+1 read, stable descriptor/named identity including nanosecond mtime/ctime. It does not claim source-level O_NOATIME itself; the future controller must supply exact admitted owned copies and preserve the originals.",
+    "finalChecks": "Each selected method that reads retained inputs defers exact input rechecks; method7 reads them after its pure codec assertions. All8 selected methods require both inputs. Any skip fails the future eight-control cohort.",
+    "noPrivateBytesPublished": true
+  },
+  "preservedCorrections": [
+    {
+      "from": {
+        "blob": "080a7d6a0766521469da3a76f9e29ea86abe9d72",
+        "bytes": 5064,
+        "sha256": "536cb0b18fe5524dfe06445cac78139b85ac48220169ee59840d08f18054e351"
+      },
+      "to": {
+        "blob": "42392b6923475fba1e47a083cbb860ce0e51914d",
+        "bytes": 18964,
+        "sha256": "fab4f87205e35209303a19464d765b01c0e047f5d3115f52fabe8a4acb8a463a"
+      },
+      "finding": "Inherited C20 syntheticDerivative prose described a different archive-format control. Corrected proof explicitly identifies the untransformed original captured rows and their14 public pin joins. No test body changed."
+    },
+    {
+      "from": {
+        "blob": "42392b6923475fba1e47a083cbb860ce0e51914d",
+        "bytes": 18964,
+        "sha256": "fab4f87205e35209303a19464d765b01c0e047f5d3115f52fabe8a4acb8a463a"
+      },
+      "to": {
+        "blob": "6c206722e72f0fce1797d5cc8084fa5e5ecdeeda",
+        "bytes": 20275,
+        "sha256": "3b0512ffb3fc0ae6819630361f0daeee43ce7670e0e4c4a3c0dc4338b4bd081a"
+      },
+      "finding": "N found stale future policy referring to two original/synthetic methods and a twenty-method selection. Exact policy-only successor now requires all8 selected controls with no skips, preserving the old prose and no changed source bodies."
+    },
+    {
+      "from": {
+        "builder": {
+          "blob": "38ced39313dd522541a69b5e2517288059495b9f",
+          "bytes": 21252,
+          "sha256": "dc8852c773a98b8b1814222f051a4b5b0eeee0dbbb05649fb40561555df3e213"
+        },
+        "tests": {
+          "blob": "6d68d304e2b68b519ff7b4c25853b7196ecc9f38",
+          "bytes": 33485,
+          "sha256": "240d737648aa4624e32e405fc805f5a53a514a70c28c6277772c51dbd67dc38f"
+        }
+      },
+      "to": {
+        "builder": {
+          "blob": "c238cb671f83ddcc81d9b150175b3a160ec181f6",
+          "bytes": 21263,
+          "sha256": "13ba01cc3beaa236495ab72496b3f91c9529070aae416c65a5b15ad1ae440858"
+        },
+        "tests": {
+          "blob": "bcec972ee80374440061f84b470efbe5adce280c",
+          "bytes": 34534,
+          "sha256": "80cf96ad5403db7bec9070bf6982685b72c5d768179e7cd464e171d085ac7380"
+        }
+      },
+      "finding": "C's preserved source-ID correction substitutes the original opaque source identity predicate and adds only the13-line byte-exact Unicode control. Independent whole forward/inverse verified."
+    }
+  ],
+  "acceptanceLimits": [
+    "CLEAR is source/API/refusal review only; eight controls remain NOT_RUN and are not claimed parsed or compiled by this peer.",
+    "Synthetic destination mappings and locators do not prove native receipts, current READ/WRITE authorization, generation/run fencing, atomic schema state, active Type behavior or migration completion.",
+    "Retained archive custody and the original182-operation result are historical input provenance, not a replay or new functional acceptance.",
+    "This Ordinary14 partition slice does not close other formats/layouts, full Files/cloud quota, end-to-end native/App/ABI or complete whole-Space migration.",
+    "Original process/resource/capacity/source gates and Root's exclusive runtime authority remain unchanged."
+  ],
+  "verdict": "No remaining concrete constructor/API/typed-refusal blocker in the current exact c238/bcec/dd5d scope after proof6c206 reporting corrections."
+}
