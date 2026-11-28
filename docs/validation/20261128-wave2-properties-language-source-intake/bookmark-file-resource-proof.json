@@ -1,0 +1,90 @@
+{
+  "schema": "bounded-bookmark-file-language-resource-proof-v1",
+  "status": "SOURCE_ONLY_NO_ADDITIONAL_PROVEN_TRANSLATION_DEFECT",
+  "inspection": "Both complete immutable catalog bodies were fetched by their exact primary Git blob and independently Git-hashed before extracting only the three relevant en/he entries. These are declared source resources, not an inspected compiled bundle.",
+  "catalogs": [
+    {
+      "repoPath": "Modules/Loc/Sources/Loc/Resources/Workspace.xcstrings",
+      "ref": "a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd",
+      "wholeBodyBytes": 2199016,
+      "expectedGitBlob": "8e8054aa2ff6e0e034b09c213a0623e877ea2038",
+      "computedGitBlob": "8e8054aa2ff6e0e034b09c213a0623e877ea2038",
+      "wholeBodyGitMatch": true,
+      "sourceLanguage": "en",
+      "version": "1.0",
+      "selectedKeys": [
+        {
+          "key": "Set.Bookmark.Create.Placeholder",
+          "english": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Paste link"
+            }
+          },
+          "hebrew": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "הדבק קישור"
+            }
+          }
+        },
+        {
+          "key": "Set.Bookmark.Error.Message",
+          "english": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Oops - something went wrong. Please try again"
+            }
+          },
+          "hebrew": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "אופס - משהו השתבש. אנא נסה שוב"
+            }
+          }
+        }
+      ],
+      "primaryBlobURL": "https://api.github.com/repos/davidpovarsky/anytype-swift/git/blobs/8e8054aa2ff6e0e034b09c213a0623e877ea2038",
+      "primaryFileURL": "https://github.com/davidpovarsky/anytype-swift/blob/a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd/Modules/Loc/Sources/Loc/Resources/Workspace.xcstrings"
+    },
+    {
+      "repoPath": "Modules/Loc/Sources/Loc/Resources/UI.xcstrings",
+      "ref": "a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd",
+      "wholeBodyBytes": 2976480,
+      "expectedGitBlob": "e439720df26033c7dd4a0ba18d09ebfb3ceb81d2",
+      "computedGitBlob": "e439720df26033c7dd4a0ba18d09ebfb3ceb81d2",
+      "wholeBodyGitMatch": true,
+      "sourceLanguage": "en",
+      "version": "1.0",
+      "selectedKeys": [
+        {
+          "key": "Create",
+          "english": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Create"
+            }
+          },
+          "hebrew": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "צור"
+            }
+          }
+        }
+      ],
+      "primaryBlobURL": "https://api.github.com/repos/davidpovarsky/anytype-swift/git/blobs/e439720df26033c7dd4a0ba18d09ebfb3ceb81d2",
+      "primaryFileURL": "https://github.com/davidpovarsky/anytype-swift/blob/a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd/Modules/Loc/Sources/Loc/Resources/UI.xcstrings"
+    }
+  ],
+  "lookupLimitations": [
+    {
+      "action": "fetch_file for the two >1MiB catalogs",
+      "observation": "returned correct blob identities with empty content; empty bodies were not treated as catalog evidence; exact fetch_blob reads were used"
+    },
+    {
+      "action": "first fetch_blob argument spelling",
+      "observation": "tool refused missing blob_sha; no source body or mutation; corrected argument used"
+    }
+  ]
+}

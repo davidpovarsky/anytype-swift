@@ -1,0 +1,5005 @@
+{
+  "commandCustodyBlocked": false,
+  "commands": [
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "rev-parse",
+        "HEAD",
+        "HEAD^{tree}"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830281.2822275,
+      "label": "initial-head-tree",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119183,
+      "pid": 3119183,
+      "startedAt": 1795830281.2647393,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-001-initial-head-tree.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 82,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-001-initial-head-tree.stdout",
+        "sha256": "ab2dba3444ed0b69acfaa45413c7e61adceb1560d49d6295a19526f0a6c23508"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "symbolic-ref",
+        "HEAD"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830281.3013349,
+      "label": "initial-branch",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119185,
+      "pid": 3119185,
+      "startedAt": 1795830281.2849047,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-002-initial-branch.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 47,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-002-initial-branch.stdout",
+        "sha256": "21b4323947a91c2bbf360a5b1252d31079464f89d2f374a415b6033786ec2e77"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "rev-parse",
+        "--path-format=absolute",
+        "--git-path",
+        "MERGE_HEAD"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830281.336138,
+      "label": "merge-state-path",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119187,
+      "pid": 3119187,
+      "startedAt": 1795830281.304044,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-003-merge-state-path.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 112,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-003-merge-state-path.stdout",
+        "sha256": "7ced4466e0b7d1d6a62f60786b27ba0470414a5ec72295593379eb36e1f450a3"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "status",
+        "--porcelain=v1",
+        "-z",
+        "--untracked-files=all"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830281.5103502,
+      "label": "before-status",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119189,
+      "pid": 3119189,
+      "startedAt": 1795830281.33895,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-004-before-status.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 273,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-004-before-status.stdout",
+        "sha256": "6bdea55c22a207bf4e920183d704094fef3651a8ca6f4e726958532caeb3fae3"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "ls-files",
+        "--others",
+        "--exclude-standard",
+        "-z"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830281.679388,
+      "label": "before-untracked-paths",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119211,
+      "pid": 3119211,
+      "startedAt": 1795830281.513939,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-005-before-untracked-paths.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 261,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-005-before-untracked-paths.stdout",
+        "sha256": "7dbac249bb04e50bb0e08159393acb49119dde6ebe33670d129ee8f691ab991b"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "status",
+        "--porcelain=v1",
+        "-z",
+        "--untracked-files=normal"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830281.9034998,
+      "label": "before-untracked-groups",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119213,
+      "pid": 3119213,
+      "startedAt": 1795830281.6823816,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-006-before-untracked-groups.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 102,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-006-before-untracked-groups.stdout",
+        "sha256": "197b712033187a72c7e7659506ee2e0c59c648f5c9dbd235babaa048389381b7"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "-c",
+        "remote.origin.mirror=false",
+        "-c",
+        "credential.helper=!gh auth git-credential",
+        "ls-remote",
+        "--heads",
+        "origin",
+        "refs/heads/codex/chatgpt-wave15-final-20261125"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830282.3744009,
+      "label": "original-remote",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119235,
+      "pid": 3119235,
+      "startedAt": 1795830281.908348,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-007-original-remote.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 88,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-007-original-remote.stdout",
+        "sha256": "3e5108d37c67dc22953e744ff8382178110922b2bbaabb989fac875547abbdcc"
+      },
+      "timeoutSeconds": 45
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "rev-parse",
+        "--path-format=absolute",
+        "--git-path",
+        "index"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830282.3930001,
+      "label": "original-index-path",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119278,
+      "pid": 3119278,
+      "startedAt": 1795830282.377044,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-008-original-index-path.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 107,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-008-original-index-path.stdout",
+        "sha256": "27561d5c43e8c18f7c0b051888cdc56ee0f71005658eea8dfb1d62891cc2bbdc"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "ls-tree",
+        "-r",
+        "-z",
+        "3b33534bedc8c2b7d1e5bcccfe6cc1ccb7eb49e5"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830282.4646623,
+      "label": "complete-current-tree",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119280,
+      "pid": 3119280,
+      "startedAt": 1795830282.4000182,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-009-complete-current-tree.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 3447292,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-009-complete-current-tree.stdout",
+        "sha256": "379c72f77939e4fb437397ee42b1a9e6973752c8b2960ff179e6dd7337631fad"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "show",
+        "-s",
+        "--format=%H %T %P",
+        "1302840dd3014cb250a01f318431ee02a61f1acd"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830282.674779,
+      "label": "original-donor-1-identity",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119302,
+      "pid": 3119302,
+      "startedAt": 1795830282.6583478,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-010-original-donor-1-identity.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 123,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-010-original-donor-1-identity.stdout",
+        "sha256": "85f8ffe490a8e7adc9f12e67b7298f9ef8fb1639b9e7d889db0a2c013cb8e186"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "merge-base",
+        "--is-ancestor",
+        "8e6fe6d8f47c0229853e8948edbd58ca01dd1a9e",
+        "319422f27af10e2fe5b0d837bfb703a44a59c665"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830282.7627838,
+      "label": "original-donor-1-base-integrated",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119304,
+      "pid": 3119304,
+      "startedAt": 1795830282.7304673,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-011-original-donor-1-base-integrated.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-011-original-donor-1-base-integrated.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "diff",
+        "--name-status",
+        "-z",
+        "--no-renames",
+        "8e6fe6d8f47c0229853e8948edbd58ca01dd1a9e",
+        "1302840dd3014cb250a01f318431ee02a61f1acd"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830282.7837987,
+      "label": "original-donor-1-full-diff",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119306,
+      "pid": 3119306,
+      "startedAt": 1795830282.7677221,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-012-original-donor-1-full-diff.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 3130,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-012-original-donor-1-full-diff.stdout",
+        "sha256": "e7ea11572ca7af538bf2d78f9787bbc7d382f9f6c1f59541a779d43380c5dfa5"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "ls-tree",
+        "-r",
+        "-z",
+        "--full-tree",
+        "90c05af6ee3cde75b85508f6f294c392e3add3e4",
+        "--",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/README.md",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/collection/data-stage.py",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/collection/export-fixed-witness.py",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/collection/export-small-data.py",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/collection/read-pinned-workflows.py",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/coordination/capacity-and-terminal-handoff.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/coordination/supplemental-window-grant.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/custody/actual-completed-job.original.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/custody/actual-dispatch.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/custody/actual-notification-tool.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/custody/archive-upload-result.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/custody/coordination-context.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/custody/dispatch-spec.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/custody/root-phase-coordination.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/custody/source-upload-result.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/custody/terminal-notice.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/original-continuation2/command.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/original-continuation2/immutable-witness-after.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/original-continuation2/immutable-witness-before.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/original-continuation2/immutable-witness-final.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/original-continuation2/process.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/original-continuation2/receipt.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/original-continuation2/resource-samples.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/original-continuation2/stderr.original.log",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/original-continuation2/stdout.original.log",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/packet-manifest.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/reviews/automatic-workflow-preflight.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/reviews/interfaces-independent-actual-review.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/reviews/root-actual-review.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/reviews/torah-composite-actual-qualification.json",
+        "docs/validation/20261128-wave2-bookmark6-continuation2-result/stage-receipt.json"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830282.8030937,
+      "label": "original-donor-1-changed-leaves",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119308,
+      "pid": 3119308,
+      "startedAt": 1795830282.7871654,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-013-original-donor-1-changed-leaves.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 4711,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-013-original-donor-1-changed-leaves.stdout",
+        "sha256": "431b9d75e7b11132f8c0c707159c2dd936060679a298a57f441ff5e4cac4c809"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "cat-file",
+        "--batch"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830282.825526,
+      "label": "original-donor-1-whole-original-bodies",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119310,
+      "pid": 3119310,
+      "startedAt": 1795830282.8060942,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-014-original-donor-1-whole-original-bodies.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 1189,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-014-original-donor-1-whole-original-bodies.stdin",
+        "sha256": "856e742c2cd9b6b70019662892e2fbe217c48ea948c9450e52b46088b547b2a3"
+      },
+      "stdout": {
+        "bytes": 296899,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-014-original-donor-1-whole-original-bodies.stdout",
+        "sha256": "33139c86455cca459a5e78819679295078cc00c2757be5fa0c42d84f42f4b45d"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "cat-file",
+        "--batch"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830282.8868093,
+      "label": "guard-before-original-files",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119312,
+      "pid": 3119312,
+      "startedAt": 1795830282.8512778,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-015-guard-before-original-files.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 1845,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-015-guard-before-original-files.stdin",
+        "sha256": "b02381863a311d33b337f12c2724a34ce5f8b02e0ba5cc07d75ab25aab6b73c2"
+      },
+      "stdout": {
+        "bytes": 613195,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-015-guard-before-original-files.stdout",
+        "sha256": "b4119816a663c0bd57416ad29b6665e4e24b5d49ae9992d0b95ae771c08ad799"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "python3",
+        "-B",
+        "-c",
+        "import os,sys;os.mkdir(sys.argv[1],0o700)",
+        "/tmp/pinkha-w3-bookmark31-result-private-index-20261128"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830282.9627802,
+      "label": "create-exclusive-private-index",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119325,
+      "pid": 3119325,
+      "startedAt": 1795830282.89725,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-016-create-exclusive-private-index.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-016-create-exclusive-private-index.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "GIT_INDEX_FILE=/tmp/pinkha-w3-bookmark31-result-private-index-20261128/index",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "read-tree",
+        "319422f27af10e2fe5b0d837bfb703a44a59c665"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830283.186783,
+      "label": "complete-original31-preview-read-full-start",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119339,
+      "pid": 3119339,
+      "startedAt": 1795830282.9656615,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-017-complete-original31-preview-read-full-start.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-017-complete-original31-preview-read-full-start.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "GIT_INDEX_FILE=/tmp/pinkha-w3-bookmark31-result-private-index-20261128/index",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "update-index",
+        "-z",
+        "--index-info"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830283.2628374,
+      "label": "complete-original31-preview-apply-exact-entries",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119346,
+      "pid": 3119346,
+      "startedAt": 1795830283.1903536,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-018-complete-original31-preview-apply-exact-entries.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 4556,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-018-complete-original31-preview-apply-exact-entries.stdin",
+        "sha256": "c8c006cf0600742f13f2cd52fb04fb4545caf8f12e81790b76136bf35e26115b"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-018-complete-original31-preview-apply-exact-entries.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "GIT_INDEX_FILE=/tmp/pinkha-w3-bookmark31-result-private-index-20261128/index",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "write-tree"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830283.382574,
+      "label": "complete-original31-preview-complete-tree",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119348,
+      "pid": 3119348,
+      "startedAt": 1795830283.2662003,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-019-complete-original31-preview-complete-tree.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-019-complete-original31-preview-complete-tree.stdout",
+        "sha256": "c1efc80fb17255fe50adc9f5ed5860c913fb16d9d5693deb35d497e9b3d87f4f"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "ls-tree",
+        "-r",
+        "-z",
+        "cacefe6fa60f129fb897cf5157e07b4ce11e5c82"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830283.63168,
+      "label": "complete-original31-preview-complete-leaves",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119373,
+      "pid": 3119373,
+      "startedAt": 1795830283.388457,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-020-complete-original31-preview-complete-leaves.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 3452003,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-020-complete-original31-preview-complete-leaves.stdout",
+        "sha256": "b855ef9dc2315baeda932ab1152862f97233500a1758c40a37048490528bef34"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "diff",
+        "--name-status",
+        "-z",
+        "--no-renames",
+        "319422f27af10e2fe5b0d837bfb703a44a59c665",
+        "cacefe6fa60f129fb897cf5157e07b4ce11e5c82"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830283.7888594,
+      "label": "complete-original31-preview-finite-diff",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119387,
+      "pid": 3119387,
+      "startedAt": 1795830283.7553751,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-021-complete-original31-preview-finite-diff.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 3130,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-021-complete-original31-preview-finite-diff.stdout",
+        "sha256": "e7ea11572ca7af538bf2d78f9787bbc7d382f9f6c1f59541a779d43380c5dfa5"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "diff",
+        "--check",
+        "--no-renames",
+        "319422f27af10e2fe5b0d837bfb703a44a59c665",
+        "cacefe6fa60f129fb897cf5157e07b4ce11e5c82"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830283.8572435,
+      "label": "source-preview-whitespace",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119389,
+      "pid": 3119389,
+      "startedAt": 1795830283.7922068,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-022-source-preview-whitespace.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-022-source-preview-whitespace.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "cat-file",
+        "--batch"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830283.9128811,
+      "label": "guard-after-original-files",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119391,
+      "pid": 3119391,
+      "startedAt": 1795830283.8780205,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-023-guard-after-original-files.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 1845,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-023-guard-after-original-files.stdin",
+        "sha256": "b02381863a311d33b337f12c2724a34ce5f8b02e0ba5cc07d75ab25aab6b73c2"
+      },
+      "stdout": {
+        "bytes": 613195,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-023-guard-after-original-files.stdout",
+        "sha256": "b4119816a663c0bd57416ad29b6665e4e24b5d49ae9992d0b95ae771c08ad799"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830283.953161,
+      "label": "new-reviewed-blob-001",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119393,
+      "pid": 3119393,
+      "startedAt": 1795830283.9322388,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-024-new-reviewed-blob-001.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 3760,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-024-new-reviewed-blob-001.stdin",
+        "sha256": "dfec1f4060793bc15b2f38695c3a3d7c8df258558d267096ecab7a7c916246e9"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-024-new-reviewed-blob-001.stdout",
+        "sha256": "7e969a16ce42927f6c2524d6e18362e5e79fc610c2fa561abb1ff99d738356d3"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830283.9930773,
+      "label": "new-reviewed-blob-003",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119395,
+      "pid": 3119395,
+      "startedAt": 1795830283.9558425,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-025-new-reviewed-blob-003.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 210194,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-025-new-reviewed-blob-003.stdin",
+        "sha256": "ba6af3ede1f6af1169fdc6831e72fbe1dfd620f3e175f633be446f998f2122ee"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-025-new-reviewed-blob-003.stdout",
+        "sha256": "5b18fe6faa1117b7ef23a78e81b037a53ad26826d52527c64ef5e7bffcf8c9c4"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830284.033734,
+      "label": "new-reviewed-blob-004",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119397,
+      "pid": 3119397,
+      "startedAt": 1795830283.997218,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-026-new-reviewed-blob-004.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 17871,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-026-new-reviewed-blob-004.stdin",
+        "sha256": "954996c329526410439da78b982b08d66ff1945f5924cd4ec55e8eaeff1d6653"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-026-new-reviewed-blob-004.stdout",
+        "sha256": "d7b28c34b6b2a27e5442f4e45c4eb31a06f3acc3046ba90c3563a4f6efcabd1d"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830284.0699067,
+      "label": "new-reviewed-blob-005",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119406,
+      "pid": 3119406,
+      "startedAt": 1795830284.039798,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-027-new-reviewed-blob-005.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 71448,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-027-new-reviewed-blob-005.stdin",
+        "sha256": "59e66b8039f2262fbd6d2e8b77378d2c89877d19af95472a2802ba73186ee9c3"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-027-new-reviewed-blob-005.stdout",
+        "sha256": "bb4a9a83cd7928e0db031b5df84a98155ff41edc2e1d2d20382007a946bfdffb"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830284.1081624,
+      "label": "new-reviewed-blob-006",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119420,
+      "pid": 3119420,
+      "startedAt": 1795830284.0726867,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-028-new-reviewed-blob-006.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 87007,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-028-new-reviewed-blob-006.stdin",
+        "sha256": "0cc2d73831dfb574dc5492c25dc71218ed1cc5d56d14b2a91d9399325f7f5055"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-028-new-reviewed-blob-006.stdout",
+        "sha256": "498b3bc52f67f066c2f2dd65f1553a4c309aa6a58f68ef7333dbcdfdf5b357b4"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "GIT_INDEX_FILE=/tmp/pinkha-w3-bookmark31-result-private-index-20261128/index",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "read-tree",
+        "319422f27af10e2fe5b0d837bfb703a44a59c665"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830284.3287077,
+      "label": "complete-final-preview-read-full-start",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119422,
+      "pid": 3119422,
+      "startedAt": 1795830284.1118157,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-029-complete-final-preview-read-full-start.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-029-complete-final-preview-read-full-start.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "GIT_INDEX_FILE=/tmp/pinkha-w3-bookmark31-result-private-index-20261128/index",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "update-index",
+        "-z",
+        "--index-info"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830284.398414,
+      "label": "complete-final-preview-apply-exact-entries",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119424,
+      "pid": 3119424,
+      "startedAt": 1795830284.3313398,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-030-complete-final-preview-apply-exact-entries.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 5377,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-030-complete-final-preview-apply-exact-entries.stdin",
+        "sha256": "478329452ed8a4abb5b7f4e058eec22b6556a4ac114dc647c13dc105ce34f1a8"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-030-complete-final-preview-apply-exact-entries.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "GIT_INDEX_FILE=/tmp/pinkha-w3-bookmark31-result-private-index-20261128/index",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "write-tree"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830284.4690816,
+      "label": "complete-final-preview-complete-tree",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119426,
+      "pid": 3119426,
+      "startedAt": 1795830284.4018896,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-031-complete-final-preview-complete-tree.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-031-complete-final-preview-complete-tree.stdout",
+        "sha256": "79714f26ada80bdfa268093216b771779ab1e20024afd957ef79515ea915ffd1"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "ls-tree",
+        "-r",
+        "-z",
+        "52e7ed09b48de7d354dc5f4f5f5f6cf787c55c6b"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830284.539881,
+      "label": "complete-final-preview-complete-leaves",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119435,
+      "pid": 3119435,
+      "startedAt": 1795830284.4741437,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-032-complete-final-preview-complete-leaves.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 3452854,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-032-complete-final-preview-complete-leaves.stdout",
+        "sha256": "b870248eb97fce95b45a7c5f217291531c06930fd7db82f75af6392191470541"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "diff",
+        "--name-status",
+        "-z",
+        "--no-renames",
+        "319422f27af10e2fe5b0d837bfb703a44a59c665",
+        "52e7ed09b48de7d354dc5f4f5f5f6cf787c55c6b"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830284.641402,
+      "label": "complete-final-preview-finite-diff",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119439,
+      "pid": 3119439,
+      "startedAt": 1795830284.6089196,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-033-complete-final-preview-finite-diff.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 3675,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-033-complete-final-preview-finite-diff.stdout",
+        "sha256": "7afa441e5a20b2c6717eba1812cf6396ef3a79afd23d7930f1ffe6ac77f1c708"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "diff",
+        "--check",
+        "--no-renames",
+        "319422f27af10e2fe5b0d837bfb703a44a59c665",
+        "52e7ed09b48de7d354dc5f4f5f5f6cf787c55c6b"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830284.7096906,
+      "label": "complete-preview-whitespace",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119441,
+      "pid": 3119441,
+      "startedAt": 1795830284.644786,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-034-complete-preview-whitespace.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-034-complete-preview-whitespace.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "rev-parse",
+        "HEAD",
+        "HEAD^{tree}"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830284.7463894,
+      "label": "premerge-head-tree",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119443,
+      "pid": 3119443,
+      "startedAt": 1795830284.7134018,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-035-premerge-head-tree.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 82,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-035-premerge-head-tree.stdout",
+        "sha256": "ab2dba3444ed0b69acfaa45413c7e61adceb1560d49d6295a19526f0a6c23508"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "write-tree"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830284.7833488,
+      "label": "premerge-index-tree",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119445,
+      "pid": 3119445,
+      "startedAt": 1795830284.7498174,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-036-premerge-index-tree.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-036-premerge-index-tree.stdout",
+        "sha256": "bc63ade273137ff6279eabe3cd4f7117354e005f2c4b241fd01d2131b5627569"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "status",
+        "--porcelain=v1",
+        "-z",
+        "--untracked-files=all"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830284.9539723,
+      "label": "premerge-status",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119447,
+      "pid": 3119447,
+      "startedAt": 1795830284.7864888,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-037-premerge-status.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 273,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-037-premerge-status.stdout",
+        "sha256": "6bdea55c22a207bf4e920183d704094fef3651a8ca6f4e726958532caeb3fae3"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "ls-files",
+        "--others",
+        "--exclude-standard",
+        "-z"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830285.177159,
+      "label": "premerge-untracked-paths",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119469,
+      "pid": 3119469,
+      "startedAt": 1795830284.9572408,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-038-premerge-untracked-paths.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 261,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-038-premerge-untracked-paths.stdout",
+        "sha256": "7dbac249bb04e50bb0e08159393acb49119dde6ebe33670d129ee8f691ab991b"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "status",
+        "--porcelain=v1",
+        "-z",
+        "--untracked-files=normal"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830285.3534243,
+      "label": "premerge-untracked-groups",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119524,
+      "pid": 3119524,
+      "startedAt": 1795830285.1797366,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-039-premerge-untracked-groups.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 102,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-039-premerge-untracked-groups.stdout",
+        "sha256": "197b712033187a72c7e7659506ee2e0c59c648f5c9dbd235babaa048389381b7"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "-c",
+        "remote.origin.mirror=false",
+        "-c",
+        "credential.helper=!gh auth git-credential",
+        "ls-remote",
+        "--heads",
+        "origin",
+        "refs/heads/codex/chatgpt-wave15-final-20261125"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830285.8324566,
+      "label": "premerge-remote",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119565,
+      "pid": 3119565,
+      "startedAt": 1795830285.3636205,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-040-premerge-remote.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 88,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-040-premerge-remote.stdout",
+        "sha256": "3e5108d37c67dc22953e744ff8382178110922b2bbaabb989fac875547abbdcc"
+      },
+      "timeoutSeconds": 45
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "-c",
+        "user.name=ChatGPT",
+        "-c",
+        "user.email=chatgpt@openai.com",
+        "merge",
+        "--no-ff",
+        "--no-commit",
+        "1302840dd3014cb250a01f318431ee02a61f1acd"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830286.2121053,
+      "label": "normal-one-donor-evidence-merge",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119595,
+      "pid": 3119595,
+      "startedAt": 1795830285.8371773,
+      "stderr": {
+        "bytes": 66,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-041-normal-one-donor-evidence-merge.stderr",
+        "sha256": "96bb6a194a796153cbd0c640642866371219451832063763d544b942a8d97c4e"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-041-normal-one-donor-evidence-merge.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 60
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "write-tree"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830286.2492616,
+      "label": "actual-donor-index-tree",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119659,
+      "pid": 3119659,
+      "startedAt": 1795830286.2165022,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-042-actual-donor-index-tree.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-042-actual-donor-index-tree.stdout",
+        "sha256": "c1efc80fb17255fe50adc9f5ed5860c913fb16d9d5693deb35d497e9b3d87f4f"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "ls-tree",
+        "-r",
+        "-z",
+        "cacefe6fa60f129fb897cf5157e07b4ce11e5c82"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830286.317379,
+      "label": "actual-donor-full-tree",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119661,
+      "pid": 3119661,
+      "startedAt": 1795830286.2521727,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-043-actual-donor-full-tree.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 3452003,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-043-actual-donor-full-tree.stdout",
+        "sha256": "b855ef9dc2315baeda932ab1152862f97233500a1758c40a37048490528bef34"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "python3",
+        "-B",
+        "-c",
+        "import base64,json,os,pathlib,stat,sys\nd=json.loads(sys.stdin.buffer.read());root=pathlib.Path(d['root'])\nfor r in d['files']:\n p=root/r['path']\n for q in [p,*p.parents]:\n  assert not q.is_symlink(),str(q)\n  if q==root:break\n old=None if r['before'] is None else base64.b64decode(r['before'],validate=True)\n existed=p.exists()\n if old is None:assert not existed,str(p)\n elif existed:assert p.is_file() and p.read_bytes()==old,str(p)\n p.parent.mkdir(parents=True,exist_ok=True)\n raw=base64.b64decode(r['after'],validate=True)\n flags=os.O_RDWR|os.O_NOFOLLOW|(os.O_CREAT|os.O_EXCL if not existed else 0)\n fd=os.open(p,flags,0o644)\n with os.fdopen(fd,'r+b') as f:\n  assert stat.S_ISREG(os.fstat(f.fileno()).st_mode),str(p)\n  if existed:assert f.read()==old,str(p)\n  f.seek(0);f.truncate(0);f.write(raw);f.flush();os.fsync(f.fileno())\n assert p.read_bytes()==raw,str(p)\n"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830286.533873,
+      "label": "write-exclusive-root-evidence",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119663,
+      "pid": 3119663,
+      "startedAt": 1795830286.411882,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-044-write-exclusive-root-evidence.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 536845,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-044-write-exclusive-root-evidence.stdin",
+        "sha256": "201731fda86abdd758716659142ebe5c0b2d8bf22b4ec288c35a1223bc4faf59"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-044-write-exclusive-root-evidence.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 45
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "add",
+        "--sparse",
+        "--",
+        "docs/validation/20261128-wave3-bookmark31-result-intake/original-w2-publication-receipt.json",
+        "docs/validation/20261128-wave3-bookmark31-result-intake/original83-guard-derivation.json",
+        "docs/validation/20261128-wave3-bookmark31-result-intake/prior132-publication.original.json",
+        "docs/validation/20261128-wave3-bookmark31-result-intake/root-integration-controller.py",
+        "docs/validation/20261128-wave3-bookmark31-result-intake/root-source-intake.json",
+        "docs/validation/20261128-wave3-bookmark31-result-intake/source-readback-review.original.json"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830286.651961,
+      "label": "stage-exact-root-evidence",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119665,
+      "pid": 3119665,
+      "startedAt": 1795830286.536374,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-045-stage-exact-root-evidence.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-045-stage-exact-root-evidence.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "write-tree"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830286.7722714,
+      "label": "actual-complete-index-tree",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119687,
+      "pid": 3119687,
+      "startedAt": 1795830286.6557498,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-046-actual-complete-index-tree.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-046-actual-complete-index-tree.stdout",
+        "sha256": "79714f26ada80bdfa268093216b771779ab1e20024afd957ef79515ea915ffd1"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "diff",
+        "--name-status",
+        "-z",
+        "--no-renames",
+        "319422f27af10e2fe5b0d837bfb703a44a59c665",
+        "52e7ed09b48de7d354dc5f4f5f5f6cf787c55c6b"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830286.7940686,
+      "label": "actual-complete-delta",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119689,
+      "pid": 3119689,
+      "startedAt": 1795830286.776743,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-047-actual-complete-delta.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 3675,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-047-actual-complete-delta.stdout",
+        "sha256": "7afa441e5a20b2c6717eba1812cf6396ef3a79afd23d7930f1ffe6ac77f1c708"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "diff",
+        "--name-only"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830286.8709698,
+      "label": "unstaged-source-check",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119691,
+      "pid": 3119691,
+      "startedAt": 1795830286.797035,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-048-unstaged-source-check.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-048-unstaged-source-check.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "ls-files",
+        "--others",
+        "--exclude-standard",
+        "-z"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830287.038965,
+      "label": "untracked-source-check",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119713,
+      "pid": 3119713,
+      "startedAt": 1795830286.8738828,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-049-untracked-source-check.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 261,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-049-untracked-source-check.stdout",
+        "sha256": "7dbac249bb04e50bb0e08159393acb49119dde6ebe33670d129ee8f691ab991b"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "diff",
+        "--cached",
+        "--check",
+        "--no-renames",
+        "319422f27af10e2fe5b0d837bfb703a44a59c665"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830287.1072307,
+      "label": "actual-index-whitespace",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119715,
+      "pid": 3119715,
+      "startedAt": 1795830287.0423324,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-050-actual-index-whitespace.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-050-actual-index-whitespace.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "cat-file",
+        "--batch"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830287.1703165,
+      "label": "guard-after-original-files",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119717,
+      "pid": 3119717,
+      "startedAt": 1795830287.1360242,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-051-guard-after-original-files.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 1845,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-051-guard-after-original-files.stdin",
+        "sha256": "b02381863a311d33b337f12c2724a34ce5f8b02e0ba5cc07d75ab25aab6b73c2"
+      },
+      "stdout": {
+        "bytes": 613195,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-051-guard-after-original-files.stdout",
+        "sha256": "b4119816a663c0bd57416ad29b6665e4e24b5d49ae9992d0b95ae771c08ad799"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "python3",
+        "-B",
+        "-c",
+        "import os,runpy,sys;root,script=sys.argv[1:3];os.chdir(root);sys.argv=sys.argv[2:];runpy.run_path(script,run_name=\"__main__\")",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/AnyEnginePort/verify_source_retention.py",
+        "--base",
+        "586c98bcc17dee425664224e508fc0e8df277678",
+        "--ref",
+        "52e7ed09b48de7d354dc5f4f5f5f6cf787c55c6b",
+        "--output",
+        "/tmp/pinkha-w3-bookmark31-result-retention-20261128.json"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830287.8982542,
+      "label": "original-retention-gate",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119719,
+      "pid": 3119719,
+      "startedAt": 1795830287.1796663,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-052-original-retention-gate.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 51195,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-052-original-retention-gate.stdout",
+        "sha256": "6ed4d859f8c17cd4a6cc57a650578fa8475af731aedc6a6a32052d87eb6208ba"
+      },
+      "timeoutSeconds": 120
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830287.9188385,
+      "label": "final-precommit-head",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119766,
+      "pid": 3119766,
+      "startedAt": 1795830287.9028873,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-053-final-precommit-head.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-053-final-precommit-head.stdout",
+        "sha256": "2f2b7630fe199662b3a3de6bb9a1ca9c0c78da256b78481701550c2e60266d95"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "write-tree"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830287.953741,
+      "label": "final-precommit-index",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119768,
+      "pid": 3119768,
+      "startedAt": 1795830287.9217222,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-054-final-precommit-index.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-054-final-precommit-index.stdout",
+        "sha256": "79714f26ada80bdfa268093216b771779ab1e20024afd957ef79515ea915ffd1"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "ls-files",
+        "--others",
+        "--exclude-standard",
+        "-z"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830288.1683733,
+      "label": "final-precommit-untracked",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119770,
+      "pid": 3119770,
+      "startedAt": 1795830288.052833,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-055-final-precommit-untracked.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 261,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-055-final-precommit-untracked.stdout",
+        "sha256": "7dbac249bb04e50bb0e08159393acb49119dde6ebe33670d129ee8f691ab991b"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "-c",
+        "user.name=ChatGPT",
+        "-c",
+        "user.email=chatgpt@openai.com",
+        "commit",
+        "-F",
+        "-"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830288.3922033,
+      "label": "normal-two-parent-evidence-commit",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119772,
+      "pid": 3119772,
+      "startedAt": 1795830288.1711,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-056-normal-two-parent-evidence-commit.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 397,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-056-normal-two-parent-evidence-commit.stdin",
+        "sha256": "29867d84cafd1543d47eafc0dc27d26fff700e5a1e62c03c05d2893b8c9699f3"
+      },
+      "stdout": {
+        "bytes": 104,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-056-normal-two-parent-evidence-commit.stdout",
+        "sha256": "1fc670f98d3ff91c1e867ffb37f6d53f0885fd0979cf87f2a4760fd173e680c0"
+      },
+      "timeoutSeconds": 45
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830288.4214509,
+      "label": "final-committed-head",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119815,
+      "pid": 3119815,
+      "startedAt": 1795830288.4053888,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-057-final-committed-head.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-057-final-committed-head.stdout",
+        "sha256": "b627a21c6e3e40a9b2c12517ca1b7c4cb01af5d7d11210cde802102afe990f60"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "show",
+        "-s",
+        "--format=%T %P",
+        "e84da535ef04fbdde56ae200bdac78fce32e96e0"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830288.4869037,
+      "label": "final-committed-parents",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119817,
+      "pid": 3119817,
+      "startedAt": 1795830288.4547622,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-058-final-committed-parents.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 123,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-058-final-committed-parents.stdout",
+        "sha256": "467ad899a46ebc7a300b74906a8fd14e6398bbfab374568ed5e4588073ee5260"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "status",
+        "--porcelain=v1",
+        "-z",
+        "--untracked-files=all"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830288.659462,
+      "label": "committed-status",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119819,
+      "pid": 3119819,
+      "startedAt": 1795830288.489548,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-059-committed-status.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 273,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-059-committed-status.stdout",
+        "sha256": "6bdea55c22a207bf4e920183d704094fef3651a8ca6f4e726958532caeb3fae3"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "ls-files",
+        "--others",
+        "--exclude-standard",
+        "-z"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830288.7768066,
+      "label": "committed-untracked-paths",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119841,
+      "pid": 3119841,
+      "startedAt": 1795830288.6620662,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-060-committed-untracked-paths.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 261,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-060-committed-untracked-paths.stdout",
+        "sha256": "7dbac249bb04e50bb0e08159393acb49119dde6ebe33670d129ee8f691ab991b"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "status",
+        "--porcelain=v1",
+        "-z",
+        "--untracked-files=normal"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830288.9526968,
+      "label": "committed-untracked-groups",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119843,
+      "pid": 3119843,
+      "startedAt": 1795830288.779994,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-061-committed-untracked-groups.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 102,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-061-committed-untracked-groups.stdout",
+        "sha256": "197b712033187a72c7e7659506ee2e0c59c648f5c9dbd235babaa048389381b7"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "-c",
+        "remote.origin.mirror=false",
+        "-c",
+        "credential.helper=!gh auth git-credential",
+        "ls-remote",
+        "--heads",
+        "origin",
+        "refs/heads/codex/chatgpt-wave15-final-20261125"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830289.460881,
+      "label": "prepush-remote",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119865,
+      "pid": 3119865,
+      "startedAt": 1795830288.99408,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-062-prepush-remote.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 88,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-062-prepush-remote.stdout",
+        "sha256": "3e5108d37c67dc22953e744ff8382178110922b2bbaabb989fac875547abbdcc"
+      },
+      "timeoutSeconds": 45
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "-c",
+        "remote.origin.mirror=false",
+        "-c",
+        "credential.helper=!gh auth git-credential",
+        "push",
+        "--porcelain",
+        "--no-follow-tags",
+        "origin",
+        "e84da535ef04fbdde56ae200bdac78fce32e96e0:refs/heads/codex/chatgpt-wave15-final-20261125"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830293.255988,
+      "label": "normal-exact-source-push",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3119888,
+      "pid": 3119888,
+      "startedAt": 1795830289.4638803,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-063-normal-exact-source-push.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 172,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-063-normal-exact-source-push.stdout",
+        "sha256": "dde8ed725a3e7c42b682630e1a1fed1e547b9a68932f49636c5db911c399b125"
+      },
+      "timeoutSeconds": 90
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "-c",
+        "remote.origin.mirror=false",
+        "-c",
+        "credential.helper=!gh auth git-credential",
+        "ls-remote",
+        "--heads",
+        "origin",
+        "refs/heads/codex/chatgpt-wave15-final-20261125"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830293.7288308,
+      "label": "published-readback",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3120089,
+      "pid": 3120089,
+      "startedAt": 1795830293.2612524,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-064-published-readback.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 88,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-064-published-readback.stdout",
+        "sha256": "c80f47ee47d9fe47d65a754f0b8b1a71a68e654354fe34a11921ad8524e44ef3"
+      },
+      "timeoutSeconds": 45
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "status",
+        "--porcelain=v1",
+        "-z",
+        "--untracked-files=all"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830294.0649729,
+      "label": "published-status",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3120136,
+      "pid": 3120136,
+      "startedAt": 1795830293.7316456,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-065-published-status.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 273,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-065-published-status.stdout",
+        "sha256": "6bdea55c22a207bf4e920183d704094fef3651a8ca6f4e726958532caeb3fae3"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "ls-files",
+        "--others",
+        "--exclude-standard",
+        "-z"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830294.399809,
+      "label": "published-untracked-paths",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3120189,
+      "pid": 3120189,
+      "startedAt": 1795830294.070071,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-066-published-untracked-paths.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 261,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-066-published-untracked-paths.stdout",
+        "sha256": "7dbac249bb04e50bb0e08159393acb49119dde6ebe33670d129ee8f691ab991b"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/anytype-final-integration-20261125",
+        "status",
+        "--porcelain=v1",
+        "-z",
+        "--untracked-files=normal"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795830294.5703077,
+      "label": "published-untracked-groups",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 3120224,
+      "pid": 3120224,
+      "startedAt": 1795830294.4028523,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-067-published-untracked-groups.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 102,
+        "path": "/mnt/development/projects/evidence/pinkha-w3-bookmark31-result-source-integration-20261128/command-067-published-untracked-groups.stdout",
+        "sha256": "197b712033187a72c7e7659506ee2e0c59c648f5c9dbd235babaa048389381b7"
+      },
+      "timeoutSeconds": 25
+    }
+  ],
+  "compilerInvocations": 0,
+  "controllerSHA256": "954996c329526410439da78b982b08d66ff1945f5924cd4ec55e8eaeff1d6653",
+  "diffChecks": [
+    {
+      "exit": 0,
+      "label": "source-preview-whitespace",
+      "scope": "PASS_CLEAN_DIFF",
+      "stdoutBytes": 0,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "exit": 0,
+      "label": "complete-preview-whitespace",
+      "scope": "PASS_CLEAN_DIFF",
+      "stdoutBytes": 0,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "exit": 0,
+      "label": "actual-index-whitespace",
+      "scope": "PASS_CLEAN_DIFF",
+      "stdoutBytes": 0,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "donorTips": [
+    "1302840dd3014cb250a01f318431ee02a61f1acd"
+  ],
+  "expectedSourceTree": "cacefe6fa60f129fb897cf5157e07b4ce11e5c82",
+  "expectedTree": "52e7ed09b48de7d354dc5f4f5f5f6cf787c55c6b",
+  "files": [
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/README.md",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/collection/data-stage.py",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/collection/export-fixed-witness.py",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/collection/export-small-data.py",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/collection/read-pinned-workflows.py",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/coordination/capacity-and-terminal-handoff.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/coordination/supplemental-window-grant.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/custody/actual-completed-job.original.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/custody/actual-dispatch.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/custody/actual-notification-tool.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/custody/archive-upload-result.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/custody/coordination-context.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/custody/dispatch-spec.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/custody/root-phase-coordination.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/custody/source-upload-result.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/custody/terminal-notice.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/original-continuation2/command.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/original-continuation2/immutable-witness-after.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/original-continuation2/immutable-witness-before.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/original-continuation2/immutable-witness-final.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/original-continuation2/process.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/original-continuation2/receipt.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/original-continuation2/resource-samples.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/original-continuation2/stderr.original.log",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/original-continuation2/stdout.original.log",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/packet-manifest.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/reviews/automatic-workflow-preflight.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/reviews/interfaces-independent-actual-review.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/reviews/root-actual-review.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/reviews/torah-composite-actual-qualification.json",
+    "docs/validation/20261128-wave2-bookmark6-continuation2-result/stage-receipt.json",
+    "docs/validation/20261128-wave3-bookmark31-result-intake/original-w2-publication-receipt.json",
+    "docs/validation/20261128-wave3-bookmark31-result-intake/original83-guard-derivation.json",
+    "docs/validation/20261128-wave3-bookmark31-result-intake/prior132-publication.original.json",
+    "docs/validation/20261128-wave3-bookmark31-result-intake/root-integration-controller.py",
+    "docs/validation/20261128-wave3-bookmark31-result-intake/root-source-intake.json",
+    "docs/validation/20261128-wave3-bookmark31-result-intake/source-readback-review.original.json"
+  ],
+  "finishedAt": 1795830294.5802064,
+  "firstFailure": null,
+  "head": "e84da535ef04fbdde56ae200bdac78fce32e96e0",
+  "inputPins": {
+    "allPackagePins": [
+      {
+        "identity": "a2ui",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/a2ui-project/a2ui",
+        "state": {
+          "revision": "3ed9601862ecc78027e20ac80ad8b1b98a5d9079"
+        }
+      },
+      {
+        "identity": "abseil-cpp-binary",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/google/abseil-cpp-binary.git",
+        "state": {
+          "revision": "194a6706acbd25e4ef639bcaddea16e8758a3e27",
+          "version": "1.2024011602.0"
+        }
+      },
+      {
+        "identity": "amplitude-swift",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/amplitude/Amplitude-Swift",
+        "state": {
+          "revision": "227c2bbc578e9e03bc7b2033da02937c06e476c6",
+          "version": "1.13.7"
+        }
+      },
+      {
+        "identity": "amplitudecore-swift",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/amplitude/AmplitudeCore-Swift.git",
+        "state": {
+          "revision": "13fd0eb0aa080816ffa409669758b2e8787322b2",
+          "version": "1.1.0"
+        }
+      },
+      {
+        "identity": "analytics-connector-ios",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/amplitude/analytics-connector-ios.git",
+        "state": {
+          "revision": "4adbfe85486e6dcdcdca5fa9362097ffe5ec712b",
+          "version": "1.3.1"
+        }
+      },
+      {
+        "identity": "any-crypto-swift",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/anyproto/any-crypto-swift",
+        "state": {
+          "revision": "0d7429888f8ec60d1730341ff1122d5ddf0ff1ab",
+          "version": "1.0.1"
+        }
+      },
+      {
+        "identity": "app-check",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/google/app-check.git",
+        "state": {
+          "revision": "61b85103a1aeed8218f17c794687781505fbbef5",
+          "version": "11.2.0"
+        }
+      },
+      {
+        "identity": "bigint",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/attaswift/BigInt.git",
+        "state": {
+          "revision": "d013a2b66ee468aade6da1f26c6d55cb6cd2e9ad",
+          "version": "5.5.2"
+        }
+      },
+      {
+        "identity": "cache",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/hyperoslo/Cache.git",
+        "state": {
+          "revision": "24e47109e31b2031cb26e25cc1b81b607496066c",
+          "version": "7.4.0"
+        }
+      },
+      {
+        "identity": "confettiswiftui",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/simibac/ConfettiSwiftUI.git",
+        "state": {
+          "revision": "f45961f97bbae6fff6e2e64546fea0189425ad92",
+          "version": "1.1.0"
+        }
+      },
+      {
+        "identity": "devicekit",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/devicekit/DeviceKit",
+        "state": {
+          "revision": "fe41d18eccd92a115cffaa35dfff03018c67e635",
+          "version": "5.2.2"
+        }
+      },
+      {
+        "identity": "equatable",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/ordo-one/equatable",
+        "state": {
+          "revision": "597c2bb34af0c51331eb3b5e705f942d8ee20daa",
+          "version": "1.4.1"
+        }
+      },
+      {
+        "identity": "factory",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/hmlongco/Factory",
+        "state": {
+          "branch": "2.3.1",
+          "revision": "8ca11a7bd1ede031e8e6d7a912bb116e2e43961b"
+        }
+      },
+      {
+        "identity": "firebase-ios-sdk",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/firebase/firebase-ios-sdk",
+        "state": {
+          "revision": "6318278e8e64d21f0fdcc69004395e4d34048aaf",
+          "version": "11.8.1"
+        }
+      },
+      {
+        "identity": "floatingpanel",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/scenee/FloatingPanel",
+        "state": {
+          "revision": "22d46c526084724a718b8c39ab77f12452712cc7",
+          "version": "2.8.3"
+        }
+      },
+      {
+        "identity": "googleappmeasurement",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/google/GoogleAppMeasurement.git",
+        "state": {
+          "revision": "be0881ff728eca210ccb628092af400c086abda3",
+          "version": "11.7.0"
+        }
+      },
+      {
+        "identity": "googledatatransport",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/google/GoogleDataTransport.git",
+        "state": {
+          "revision": "617af071af9aa1d6a091d59a202910ac482128f9",
+          "version": "10.1.0"
+        }
+      },
+      {
+        "identity": "googleutilities",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/google/GoogleUtilities.git",
+        "state": {
+          "revision": "53156c7ec267db846e6b64c9f4c4e31ba4cf75eb",
+          "version": "8.0.2"
+        }
+      },
+      {
+        "identity": "grpc-binary",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/google/grpc-binary.git",
+        "state": {
+          "revision": "f56d8fc3162de9a498377c7b6cea43431f4f5083",
+          "version": "1.65.1"
+        }
+      },
+      {
+        "identity": "gtm-session-fetcher",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/google/gtm-session-fetcher.git",
+        "state": {
+          "revision": "3cdb78efb79b4a5383c3911488d8025bfc545b5e",
+          "version": "4.3.0"
+        }
+      },
+      {
+        "identity": "hanlin-streaming-markdown",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/davidpovarsky/hanlin-streaming-markdown",
+        "state": {
+          "revision": "5cbb4b6c950051f98f02a0b0ae56756f5174a9b8"
+        }
+      },
+      {
+        "identity": "highlightr",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/raspu/Highlightr",
+        "state": {
+          "revision": "fa483d37c692961ecc2391eac568ba3d3935e663",
+          "version": "2.2.0"
+        }
+      },
+      {
+        "identity": "highlightswift",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/appstefan/highlightswift",
+        "state": {
+          "revision": "99c431b38a1444a5fd6a4978307fbbefe3a7af53"
+        }
+      },
+      {
+        "identity": "interop-ios-for-google-sdks",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/google/interop-ios-for-google-sdks.git",
+        "state": {
+          "revision": "2d12673670417654f08f5f90fdd62926dc3a2648",
+          "version": "100.0.0"
+        }
+      },
+      {
+        "identity": "iosmath",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/junyan72/iosMath",
+        "state": {
+          "revision": "ba9ab7729b151329c54fd895a7c1859981d9484c"
+        }
+      },
+      {
+        "identity": "kingfisher",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/onevcat/Kingfisher",
+        "state": {
+          "revision": "3db26ab625d194c38e68c1a40e43d1bc12743fe0",
+          "version": "8.2.0"
+        }
+      },
+      {
+        "identity": "leveldb",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/firebase/leveldb.git",
+        "state": {
+          "revision": "a0bc79961d7be727d258d33d5a6b2f1023270ba1",
+          "version": "1.22.5"
+        }
+      },
+      {
+        "identity": "nanopb",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/firebase/nanopb.git",
+        "state": {
+          "revision": "b7e1104502eca3a213b46303391ca4d3bc8ddec1",
+          "version": "2.30910.0"
+        }
+      },
+      {
+        "identity": "opentelemetry-swift-core",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/open-telemetry/opentelemetry-swift-core.git",
+        "state": {
+          "revision": "c6fcee77cfc21ba400366f12475217c7b6e1d605",
+          "version": "2.6.0"
+        }
+      },
+      {
+        "identity": "promises",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/google/promises.git",
+        "state": {
+          "revision": "540318ecedd63d883069ae7f1ed811a2df00b6ac",
+          "version": "2.4.0"
+        }
+      },
+      {
+        "identity": "pulse",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/kean/Pulse",
+        "state": {
+          "branch": "5.1.2",
+          "revision": "c102aaa266ac69a26d08ee6861da710283988e3b"
+        }
+      },
+      {
+        "identity": "qrcode",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/dagronf/QRCode",
+        "state": {
+          "revision": "ea4047a7777bae470adc140cd94bfa5396a96202",
+          "version": "27.11.0"
+        }
+      },
+      {
+        "identity": "sentry-cocoa",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/getsentry/sentry-cocoa",
+        "state": {
+          "revision": "cf44aa8cb4147f39e698c1f28be0b6b2c89f79d2",
+          "version": "8.58.2"
+        }
+      },
+      {
+        "identity": "shimmerswift",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/BeauNouvelle/ShimmerSwift",
+        "state": {
+          "revision": "f1a4366f74329c313e9528bcbe5286eacc750c05",
+          "version": "2.2.0"
+        }
+      },
+      {
+        "identity": "swift-ai-sdk",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/davidpovarsky/swift-ai-sdk.git",
+        "state": {
+          "revision": "abf0921c6e89e6521cc2b510ff11016b45a0ef08"
+        }
+      },
+      {
+        "identity": "swift-argument-parser",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/apple/swift-argument-parser",
+        "state": {
+          "revision": "6a52f3251125d74daf04fcbd5e6f08a75d074382",
+          "version": "1.8.2"
+        }
+      },
+      {
+        "identity": "swift-asn1",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/apple/swift-asn1.git",
+        "state": {
+          "revision": "a54383ada6cecde007d374f58f864e29370ba5c3",
+          "version": "1.3.2"
+        }
+      },
+      {
+        "identity": "swift-async-algorithms",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/apple/swift-async-algorithms",
+        "state": {
+          "branch": "1.0.3",
+          "revision": "4c3ea81f81f0a25d0470188459c6d4bf20cf2f97"
+        }
+      },
+      {
+        "identity": "swift-atomics",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/apple/swift-atomics.git",
+        "state": {
+          "revision": "0442cb5a3f98ab802acb777929fdb446bda11a34",
+          "version": "1.3.1"
+        }
+      },
+      {
+        "identity": "swift-cmark",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/swiftlang/swift-cmark.git",
+        "state": {
+          "revision": "08ddb528923cc1a6527e02b7a1aee9e516ca749a",
+          "version": "0.9.0"
+        }
+      },
+      {
+        "identity": "swift-collections",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/apple/swift-collections.git",
+        "state": {
+          "revision": "7b847a3b7008b2dc2f47ca3110d8c782fb2e5c7e",
+          "version": "1.3.0"
+        }
+      },
+      {
+        "identity": "swift-crypto",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/apple/swift-crypto.git",
+        "state": {
+          "revision": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+          "version": "3.12.3"
+        }
+      },
+      {
+        "identity": "swift-json-schema",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/ajevans99/swift-json-schema",
+        "state": {
+          "revision": "c0a9375ea9cd3fd47d875c98ed7f027ea61c03cb",
+          "version": "0.13.2"
+        }
+      },
+      {
+        "identity": "swift-log",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/apple/swift-log",
+        "state": {
+          "branch": "1.4.2",
+          "revision": "5d66f7ba25daf4f94100e7022febf3c75e37a6c7"
+        }
+      },
+      {
+        "identity": "swift-markdown",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/swiftlang/swift-markdown.git",
+        "state": {
+          "revision": "25cb61d3482054b09ae76ca4f281b1bfe7fe5a43"
+        }
+      },
+      {
+        "identity": "swift-protobuf",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/apple/swift-protobuf",
+        "state": {
+          "branch": "1.32.0",
+          "revision": "c6fe6442e6a64250495669325044052e113e990c"
+        }
+      },
+      {
+        "identity": "swift-qrcode-generator",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/dagronf/swift-qrcode-generator",
+        "state": {
+          "revision": "2b1980b825f08a81ccc762b0c4d17fcde9d5e953",
+          "version": "2.0.2"
+        }
+      },
+      {
+        "identity": "swift-syntax",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/swiftlang/swift-syntax.git",
+        "state": {
+          "revision": "0687f71944021d616d34d922343dcef086855920",
+          "version": "600.0.1"
+        }
+      },
+      {
+        "identity": "swiftentrykit",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/huri000/SwiftEntryKit",
+        "state": {
+          "revision": "5ad36cccf0c4b9fea32f4e9b17a8e38f07563ef0",
+          "version": "2.0.0"
+        }
+      },
+      {
+        "identity": "swiftimagereadwrite",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/dagronf/SwiftImageReadWrite",
+        "state": {
+          "revision": "42ace2412279f18bc264bc306e96b51c36e12a33",
+          "version": "1.9.2"
+        }
+      },
+      {
+        "identity": "swiftsoup",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/scinfu/SwiftSoup",
+        "state": {
+          "revision": "bba848db50462894e7fc0891d018dfecad4ef11e"
+        }
+      },
+      {
+        "identity": "swiftui-shimmer",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/markiv/SwiftUI-Shimmer",
+        "state": {
+          "revision": "0226e21f9bf355d40e07e5f5e1c33679d50e167f",
+          "version": "1.5.1"
+        }
+      },
+      {
+        "identity": "swiftyjson",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/SwiftyJSON/SwiftyJSON.git",
+        "state": {
+          "revision": "b3dcd7dbd0d488e1a7077cb33b00f2083e382f07",
+          "version": "5.0.1"
+        }
+      },
+      {
+        "identity": "torahinspectorkit",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/davidpovarsky/TorahInspectorKit.git",
+        "state": {
+          "revision": "26beca175d64a4d34e3567f2bbb4bf308d714478"
+        }
+      },
+      {
+        "identity": "wrappinghstack",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/ksemianov/WrappingHStack",
+        "state": {
+          "revision": "3300f68b6bf5f8a75ee7ca8a40f136a558053d10",
+          "version": "0.2.0"
+        }
+      },
+      {
+        "identity": "zipfoundation",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/weichsel/ZIPFoundation",
+        "state": {
+          "revision": "02b6abe5f6eef7e3cbd5f247c5cc24e246efcfe0",
+          "version": "0.9.19"
+        }
+      }
+    ],
+    "closedActivation": [
+      {
+        "fields": {
+          "actualCombinedSource": null,
+          "actualCompiledEnumeration": null,
+          "runtimeAdmission": null,
+          "runtimeReady": false,
+          "sourceCompilerProof": null,
+          "successfulProducer": null
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_app_product_delta10/profile.json"
+      },
+      {
+        "fields": {
+          "runtimeReady": false,
+          "swiftSourceModifiedOrCompiled": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_app_product_delta10/source-inverse.json"
+      },
+      {
+        "fields": {
+          "appSourceSHA": null,
+          "appSourceTree": null,
+          "buildReceiptSHA256": null,
+          "hostedOwnerSHA256": null,
+          "native23CompilerReceiptSHA256": null,
+          "nativeSourceManifestSHA256": null,
+          "plans": [],
+          "readyForExecution": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_attachment_components/activation.json"
+      },
+      {
+        "fields": {
+          "swiftTestBodiesCopied": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_attachment_components/original_sources.json"
+      },
+      {
+        "fields": {
+          "finalSourceSDKNativeTuple": null,
+          "newTestImplementation": false,
+          "runtimeReady": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_attachment_components/profile-dependency.json"
+      },
+      {
+        "fields": {
+          "finalSDKAndNativeTuple": null,
+          "runtimeReady": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_attachment_components/profile.json"
+      },
+      {
+        "fields": {
+          "runtimeReady": false,
+          "swiftSourcesCompiled": false,
+          "swiftTestBodiesModified": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_attachment_components/source-inverse.json"
+      },
+      {
+        "fields": {
+          "swiftTestBodiesCopied": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_core13/original_sources.json"
+      },
+      {
+        "fields": {
+          "appSourceSHA": null,
+          "appSourceTree": null,
+          "buildReceiptSHA256": null,
+          "hostedOwnerSHA256": null,
+          "native23CompilerReceiptSHA256": null,
+          "nativeSourceManifestSHA256": null,
+          "plans": [],
+          "readyForExecution": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_hanlin_uikit23/activation.json"
+      },
+      {
+        "fields": {
+          "swiftTestBodiesCopied": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_hanlin_uikit23/original_sources.json"
+      },
+      {
+        "fields": {
+          "finalSourceSDKNativeTuple": null,
+          "newTestImplementation": false,
+          "runtimeReady": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_hanlin_uikit23/profile-dependency.json"
+      },
+      {
+        "fields": {
+          "finalSDKAndNativeTuple": null,
+          "runtimeReady": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_hanlin_uikit23/profile.json"
+      },
+      {
+        "fields": {
+          "runtimeReady": false,
+          "swiftSourcesCompiled": false,
+          "swiftTestBodiesModified": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_hanlin_uikit23/source-inverse.json"
+      },
+      {
+        "fields": {
+          "plans": [],
+          "producerInputTuple": null,
+          "readyForRuntime": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_native23/activation.json"
+      },
+      {
+        "fields": {
+          "ordinaryStorage": false,
+          "runtimeExecuted": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_native23/source_witnesses.json"
+      },
+      {
+        "fields": {
+          "appSourceSHA": null,
+          "appSourceTree": null,
+          "buildReceiptSHA256": null,
+          "hostedOwnerSHA256": null,
+          "native23CompilerReceiptSHA256": null,
+          "nativeSourceManifestSHA256": null,
+          "plans": [],
+          "readyForExecution": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_property_cache_bin/activation.json"
+      },
+      {
+        "fields": {
+          "swiftTestBodiesCopied": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_property_cache_bin/original_sources.json"
+      },
+      {
+        "fields": {
+          "newProfileImplementation": false,
+          "runtimeReady": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_property_cache_bin/profile-dependency.json"
+      },
+      {
+        "fields": {
+          "runtimeAdmission": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_shared_build/native23_build_contract.json"
+      },
+      {
+        "fields": {
+          "finalProducerTuple": null,
+          "historicalFixturesReused": false,
+          "plans": [],
+          "readyForRuntime": false,
+          "runtimeExecuted": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_t5/activation.json"
+      },
+      {
+        "fields": {
+          "originalHistoriesReplayed": false,
+          "swiftBodiesCopied": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_t5/original_sources.json"
+      },
+      {
+        "fields": {
+          "appSourceSHA": null,
+          "appSourceTree": null,
+          "buildReceiptSHA256": null,
+          "hostedOwnerSHA256": null,
+          "native23CompilerReceiptSHA256": null,
+          "nativeSourceManifestSHA256": null,
+          "plans": [],
+          "readyForExecution": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_inspector14/activation.json"
+      },
+      {
+        "fields": {
+          "swiftTestBodiesCopied": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_inspector14/original_sources.json"
+      },
+      {
+        "fields": {
+          "finalSourceSDKNativeTuple": null,
+          "newTestImplementation": false,
+          "runtimeReady": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_inspector14/profile-dependency.json"
+      },
+      {
+        "fields": {
+          "finalSDKAndNativeTuple": null,
+          "runtimeReady": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_inspector14/profile.json"
+      },
+      {
+        "fields": {
+          "runtimeReady": false,
+          "swiftSourcesCompiled": false,
+          "swiftTestBodiesModified": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_inspector14/source-inverse.json"
+      },
+      {
+        "fields": {
+          "plans": [],
+          "producerInputTuple": null,
+          "readyForRuntime": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_native25/activation.json"
+      },
+      {
+        "fields": {
+          "ordinaryStorage": false,
+          "runtimeExecuted": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_native25/source_witnesses.json"
+      },
+      {
+        "fields": {
+          "plans": [],
+          "producerInputTuple": null,
+          "readyForRuntime": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_native26_properties/activation.json"
+      },
+      {
+        "fields": {
+          "ordinaryStorage": false,
+          "runtimeExecuted": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_native26_properties/source_witnesses.json"
+      },
+      {
+        "fields": {
+          "appSourceSHA": null,
+          "appSourceTree": null,
+          "buildReceiptSHA256": null,
+          "hostedOwnerSHA256": null,
+          "native23CompilerReceiptSHA256": null,
+          "nativeSourceManifestSHA256": null,
+          "plans": [],
+          "readyForExecution": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_core24/activation.json"
+      },
+      {
+        "fields": {
+          "swiftTestBodiesCopied": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_core24/original_sources.json"
+      },
+      {
+        "fields": {
+          "finalSourceNativeTuple": null,
+          "newPBXMembership": false,
+          "runtimeReady": false,
+          "swiftSourceProjected": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_core24/profile.json"
+      },
+      {
+        "fields": {
+          "finalSourceSDKNativeProductTuple": null,
+          "oldApp15AcceptedAsCurrent": false,
+          "plans": [],
+          "readyForExecution": false,
+          "separateNativeUIReceiptRequired": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/warm_focus_editor/activation.json"
+      },
+      {
+        "fields": {
+          "finalSourceSDKNativeProductTuple": null,
+          "swiftTestBodiesCopied": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/warm_focus_editor/original_sources.json"
+      },
+      {
+        "fields": {
+          "activationPlans": [],
+          "finalSourceSDKNativeProductTuple": null,
+          "ready": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/warm_focus_editor/priority-runtime-selection.closed.json"
+      },
+      {
+        "fields": {
+          "NativeUICompiledSourceCount": null,
+          "NativeUIReceiptRequired": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/warm_focus_editor/source-membership.json"
+      },
+      {
+        "fields": {
+          "appSourceSHA": null,
+          "buildRoot": null,
+          "nativeBuildDate": null,
+          "nativeMaterializationRoot": null,
+          "readyForBuild": false,
+          "selectedNativeTestSources": [],
+          "selectedUITestSources": [],
+          "toolchainIntake": null
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/warm_forward/build-admission.unbound.json"
+      },
+      {
+        "fields": {
+          "ready": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/warm_forward/commands.unbound.json"
+      },
+      {
+        "fields": {
+          "activationPlans": [],
+          "finalSourceSDKNativeProductTuple": null,
+          "ready": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/warm_forward/priority-runtime-selection.closed.json"
+      },
+      {
+        "fields": {
+          "appSourceSHA": null,
+          "appSourceTree": null,
+          "buildRoot": null,
+          "developerDir": null,
+          "hanlinReadOnlySourceRoot": null,
+          "nativeMaterializationRoot": null,
+          "readyForStaging": false,
+          "runtimeActivation": false,
+          "sdkRevision": null
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/warm_forward/source-staging.unbound.json"
+      },
+      {
+        "fields": {
+          "appSourceSHA": null,
+          "appSourceTree": null,
+          "buildReceiptSHA256": null,
+          "currentWarmSelectionChanged": false,
+          "finalSourceSDKNativeProductTuple": null,
+          "hostedOwnerSHA256": null,
+          "nativeCompilationProofSHA256": null,
+          "nativeSourceManifestSHA256": null,
+          "newRunner": false,
+          "plans": [],
+          "readyForExecution": false,
+          "separateNativeUIRunnerRequired": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_account_runtime/activation.json"
+      },
+      {
+        "fields": {
+          "finalSourceSDKNativeTuple": null,
+          "runtimeReady": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_account_runtime/profile-dependency.json"
+      },
+      {
+        "fields": {
+          "finalSDKAndNativeTuple": null,
+          "newCompilerSourcePath": false,
+          "newPBXMembership": false,
+          "newRunner": false,
+          "runtimeReady": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_account_runtime/profile.json"
+      },
+      {
+        "fields": {
+          "runtimeReady": false,
+          "swiftSourcesCompiled": false,
+          "swiftTestBodiesModified": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_account_runtime/source-inverse.json"
+      }
+    ],
+    "reviewedRefactors": 145,
+    "sdk": "c0b118f4de28e6ca1e71219237d1ae1c7fabefd8",
+    "sourceOnly": true
+  },
+  "localMergeCommits": [
+    {
+      "head": "e84da535ef04fbdde56ae200bdac78fce32e96e0",
+      "parents": [
+        "319422f27af10e2fe5b0d837bfb703a44a59c665",
+        "1302840dd3014cb250a01f318431ee02a61f1acd"
+      ],
+      "tree": "52e7ed09b48de7d354dc5f4f5f5f6cf787c55c6b"
+    }
+  ],
+  "materializations": 0,
+  "normalPushCompleted": true,
+  "normalPushReadback": "e84da535ef04fbdde56ae200bdac78fce32e96e0",
+  "originalHelperSHA256": "3f943613f16b5adc1e686cfa41b7c3bd9632e6e83bf4f8c77ee520597dcc102f",
+  "originalUntrackedPreserved": true,
+  "outputPins": {
+    "allPackagePins": [
+      {
+        "identity": "a2ui",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/a2ui-project/a2ui",
+        "state": {
+          "revision": "3ed9601862ecc78027e20ac80ad8b1b98a5d9079"
+        }
+      },
+      {
+        "identity": "abseil-cpp-binary",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/google/abseil-cpp-binary.git",
+        "state": {
+          "revision": "194a6706acbd25e4ef639bcaddea16e8758a3e27",
+          "version": "1.2024011602.0"
+        }
+      },
+      {
+        "identity": "amplitude-swift",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/amplitude/Amplitude-Swift",
+        "state": {
+          "revision": "227c2bbc578e9e03bc7b2033da02937c06e476c6",
+          "version": "1.13.7"
+        }
+      },
+      {
+        "identity": "amplitudecore-swift",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/amplitude/AmplitudeCore-Swift.git",
+        "state": {
+          "revision": "13fd0eb0aa080816ffa409669758b2e8787322b2",
+          "version": "1.1.0"
+        }
+      },
+      {
+        "identity": "analytics-connector-ios",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/amplitude/analytics-connector-ios.git",
+        "state": {
+          "revision": "4adbfe85486e6dcdcdca5fa9362097ffe5ec712b",
+          "version": "1.3.1"
+        }
+      },
+      {
+        "identity": "any-crypto-swift",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/anyproto/any-crypto-swift",
+        "state": {
+          "revision": "0d7429888f8ec60d1730341ff1122d5ddf0ff1ab",
+          "version": "1.0.1"
+        }
+      },
+      {
+        "identity": "app-check",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/google/app-check.git",
+        "state": {
+          "revision": "61b85103a1aeed8218f17c794687781505fbbef5",
+          "version": "11.2.0"
+        }
+      },
+      {
+        "identity": "bigint",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/attaswift/BigInt.git",
+        "state": {
+          "revision": "d013a2b66ee468aade6da1f26c6d55cb6cd2e9ad",
+          "version": "5.5.2"
+        }
+      },
+      {
+        "identity": "cache",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/hyperoslo/Cache.git",
+        "state": {
+          "revision": "24e47109e31b2031cb26e25cc1b81b607496066c",
+          "version": "7.4.0"
+        }
+      },
+      {
+        "identity": "confettiswiftui",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/simibac/ConfettiSwiftUI.git",
+        "state": {
+          "revision": "f45961f97bbae6fff6e2e64546fea0189425ad92",
+          "version": "1.1.0"
+        }
+      },
+      {
+        "identity": "devicekit",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/devicekit/DeviceKit",
+        "state": {
+          "revision": "fe41d18eccd92a115cffaa35dfff03018c67e635",
+          "version": "5.2.2"
+        }
+      },
+      {
+        "identity": "equatable",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/ordo-one/equatable",
+        "state": {
+          "revision": "597c2bb34af0c51331eb3b5e705f942d8ee20daa",
+          "version": "1.4.1"
+        }
+      },
+      {
+        "identity": "factory",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/hmlongco/Factory",
+        "state": {
+          "branch": "2.3.1",
+          "revision": "8ca11a7bd1ede031e8e6d7a912bb116e2e43961b"
+        }
+      },
+      {
+        "identity": "firebase-ios-sdk",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/firebase/firebase-ios-sdk",
+        "state": {
+          "revision": "6318278e8e64d21f0fdcc69004395e4d34048aaf",
+          "version": "11.8.1"
+        }
+      },
+      {
+        "identity": "floatingpanel",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/scenee/FloatingPanel",
+        "state": {
+          "revision": "22d46c526084724a718b8c39ab77f12452712cc7",
+          "version": "2.8.3"
+        }
+      },
+      {
+        "identity": "googleappmeasurement",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/google/GoogleAppMeasurement.git",
+        "state": {
+          "revision": "be0881ff728eca210ccb628092af400c086abda3",
+          "version": "11.7.0"
+        }
+      },
+      {
+        "identity": "googledatatransport",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/google/GoogleDataTransport.git",
+        "state": {
+          "revision": "617af071af9aa1d6a091d59a202910ac482128f9",
+          "version": "10.1.0"
+        }
+      },
+      {
+        "identity": "googleutilities",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/google/GoogleUtilities.git",
+        "state": {
+          "revision": "53156c7ec267db846e6b64c9f4c4e31ba4cf75eb",
+          "version": "8.0.2"
+        }
+      },
+      {
+        "identity": "grpc-binary",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/google/grpc-binary.git",
+        "state": {
+          "revision": "f56d8fc3162de9a498377c7b6cea43431f4f5083",
+          "version": "1.65.1"
+        }
+      },
+      {
+        "identity": "gtm-session-fetcher",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/google/gtm-session-fetcher.git",
+        "state": {
+          "revision": "3cdb78efb79b4a5383c3911488d8025bfc545b5e",
+          "version": "4.3.0"
+        }
+      },
+      {
+        "identity": "hanlin-streaming-markdown",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/davidpovarsky/hanlin-streaming-markdown",
+        "state": {
+          "revision": "5cbb4b6c950051f98f02a0b0ae56756f5174a9b8"
+        }
+      },
+      {
+        "identity": "highlightr",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/raspu/Highlightr",
+        "state": {
+          "revision": "fa483d37c692961ecc2391eac568ba3d3935e663",
+          "version": "2.2.0"
+        }
+      },
+      {
+        "identity": "highlightswift",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/appstefan/highlightswift",
+        "state": {
+          "revision": "99c431b38a1444a5fd6a4978307fbbefe3a7af53"
+        }
+      },
+      {
+        "identity": "interop-ios-for-google-sdks",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/google/interop-ios-for-google-sdks.git",
+        "state": {
+          "revision": "2d12673670417654f08f5f90fdd62926dc3a2648",
+          "version": "100.0.0"
+        }
+      },
+      {
+        "identity": "iosmath",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/junyan72/iosMath",
+        "state": {
+          "revision": "ba9ab7729b151329c54fd895a7c1859981d9484c"
+        }
+      },
+      {
+        "identity": "kingfisher",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/onevcat/Kingfisher",
+        "state": {
+          "revision": "3db26ab625d194c38e68c1a40e43d1bc12743fe0",
+          "version": "8.2.0"
+        }
+      },
+      {
+        "identity": "leveldb",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/firebase/leveldb.git",
+        "state": {
+          "revision": "a0bc79961d7be727d258d33d5a6b2f1023270ba1",
+          "version": "1.22.5"
+        }
+      },
+      {
+        "identity": "nanopb",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/firebase/nanopb.git",
+        "state": {
+          "revision": "b7e1104502eca3a213b46303391ca4d3bc8ddec1",
+          "version": "2.30910.0"
+        }
+      },
+      {
+        "identity": "opentelemetry-swift-core",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/open-telemetry/opentelemetry-swift-core.git",
+        "state": {
+          "revision": "c6fcee77cfc21ba400366f12475217c7b6e1d605",
+          "version": "2.6.0"
+        }
+      },
+      {
+        "identity": "promises",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/google/promises.git",
+        "state": {
+          "revision": "540318ecedd63d883069ae7f1ed811a2df00b6ac",
+          "version": "2.4.0"
+        }
+      },
+      {
+        "identity": "pulse",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/kean/Pulse",
+        "state": {
+          "branch": "5.1.2",
+          "revision": "c102aaa266ac69a26d08ee6861da710283988e3b"
+        }
+      },
+      {
+        "identity": "qrcode",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/dagronf/QRCode",
+        "state": {
+          "revision": "ea4047a7777bae470adc140cd94bfa5396a96202",
+          "version": "27.11.0"
+        }
+      },
+      {
+        "identity": "sentry-cocoa",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/getsentry/sentry-cocoa",
+        "state": {
+          "revision": "cf44aa8cb4147f39e698c1f28be0b6b2c89f79d2",
+          "version": "8.58.2"
+        }
+      },
+      {
+        "identity": "shimmerswift",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/BeauNouvelle/ShimmerSwift",
+        "state": {
+          "revision": "f1a4366f74329c313e9528bcbe5286eacc750c05",
+          "version": "2.2.0"
+        }
+      },
+      {
+        "identity": "swift-ai-sdk",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/davidpovarsky/swift-ai-sdk.git",
+        "state": {
+          "revision": "abf0921c6e89e6521cc2b510ff11016b45a0ef08"
+        }
+      },
+      {
+        "identity": "swift-argument-parser",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/apple/swift-argument-parser",
+        "state": {
+          "revision": "6a52f3251125d74daf04fcbd5e6f08a75d074382",
+          "version": "1.8.2"
+        }
+      },
+      {
+        "identity": "swift-asn1",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/apple/swift-asn1.git",
+        "state": {
+          "revision": "a54383ada6cecde007d374f58f864e29370ba5c3",
+          "version": "1.3.2"
+        }
+      },
+      {
+        "identity": "swift-async-algorithms",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/apple/swift-async-algorithms",
+        "state": {
+          "branch": "1.0.3",
+          "revision": "4c3ea81f81f0a25d0470188459c6d4bf20cf2f97"
+        }
+      },
+      {
+        "identity": "swift-atomics",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/apple/swift-atomics.git",
+        "state": {
+          "revision": "0442cb5a3f98ab802acb777929fdb446bda11a34",
+          "version": "1.3.1"
+        }
+      },
+      {
+        "identity": "swift-cmark",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/swiftlang/swift-cmark.git",
+        "state": {
+          "revision": "08ddb528923cc1a6527e02b7a1aee9e516ca749a",
+          "version": "0.9.0"
+        }
+      },
+      {
+        "identity": "swift-collections",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/apple/swift-collections.git",
+        "state": {
+          "revision": "7b847a3b7008b2dc2f47ca3110d8c782fb2e5c7e",
+          "version": "1.3.0"
+        }
+      },
+      {
+        "identity": "swift-crypto",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/apple/swift-crypto.git",
+        "state": {
+          "revision": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+          "version": "3.12.3"
+        }
+      },
+      {
+        "identity": "swift-json-schema",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/ajevans99/swift-json-schema",
+        "state": {
+          "revision": "c0a9375ea9cd3fd47d875c98ed7f027ea61c03cb",
+          "version": "0.13.2"
+        }
+      },
+      {
+        "identity": "swift-log",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/apple/swift-log",
+        "state": {
+          "branch": "1.4.2",
+          "revision": "5d66f7ba25daf4f94100e7022febf3c75e37a6c7"
+        }
+      },
+      {
+        "identity": "swift-markdown",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/swiftlang/swift-markdown.git",
+        "state": {
+          "revision": "25cb61d3482054b09ae76ca4f281b1bfe7fe5a43"
+        }
+      },
+      {
+        "identity": "swift-protobuf",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/apple/swift-protobuf",
+        "state": {
+          "branch": "1.32.0",
+          "revision": "c6fe6442e6a64250495669325044052e113e990c"
+        }
+      },
+      {
+        "identity": "swift-qrcode-generator",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/dagronf/swift-qrcode-generator",
+        "state": {
+          "revision": "2b1980b825f08a81ccc762b0c4d17fcde9d5e953",
+          "version": "2.0.2"
+        }
+      },
+      {
+        "identity": "swift-syntax",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/swiftlang/swift-syntax.git",
+        "state": {
+          "revision": "0687f71944021d616d34d922343dcef086855920",
+          "version": "600.0.1"
+        }
+      },
+      {
+        "identity": "swiftentrykit",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/huri000/SwiftEntryKit",
+        "state": {
+          "revision": "5ad36cccf0c4b9fea32f4e9b17a8e38f07563ef0",
+          "version": "2.0.0"
+        }
+      },
+      {
+        "identity": "swiftimagereadwrite",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/dagronf/SwiftImageReadWrite",
+        "state": {
+          "revision": "42ace2412279f18bc264bc306e96b51c36e12a33",
+          "version": "1.9.2"
+        }
+      },
+      {
+        "identity": "swiftsoup",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/scinfu/SwiftSoup",
+        "state": {
+          "revision": "bba848db50462894e7fc0891d018dfecad4ef11e"
+        }
+      },
+      {
+        "identity": "swiftui-shimmer",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/markiv/SwiftUI-Shimmer",
+        "state": {
+          "revision": "0226e21f9bf355d40e07e5f5e1c33679d50e167f",
+          "version": "1.5.1"
+        }
+      },
+      {
+        "identity": "swiftyjson",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/SwiftyJSON/SwiftyJSON.git",
+        "state": {
+          "revision": "b3dcd7dbd0d488e1a7077cb33b00f2083e382f07",
+          "version": "5.0.1"
+        }
+      },
+      {
+        "identity": "torahinspectorkit",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/davidpovarsky/TorahInspectorKit.git",
+        "state": {
+          "revision": "26beca175d64a4d34e3567f2bbb4bf308d714478"
+        }
+      },
+      {
+        "identity": "wrappinghstack",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/ksemianov/WrappingHStack",
+        "state": {
+          "revision": "3300f68b6bf5f8a75ee7ca8a40f136a558053d10",
+          "version": "0.2.0"
+        }
+      },
+      {
+        "identity": "zipfoundation",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/weichsel/ZIPFoundation",
+        "state": {
+          "revision": "02b6abe5f6eef7e3cbd5f247c5cc24e246efcfe0",
+          "version": "0.9.19"
+        }
+      }
+    ],
+    "closedActivation": [
+      {
+        "fields": {
+          "actualCombinedSource": null,
+          "actualCompiledEnumeration": null,
+          "runtimeAdmission": null,
+          "runtimeReady": false,
+          "sourceCompilerProof": null,
+          "successfulProducer": null
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_app_product_delta10/profile.json"
+      },
+      {
+        "fields": {
+          "runtimeReady": false,
+          "swiftSourceModifiedOrCompiled": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_app_product_delta10/source-inverse.json"
+      },
+      {
+        "fields": {
+          "appSourceSHA": null,
+          "appSourceTree": null,
+          "buildReceiptSHA256": null,
+          "hostedOwnerSHA256": null,
+          "native23CompilerReceiptSHA256": null,
+          "nativeSourceManifestSHA256": null,
+          "plans": [],
+          "readyForExecution": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_attachment_components/activation.json"
+      },
+      {
+        "fields": {
+          "swiftTestBodiesCopied": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_attachment_components/original_sources.json"
+      },
+      {
+        "fields": {
+          "finalSourceSDKNativeTuple": null,
+          "newTestImplementation": false,
+          "runtimeReady": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_attachment_components/profile-dependency.json"
+      },
+      {
+        "fields": {
+          "finalSDKAndNativeTuple": null,
+          "runtimeReady": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_attachment_components/profile.json"
+      },
+      {
+        "fields": {
+          "runtimeReady": false,
+          "swiftSourcesCompiled": false,
+          "swiftTestBodiesModified": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_attachment_components/source-inverse.json"
+      },
+      {
+        "fields": {
+          "swiftTestBodiesCopied": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_core13/original_sources.json"
+      },
+      {
+        "fields": {
+          "appSourceSHA": null,
+          "appSourceTree": null,
+          "buildReceiptSHA256": null,
+          "hostedOwnerSHA256": null,
+          "native23CompilerReceiptSHA256": null,
+          "nativeSourceManifestSHA256": null,
+          "plans": [],
+          "readyForExecution": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_hanlin_uikit23/activation.json"
+      },
+      {
+        "fields": {
+          "swiftTestBodiesCopied": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_hanlin_uikit23/original_sources.json"
+      },
+      {
+        "fields": {
+          "finalSourceSDKNativeTuple": null,
+          "newTestImplementation": false,
+          "runtimeReady": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_hanlin_uikit23/profile-dependency.json"
+      },
+      {
+        "fields": {
+          "finalSDKAndNativeTuple": null,
+          "runtimeReady": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_hanlin_uikit23/profile.json"
+      },
+      {
+        "fields": {
+          "runtimeReady": false,
+          "swiftSourcesCompiled": false,
+          "swiftTestBodiesModified": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_hanlin_uikit23/source-inverse.json"
+      },
+      {
+        "fields": {
+          "plans": [],
+          "producerInputTuple": null,
+          "readyForRuntime": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_native23/activation.json"
+      },
+      {
+        "fields": {
+          "ordinaryStorage": false,
+          "runtimeExecuted": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_native23/source_witnesses.json"
+      },
+      {
+        "fields": {
+          "appSourceSHA": null,
+          "appSourceTree": null,
+          "buildReceiptSHA256": null,
+          "hostedOwnerSHA256": null,
+          "native23CompilerReceiptSHA256": null,
+          "nativeSourceManifestSHA256": null,
+          "plans": [],
+          "readyForExecution": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_property_cache_bin/activation.json"
+      },
+      {
+        "fields": {
+          "swiftTestBodiesCopied": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_property_cache_bin/original_sources.json"
+      },
+      {
+        "fields": {
+          "newProfileImplementation": false,
+          "runtimeReady": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_property_cache_bin/profile-dependency.json"
+      },
+      {
+        "fields": {
+          "runtimeAdmission": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_shared_build/native23_build_contract.json"
+      },
+      {
+        "fields": {
+          "finalProducerTuple": null,
+          "historicalFixturesReused": false,
+          "plans": [],
+          "readyForRuntime": false,
+          "runtimeExecuted": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_t5/activation.json"
+      },
+      {
+        "fields": {
+          "originalHistoriesReplayed": false,
+          "swiftBodiesCopied": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_t5/original_sources.json"
+      },
+      {
+        "fields": {
+          "appSourceSHA": null,
+          "appSourceTree": null,
+          "buildReceiptSHA256": null,
+          "hostedOwnerSHA256": null,
+          "native23CompilerReceiptSHA256": null,
+          "nativeSourceManifestSHA256": null,
+          "plans": [],
+          "readyForExecution": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_inspector14/activation.json"
+      },
+      {
+        "fields": {
+          "swiftTestBodiesCopied": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_inspector14/original_sources.json"
+      },
+      {
+        "fields": {
+          "finalSourceSDKNativeTuple": null,
+          "newTestImplementation": false,
+          "runtimeReady": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_inspector14/profile-dependency.json"
+      },
+      {
+        "fields": {
+          "finalSDKAndNativeTuple": null,
+          "runtimeReady": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_inspector14/profile.json"
+      },
+      {
+        "fields": {
+          "runtimeReady": false,
+          "swiftSourcesCompiled": false,
+          "swiftTestBodiesModified": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_inspector14/source-inverse.json"
+      },
+      {
+        "fields": {
+          "plans": [],
+          "producerInputTuple": null,
+          "readyForRuntime": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_native25/activation.json"
+      },
+      {
+        "fields": {
+          "ordinaryStorage": false,
+          "runtimeExecuted": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_native25/source_witnesses.json"
+      },
+      {
+        "fields": {
+          "plans": [],
+          "producerInputTuple": null,
+          "readyForRuntime": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_native26_properties/activation.json"
+      },
+      {
+        "fields": {
+          "ordinaryStorage": false,
+          "runtimeExecuted": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_native26_properties/source_witnesses.json"
+      },
+      {
+        "fields": {
+          "appSourceSHA": null,
+          "appSourceTree": null,
+          "buildReceiptSHA256": null,
+          "hostedOwnerSHA256": null,
+          "native23CompilerReceiptSHA256": null,
+          "nativeSourceManifestSHA256": null,
+          "plans": [],
+          "readyForExecution": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_core24/activation.json"
+      },
+      {
+        "fields": {
+          "swiftTestBodiesCopied": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_core24/original_sources.json"
+      },
+      {
+        "fields": {
+          "finalSourceNativeTuple": null,
+          "newPBXMembership": false,
+          "runtimeReady": false,
+          "swiftSourceProjected": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_core24/profile.json"
+      },
+      {
+        "fields": {
+          "finalSourceSDKNativeProductTuple": null,
+          "oldApp15AcceptedAsCurrent": false,
+          "plans": [],
+          "readyForExecution": false,
+          "separateNativeUIReceiptRequired": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/warm_focus_editor/activation.json"
+      },
+      {
+        "fields": {
+          "finalSourceSDKNativeProductTuple": null,
+          "swiftTestBodiesCopied": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/warm_focus_editor/original_sources.json"
+      },
+      {
+        "fields": {
+          "activationPlans": [],
+          "finalSourceSDKNativeProductTuple": null,
+          "ready": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/warm_focus_editor/priority-runtime-selection.closed.json"
+      },
+      {
+        "fields": {
+          "NativeUICompiledSourceCount": null,
+          "NativeUIReceiptRequired": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/warm_focus_editor/source-membership.json"
+      },
+      {
+        "fields": {
+          "appSourceSHA": null,
+          "buildRoot": null,
+          "nativeBuildDate": null,
+          "nativeMaterializationRoot": null,
+          "readyForBuild": false,
+          "selectedNativeTestSources": [],
+          "selectedUITestSources": [],
+          "toolchainIntake": null
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/warm_forward/build-admission.unbound.json"
+      },
+      {
+        "fields": {
+          "ready": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/warm_forward/commands.unbound.json"
+      },
+      {
+        "fields": {
+          "activationPlans": [],
+          "finalSourceSDKNativeProductTuple": null,
+          "ready": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/warm_forward/priority-runtime-selection.closed.json"
+      },
+      {
+        "fields": {
+          "appSourceSHA": null,
+          "appSourceTree": null,
+          "buildRoot": null,
+          "developerDir": null,
+          "hanlinReadOnlySourceRoot": null,
+          "nativeMaterializationRoot": null,
+          "readyForStaging": false,
+          "runtimeActivation": false,
+          "sdkRevision": null
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/warm_forward/source-staging.unbound.json"
+      },
+      {
+        "fields": {
+          "appSourceSHA": null,
+          "appSourceTree": null,
+          "buildReceiptSHA256": null,
+          "currentWarmSelectionChanged": false,
+          "finalSourceSDKNativeProductTuple": null,
+          "hostedOwnerSHA256": null,
+          "nativeCompilationProofSHA256": null,
+          "nativeSourceManifestSHA256": null,
+          "newRunner": false,
+          "plans": [],
+          "readyForExecution": false,
+          "separateNativeUIRunnerRequired": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_account_runtime/activation.json"
+      },
+      {
+        "fields": {
+          "finalSourceSDKNativeTuple": null,
+          "runtimeReady": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_account_runtime/profile-dependency.json"
+      },
+      {
+        "fields": {
+          "finalSDKAndNativeTuple": null,
+          "newCompilerSourcePath": false,
+          "newPBXMembership": false,
+          "newRunner": false,
+          "runtimeReady": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_account_runtime/profile.json"
+      },
+      {
+        "fields": {
+          "runtimeReady": false,
+          "swiftSourcesCompiled": false,
+          "swiftTestBodiesModified": false
+        },
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_account_runtime/source-inverse.json"
+      }
+    ],
+    "reviewedRefactors": 145,
+    "sdk": "c0b118f4de28e6ca1e71219237d1ae1c7fabefd8",
+    "sourceOnly": true
+  },
+  "phase": "ONE_NORMAL_NONFORCE_PUSH",
+  "resourceBefore": {
+    "development": {
+      "floorBytes": 536870912,
+      "freeBytes": 1523703808,
+      "growthAllowanceBytes": 67108864
+    },
+    "memoryAvailableBytes": 4380520448,
+    "root": {
+      "floorBytes": 1073741824,
+      "freeBytes": 2278993920,
+      "growthAllowanceBytes": 67108864
+    }
+  },
+  "retentionSHA256": "6ed4d859f8c17cd4a6cc57a650578fa8475af731aedc6a6a32052d87eb6208ba",
+  "reviewedRefactors": 145,
+  "runtimeAcceptance": false,
+  "schema": "pinkha-root-bookmark31-result-source-integration/v1",
+  "sourceInputSHA256": "68fdee26555e296faafff764ad84b2c33a730bb1b961589c3a21dfb569c6ba25",
+  "sourceRetentionGates": [
+    {
+      "bytes": 51195,
+      "label": "original-retention-gate",
+      "path": "/tmp/pinkha-w3-bookmark31-result-retention-20261128.json",
+      "reviewedRefactors": 145,
+      "sha256": "6ed4d859f8c17cd4a6cc57a650578fa8475af731aedc6a6a32052d87eb6208ba",
+      "sourceRetentionPassed": true,
+      "tree": "52e7ed09b48de7d354dc5f4f5f5f6cf787c55c6b"
+    }
+  ],
+  "sourceRetentionPassed": true,
+  "start": "319422f27af10e2fe5b0d837bfb703a44a59c665",
+  "startTree": "3b33534bedc8c2b7d1e5bcccfe6cc1ccb7eb49e5",
+  "startedAt": 1795830281.2581797,
+  "state": "SOURCE_NORMAL_MERGE_PUBLISHED_RUNTIME_CLOSED",
+  "testsExecuted": 0,
+  "tree": "52e7ed09b48de7d354dc5f4f5f5f6cf787c55c6b"
+}
