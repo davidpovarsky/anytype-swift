@@ -1,0 +1,126 @@
+{
+  "schema": "pinkha-files-queue-actual-metadata-evidence-join-v1",
+  "status": "PASS_ACTUAL_GO_DEPENDENCY_METADATA_ONLY_NOT_BUILD_OR_TEST",
+  "repository": "davidpovarsky/anytype-swift",
+  "sourceParent": "bdc80e1ef8c4715ee215ebe48d9bb6502478fbe1",
+  "sourceCarrierPrefix": "Tools/AnyEngineValidation/files_queue_active_retry_20261128",
+  "actualJob": {
+    "id": "job_8214c33ac02a",
+    "host": "host_299cf75f6b338ecd",
+    "startedAtUTC": "2026-11-28T14:26:05.914727+00:00",
+    "finishedAtUTC": "2026-11-28T14:26:11.063750+00:00",
+    "exitCode": 0,
+    "outputTruncated": false
+  },
+  "authority": {
+    "qualifiedStdoutPath": "actual/qualified-controller-stdout.json",
+    "qualifiedStdoutSHA256": "0bfcaefb7c99edbc0ce3f7ac80fad75006867b66cf3942e21363f4479f5e94df",
+    "terminalReceiptQualified": true,
+    "primaryStatusPreserved": "PROVISIONAL_NO_ACCEPTANCE",
+    "terminalCandidateStatusPreserved": "QUALIFICATION_CANDIDATE_NO_STANDALONE_ACCEPTANCE",
+    "neitherProvisionalReceiptIsStandaloneAcceptance": true
+  },
+  "independentlyJoined": {
+    "allThreeWholeReceiptHashes": true,
+    "executedControllerAndSourcePacket": true,
+    "wrapperSourceAndMountReceipt": true,
+    "singleIdenticalCommandInPrimaryAndQualifiedStdout": true,
+    "originalInputs5": true,
+    "stagedInputs10": true,
+    "controlInputs4": true,
+    "normalExitAndPositiveGroupAbsence": true,
+    "noForcedCleanupOrSignalsOrCleanupErrors": true,
+    "parentMountNamespaceBeforeAfterEqual": true,
+    "childNamespaceDifferent": true,
+    "readonlyModuleViewQualified": true,
+    "fullPacketTenPayloadHashesAndWrapperBytes": true
+  },
+  "actualMetadata": {
+    "packages": 291,
+    "moduleVersions": 16,
+    "cgoPackages": [
+      "runtime/cgo",
+      "net"
+    ],
+    "testsExecuted": 0,
+    "sourceCompilationOrTestAcceptance": false,
+    "nativeInvocations": 0,
+    "retainedAccountAccess": false,
+    "eCacheAccess": false,
+    "ownedAllocatedBytesAfterFinalReceipts": 6791168,
+    "ownedEntriesAfterFinalReceipts": 872,
+    "maximumSampledGroupRSSBytes": 38817792,
+    "sampledPeakIsNotAnUnobservedInstantaneousPeak": true
+  },
+  "fixedCommand": {
+    "wrapper": "module_cache_readonly.py",
+    "argv": [
+      "/mnt/development/toolchains/go1.27.4/go/bin/go",
+      "list",
+      "-deps",
+      "-test",
+      "-json",
+      "queue.go",
+      "queue_test.go",
+      "queue_retry_generation_test.go"
+    ],
+    "cwd": "/mnt/development/projects/evidence/pinkha-w1-files-queue-component-20261128-metadata1/candidate"
+  },
+  "rawLogLocatorOnly": {
+    "path": "/mnt/development/projects/evidence/pinkha-w1-files-queue-component-20261128-metadata1/commands/go-list/original.log",
+    "bytes": 768258,
+    "sha256": "208fe7fd9f48df42ddc27372fd642b337d4c6615407373987427f2bbc9233c50",
+    "copiedOrRereadForThisPublication": false,
+    "qualificationSource": "Primary dependencySummary and qualified command logSHA256; exact original controller fixed log path."
+  },
+  "laterInputManifestLocatorOnly": {
+    "path": "/var/lib/pinkha-w1-files-queue-component-20261128-inputs1/source-inputs.json",
+    "bytes": 1142387,
+    "sha256": "44e569defe3fc7e96efc3fbdc22778147484e4fdf3547d809bc43a7ab3785192",
+    "reportedFiles": 1820,
+    "reportedLogicalBytes": 89923332,
+    "reportedPackages": 291,
+    "reportedGoCompilerAndTests": 0,
+    "provenance": "Root's separately completed exact bounded source/tool observation",
+    "independentlyReadOrCopiedByThisPublication": false,
+    "partOfOriginalMetadataJob": false
+  },
+  "rawPreservation": {
+    "receiptAndNotificationBodiesVerbatim": true,
+    "nanosecondIntegersNotRegeneratedFromJavaScriptNumbers": true,
+    "metadataUsedForJoinOnly": "String/hash/size/count/boolean fields; raw source bodies remain authoritative for large integer identity fields."
+  },
+  "publicationRead": {
+    "scope": "Exactly three fixed public receipt files",
+    "status": "PASS_EXACT_NOATIME_NOFOLLOW_PUBLIC_RECEIPT_READ",
+    "projectWrites": 0,
+    "sourcePayloadReads": 0,
+    "accountReads": 0,
+    "compilerNativeOrTestInvocations": 0,
+    "directoryAndFileMetadataUnchanged": true,
+    "perReadBound": "Initial exact size plus one byte",
+    "deadlineSeconds": 10,
+    "source": "transport/read_public_receipts.py",
+    "rawOutput": "transport/read-public-receipts.stdout.json"
+  },
+  "acceptanceBoundary": {
+    "queueSelectedParents": 10,
+    "queueCompiledParentDeclarations": 20,
+    "queueBuildAndTenSelectedTests": "NOT_RUN_AT_THIS_METADATA_MILESTONE",
+    "baselineBugReproduction": "NOT_RUN_AT_THIS_METADATA_MILESTONE",
+    "fullNative64": "NOT_RUN_UNCHANGED_GATES",
+    "cloudQuotaRecovery": "NOT_PROVEN",
+    "uploadsResumePermissionAndCloudByteAcceptance": "NOT_PROVEN",
+    "originalNativeResourceGatesUnchanged": true,
+    "readonlyViewIsNotAGeneralFilesystemSandbox": true,
+    "laterBuildWrapperOrControllerNotExecutedOrAdmittedByThisEvidence": true
+  },
+  "requiredPublicationChecks": {
+    "expectedHead": "bdc80e1ef8c4715ee215ebe48d9bb6502478fbe1",
+    "soleParent": "bdc80e1ef8c4715ee215ebe48d9bb6502478fbe1",
+    "onlyNewPrefix": "Tools/AnyEngineValidation/files_queue_active_retry_20261128/metadata-only-20261128",
+    "allDeclaredWholeBlobReadbacks": true,
+    "fullAncestorMerkleInverse": true,
+    "noOtherRefMutation": true
+  }
+}

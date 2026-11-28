@@ -1,0 +1,162 @@
+{
+  "schema": "pinkha-e-go-dependency-metadata-controller-final-peer-v1",
+  "status": "CLEAR_SCOPED_SOURCE_AND_INTERFACE_REVIEW_NOT_EXECUTED",
+  "repository": "davidpovarsky/anytype-swift",
+  "current": {
+    "gitBlob": "5b12f4255e314364be6070b5463984c23c5288f5",
+    "bytes": 363766,
+    "sha256": "69b44e055e98609860ff0456ce7208f3454a8ec5f5c8af7f2da79554a4004d57"
+  },
+  "embeddedPacket": {
+    "bytes": 252843,
+    "sha256": "85b26cfe4978187ef642d724da6408688d42e526e51f52cb694900f6421c3383"
+  },
+  "predecessors": [
+    {
+      "gitBlob": "46cc68e416d969871379d8dd286f4e506c139fff",
+      "bytes": 319234,
+      "sha256": "5b37dd98af6c3315fbf99b1c035cf3db9c04be704d3f22c73efe728ae9a3e265"
+    },
+    {
+      "gitBlob": "2e50a28d3ba93a7695dfcd784e44513ed3f44072",
+      "bytes": 362187,
+      "sha256": "9afa93c49b66c8666b2575881cc4032622b29b043639ff140d714980df5f42f9"
+    }
+  ],
+  "initialPeer": {
+    "gitBlob": "091439b30807b4e9990ae9c2c960797bddc2a86a",
+    "bytes": 8274,
+    "sha256": "28a7f3b37c6495b4288e165c49472550aeb2b632d8c80b0ab8449bfd7e55b132",
+    "status": "CHANGES_REQUIRED_SOURCE_REVIEW_ONLY"
+  },
+  "wrapperPeer": {
+    "gitBlob": "a8b6d3226184357aba249d76cf58bad0e17efb76",
+    "bytes": 5978,
+    "sha256": "fc89aca9423f62200701c0a25370c45c6760b5047e08e11e9c1d85158c7727f2"
+  },
+  "reviewPerformed": [
+    "Complete original and v2 controller bodies read, including the complete unchanged f9 owner. Current v3 full body fetched/hash-verified; all changed blocks read and six exact edits applied/reversed against whole v2.",
+    "Every one of the ten original embedded source payloads decoded and independently hash/length verified:159165 total bytes.",
+    "All ten payload rows/base64 bodies, original fourteen-test body, new six-test body, selection and whole f9 helper remain literal-equal in packet v2. Packet v2 is byte-identical in current v3.",
+    "Five original-input rows retain exact paths/bytes/hashes; only compile/link cross-time read-atime allowances changed from false to true. The original go tool already allowed atime. Per-read full identity remains strict.",
+    "Embedded c50ab wrapper is whole-byte equal to the independently reviewed current wrapper.",
+    "All20 preexisting top-level function bodies except the explicitly changed census remain unchanged by v3; the save function body is unchanged and only following global receipt budget/new save_final are inserted."
+  ],
+  "wholeV2V3Inverse": {
+    "exact": true,
+    "edits": [
+      "observation schema",
+      "final receipt budget and save_final",
+      "finite vanished output observation",
+      "primary call",
+      "terminal call",
+      "fallback call"
+    ],
+    "unchangedPacket": true
+  },
+  "resolvedFindings": [
+    {
+      "id": "census",
+      "resolution": "Every discovered entry consumes the4096 bound once, including pending directories. Inner deadline checks bound collection. Only FileNotFoundError for a discovered child directory/entry is tolerated; ROOT disappearance remains fatal. All extant depth/device/type/nlink/log/allocation checks remain strict."
+    },
+    {
+      "id": "moduleCache",
+      "resolution": "The actual Go command runs only after exact c50ab establishes the private read-only bind view. Parent uses that view as GOMODCACHE and joins the complete16KiB bounded READY receipt, exact wrapper hash, source inode/mode/owner, mount flags/source root and actual parent/isolated namespace identities."
+    },
+    {
+      "id": "ownedSetup",
+      "resolution": "Controlled interrupt handlers precede owned effects. Root mkdir, immediate ownership identity/latch, permission normalization, directory fsync and parent fsync occur under the mask. Later setup failure retains attributed namespace identity and failure evidence."
+    },
+    {
+      "id": "boundedLog",
+      "resolution": "The f9 final digest stores a bounded stable log observation. Consumer requires the same row logSHA256 and reads exact size/hash through the NOFOLLOW/NOATIME reader before complete JSON-stream decoding."
+    },
+    {
+      "id": "terminalClosure",
+      "resolution": "Primary status remains PROVISIONAL_NO_ACCEPTANCE, terminal candidate explicitly denies standalone acceptance and both have terminalReceiptQualified=false. Exact successful external controller stdout is required. Final source/control/namespace/floor checks, fsync, full file readback and post-receipt census precede terminal qualification. A caught failure preserves provisional files and attempts one bounded FAIL fallback; no earlier PASS-shaped primary can independently establish acceptance."
+    },
+    {
+      "id": "receiptBudget",
+      "resolution": "Before each final write, save_final enforces encoded caps384KiB primary/32KiB terminal/32KiB fallback and rounded cumulative charges, including future receipt caps, within448KiB plus64KiB metadata reserve. Partial exclusive writes remain charged. Final allocation/resource checks remain."
+    },
+    {
+      "id": "toolReadAtime",
+      "resolution": "Only cross-time access-time effects of the three pinned Go tools are permitted; full bytes and all other identity fields remain exact. Source controls keep strict per-read identity."
+    }
+  ],
+  "interfaceChecks": {
+    "fixedCommand": "one same-process exec of go list -deps -test -json queue.go queue_test.go queue_retry_generation_test.go",
+    "f9": {
+      "sha256": "f9de18c0fdc879ff916ba34e9afa0da9d6b91444eebfa1e5a8d6a50d3523ca56",
+      "bytes": 9527,
+      "unchanged": true,
+      "waitidBeforeCurrentGroupSample": true,
+      "normalExitAndPositiveAbsenceRequired": true,
+      "noForcedSignalsOrCleanupErrorsForPass": true
+    },
+    "parentNamespace": {
+      "actualDeviceInodeBeforeAfterEqualRequired": true,
+      "sourceDirectoryIdentityFinal": true,
+      "parentViewMountMustBeAbsent": true
+    },
+    "json": {
+      "completeWhitespaceSeparatedStream": true,
+      "packageCountCap": 1024,
+      "rejectErrorAndDepsErrors": true,
+      "malformedOrDiagnosticTrailingTextFails": true,
+      "rawMergedLogPreserved": true
+    },
+    "inputs": {
+      "originals": 5,
+      "staged": 10,
+      "controls": 4,
+      "finalFullHashesAndIdentities": true,
+      "onlyDeclaredAtimeExceptions": true
+    }
+  },
+  "limits": {
+    "initial": {
+      "root": 1073741824,
+      "development": 805306368,
+      "MemAvailable": 3221225472
+    },
+    "live": {
+      "root": 1073741824,
+      "development": 536870912,
+      "MemAvailable": 1073741824
+    },
+    "namespaceBytes": 33554432,
+    "finalReserveBytes": 524288,
+    "logBytes": 8388608,
+    "sampledGroupRSSBytes": 536870912,
+    "childHardASBytes": 4294967296,
+    "childCPUSeconds": 30,
+    "childWallSeconds": 45,
+    "controllerMainSeconds": 75,
+    "finalSeconds": 15,
+    "absoluteSeconds": 110,
+    "proposedOuterSeconds": 120,
+    "singleGoMetadataCommand": true,
+    "originalNativeGatesUnchanged": true
+  },
+  "limitsQualifications": [
+    "RSS and namespace growth are sampled observations, not an unobserved instantaneous peak guarantee.",
+    "Deadlines are checked throughout bounded loops and I/O boundaries; Root owns the outer deadline and retained failure if a syscall stalls.",
+    "The read-only guarantee applies to the fixed GOMODCACHE view. It is not a general filesystem sandbox or a claim that every alias is read-only.",
+    "Module dependency contents are not newly qualified for compilation by this metadata probe. A future compile/test route requires its own declared source/resource admission.",
+    "The result qualifies dependency metadata only; no test method, native account, compilation acceptance or current E-cache eligibility follows.",
+    "System syscall/mount support and exact Go metadata behavior remain unobserved until Root separately releases an actual attempt."
+  ],
+  "blockingFindingsRemainingInRequestedScope": [],
+  "reviewActions": {
+    "OracleReads": 0,
+    "PythonParses": 0,
+    "GoInvocations": 0,
+    "compilerInvocations": 0,
+    "testInvocations": 0,
+    "nativeInvocations": 0,
+    "mountActions": 0,
+    "cacheActions": 0,
+    "controllerEdits": 0
+  }
+}

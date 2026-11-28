@@ -1,0 +1,85 @@
+{
+  "schema": "pinkha-e-readonly-module-cache-wrapper-peer-v1",
+  "status": "CLEAR_SCOPED_SOURCE_REVIEW_NO_EXECUTION",
+  "repository": "davidpovarsky/anytype-swift",
+  "current": {
+    "gitBlob": "c50abdb5cb96c7b9faa47e7fc845a2736e03b629",
+    "bytes": 17864,
+    "sha256": "fa19d90d01daf47e0e0bc11862a8bd76d146288b6c09401ac920acf9f04b9eec"
+  },
+  "preservedPredecessor": {
+    "gitBlob": "9aaece74c7e7848f8b231e6ef2147face1dc4fca",
+    "bytes": 17840,
+    "sha256": "7080291f36a852f05da1b9e2456930a425119bc26e3739672b2df2038ca493b1"
+  },
+  "scope": "Complete child-only wrapper and corrected receipt-descriptor lifetime. The parent metadata controller is a separate source review.",
+  "independentChecks": [
+    "Both whole source bodies were fetched and length/SHA256 checked.",
+    "One unique literal replacement changes only receipt open/latch/unmask nesting. Whole forward and inverse reproduce both exact sources.",
+    "Every byte outside write_receipt is unchanged; the corrected function closes an acquired descriptor even if pending SIGALRM raises during signal-mask restoration.",
+    "Fixed SOURCE identity is [2049,529231,16877,0,0]. Every directory component is opened via directory descriptors with NOFOLLOW/NOATIME. The source is metadata-only; the wrapper does not enumerate dependency contents.",
+    "unshare(CLONE_NEWNS) succeeds and the current mount namespace device/inode changes before any mount. The first mount operation recursively makes propagation private.",
+    "The fixed source is bound only to the precreated empty owned view. Bind remount requires read-only, nosuid, nodev, noexec and noatime.",
+    "Both before and after the durable receipt, view inode/device/mode/owner equal the exact source; fstatvfs reports ST_RDONLY; full mountinfo requires exact source root/device/filesystem and required flags.",
+    "Nested mounts below both source and view refuse. No shared/master/propagate_from option is permitted on the view.",
+    "Original source directory full metadata stays exact through pre-exec checks. Root/candidate descriptors and paths retain their initial identities.",
+    "Source, original view, candidate and root directory descriptors are O_CLOEXEC and explicitly closed before Go exec, so no writable pre-bind view descriptor is handed to Go.",
+    "READY means the pre-exec boundary only. A later failure returns nonzero and does not convert the receipt into Go/source/test acceptance.",
+    "One exact argv/cwd/ROOT and GOMODCACHE view are required. There is no subprocess or child creation: the wrapper execs the fixed Go metadata command in the caller-owned f9 group.",
+    "Mountinfo reads enforce a 1MiB ceiling before accepting each chunk; receipt serialization is capped at16KiB. Ten-second alarm plus per-step deadline checks cover setup/receipt; parent owns the later group deadline.",
+    "Receipt is exclusive, single-link,0600, fsynced and attributed immediately. Partial failures are retained, never removed or retried. The corrected outer finalizer covers all receipt-descriptor stages."
+  ],
+  "resolvedFinding": {
+    "origin": "Root independently found the receipt descriptor gap; E independently observed and agreed during the whole initial read.",
+    "before": "Pending SIGALRM could raise at the first SIG_SETMASK before control entered the later fd-closing try/finally.",
+    "after": "A single outer try/finally encloses exclusive open, ownership latch, mask restoration, write and fsync.",
+    "wholeForwardInverseExact": true
+  },
+  "fixedExecution": {
+    "go": "/mnt/development/toolchains/go1.27.4/go/bin/go",
+    "argv": [
+      "list",
+      "-deps",
+      "-test",
+      "-json",
+      "queue.go",
+      "queue_test.go",
+      "queue_retry_generation_test.go"
+    ],
+    "cwd": "/mnt/development/projects/evidence/pinkha-w1-files-queue-component-20261128-metadata1/candidate",
+    "view": "/mnt/development/projects/evidence/pinkha-w1-files-queue-component-20261128-metadata1/module-cache-view",
+    "namespaceConstants": {
+      "CLONE_NEWNS": 131072,
+      "privateFlags": 278528,
+      "bindFlags": 4096,
+      "readOnlyRemountFlags": 5167
+    }
+  },
+  "requiredParentJoins": [
+    "Exact wrapper byte/hash admission before launch and final source audit.",
+    "Exact controlled environment, staged source/toolchain identities and caller-owned limits.",
+    "Read the complete bounded READY receipt and bind its source hash, source identity, view mount, fixed argv/cwd and original/isolated namespace identities.",
+    "Require normal actual command closure with no forced cleanup and positive group absence; READY alone is not success.",
+    "Independently compare the parent's actual mount namespace device/inode and relevant mount state before and after group closure.",
+    "Preserve partial receipt/raw log and return unqualified FAIL if wrapper setup, exec, Go metadata, resource observations or final persistence fail.",
+    "Count the receipt and all wrapper/source/cache outputs within the unchanged parent namespace cap and terminal reserve."
+  ],
+  "limitations": [
+    "The guarantee is the fixed GOMODCACHE read-only bind view. It is not a general filesystem sandbox and does not claim all aliases of the underlying source are read-only.",
+    "Go module-source contents are not newly hash-qualified by the wrapper. Metadata discovery is not compilation or dependency-byte qualification.",
+    "Read-only namespace capability/installed syscall acceptance has not been executed by E or inferred from this source review.",
+    "The fixed source mount-root calculation is reviewed for the declared physical source; unsupported mount layouts fail closed.",
+    "All native/C20/E97/Swift23 resource and acceptance gates remain separate."
+  ],
+  "actions": {
+    "OracleReads": 0,
+    "PythonParses": 0,
+    "wrapperExecutions": 0,
+    "mounts": 0,
+    "GoInvocations": 0,
+    "compilerInvocations": 0,
+    "testInvocations": 0,
+    "nativeInvocations": 0,
+    "sourceEdits": 0
+  }
+}

@@ -1,0 +1,200 @@
+{
+  "argv": [
+    "/mnt/development/toolchains/go1.27.4/go/bin/go",
+    "list",
+    "-deps",
+    "-test",
+    "-json",
+    "queue.go",
+    "queue_test.go",
+    "queue_retry_generation_test.go"
+  ],
+  "bindFlags": 4096,
+  "candidateBefore": {
+    "atimeNS": 1795875966159714176,
+    "blocks": 8,
+    "ctimeNS": 1795875966143714083,
+    "device": 2064,
+    "gid": 0,
+    "inode": 935058,
+    "mode": 16832,
+    "mtimeNS": 1795875966143714083,
+    "nlink": 2,
+    "size": 4096,
+    "uid": 0
+  },
+  "cwd": "/mnt/development/projects/evidence/pinkha-w1-files-queue-component-20261128-metadata1/candidate",
+  "goExecutionClaim": false,
+  "isolatedNamespace": {
+    "device": 4,
+    "inode": 4026534366
+  },
+  "namespaceChangedBeforeMount": true,
+  "nestedSourceOrViewMounts": false,
+  "noChildBeforeExec": true,
+  "noCleanupOrDeletion": true,
+  "originalNamespace": {
+    "device": 4,
+    "inode": 4026531832
+  },
+  "parentNamespaceUnchangedClaim": false,
+  "parentNamespaceVerification": "required independently by caller after group closure",
+  "propagationMadePrivateRecursively": true,
+  "readonlyRemountFlags": 5167,
+  "receiptMaximumBytes": 16384,
+  "requiredMountOptions": [
+    "noatime",
+    "nodev",
+    "noexec",
+    "nosuid",
+    "ro"
+  ],
+  "root": "/mnt/development/projects/evidence/pinkha-w1-files-queue-component-20261128-metadata1",
+  "rootBefore": {
+    "atimeNS": 1795875966159714176,
+    "blocks": 8,
+    "ctimeNS": 1795875966148714112,
+    "device": 2064,
+    "gid": 1002,
+    "inode": 935056,
+    "mode": 16832,
+    "mtimeNS": 1795875966148714112,
+    "nlink": 8,
+    "size": 4096,
+    "uid": 0
+  },
+  "schema": "pinkha-queue-metadata-readonly-module-view-v1",
+  "source": "/root/go/pkg/mod",
+  "sourceAfter": {
+    "atimeNS": 1795744714609038277,
+    "blocks": 8,
+    "ctimeNS": 1795741380497714492,
+    "device": 2049,
+    "gid": 0,
+    "inode": 529231,
+    "mode": 16877,
+    "mtimeNS": 1795741380497714492,
+    "nlink": 21,
+    "size": 4096,
+    "uid": 0
+  },
+  "sourceBefore": {
+    "atimeNS": 1795744714609038277,
+    "blocks": 8,
+    "ctimeNS": 1795741380497714492,
+    "device": 2049,
+    "gid": 0,
+    "inode": 529231,
+    "mode": 16877,
+    "mtimeNS": 1795741380497714492,
+    "nlink": 21,
+    "size": 4096,
+    "uid": 0
+  },
+  "sourceContainingMountBefore": {
+    "fileSystemType": "ext4",
+    "majorMinor": "8:1",
+    "mountID": 35,
+    "mountPoint": "/",
+    "mountSource": "/dev/sda1",
+    "optionalFields": [
+      "shared:1"
+    ],
+    "options": [
+      "relatime",
+      "rw"
+    ],
+    "parentID": 2,
+    "raw": "35 2 8:1 / / rw,relatime shared:1 - ext4 /dev/sda1 rw,discard,errors=remount-ro,commit=30",
+    "root": "/",
+    "superOptions": [
+      "commit=30",
+      "discard",
+      "errors=remount-ro",
+      "rw"
+    ]
+  },
+  "sourceExpectedIdentity": [
+    2049,
+    529231,
+    16877,
+    0,
+    0
+  ],
+  "sourceMetadataUnchanged": true,
+  "sourceViewIdentityEqual": true,
+  "stage": "verified-preexec",
+  "status": "READY_READONLY_MODULE_VIEW_NOT_GO_EXECUTION",
+  "verifiedMount": {
+    "fileSystemType": "ext4",
+    "majorMinor": "8:1",
+    "mountID": 3427,
+    "mountPoint": "/mnt/development/projects/evidence/pinkha-w1-files-queue-component-20261128-metadata1/module-cache-view",
+    "mountSource": "/dev/sda1",
+    "optionalFields": [],
+    "options": [
+      "noatime",
+      "nodev",
+      "noexec",
+      "nosuid",
+      "ro"
+    ],
+    "parentID": 906,
+    "raw": "3427 906 8:1 /root/go/pkg/mod /mnt/development/projects/evidence/pinkha-w1-files-queue-component-20261128-metadata1/module-cache-view ro,nosuid,nodev,noexec,noatime - ext4 /dev/sda1 rw,discard,errors=remount-ro,commit=30",
+    "root": "/root/go/pkg/mod",
+    "superOptions": [
+      "commit=30",
+      "discard",
+      "errors=remount-ro",
+      "rw"
+    ]
+  },
+  "view": "/mnt/development/projects/evidence/pinkha-w1-files-queue-component-20261128-metadata1/module-cache-view",
+  "viewAfter": {
+    "atimeNS": 1795744714609038277,
+    "blocks": 8,
+    "ctimeNS": 1795741380497714492,
+    "device": 2049,
+    "gid": 0,
+    "inode": 529231,
+    "mode": 16877,
+    "mtimeNS": 1795741380497714492,
+    "nlink": 21,
+    "size": 4096,
+    "uid": 0
+  },
+  "viewBefore": {
+    "atimeNS": 1795875966159714176,
+    "blocks": 8,
+    "ctimeNS": 1795875966109387644,
+    "device": 2064,
+    "gid": 0,
+    "inode": 935062,
+    "mode": 16832,
+    "mtimeNS": 1795875966107713874,
+    "nlink": 2,
+    "size": 4096,
+    "uid": 0
+  },
+  "viewSTReadonly": true,
+  "wrapperDeadlineSeconds": 10.0,
+  "wrapperElapsedSecondsBeforeReceipt": 0.0031409384682774544,
+  "wrapperSource": {
+    "bytes": 17864,
+    "metadata": {
+      "atimeNS": 1795875966181714304,
+      "blocks": 40,
+      "ctimeNS": 1795875966148714112,
+      "device": 2064,
+      "gid": 0,
+      "inode": 935076,
+      "mode": 33152,
+      "mtimeNS": 1795875966148714112,
+      "nlink": 1,
+      "size": 17864,
+      "uid": 0
+    },
+    "path": "/mnt/development/projects/evidence/pinkha-w1-files-queue-component-20261128-metadata1/module_cache_readonly.py",
+    "sha256": "fa19d90d01daf47e0e0bc11862a8bd76d146288b6c09401ac920acf9f04b9eec"
+  }
+}
