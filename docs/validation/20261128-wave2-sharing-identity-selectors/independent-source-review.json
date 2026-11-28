@@ -1,0 +1,88 @@
+{
+  "schema": "pinkha-sharing-identity-selector-peer-review-v1",
+  "reviewer": "interfaces",
+  "status": "PASS_SOURCE_REVIEW_ONLY_COMPILED_AX_AND_UI_NOT_RUN",
+  "finding": "No concrete source, scope, identity or private-value-exposure blocker found in the frozen 23-addition candidate.",
+  "source": {
+    "repository": "davidpovarsky/anytype-swift",
+    "baseCommit": "e84da535ef04fbdde56ae200bdac78fce32e96e0",
+    "path": "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceMembersView.swift",
+    "base": {
+      "bytes": 16251,
+      "sha256": "55b9913dd3bd8c8eb712944a87d6bde5cae98bd4aa1bf8bc3d553a83e3fb820b",
+      "gitBlob": "bfc0259edf2e74ddbdc59d9cb5175653a59aa61d"
+    },
+    "candidate": {
+      "bytes": 18316,
+      "sha256": "389572bee9aae2688cae835c054041e302ccc8057a37c1972719a8968c7a5849",
+      "gitBlob": "2d9d5c2e7142b1d97af7b46a59704f2aa9e4813e"
+    },
+    "replacements": {
+      "bytes": 9340,
+      "sha256": "3d92034d073db7204f3be6ca2cb3f9bf4abb132c56ae77c4a3394592799071b5",
+      "gitBlob": "87d0747e1b486f5e74d2a34517292a373fe29495"
+    },
+    "candidateIdentity": {
+      "bytes": 880,
+      "sha256": "7c84add73c53729d740137552398e895d0f623d80705c96c7aec0c43cc8f29e0",
+      "gitBlob": "904c88de64237306acd0d41d2f79f904fa4bffd4"
+    }
+  },
+  "exactDelta": {
+    "addedLines": 23,
+    "removedLines": 0,
+    "addedBytes": 2065,
+    "forwardReplacementMatchesEach": 1,
+    "reverseReplacementMatchesEach": 1,
+    "fullForwardMatchesFrozenCandidate": true,
+    "fullReverseMatchesPrimaryOriginal": true,
+    "removingOnly23AddedIdentifierLinesRestoresFullOriginal": true,
+    "priorIdentifierPatterns": [
+      "pinkha.sharing.shareInvitation",
+      "pinkha.sharing.createInvitation",
+      "pinkha.sharing.members",
+      "pinkha.sharing.invitationInput",
+      "pinkha.sharing.join"
+    ],
+    "all28SourceIdentifierPatternsDistinct": true,
+    "addedStaticPatterns": 11,
+    "addedDynamicPatterns": 12
+  },
+  "semantics": {
+    "preserved": "All model/service calls, capability checks, proposal and confirmation actions, visible/localized labels, accessibility labels, grouping, disabled states, observation/cancellation/generation logic and invitation clearing remain byte-identical.",
+    "placement": "Identifiers attach to existing rows, text, menu items, confirmation buttons and screen containers. Row namespaces differ from action/text namespaces. Root's member.remove addition attaches only to the existing guarded destructive button.",
+    "swiftScope": "Existing SwiftUI accessibilityIdentifier API is already used in this file; added interpolation expressions use properties present in the original closures. No new actor, closure, dependency or test seam."
+  },
+  "identityAndPrivacy": {
+    "primaryModel": {
+      "commit": "e84da535ef04fbdde56ae200bdac78fce32e96e0",
+      "path": "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceSharing.swift",
+      "bytes": 8004,
+      "sha256": "7d2dd76b72c5bcda23650b2e87069e72dc8e23cb823d5b7e5ff56e16f26002cc",
+      "gitBlob": "c80d25d2b7b3ce8af7842b1391bdc69c0d0a699a"
+    },
+    "modelFacts": "PinkhaSharingSnapshot rejects duplicate member IDs and invitation IDs. Capabilities reject duplicate grantable roles; role raw values are finite enum cases. Joining/member presentation filters are disjoint.",
+    "dynamicValues": "Each new dynamic identifier uses one existing member.id or invitation.id. The two role-choice identifiers additionally use the finite role.rawValue. No account/Space/member/request tuple is constructed.",
+    "excludedPrivateValues": "No shareValue, invitation input, URL, token, requestID, user-entered name or free-form error text is interpolated into any new identifier. The existing model explicitly distinguishes private shareValue from invitation.id.",
+    "originalGenericSelector": "The retained pinkha.sharing.shareInvitation identifier may repeat across invitation rows as before. The new per-invitation row identifier provides a source-level scoping path; actual descendant lookup depends on compiled AX exposure.",
+    "scopeLimit": "Identity conclusions cover the module's actual typed fields and validation, not a new audit of each engine provider or a claim that identifiers contain no user-related identity."
+  },
+  "acceptanceLimits": [
+    "Source review only: no Swift compiler, rendered accessibility tree, XCTest, Native operation, account, invitation or device invocation.",
+    "Identifier modifiers do not guarantee SwiftUI container/menu/alert accessibility exposure. Actual mounted hierarchy and item selection remain NOT_RUN.",
+    "No genuine recipient, joining request, accepted-member role or permission fixture is created by this change. Those acceptance rows still require owned real identities and Native readback.",
+    "The original generic Join error is unchanged. Selecting it cannot by itself prove a typed revocation/permission rejection.",
+    "Original five identifiers and source actions remain exact; no old owner journey, title detector, test selection, runtime gate or Native contract is changed or replayed.",
+    "Review binds exact e84 source. Root's reported b852 documentation-only continuity was not independently reread in this bounded peer task."
+  ],
+  "evidenceMethod": {
+    "fullCandidateAndReplacementRead": "Three fixed staged regular files, no-follow/O_NOATIME, stable metadata; expected sizes/SHA and Git identities recomputed in V8.",
+    "primaryRead": "Complete immutable e84 view and typed sharing model read through GitHub. Whole original view SHA/Git matches candidate's declared preimage.",
+    "inspection": "Full source/delta inspection and in-memory string/byte equality checks only; no controller import or source execution.",
+    "mutations": 0,
+    "processQueries": 0,
+    "tests": 0,
+    "compile": 0,
+    "publication": 0
+  }
+}

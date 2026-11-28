@@ -1,0 +1,99 @@
+{
+  "baseCommit": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+  "baseTree": "1875b474c3930e2f9388f9fd5b26d35536eee163",
+  "changedWholeFiles": [
+    {
+      "current": {
+        "bytes": 19634,
+        "gitBlob": "2dd759fe5f70feead52b536e81520f4c27460a1e",
+        "gitMode": "100644",
+        "sha256": "ae8faf092774401c595a63e389517aa2777fa83c9b2b9ffa31cc054355ed02f6"
+      },
+      "localPath": "/mnt/development/projects/evidence/pinkha-w3-app-foreground-preparation-20261128-source/type25-e6fed-source-review/primary1/current-dependencies/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+      "parent": {
+        "bytes": 14656,
+        "gitBlobSHA1": "aa28d864b8fd55805e4717917779750b20514df0",
+        "sha256": "0273ca566d58456569eeff7d90e6e582791fcf33aa2c6b2e48c280fe53dcb723"
+      },
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+      "unchanged": false
+    },
+    {
+      "current": {
+        "bytes": 53698,
+        "gitBlob": "b8de5482053e5f7e3bf6798608f09a98d291281a",
+        "gitMode": "100644",
+        "sha256": "b91ed64c54ec552caa68a3b49c272ff8f008722b3a41fc76d9eadf4eaf9ef93b"
+      },
+      "localPath": "/mnt/development/projects/evidence/pinkha-w3-app-foreground-preparation-20261128-source/type25-e6fed-source-review/primary1/current-dependencies/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "parent": {
+        "bytes": 43999,
+        "gitBlobSHA1": "7fee8b7ae36c626dd921e14024a6a5a0466d3a2d",
+        "sha256": "bd78d4bed9ff005d05317a0f6eff1f40bc6b9bbe3495608ed1e4edd830b11a0c"
+      },
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "unchanged": false
+    }
+  ],
+  "dependencyCount": 75,
+  "importedDefinitionStore": {
+    "current": {
+      "bytes": 10792,
+      "gitBlob": "915badc20430573287dac3aca811b8df450efdec",
+      "gitMode": "100644",
+      "sha256": "e209c44b174e3ec6a0a1c967135e5d8313a49600ac58161e08dd98969fd9c9c2"
+    },
+    "localPath": "/mnt/development/projects/evidence/pinkha-w3-app-foreground-preparation-20261128-source/type25-e6fed-source-review/primary1/current-dependencies/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedDefinitionStore.swift",
+    "parent": {
+      "bytes": 10792,
+      "gitBlobSHA1": "915badc20430573287dac3aca811b8df450efdec",
+      "sha256": "e209c44b174e3ec6a0a1c967135e5d8313a49600ac58161e08dd98969fd9c9c2"
+    },
+    "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedDefinitionStore.swift",
+    "unchanged": true
+  },
+  "interpretation": [
+    "The two current whole-file successors contain retained Bookmark and guarded mutation work; they are not replaced or reset by Type25.",
+    "The new TypeReferenceStore uses the complete unchanged PropertyStore init, catalog and read methods. Current ImportedDefinitionStore and the other 72 original dependencies retain exact parent bytes.",
+    "New five product files do not directly invoke ObjectCreator. ImportedDefinitionStore resolves existing immutable receipts and GET observations; no creation path is introduced.",
+    "Whole current compilation is not inferred from historical component25 acceptance."
+  ],
+  "objectCreatorDirectReferencesInNewFive": [],
+  "propertyStoreExactUsedMethods": [
+    {
+      "bytes": 390,
+      "completeBodyIdentical": true,
+      "sha256": "3e4a5ae94f05b400ec25d0f8d4adbbb055cf6dd4c69f651a70b1beb6b5d55cb9",
+      "start": "public init(client:"
+    },
+    {
+      "bytes": 2457,
+      "completeBodyIdentical": true,
+      "sha256": "ff37aed5ff1517b2d9aa7c1e337c8c9fe98d236bfce25bd8633cd33e8c8a549e",
+      "start": "public func catalog("
+    },
+    {
+      "bytes": 2872,
+      "completeBodyIdentical": true,
+      "sha256": "9b6c58bef162aafff2a4f29f964e0ea48fd115e5956f9b5c314c36acd58919f3",
+      "start": "public func read(objectID:"
+    }
+  ],
+  "reviewedChangedDependencyDiffs": [
+    {
+      "bytes": 12116,
+      "gitBlob": "b82e7d4ee150402e975b56d94f2aee09ee5fbe15",
+      "path": "/mnt/development/projects/evidence/pinkha-w3-app-foreground-preparation-20261128-source/type25-e6fed-source-review/primary1/dependency-diffs/AnyNativeObjectCreator.swift.diff",
+      "sha256": "e764fb7074b6c95381ac503b4b0ae62e1320b75319ea2899c362e51f49e4ee3a"
+    },
+    {
+      "bytes": 13405,
+      "gitBlob": "d37054091e14d09125276281b92f5fdb9cd86a10",
+      "path": "/mnt/development/projects/evidence/pinkha-w3-app-foreground-preparation-20261128-source/type25-e6fed-source-review/primary1/dependency-diffs/AnyNativePropertyStore.swift.diff",
+      "sha256": "6ef82c62d6efb1d27123bc700077805b9487d5f4dcd2f374316702ba1246b78a"
+    }
+  ],
+  "schema": "pinkha-type25-current-b852-api-compatibility/v1",
+  "status": "PASS_SOURCE_REVIEW_ONLY",
+  "wholeUnchanged": 73
+}

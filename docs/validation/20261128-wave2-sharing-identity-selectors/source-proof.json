@@ -1,0 +1,107 @@
+{
+  "schema": "pinkha-sharing-identity-selectors-source-review-v1",
+  "status": "SOURCE_ONLY_READY_FOR_APP_INTAKE_NOT_COMPILED_OR_UI_ACCEPTED",
+  "baseCommit": "e84da535ef04fbdde56ae200bdac78fce32e96e0",
+  "baseTree": "52e7ed09b48de7d354dc5f4f5f5f6cf787c55c6b",
+  "compatibleLaterFinal": {
+    "commit": "b8521ca8d9d88f62aeb8e246de2c1ae2dd798588",
+    "tree": "1875b474c3930e2f9388f9fd5b26d35536eee163",
+    "primaryRootProof": "Only docs entry differs; Modules, NativeApp and .github remain exact."
+  },
+  "change": {
+    "path": "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceMembersView.swift",
+    "bytes": 18316,
+    "sha256": "389572bee9aae2688cae835c054041e302ccc8057a37c1972719a8968c7a5849",
+    "gitBlob": "2d9d5c2e7142b1d97af7b46a59704f2aa9e4813e",
+    "base": {
+      "path": "Modules/PinkhaSharing/Sources/PinkhaSharing/PinkhaSpaceMembersView.swift",
+      "commit": "e84da535ef04fbdde56ae200bdac78fce32e96e0",
+      "bytes": 16251,
+      "sha256": "55b9913dd3bd8c8eb712944a87d6bde5cae98bd4aa1bf8bc3d553a83e3fb820b",
+      "gitBlob": "bfc0259edf2e74ddbdc59d9cb5175653a59aa61d"
+    },
+    "addedLines": 23,
+    "removedLines": 0,
+    "priorLinesPreserved": true,
+    "fullInverse": true,
+    "replacementsBytes": 9340,
+    "replacementsSHA256": "3d92034d073db7204f3be6ca2cb3f9bf4abb132c56ae77c4a3394592799071b5",
+    "limit": "Source-only accessibility identifiers. No compiler, UI, native or test acceptance."
+  },
+  "invariantProof": {
+    "literalReplacements": 23,
+    "wholeSourceInverseExact": true,
+    "allPriorSourceLinesInOrder": true,
+    "addedIdentifierLines": 23,
+    "removedLines": 0,
+    "existingIdentifiersPreserved": 5,
+    "actionModelGuardConfirmationCancellationLifecycleLabelsGroupingTraitsChanged": false,
+    "scope": "Exact source preservation. Actual compiled accessibility exposure, grouping and behavior still require observation."
+  },
+  "identityContract": {
+    "sharedModelGitBlob": "c80d25d2b7b3ce8af7842b1391bdc69c0d0a699a",
+    "sharedModelSHA256": "7d2dd76b72c5bcda23650b2e87069e72dc8e23cb823d5b7e5ff56e16f26002cc",
+    "nativeAdapter": {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeSharingService.swift",
+      "bytes": 8655,
+      "sha256": "4027c96ee71d587020935f69a47c94cd1ee36a87785cd0bebb29b159ef9982c4",
+      "gitBlob": "4f41190ef9bc0350b4fe0f673de3c4ff3cbecd07"
+    },
+    "rules": [
+      "Member IDs and invitation IDs are unique within their respective actual snapshots.",
+      "One variable model identity per identifier; role suffixes use fixed no-dot enum raw values.",
+      "Row and action namespaces are distinct; no assumed native ID alphabet or arbitrary identity/request tuple.",
+      "Invitation identity is native recordId. Private inviteToken/shareValue is never interpolated into identifiers.",
+      "Account scope, native member identity and current requestRecordId remain separate fixture fields."
+    ]
+  },
+  "originalTestPreservation": {
+    "nativeAppTree": "4ee29d1fbd3515fbcfb13fb1d50d4f4f14481244",
+    "testFilesChanged": 0,
+    "renderedTitleFixCommit": "dd25107377bae3146600e29c19cbaba458b14e7b",
+    "retainedTitleBlockSHA256": "e5269bfcc1efd9247ad6f628a61113b05da90460078af8f34bde881e2c91014c",
+    "retainedTitleBlockBytes": 820,
+    "titleCheckScope": "Editor independently matched current full NativeLaunch source block; root's exact unchanged NativeApp tree preserves it. Exactly one visible enabled hittable localized navigation-title static text remains required."
+  },
+  "reviewHistory": {
+    "editorInitialProposal": {
+      "addedLines": 22,
+      "bytes": 18222,
+      "sha256": "8d1300bcd4a28b155236f390c98686f5d0f75bb4e48d69495a9a0214ac727eab",
+      "gitBlob": "1a3e9b17fcf2be0145ec96ac7d4b5cf4570a32b2",
+      "replacementsBytes": 8803,
+      "replacementsSHA256": "3406e6294016b2b87473c28991329149109b94d9b7bf8008f014e1d8deda74e7"
+    },
+    "rootAddition": "One identical-style accessibilityIdentifier on the existing capability-gated member removal button; no action change."
+  },
+  "pending": [
+    "Compile the shared source in the matching W3 App producer.",
+    "Observe actual compiled accessibility hierarchy and uniqueness; source row IDs do not prove container exposure.",
+    "Observe real system Share/Copy and Paste/permission controls without inventing app-owned identifiers.",
+    "Use fresh W1 owner/recipient/Space/member/request identities and actual grantable roles; do not infer member identity from accountID or displayed suffix.",
+    "Select the intended saved account with proven uniqueness; never reuse the existing single-account firstMatch helper for two accounts.",
+    "Run recipient approval, decline, role change/removal, revoked-link failure, close/reopen and native post-write readback on real disposable accounts.",
+    "Protect private invitation values from new identifiers and diagnostics; generic error text does not establish a revocation cause.",
+    "Complete mixed App/OS language and visual/device/appearance acceptance on the shared App."
+  ],
+  "execution": {
+    "compiler": 0,
+    "tests": 0,
+    "native": 0,
+    "accounts": 0,
+    "invitations": 0,
+    "macCalls": 0,
+    "phase": "Only source derivation and small exclusive evidence persistence; no current UI or permission acceptance."
+  },
+  "coreOrderUnchanged": "Original22methods/34cases -> real preparation -> original4UI. Existing accepted cohorts preserved.",
+  "publicationPreflight": {
+    "branch": "codex/chatgpt-wave15-wave2-sharing-identity-selectors-20261128",
+    "githubSubtree": "6c902a0b4534a833972c3ba3e98ea16356b63d52",
+    "retainedFullWorkflowReadCommit": "8e6fe6d8f47c0229853e8948edbd58ca01dd1a9e",
+    "yamlFiles": 83,
+    "pushDefinitions": 5,
+    "matchingPushBranches": 0,
+    "noCreateEvent": true,
+    "scope": "Prior complete workflow bodies reused via exact unchanged subtree; no workflow or PR dispatched."
+  }
+}

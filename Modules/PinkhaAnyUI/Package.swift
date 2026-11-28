@@ -18,7 +18,7 @@ let package = Package(
         .package(path: "../AnytypeCore"),
         .package(path: "../Assets"),
         .package(url: "https://github.com/davidpovarsky/TorahInspectorKit.git",
-                 revision: "26beca175d64a4d34e3567f2bbb4bf308d714478")
+                 revision: "414e0d3e95d53509381d233a23fcdd28ef24167a")
     ],
     targets: [
         .target(name: "PinkhaAnyUI", dependencies: [
