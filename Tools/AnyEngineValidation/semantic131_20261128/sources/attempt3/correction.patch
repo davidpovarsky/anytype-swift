@@ -1,0 +1,139 @@
+--- a/semantic131-attempt2/qualify_semantic131.py
++++ b/semantic131-attempt3/qualify_semantic131.py
+@@ -25,9 +25,9 @@
+ 
+ MIB = 1024 * 1024
+ GIB = 1024 * MIB
++OUTPUT = Path('/run/pinkha-e-swift-semantic131-20261128-attempt3')
+-OUTPUT = Path('/run/pinkha-e-swift-semantic131-20261128-attempt2')
+ TMPFS = Path('/run')
++PREPARED = Path('/run/pinkha-e-swift-semantic131-20261128-prepared3')
+-PREPARED = Path('/run/pinkha-e-swift-semantic131-20261128-prepared2')
+ C25 = Path('/mnt/development/projects/evidence/pinkha-original-type-runtime-provider25-20261127/prepared3')
+ CACHE = Path('/tmp/pinkha-w1-migration-swift-20261127')
+ PHYSICAL_CACHE = Path('/mnt/development/projects/caches/pinkha-w1-migration-swift-20261127')
+@@ -593,6 +593,7 @@
+             '-package-name','captureproducerproof',
+             '-enable-experimental-feature','DebugDescriptionMacro',
+             '-module-load-mode','only-serialized',
++            '-Xcc','-Xclang','-Xcc','-fno-implicit-modules-use-lock',
+             '-module-cache-path',str(OUTPUT/'clang-module-cache'),
+             '-clang-scanner-module-cache-path',str(OUTPUT/'clang-module-cache'),
+             '-I',str(OUTPUT/'modules'),*crypto_flags,
+@@ -908,6 +909,76 @@
+             'originalFailureNamespaceMutated':False}
+ 
+ 
++def admit_prior_clang_failure(packet):
++    """Preserve the forced, unqualified failure without reusing any phase."""
++    prior_raw = raw_record(packet['priorClangLockFailure'],
++        '948f9bf78ad75db29cea5f3253c7546533b468d40879dbcae33a7d27921955ac',128*1024)
++    terminal_raw = raw_record(packet['priorClangLockTerminal'],
++        '420f6c732451d7e43855f4854d037ce4a4b691b1bb2b69a2f9fb5b33100ac1e3',8*1024)
++    phase_raw = raw_record(packet['priorClangLockPhase'],
++        '2b637a83c7df44cb0f4f9bba53d39903d818a33c5a36c9a713db7661c4936aff',8*1024)
++    census_raw = raw_record(packet['priorClangLockCensus'],
++        '8e27b814088d4249eccc0c1becd106a697c6f2a0b553642d5f8a97be380c5477',128*1024)
++    prior,terminal,phase,census = map(json.loads,(prior_raw,terminal_raw,phase_raw,census_raw))
++    historical_output = '/run/pinkha-e-swift-semantic131-20261128-attempt2'
++    error_text = 'resource observation failed: RuntimeError: owned namespace contains nonregular or linked output'
++    require(prior['status'] == 'FAIL' and prior['terminalReceiptQualified'] is False and
++            prior['output'] == historical_output and prior['sourceGraphSHA256'] == GRAPH_SHA and
++            prior['controllerSHA256'] == '750948d684b813693bfcd61c13a9a37348cae18135a65194686a5b0dc96b7bca' and
++            prior['sourcePacketSHA256'] == 'c580ba5ef89b640c00ce08733f2c20c69f27e9e6772d625d3dd7011ea480fd35' and
++            prior['completedFullBodyTypechecks'] == prior['completedModuleOnlyEmissions'] == [] and
++            prior['startedFrontendCommands'] == len(prior['commands']) == len(prior['phases']) == 1 and
++            prior['allStartedOwnedGroupsPositivelyAbsent'] is True and
++            prior['sourceUnchanged'] is prior['originalCryptoAdmissionUnchanged'] is
++                prior['systemBinarySwiftModuleInputsUnchanged'] is False and
++            prior['testInvocations'] == prior['nativeInvocations'] == 0 and
++            prior['phases'][0]['normalCompletion'] is False and
++            prior['phases'][0]['label'] == '01-TorahInspectorCore-typecheck',
++            'original unqualified attempt2 has no completed semantic or final source audit')
++    require(prior['commands'][0] == phase and phase['exitCode'] == -15 and
++            phase['processGroupAbsent'] is True and phase['forcedCleanup'] is True and
++            phase['signals'] == [15] and phase['cleanupErrors'] == [] and
++            phase['unreapedLeaderDuringGroupCleanup'] is True and
++            phase['stopReason'] == error_text and
++            phase['logSHA256'] == hashlib.sha256(b'').hexdigest(),
++            'actual forced SIGTERM cleanup and empty diagnostic log, no historical process reprobe')
++    require(terminal['status'] == 'FAIL_TERMINAL_PERSISTENCE' and
++            terminal['anyPrimaryReceiptIsUnqualified'] is True and
++            terminal['controllerSHA256'] == prior['controllerSHA256'] and
++            terminal['allStartedOwnedGroupsPositivelyAbsent'] is True and
++            terminal['ownedOutputsRetained'] is True and
++            terminal['errors'] == prior['errors'] == [{'message':error_text,'type':'RuntimeError'}],
++            'fallback terminal preserves unqualified primary and original error')
++    require(census['schema'] == 'pinkha-semantic131-attempt2-failure-nofollow-observation-v1' and
++            census['status'] == 'PASS_BOUNDED_FAILURE_OBSERVATION_NOT_SEMANTIC_ACCEPTANCE' and
++            census['root'] == historical_output and census['entries'] == 276 and
++            census['regularFiles'] == 247 and census['directories'] == 28 and
++            census['allocatedBytes'] == 10289152 and len(census['anomalies']) == 1 and
++            census['linksFollowed'] is False and census['outputsRemoved'] is False and
++            census['historicalProcessReprobes'] == census['compilerInvocations'] ==
++                census['nativeInvocations'] == 0 and census['errors'] == [],
++            'exact nofollow metadata diagnosis, not semantic acceptance')
++    anomaly = census['anomalies'][0]
++    relative = 'clang-module-cache/219SUZFN68DOJ/CDispatch-2FVHGXUL9RCM5.pcm.lock'
++    require(anomaly['relativePath'] == relative and stat.S_ISLNK(anomaly['identity'][2]) and
++            anomaly['linkText'] == historical_output+'/'+relative+'-77d1c869',
++            'one recorded historical private-cache lock symlink; never admitted as current output')
++    for name,body in (('result.json',prior_raw),
++            ('terminal-persistence-failure.json',terminal_raw),
++            ('commands/01-TorahInspectorCore-typecheck/result.json',phase_raw),
++            ('commands/01-TorahInspectorCore-typecheck/original.log',b'')):
++        row = census['selectedFiles'][name]
++        require(row['bytes'] == len(body) and row['sha256'] == hashlib.sha256(body).hexdigest() and
++                row['raw'].encode() == body,'same whole historical receipt/log in nofollow observation')
++    return {'primarySHA256':hashlib.sha256(prior_raw).hexdigest(),
++            'terminalSHA256':hashlib.sha256(terminal_raw).hexdigest(),
++            'phaseSHA256':hashlib.sha256(phase_raw).hexdigest(),
++            'censusSHA256':hashlib.sha256(census_raw).hexdigest(),
++            'status':'FAIL','terminalReceiptQualified':False,'forcedCleanup':True,'signals':[15],
++            'reusedSemanticPhases':0,'finalSourceAndDependencyAuditCompleted':False,
++            'historicalProcessIDsReprobed':False,'originalFailureNamespaceMutated':False}
++
++
+ def admit_capability(packet):
+     actual_raw = raw_record(packet['capabilityObservation'],
+         '12645f41c87fc66c9066165be80d9cd50b35a316aceeb2308a6ffa9477c20d19',64*1024)
+@@ -974,6 +1045,17 @@
+             'same exact frontend and source-free no-emission capability scope')
+     raw_record(packet['serializedLoadingPolicyPeer'],
+         'affe80371f854afbd4e6169efebd4c4af4ab8f3b8d9c5f554173a3f873befeb6',32*1024)
++    lock_raw = raw_record(packet['clangModuleLockPolicyPeer'],
++        '89ec51aaae590a2b1dd1f4488c05031a8cdde1114328679631575b96c9cc63f1',32*1024)
++    lock_policy = json.loads(lock_raw)
++    require(lock_policy['schema'] == 'pinkha.independent.clang-implicit-module-lock-source-peer.v1' and
++            lock_policy['status'] ==
++                'SOURCE_SUPPORTED_NARROW_CONFIGURATION_CANDIDATE_NOT_INSTALLED_OR_RUNTIME_ACCEPTANCE' and
++            lock_policy['release']['swiftCommit'] == '51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2' and
++            lock_policy['release']['llvmResolvedCommit'] == 'fb5f84d903a3b4e7aea15cd5666598a46f56c833' and
++            lock_policy['candidate']['appendSwiftFrontendArguments'] ==
++                ['-Xcc','-Xclang','-Xcc','-fno-implicit-modules-use-lock'],
++            'exact official-source lock policy and normal Swift driver-to-cc1 forwarding')
+     return {'observationSHA256':packet['capabilityObservation']['sha256'],
+             'helpSHA256':hashlib.sha256(help_raw).hexdigest(),'newHelpRuns':0,
+             'sourceParsingOrSemanticClaimFromHelp':False,
+@@ -982,7 +1064,12 @@
+             'serializedMode':'only-serialized','newTargetInfoRuns':0,
+             'optionProbeIsNotImportOrSemanticProof':True,
+             'loaderPolicySourcePeerSHA256':packet['serializedLoadingPolicyPeer']['sha256'],
++            'loaderPolicySourceCommit':'51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2',
++            'clangLockPolicyPeerSHA256':hashlib.sha256(lock_raw).hexdigest(),
++            'clangLockSourceCommit':'fb5f84d903a3b4e7aea15cd5666598a46f56c833',
++            'clangImplicitModuleLocking':'disabled-only-for-new-private-serial-cache',
++            'newPrivateNonaliasedCacheRequired':True,'sharedCacheLockSuppressionPermitted':False,
++            'installedClangOptionAcceptanceClaimedFromTargetInfo':False}
+-            'loaderPolicySourceCommit':'51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2'}
+ 
+ 
+ def main():
+@@ -1182,6 +1269,7 @@
+         result['configuration'] = packet['configuration']
+         result['capabilityAdmission'] = admit_capability(packet)
+         result['priorSemanticFailure'] = admit_prior_failure(packet)
++        result['priorClangLockFailure'] = admit_prior_clang_failure(packet)
+         result['ownerAdmission'] = admit_owner_lifecycle(base)
+         result['sourceCounts'] = {'wholeFiles':131,'productionFiles':127,'testFiles':4,
+                                   'physicalSourceRows':101,'gitSuppliedRows':30,'sourceBytes':1652921,

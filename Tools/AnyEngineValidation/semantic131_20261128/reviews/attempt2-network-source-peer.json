@@ -1,0 +1,352 @@
+{
+  "schema": "pinkha-semantic131-attempt2-independent-source-delta-peer-v1",
+  "status": "CLEAR_SOURCE_DELTA_NOT_SEMANTIC_EXECUTION_OR_RELEASE",
+  "reviewer": "N /root/network_files",
+  "repository": "davidpovarsky/anytype-swift",
+  "exactInputs": {
+    "controller": {
+      "gitBlobSHA": "a86988c323fd7f73ae653ca5214c0792dc07f06f",
+      "bytes": 82535,
+      "sha256": "750948d684b813693bfcd61c13a9a37348cae18135a65194686a5b0dc96b7bca"
+    },
+    "sourcePacket": {
+      "gitBlobSHA": "7a58dcdafd370c431acb1277f7e09eb2a1a0f2d8",
+      "bytes": 1104330,
+      "sha256": "c580ba5ef89b640c00ce08733f2c20c69f27e9e6772d625d3dd7011ea480fd35"
+    },
+    "reviewSpec": {
+      "gitBlobSHA": "03b5e5ad921756c61a3f2ca8ce2750fbb5ca7965",
+      "bytes": 39915,
+      "sha256": "a409ae87a1eab6cffb925c2c90bcac8d4f5b3fc456d893ae1c0e9f73f81ad017"
+    },
+    "wholeDelta": {
+      "gitBlobSHA": "cda53f6351269dfe238f42af4feb43eeadb8e8b5",
+      "bytes": 19159,
+      "sha256": "8a11881454ad2a5983f003c03f145752114ae7de2ec6c9317e90b21921633330"
+    },
+    "literalProof": {
+      "gitBlobSHA": "096ed17b637634f1cd83d8fdaa82f77ec8e3b8d7",
+      "bytes": 20526,
+      "sha256": "cd5cd4d7d7c89136d1ad7d160acf6b4b1d597a054f6220b3ff0ce019af28111e"
+    },
+    "preservedController": {
+      "gitBlobSHA": "204629a9f0574d39858c68af73d1f73430d04792",
+      "bytes": 70392,
+      "sha256": "67dab64dd60c571ee4960e06a9eb0b01828042425cf9624259a58b162ba57f6e"
+    },
+    "originalScopedPeer": {
+      "gitBlobSHA": "af851efd355de5bf62c52e227316b54ea127ca8d",
+      "bytes": 17617,
+      "sha256": "e442839473ea41ee6374b488438809e889b17da3dd888f193b9d61f8f216a5e4"
+    },
+    "loaderPolicyPeer": {
+      "gitBlobSHA": "c8eee720022caf793dcb1df44f71f036a0fe798c",
+      "bytes": 14362,
+      "sha256": "affe80371f854afbd4e6169efebd4c4af4ab8f3b8d9c5f554173a3f873befeb6"
+    }
+  },
+  "scope": {
+    "fullChangedHelperAndCallSiteRead": true,
+    "independentWholeForwardAndInverse": true,
+    "current131AndC3Preservation": true,
+    "installedBinaryInputAdmission": true,
+    "ownedLifetimeAndFinalizationComposition": true,
+    "newOracleCalls": 0,
+    "newPythonParseOrExecution": 0,
+    "newCompilerCalls": 0,
+    "newNativeCalls": 0,
+    "privatePayloadReads": 0,
+    "sourceEdits": 0,
+    "cacheWrites": 0,
+    "retirementActions": 0,
+    "notIndependentWholeSDKOrSystemHeaderClosure": true
+  },
+  "wholeCorrespondence": {
+    "literalEdits": 15,
+    "uniqueSequentialReplacements": true,
+    "wholeForwardEquality": true,
+    "wholeReverseEquality": true,
+    "changedBehaviorConfinedTo": "Fresh attempt2/prepared2 paths; narrower loader pair; exact installed argument evidence; 24 fixed binary module input admission/final reporting; explicit original FAIL retention.",
+    "packetKeysIndependentlyEqual": [
+      "graph",
+      "gitSources",
+      "helpers",
+      "limits",
+      "sourceScope",
+      "preservedRuntimeGates",
+      "capabilityObservation",
+      "projectCommandObservation",
+      "cryptoCommandObservation"
+    ],
+    "wholeGraphAnd30RawBodiesEqual": true,
+    "all131SourceRowsAnd1652921BytesUnchanged": true,
+    "phaseRows": [
+      {
+        "index": 0,
+        "label": "01-TorahInspectorCore-typecheck",
+        "exactInverse": true
+      },
+      {
+        "index": 1,
+        "label": "02-TorahInspectorCore-emit-module",
+        "exactInverse": true
+      },
+      {
+        "index": 2,
+        "label": "03-PinkhaKit-typecheck",
+        "exactInverse": true
+      },
+      {
+        "index": 3,
+        "label": "04-PinkhaKit-emit-module",
+        "exactInverse": true
+      },
+      {
+        "index": 4,
+        "label": "05-PinkhaAnyEngine-typecheck",
+        "exactInverse": true
+      },
+      {
+        "index": 5,
+        "label": "06-PinkhaAnyEngine-emit-module",
+        "exactInverse": true
+      },
+      {
+        "index": 6,
+        "label": "07-PinkhaAnyIntegration-typecheck",
+        "exactInverse": true
+      },
+      {
+        "index": 7,
+        "label": "08-PinkhaAnyIntegration-emit-module",
+        "exactInverse": true
+      },
+      {
+        "index": 8,
+        "label": "09-PinkhaAnyHost-typecheck",
+        "exactInverse": true
+      },
+      {
+        "index": 9,
+        "label": "10-PinkhaAnyHost-emit-module",
+        "exactInverse": true
+      },
+      {
+        "index": 10,
+        "label": "11-CaptureProducerContractTests-typecheck",
+        "exactInverse": true
+      }
+    ],
+    "allElevenArgvInverses": "Only attempt2→attempt1 path substitution and replacing the one -module-load-mode only-serialized pair with the original one -disable-implicit-swift-modules token.",
+    "originalF9AndC3HelperBytesUnchanged": true,
+    "originalWholeResourceAndOutputAllowlistFunctionsUnchanged": true
+  },
+  "wholeNewPrimaryRecordJoins": [
+    {
+      "k": "systemModuleInputObservation",
+      "bytes": 61375,
+      "sha256": "ad3305e05d8ed4626432a6487eb00c85846fdff813ff34979c20b4d99918223b",
+      "gitBlob": "3ab375d7f52811ea5a59303059401b2d434b5205"
+    },
+    {
+      "k": "priorSemanticFailure",
+      "bytes": 63686,
+      "sha256": "b02a84d1962061de7e98152e00541480653a46555bd779e267e94e688b2c6c6b",
+      "gitBlob": "177965483061ffdf6f87392ccc75722287de69a1"
+    },
+    {
+      "k": "priorSemanticFailureLog",
+      "bytes": 241,
+      "sha256": "2562e45a098bf04d703ab0f07afb8937fff4559b6e2c12c22e324dc3e96d7b6b",
+      "gitBlob": "e01574911c7ca197ffe048cb18f030126fc530a7"
+    },
+    {
+      "k": "serializedLoadingPolicyPeer",
+      "bytes": 14362,
+      "sha256": "affe80371f854afbd4e6169efebd4c4af4ab8f3b8d9c5f554173a3f873befeb6",
+      "gitBlob": "c8eee720022caf793dcb1df44f71f036a0fe798c"
+    },
+    {
+      "k": "standardLibraryDiagnosis",
+      "bytes": 5981,
+      "sha256": "eea3b638d2ab2cb445f253687e0ec1f3b5a31e7eb4ba1be6f18207cf4c5b32de",
+      "gitBlob": "eb58d0d189c7b36c296de2ea98287e408ec5bead"
+    },
+    {
+      "k": "serializedModeCapabilityObservation",
+      "bytes": 3226,
+      "sha256": "83045a206f164cec1e81bb7465605a14d50dcd37864d08f4344527c8cd68e8de",
+      "gitBlob": "b06865fd5fdc92b1e63d39ae15552d77e2bbca64"
+    }
+  ],
+  "installedModeAcceptance": {
+    "raw": {
+      "gitBlobSHA": "b06865fd5fdc92b1e63d39ae15552d77e2bbca64",
+      "bytes": 3226,
+      "sha256": "83045a206f164cec1e81bb7465605a14d50dcd37864d08f4344527c8cd68e8de"
+    },
+    "command": [
+      "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-frontend",
+      "-print-target-info",
+      "-target",
+      "aarch64-unknown-linux-gnu",
+      "-module-load-mode",
+      "only-serialized"
+    ],
+    "exactOutputBytes": 923,
+    "exactOutputSHA256": "86954240683b500b9d23adaa3e0f0455d9555e18b149ab119bc8adbe242236b6",
+    "exitCode": 0,
+    "positivelyAbsentAndReaped": true,
+    "noForcedCleanupOrSignalsOrErrors": true,
+    "samePinnedFrontendAndTargetResourcePaths": true,
+    "scope": "Actual source-free option/value and target-info observation only. No import, typecheck, module or test success is inferred."
+  },
+  "systemModuleAdmission": {
+    "raw": {
+      "gitBlobSHA": "3ab375d7f52811ea5a59303059401b2d434b5205",
+      "bytes": 61375,
+      "sha256": "ad3305e05d8ed4626432a6487eb00c85846fdff813ff34979c20b4d99918223b"
+    },
+    "historicalObservationNamedCandidates": 28,
+    "historicalObservationNamedLeaves": 56,
+    "exactAdmittedBinaryCount": 24,
+    "exactAdmittedBinaryBytes": 38729276,
+    "names": [
+      "Cxx",
+      "CxxStdlib",
+      "Dispatch",
+      "Distributed",
+      "Foundation",
+      "FoundationEssentials",
+      "FoundationInternationalization",
+      "FoundationNetworking",
+      "FoundationXML",
+      "Glibc",
+      "Observation",
+      "RegexBuilder",
+      "Runtime",
+      "Swift",
+      "SwiftOnoneSupport",
+      "Synchronization",
+      "XCTest",
+      "_Builtin_float",
+      "_Concurrency",
+      "_Differentiation",
+      "_FoundationCollections",
+      "_RegexParser",
+      "_StringProcessing",
+      "_Volatile"
+    ],
+    "fixedRoot": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux",
+    "fixedLeaf": "<declared-name>.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule",
+    "onlyDeclaredBinaryPaths": true,
+    "noDirectoryExpansionOrInterfaceReadByNewAdmission": true,
+    "requiredRegularMode": "0644",
+    "requiredLinkCount": 1,
+    "before": "Each complete historical binary path/size/SHA and non-atime dev/inode/mode/nlink/uid/gid/size/mtime_ns/ctime_ns joins fresh physical metadata and a streaming NOATIME whole-file hash before any frontend phase.",
+    "nanoseconds": "The original ad330 JSON remains an exact raw string until Python json.loads. This peer checked raw whole-byte equality; it did not regenerate an input manifest from JavaScript-rounded metadata integers.",
+    "perRead": "Descriptor/path and before/after stability still include atime for every finite read.",
+    "crossTime": "Only the fixed24 module inputs and existing exact frontend executable omit atime from the cross-time immutable witness. Every byte and all other identity fields remain required.",
+    "final": "The unchanged base.verify_originals rehashes all admitted inputs before verify_system_modules checks the same24 witnesses and records accessTimeBeforeNs/accessTimeAfterInputAuditNs. The complete original byte verifier runs again after successful or failure archival.",
+    "partialAdmission": "If admission stops before completing24, source_admitted stays false and the complete-admission result is not installed. Already registered inputs remain in the original final byte audit; no compiler phase has begun.",
+    "sharedAtimeAttribution": false,
+    "timestampsRestored": false,
+    "completeHeaderOrSDKClosureClaimed": false,
+    "implicitTextualSwiftFallbackRequested": false,
+    "interfaceOnlyTestingInputsNotAdmitted": [
+      "Testing",
+      "_TestDiscovery",
+      "_TestingInterop",
+      "_Testing_Foundation"
+    ]
+  },
+  "historicalFailure": {
+    "rawGitBlob": "177965483061ffdf6f87392ccc75722287de69a1",
+    "rawBytes": 63686,
+    "rawSHA256": "b02a84d1962061de7e98152e00541480653a46555bd779e267e94e688b2c6c6b",
+    "logGitBlob": "e01574911c7ca197ffe048cb18f030126fc530a7",
+    "logBytes": 241,
+    "logSHA256": "2562e45a098bf04d703ab0f07afb8937fff4559b6e2c12c22e324dc3e96d7b6b",
+    "statusRemains": "FAIL",
+    "commands": 1,
+    "phase": "01-TorahInspectorCore-typecheck",
+    "exitCode": 1,
+    "normalNonzeroExitAndPositiveGroupClosure": true,
+    "forcedCleanup": false,
+    "completedFullBodyTypechecks": 0,
+    "completedModuleOnlyEmissions": 0,
+    "reusedSemanticPhases": 0,
+    "sourceAndC3FinalAuditPassed": true,
+    "historicalProcessIDsReprobed": false,
+    "originalOutputMutated": false
+  },
+  "lifecycleAndLimits": {
+    "unchangedFirstOwnedSetup": true,
+    "unchangedOwnerRunnerAndCleanup": true,
+    "unchangedWaitidSamplingAndBoundedIncrementalCensuses": true,
+    "unchangedMainNestedHelpers": [
+      "interrupted",
+      "observe",
+      "guard",
+      "command"
+    ],
+    "finalCheckAddition": "Only the finite system-module verification after the original complete byte audit; successful source admission requires its result.",
+    "successDecision": "Adds the finite module admission/verification fields; success still requires all original semantic phase, input, output, archive, terminal-persistence and process checks.",
+    "failureRetention": "Original and partial failures remain FAIL; immutable-input failures cannot be promoted by successful archival or source labels.",
+    "limits": {
+      "wholeOwnedAllocatedBytes": 268435456,
+      "maximumPreparedControlBytes": 2097152,
+      "tmpfsFreeReserveBytes": 536870912,
+      "initialMemAvailableBytes": 3221225472,
+      "liveMemAvailableBytes": 1073741824,
+      "sampledOwnedGroupRSSBytes": 1073741824,
+      "childAddressSpaceBytes": 2147483648,
+      "parentAddressSpaceBytes": 268435456,
+      "childCPUSeconds": 120,
+      "childWallSeconds": 180,
+      "childRegularFileBytes": 67108864,
+      "combinedDiagnosticsBytes": 16777216,
+      "maximumNamespaceEntries": 4096,
+      "maximumNamespaceDepth": 12,
+      "maximumClangCacheFiles": 256,
+      "maximumClangCacheBytes": 134217728,
+      "maximumReceiptBytes": 8388608,
+      "terminalPersistenceReserveBytes": 16777216,
+      "rootReadOnlyEmergencyReserveBytes": 1073741824,
+      "developmentReadOnlyEmergencyReserveBytes": 536870912,
+      "mainSeconds": 900,
+      "finalSeconds": 120,
+      "requiredOuterSeconds": 1080,
+      "coreDumpBytes": 0
+    },
+    "preparedPlusOutputWholeEnvelopeUnchanged": true,
+    "retainedRawPacketBelowExisting2MiBPreparedControlCap": true,
+    "new38MiBBinaryInputsStreamedNotCopied": true,
+    "originalFullBuildAndNativeRuntimeGatesUnchanged": true,
+    "selectedTwentyComponentMethodsRemainNotRun": true
+  },
+  "syntaxEvidenceReadOnly": {
+    "rootOwnedActual": {
+      "gitBlobSHA": "d8b58a0b3c062048ef596c44c76d8294d517d74a",
+      "bytes": 496,
+      "sha256": "d596dcc18e956eb340816fba2fc69ff7aa33431332d857fcb412ecb71fac86f3"
+    },
+    "exactControllerSHA256": "750948d684b813693bfcd61c13a9a37348cae18135a65194686a5b0dc96b7bca",
+    "status": "PASS_PYTHON_AST_ONLY",
+    "astNodes": 14119,
+    "controllerImported": false,
+    "controllerExecuted": false,
+    "noNParseOrExecution": true,
+    "noSemanticInference": true
+  },
+  "limitations": [
+    "This is a source/schema/ownership-composition peer, not an execution release.",
+    "The installed option observation does not prove that stdlib, Clang imports, all131 source bodies or any module emission succeeds.",
+    "The24 binary set is a finite protected input set, not a complete transitive Swift/Clang/system-header/SDK closure.",
+    "Sampled group RSS and whole allocated-output checks are unchanged sampled controls, not continuous peaks or filesystem quotas.",
+    "ROOT/DEV emergency reserves belong only to the separately reviewed semantic workload; Native97/Swift23/N64/C20 full-build and Files/quota gates remain unchanged.",
+    "Root must independently admit fresh resources and the exact staged source tuple before any action. No retry or compiler launch is authorized by this peer."
+  ],
+  "concreteRemainingBlockersInReviewedDelta": [],
+  "reviewConclusion": "CLEAR for the exact frozen attempt2 source tuple in this bounded scope."
+}

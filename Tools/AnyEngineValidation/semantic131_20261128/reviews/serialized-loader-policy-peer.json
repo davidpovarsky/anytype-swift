@@ -1,0 +1,313 @@
+{
+  "schema": "pinkha-swift-6.4.3-semantic-module-loader-policy-independent-source-peer-v1",
+  "status": "CLEAR_SOURCE_POLICY_FOR_ONLY_SERIALIZED_CANDIDATE_NOT_INSTALLED_ARGUMENT_OR_RUNTIME_ACCEPTANCE",
+  "reviewer": "N /root/network_files",
+  "scope": {
+    "sourceOnly": true,
+    "officialRepository": "swiftlang/swift",
+    "immutableReleaseCommit": "51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2",
+    "releaseAsNamedBySourceOwner": "swift-6.4.3-RELEASE",
+    "privatePayloadsRead": 0,
+    "oracleCalls": 0,
+    "filesystemMutations": 0,
+    "compilerInvocations": 0,
+    "controllerEdits": 0,
+    "nativeInvocations": 0,
+    "resourceOrAdmissionChanges": 0
+  },
+  "originalSemanticScope": {
+    "controllerGitBlob": "204629a9f0574d39858c68af73d1f73430d04792",
+    "controllerBytes": 70392,
+    "controllerSHA256": "67dab64dd60c571ee4960e06a9eb0b01828042425cf9624259a58b162ba57f6e",
+    "packetGitBlob": "616cedac5eef2916aacef0e5acc72abb9befc6a5",
+    "packetBytes": 942252,
+    "packetSHA256": "e5dc877350ad03acbf194792039d39d7c4c926ce3882e5dd91b927a380c9f051",
+    "graphGitBlob": "46476f8b9f48801029d327a84b1c322350aeb5d3",
+    "projectSourceCount": 131,
+    "productionSourceCount": 127,
+    "testSourceCount": 4,
+    "projectSourceBytes": 1652921,
+    "selectedComponentMethods": 20,
+    "requestedPhases": 11,
+    "wholeBodyTypechecks": 6,
+    "freshProjectModules": 5,
+    "importPolicyAsOriginallyWritten": "Installed frontend default toolchain imports, implicit Swift module compilation disabled; no independent whole SDK/resource-file closure claimed",
+    "projectModulePolicyAsOriginallyWritten": true,
+    "originalFreshClangCacheAlreadyPermitted": true,
+    "unchangedOutputCacheAllowedNames": [
+      "*.pcm",
+      "modules.idx",
+      "modules.timestamp"
+    ],
+    "unchangedClangCacheFileCap": 256,
+    "unchangedClangCacheByteCap": 134217728,
+    "originalPacketDoesNotClaimHermeticSDKClosure": true,
+    "originalReviewGitBlob": "af851efd355de5bf62c52e227316b54ea127ca8d",
+    "originalReviewScope": "ownership/resource/source-finalization; not proof the chosen import flag enabled default toolchain loading"
+  },
+  "completePrimarySources": [
+    {
+      "repository": "swiftlang/swift",
+      "commit": "51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2",
+      "path": "include/swift/Option/Options.td",
+      "url": "https://github.com/swiftlang/swift/blob/51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2/include/swift/Option/Options.td",
+      "bytes": 118096,
+      "sha256": "d3d48d67f9771e3993a5102363bf3d10dc28fba5319b9216e783f380070c4d13",
+      "gitBlob": "b10a7f75a3d21d2adedb9b3d4a19eaa38faf6be4",
+      "wholeBodyRead": true,
+      "hashesComputedFromWholeUTF8Body": true
+    },
+    {
+      "repository": "swiftlang/swift",
+      "commit": "51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2",
+      "path": "include/swift/Option/FrontendOptions.td",
+      "bytes": 79453,
+      "sha256": "762c9477763e883dc30727b44f24b43c8d2d6eed43f771aed395f9c3af8e44d1",
+      "gitBlob": "1ef13d03d79c7aef5583fd7c371daa59277474e3",
+      "url": "https://github.com/swiftlang/swift/blob/51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2/include/swift/Option/FrontendOptions.td",
+      "wholeBodyRead": true,
+      "hashesComputedFromWholeUTF8Body": true
+    },
+    {
+      "repository": "swiftlang/swift",
+      "commit": "51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2",
+      "path": "lib/Frontend/ArgsToFrontendOptionsConverter.cpp",
+      "url": "https://github.com/swiftlang/swift/blob/51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2/lib/Frontend/ArgsToFrontendOptionsConverter.cpp",
+      "bytes": 41391,
+      "sha256": "85ddc5991826b91923ea336f752ba3594f3e2859b6a229e90e2f4994a486d1bd",
+      "gitBlob": "826d8182ba048f97aae93f3e88e586cfa5909b19",
+      "wholeBodyRead": true,
+      "hashesComputedFromWholeUTF8Body": true
+    },
+    {
+      "repository": "swiftlang/swift",
+      "commit": "51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2",
+      "path": "lib/Frontend/CompilerInvocation.cpp",
+      "url": "https://github.com/swiftlang/swift/blob/51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2/lib/Frontend/CompilerInvocation.cpp",
+      "bytes": 185747,
+      "sha256": "53a098bd45bc2339275e84e109ff69f6740cfa43842c7ae476dd45db5caae67e",
+      "gitBlob": "933165c9c085d5df59cccbe44b1b1a8034d2de94",
+      "wholeBodyRead": true,
+      "hashesComputedFromWholeUTF8Body": true
+    },
+    {
+      "repository": "swiftlang/swift",
+      "commit": "51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2",
+      "path": "lib/Frontend/Frontend.cpp",
+      "url": "https://github.com/swiftlang/swift/blob/51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2/lib/Frontend/Frontend.cpp",
+      "bytes": 78758,
+      "sha256": "c2239ffe85dd4c9718554faa0315cdbaaf8b12aff35f189f26f64f0abf76d872",
+      "gitBlob": "03bd75f7252cbf02c5fa4adde2e622f3b7580ed3",
+      "wholeBodyRead": true,
+      "hashesComputedFromWholeUTF8Body": true
+    },
+    {
+      "repository": "swiftlang/swift",
+      "commit": "51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2",
+      "path": "include/swift/Frontend/ModuleInterfaceLoader.h",
+      "url": "https://github.com/swiftlang/swift/blob/51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2/include/swift/Frontend/ModuleInterfaceLoader.h",
+      "bytes": 34744,
+      "sha256": "027dbc4d101737ee8d158a4ca81517b604437ab57e04ef81d1e85b88d5c0efb7",
+      "gitBlob": "dc95223dd3b9fb0a625ac5837c106f2f0faf9e02",
+      "wholeBodyRead": true,
+      "hashesComputedFromWholeUTF8Body": true
+    },
+    {
+      "repository": "swiftlang/swift",
+      "commit": "51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2",
+      "path": "lib/Frontend/ModuleInterfaceLoader.cpp",
+      "url": "https://github.com/swiftlang/swift/blob/51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2/lib/Frontend/ModuleInterfaceLoader.cpp",
+      "bytes": 125973,
+      "sha256": "a1e2ffd65eab39efd7df54cbf3f4005291b7b27f62570522ad77dceb5da94954",
+      "gitBlob": "bdd54c7595987ccbaff5f9af4263da9bfec526e9",
+      "wholeBodyRead": true,
+      "hashesComputedFromWholeUTF8Body": true
+    },
+    {
+      "repository": "swiftlang/swift",
+      "commit": "51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2",
+      "path": "lib/ClangImporter/ClangImporter.cpp",
+      "url": "https://github.com/swiftlang/swift/blob/51bb1b87378c36f0b1dc9cfbb5491d6bb4af3ac2/lib/ClangImporter/ClangImporter.cpp",
+      "bytes": 358190,
+      "sha256": "4636f2243c5f734990c8195fa2f4d17d7bfac1b3d9a3fcdbb19bc0b22d276136",
+      "gitBlob": "2815b8baf4c3a262efaf8ea09b52efc33c5d0ac9",
+      "wholeBodyRead": true,
+      "hashesComputedFromWholeUTF8Body": true
+    }
+  ],
+  "completePrimarySourceCount": 8,
+  "completePrimarySourceBytes": 1022352,
+  "independentlyReadSourceJoins": [
+    {
+      "path": "include/swift/Option/FrontendOptions.td",
+      "lines": [
+        263,
+        265
+      ],
+      "finding": "Defines disable-implicit-swift-modules. Its short help phrase alone does not describe all loader-registration effects."
+    },
+    {
+      "path": "lib/Frontend/ArgsToFrontendOptionsConverter.cpp",
+      "lines": [
+        154,
+        154
+      ],
+      "finding": "That flag sets FrontendOptions.DisableImplicitModules."
+    },
+    {
+      "path": "lib/Frontend/Frontend.cpp",
+      "lines": [
+        858,
+        887
+      ],
+      "finding": "DisableImplicitModules selects explicit-module loading even when no explicit module map or individual explicit Swift inputs were supplied."
+    },
+    {
+      "path": "lib/Frontend/Frontend.cpp",
+      "lines": [
+        914,
+        927
+      ],
+      "finding": "When explicit-module loading is selected, both normal ModuleInterfaceLoader and ImplicitSerializedModuleLoader registration are skipped. Ordinary -I/default toolchain discovery is therefore not sufficient."
+    },
+    {
+      "path": "lib/Frontend/CompilerInvocation.cpp",
+      "lines": [
+        2282,
+        2283
+      ],
+      "finding": "DisableImplicitModules also sets DisableImplicitClangModules."
+    },
+    {
+      "path": "lib/ClangImporter/ClangImporter.cpp",
+      "lines": [
+        789,
+        804
+      ],
+      "finding": "Disabled implicit Clang mode omits the ordinary importer module-cache argument and adds -fno-implicit-modules plus -fno-implicit-module-maps."
+    },
+    {
+      "path": "include/swift/Option/FrontendOptions.td",
+      "lines": [
+        1631,
+        1633
+      ],
+      "finding": "Separately defines -module-load-mode with only-interface, prefer-interface, prefer-serialized and only-serialized values."
+    },
+    {
+      "path": "lib/Frontend/CompilerInvocation.cpp",
+      "lines": [
+        2628,
+        2648
+      ],
+      "finding": "An explicit -module-load-mode only-serialized selects ModuleLoadingMode::OnlySerialized. This explicit argument precedes the SWIFT_FORCE_MODULE_LOADING environment alternative."
+    },
+    {
+      "path": "lib/Frontend/Frontend.cpp",
+      "lines": [
+        914,
+        927
+      ],
+      "finding": "With DisableImplicitModules false and OnlySerialized mode, the textual ModuleInterfaceLoader is not registered, while ImplicitSerializedModuleLoader remains registered."
+    },
+    {
+      "path": "include/swift/Option/FrontendOptions.td",
+      "lines": [
+        1376,
+        1378
+      ],
+      "finding": "The separate disable-building-interface option is specifically about generating a binary from a textual interface; it is not the broad explicit-module mode."
+    },
+    {
+      "path": "lib/Frontend/ArgsToFrontendOptionsConverter.cpp",
+      "lines": [
+        392,
+        392
+      ],
+      "finding": "disable-building-interface sets the separate DisableBuildingInterface field."
+    },
+    {
+      "path": "lib/Frontend/ModuleInterfaceLoader.cpp",
+      "lines": [
+        1139,
+        1166
+      ],
+      "finding": "The interface-loader path may write a forwarding module for an existing prebuilt result before it checks disableBuildingInterface when no binary result was found. Thus this alternative does not provide the same exact no-interface-loader output boundary."
+    },
+    {
+      "path": "include/swift/Frontend/ModuleInterfaceLoader.h",
+      "lines": [
+        328,
+        486
+      ],
+      "finding": "The explicit map parser accepts separate Swift modulePath entries and Clang module-map/PCM entries, with duplicate checks per category. A new closed explicit-module build would require a real transitive Swift and Clang dependency plan, not only adding Swift to an otherwise empty map."
+    }
+  ],
+  "verdict": {
+    "minimalSourceSupportedCandidate": [
+      "Remove -disable-implicit-swift-modules",
+      "Add -module-load-mode only-serialized"
+    ],
+    "reason": "This restores the intended installed serialized Swift-module loading while avoiding textual Swift-interface loader compilation and allowing the already-declared bounded private Clang PCM cache.",
+    "missingOrIncompatibleSerializedDependency": "Must remain an ordinary failure, with no fallback build or native/product acceptance inferred.",
+    "bareRemovalTradeoff": "Removing the old flag without an appropriate loading mode also re-enables the textual-interface loader. The unchanged output allowlist can reject unexpected output, but that postcondition is not a source guarantee of no implicit Swift dependency compilation.",
+    "explicitMapTradeoff": "Keeping the old flag and constructing a closed explicit Swift+Clang PCM graph is a different and larger dependency-admission task. It is not required by this semantic scope's existing non-hermetic installed-SDK policy.",
+    "doesNotChangeAnyProjectTypecheckOrRuntimeAssertion": true
+  },
+  "installedArgumentEvidence": {
+    "retainedPublicHelpGitBlob": "d6e0e0f4d7cad62cbc1e178696995fbccf73885d",
+    "retainedPublicHelpRawBytes": 39715,
+    "retainedPublicHelpRawSHA256": "12645f41c87fc66c9066165be80d9cd50b35a316aceeb2308a6ffa9477c20d19",
+    "retainedPublicHelpHasDisableImplicitSwiftModules": true,
+    "retainedPublicHelpHasModuleLoadMode": false,
+    "retainedPublicHelpHasDisableBuildingInterface": false,
+    "absentFromPublicHelpIsNotClaimedUnsupported": true,
+    "installedOptionAcceptanceNotEstablishedByThisPeer": true,
+    "sourceFreeOptionObservationOwner": "Root; separate exact observer and actual result required",
+    "forthcomingControllerSuccessorNotReviewedHere": true
+  },
+  "unchangedBoundaries": {
+    "projectSources": "All 131 exact source bytes/modes and final audits",
+    "c3": "Original qualified C3 admission, exact retained Crypto modules/headers and before/final verification",
+    "imports": "Closed declared project -I paths; unchanged target aarch64-unknown-linux-gnu and conditional configuration",
+    "wholeOwnedAllocatedBytes": 268435456,
+    "terminalPersistenceReserveBytes": 16777216,
+    "maximumClangCacheFiles": 256,
+    "maximumClangCacheBytes": 134217728,
+    "process": "Same owned-runner bodies, unreaped-leader sampling, group cleanup and terminal retention",
+    "limits": {
+      "wholeOwnedAllocatedBytes": 268435456,
+      "maximumPreparedControlBytes": 2097152,
+      "tmpfsFreeReserveBytes": 536870912,
+      "initialMemAvailableBytes": 3221225472,
+      "liveMemAvailableBytes": 1073741824,
+      "sampledOwnedGroupRSSBytes": 1073741824,
+      "childAddressSpaceBytes": 2147483648,
+      "parentAddressSpaceBytes": 268435456,
+      "childCPUSeconds": 120,
+      "childWallSeconds": 180,
+      "childRegularFileBytes": 67108864,
+      "combinedDiagnosticsBytes": 16777216,
+      "maximumNamespaceEntries": 4096,
+      "maximumNamespaceDepth": 12,
+      "maximumClangCacheFiles": 256,
+      "maximumClangCacheBytes": 134217728,
+      "maximumReceiptBytes": 8388608,
+      "terminalPersistenceReserveBytes": 16777216,
+      "rootReadOnlyEmergencyReserveBytes": 1073741824,
+      "developmentReadOnlyEmergencyReserveBytes": 536870912,
+      "mainSeconds": 900,
+      "finalSeconds": 120,
+      "requiredOuterSeconds": 1080,
+      "coreDumpBytes": 0
+    },
+    "nativeAndFullBuild": "No change to Native97, Swift23, N64, C20 full-build gates or source/product/runtime acceptance",
+    "successfulFutureMeaning": "Only the separately declared exact source semantic cohort; no object/link/test/native/Apple/ABI acceptance"
+  },
+  "preservation": {
+    "failedAttemptMustRemainFailure": true,
+    "noRetrospectiveTypecheckOrModulePass": true,
+    "originalControllersAndPacketRemainImmutable": true,
+    "rootMustReviewExactNewControllerPacketAndFreshAdmission": true
+  }
+}

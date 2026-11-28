@@ -1,0 +1,440 @@
+{
+  "schema": "pinkha-semantic131-separate-workload-review-spec-v2",
+  "status": "SOURCE_ONLY_PENDING_INDEPENDENT_PEERS_AND_EXPLICIT_EXECUTION_RELEASE",
+  "repository": "davidpovarsky/anytype-swift",
+  "controls": {
+    "controller": {
+      "gitBlobSHA": "204629a9f0574d39858c68af73d1f73430d04792",
+      "bytes": 70392,
+      "sha256": "67dab64dd60c571ee4960e06a9eb0b01828042425cf9624259a58b162ba57f6e"
+    },
+    "sourcePacket": {
+      "gitBlobSHA": "616cedac5eef2916aacef0e5acc72abb9befc6a5",
+      "bytes": 942252,
+      "sha256": "e5dc877350ad03acbf194792039d39d7c4c926ce3882e5dd91b927a380c9f051"
+    },
+    "heldDataChecks": {
+      "gitBlobSHA": "5c69a3dd65ff2fbe429e934e239df1f62501bc6d",
+      "bytes": 1587,
+      "sha256": "60a2fc7f26df459383b560f1b824ebd56560904cfb3a7122b392d754bea07f5a"
+    },
+    "predecessor": {
+      "gitBlobSHA": "f6bfb4374dc57a08a867f11442cb6a6094b36c7c",
+      "bytes": 69490,
+      "sha256": "f64c532503befedf71cee8b19484108ee0b4b03525a60ef04e47c382d8be8033",
+      "status": "PRESERVED_NOT_EXECUTED"
+    },
+    "narrowSuccessorPatch": {
+      "gitBlobSHA": "4fbe16f4735e9618b19282f8848720121d0ca518",
+      "bytes": 2782,
+      "sha256": "15925d0add2bafd561482acb6cfe038cec7b910a6764e6dd21348840000e9881"
+    },
+    "narrowSuccessorProof": {
+      "gitBlobSHA": "9cc71600add031972d23450075f1ed1388339b30",
+      "bytes": 2675,
+      "sha256": "be6b0fc8b8ef600567fbd5bbed547ec99168f74f337f5773ac134048d1b1a97b"
+    }
+  },
+  "sourceGraph": {
+    "gitBlobSHA": "46476f8b9f48801029d327a84b1c322350aeb5d3",
+    "bytes": 134037,
+    "sha256": "748a0eb40a29a79198bbc396e7fb03061f7be1988a0259b670a76aeeeddb3597",
+    "wholeFiles": 131,
+    "productionFiles": 127,
+    "testFiles": 4,
+    "sourceBytes": 1652921,
+    "physicalOriginalSourceRows": 101,
+    "suppliedWholeGitSourceRows": 30,
+    "selectedRuntimeMethods": 20,
+    "selectedRuntimeMethodsExecuted": 0,
+    "excludedIncludedOldMethodEventsExecuted": 0,
+    "laterOrdinary14SourceIncluded": false,
+    "currentApplicationGraphEquivalence": false
+  },
+  "purpose": "Typecheck every function body in this exact source graph, emit five fresh project modules to resolve downstream imports, and typecheck all four complete test files. This is a separate source-semantic workload, not a build/test substitute or runtime acceptance.",
+  "syntaxState": {
+    "controllerPythonParsed": false,
+    "controllerImported": false,
+    "controllerExecuted": false,
+    "targetSwiftSemanticWorkRun": false,
+    "gitWholeReadbacks": true,
+    "heldJSONChecks": 16,
+    "predecessorActualSyntaxObservation": {
+      "rawGitBlobSHA": "2e25853d507e44372db27a87f89e6462b085054a",
+      "bytes": 450,
+      "sha256": "6806369d5eb833b2e8139282d2f3b875a823149521eadf57892eefafd2bc5a1c",
+      "status": "PASS_PYTHON_AST_ONLY",
+      "controllerSHA256": "f64c532503befedf71cee8b19484108ee0b4b03525a60ef04e47c382d8be8033"
+    },
+    "currentControllerPythonParsed": false
+  },
+  "locations": {
+    "prepared": "/run/pinkha-e-swift-semantic131-20261128-prepared1",
+    "output": "/run/pinkha-e-swift-semantic131-20261128-attempt1",
+    "requiredFilesystem": "Existing exact /run tmpfs only, mount identity admitted before/final; no mount or global setting change.",
+    "preparedFiles": [
+      "qualify_semantic131.py",
+      "source-packet.json"
+    ],
+    "preparedFileMode": "0600",
+    "preparedDirectoryMode": "0700",
+    "sourceAndOutputMode": "0600",
+    "directoriesMode": "0700",
+    "preparedBytes": 1012644,
+    "outputNamespaceMustBeAbsent": true,
+    "outputsDeletedByController": false
+  },
+  "futureInvocation": {
+    "permission": "NOT_GRANTED; exact source staging and explicit Root release remain necessary.",
+    "argv": [
+      "python3",
+      "-B",
+      "/run/pinkha-e-swift-semantic131-20261128-prepared1/qualify_semantic131.py",
+      "--self-sha",
+      "67dab64dd60c571ee4960e06a9eb0b01828042425cf9624259a58b162ba57f6e",
+      "--packet-sha",
+      "e5dc877350ad03acbf194792039d39d7c4c926ce3882e5dd91b927a380c9f051"
+    ],
+    "outerSeconds": 1080,
+    "automaticRetry": false
+  },
+  "limits": {
+    "wholeOwnedAllocatedBytes": 268435456,
+    "maximumPreparedControlBytes": 2097152,
+    "tmpfsFreeReserveBytes": 536870912,
+    "initialMemAvailableBytes": 3221225472,
+    "liveMemAvailableBytes": 1073741824,
+    "sampledOwnedGroupRSSBytes": 1073741824,
+    "childAddressSpaceBytes": 2147483648,
+    "parentAddressSpaceBytes": 268435456,
+    "childCPUSeconds": 120,
+    "childWallSeconds": 180,
+    "childRegularFileBytes": 67108864,
+    "combinedDiagnosticsBytes": 16777216,
+    "maximumNamespaceEntries": 4096,
+    "maximumNamespaceDepth": 12,
+    "maximumClangCacheFiles": 256,
+    "maximumClangCacheBytes": 134217728,
+    "maximumReceiptBytes": 8388608,
+    "terminalPersistenceReserveBytes": 16777216,
+    "rootReadOnlyEmergencyReserveBytes": 1073741824,
+    "developmentReadOnlyEmergencyReserveBytes": 536870912,
+    "mainSeconds": 900,
+    "finalSeconds": 120,
+    "requiredOuterSeconds": 1080,
+    "coreDumpBytes": 0
+  },
+  "boundsRationale": {
+    "tmpfs": "The initial free gate is 768 MiB: the declared 256 MiB prepared-plus-output envelope and a separate 512 MiB reserve. The preparation files count inside the 256 MiB envelope. Runtime monitoring reserves another 16 MiB inside that envelope for terminal replacement/fallback receipts; allocation sampling is not a filesystem quota.",
+    "memory": "Initial MemAvailable at least 3 GiB and live at least 1 GiB; current owned group RSS is sampled and limited to 1 GiB. Child RLIMIT_AS is a hard 2 GiB limit. Existing successful syntax-only observations used a 1 GiB child AS limit; the proposed 2 GiB semantic limit allows additional type resolution/serialization virtual space, without claiming measured need, peak, cache fit or future success. Parent soft AS is 256 MiB, inherited hard AS 2 GiB allows child pre-exec to install its exact bound.",
+    "time": "At most one current frontend group. Each child CPU120s and wall180s; cohort main900s plus final120s, outer1080s. Original f9 unreaped leader and bounded cleanup remain the process owner. A stopped first phase prevents further phases.",
+    "fileOutput": "Child FSIZE64 MiB, combined logs16 MiB, whole owned tree256 MiB, 4096 entries/depth12. Final Clang output closure at most256 files/128 MiB with only PCM/index/timestamp names, besides exact planned modules, sources, controls and logs.",
+    "rootDevelopment": "The proposed separate workload monitors ROOT >=1 GiB and DEV >=512 MiB, with zero declared bulk outputs there. These are not the held C20/Native admission values and do not change them. No global read-only mount or filesystem write sandbox is claimed.",
+    "failure": "Original error and all partial outputs survive; no cleanup removes the temporary namespace. Full failure archival is attempted only when the same final immutable-input and process-closure audit permits it. Resource, finalization or persistence failures remain FAIL."
+  },
+  "phasePlan": [
+    {
+      "index": 0,
+      "label": "01-TorahInspectorCore-typecheck",
+      "target": "TorahInspectorCore",
+      "mode": "typecheck",
+      "wholeFiles": 8,
+      "argvLocation": "source-packet.json plannedPhases[0].argv",
+      "argvCanonicalJSONSHA256": "2e18417e9aea0a65fcbdfb25a5459850678a37fde25ff3b9501f33ae5e82ec6d"
+    },
+    {
+      "index": 1,
+      "label": "02-TorahInspectorCore-emit-module",
+      "target": "TorahInspectorCore",
+      "mode": "emit-module",
+      "wholeFiles": 8,
+      "argvLocation": "source-packet.json plannedPhases[1].argv",
+      "argvCanonicalJSONSHA256": "8903162b4d2a0cde330ed0eb572ad2b95b11a8eb6ede3bd31c467ea6d0145ed1"
+    },
+    {
+      "index": 2,
+      "label": "03-PinkhaKit-typecheck",
+      "target": "PinkhaKit",
+      "mode": "typecheck",
+      "wholeFiles": 15,
+      "argvLocation": "source-packet.json plannedPhases[2].argv",
+      "argvCanonicalJSONSHA256": "2fcba5c29bcb4ef6b9a7ee6bd737d457251c936bb074b57310aedc0341cd0ce0"
+    },
+    {
+      "index": 3,
+      "label": "04-PinkhaKit-emit-module",
+      "target": "PinkhaKit",
+      "mode": "emit-module",
+      "wholeFiles": 15,
+      "argvLocation": "source-packet.json plannedPhases[3].argv",
+      "argvCanonicalJSONSHA256": "bf23389ca84d6c5164e79a4868ca3a305c76a1ac126e0b77857e74a973e314b5"
+    },
+    {
+      "index": 4,
+      "label": "05-PinkhaAnyEngine-typecheck",
+      "target": "PinkhaAnyEngine",
+      "mode": "typecheck",
+      "wholeFiles": 14,
+      "argvLocation": "source-packet.json plannedPhases[4].argv",
+      "argvCanonicalJSONSHA256": "0438c2d055a7f9ed0a218e17615b6a9d0587d34e5088e8b59911a26b432382b6"
+    },
+    {
+      "index": 5,
+      "label": "06-PinkhaAnyEngine-emit-module",
+      "target": "PinkhaAnyEngine",
+      "mode": "emit-module",
+      "wholeFiles": 14,
+      "argvLocation": "source-packet.json plannedPhases[5].argv",
+      "argvCanonicalJSONSHA256": "b4bc7ac9e50567465d93c52bc7ae4b700e76aad67e0d1c116fc7907761c932cd"
+    },
+    {
+      "index": 6,
+      "label": "07-PinkhaAnyIntegration-typecheck",
+      "target": "PinkhaAnyIntegration",
+      "mode": "typecheck",
+      "wholeFiles": 24,
+      "argvLocation": "source-packet.json plannedPhases[6].argv",
+      "argvCanonicalJSONSHA256": "63c1fe8aca2e4a36e9995f725c7088c70c982353a407448c6e9997b884c9288a"
+    },
+    {
+      "index": 7,
+      "label": "08-PinkhaAnyIntegration-emit-module",
+      "target": "PinkhaAnyIntegration",
+      "mode": "emit-module",
+      "wholeFiles": 24,
+      "argvLocation": "source-packet.json plannedPhases[7].argv",
+      "argvCanonicalJSONSHA256": "ecc20cd2645a703191cb01095b1d679b6d00d3ae76a96dc26893a3abbb43a62b"
+    },
+    {
+      "index": 8,
+      "label": "09-PinkhaAnyHost-typecheck",
+      "target": "PinkhaAnyHost",
+      "mode": "typecheck",
+      "wholeFiles": 66,
+      "argvLocation": "source-packet.json plannedPhases[8].argv",
+      "argvCanonicalJSONSHA256": "4d84a71c4dbb0dccf64272bdf6ccc8e424727e95295f6581ef8d4b8af70c65b7"
+    },
+    {
+      "index": 9,
+      "label": "10-PinkhaAnyHost-emit-module",
+      "target": "PinkhaAnyHost",
+      "mode": "emit-module",
+      "wholeFiles": 66,
+      "argvLocation": "source-packet.json plannedPhases[9].argv",
+      "argvCanonicalJSONSHA256": "aa1bb2a8bb31942b838575b6df5805f03070e9aa1a15845421976f35d527ee99"
+    },
+    {
+      "index": 10,
+      "label": "11-CaptureProducerContractTests-typecheck",
+      "target": "CaptureProducerContractTests",
+      "mode": "typecheck",
+      "wholeFiles": 4,
+      "argvLocation": "source-packet.json plannedPhases[10].argv",
+      "argvCanonicalJSONSHA256": "ad6a1f0fcc97c30acf10075815bf2e41a5e5bea501b649cfde5ce28f7ec5aa9b"
+    }
+  ],
+  "configuration": {
+    "scope": "EXPLICIT_SEMANTIC_CONFIGURATION_NOT_SWIFTPM_GENERATED_ARGV_EQUIVALENCE",
+    "packageName": "captureproducerproof",
+    "resourceBundle": "unavailable-in-the-isolated-resource-free-package",
+    "wholeModuleTypecheckBeforeEachEmission": true,
+    "swiftLanguageMode": "6",
+    "target": "aarch64-unknown-linux-gnu",
+    "optimization": "Onone",
+    "enableTesting": true,
+    "conditionalDefinitions": [
+      "SWIFT_PACKAGE",
+      "DEBUG",
+      "Xcode",
+      "SWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE"
+    ],
+    "experimentalFeatures": [
+      "DebugDescriptionMacro"
+    ],
+    "newProjectModulesOnly": true,
+    "systemLibraryImports": "Installed frontend default toolchain imports, implicit Swift module compilation disabled; no independent whole SDK/resource-file closure claimed",
+    "omittedProductionModes": [
+      "object emission",
+      "link",
+      "XCTest execution",
+      "native runtime",
+      "application executable"
+    ],
+    "observedC3Differences": [
+      "C3 uses original per-product package names, whereas this isolated semantic scope declares captureproducerproof.",
+      "C3 PinkhaKit was built with resource bundle AVAILABLE; this resource-free isolated graph declares UNAVAILABLE for every target.",
+      "C3 driver commands contain object/debug/index/dependency paths; this direct frontend request omits those output modes."
+    ],
+    "dependencyTopology": [
+      {
+        "target": "TorahInspectorCore",
+        "imports": []
+      },
+      {
+        "target": "PinkhaKit",
+        "imports": [
+          "TorahInspectorCore"
+        ]
+      },
+      {
+        "target": "PinkhaAnyEngine",
+        "imports": []
+      },
+      {
+        "target": "PinkhaAnyIntegration",
+        "imports": [
+          "PinkhaKit",
+          "PinkhaAnyEngine"
+        ]
+      },
+      {
+        "target": "PinkhaAnyHost",
+        "imports": [
+          "PinkhaAnyEngine",
+          "PinkhaAnyIntegration"
+        ]
+      },
+      {
+        "target": "CaptureProducerContractTests",
+        "imports": [
+          "PinkhaAnyEngine",
+          "PinkhaAnyIntegration",
+          "PinkhaAnyHost"
+        ]
+      }
+    ],
+    "importedDependencyModules": [
+      "Crypto",
+      "CryptoBoringWrapper"
+    ],
+    "importedDependencyDocumentation": "The unchanged 9ec wrapper copies four existing dependency module/doc files; no new documentation emission is requested.",
+    "currentApplicationEquivalence": false,
+    "compilerImportFlags": [
+      "-I",
+      "/run/pinkha-e-swift-semantic131-20261128-attempt1/retained-crypto-imports",
+      "-Xcc",
+      "-fmodule-map-file=/run/pinkha-e-swift-semantic131-20261128-attempt1/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap",
+      "-Xcc",
+      "-I/run/pinkha-e-swift-semantic131-20261128-attempt1/retained-crypto-headers/CCryptoBoringSSL/include",
+      "-Xcc",
+      "-fmodule-map-file=/run/pinkha-e-swift-semantic131-20261128-attempt1/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap",
+      "-Xcc",
+      "-I/run/pinkha-e-swift-semantic131-20261128-attempt1/retained-crypto-headers/CCryptoBoringSSLShims/include"
+    ]
+  },
+  "capabilityEvidence": {
+    "frontend": {
+      "path": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-frontend",
+      "bytes": 208647456,
+      "sha256": "d98470fed50d4efc0075bcbd45ba1f908382dc9222c2b8213d1ff074efaa2083",
+      "mode": "0755"
+    },
+    "actualHelp": {
+      "gitBlobSHA": "d6e0e0f4d7cad62cbc1e178696995fbccf73885d",
+      "bytes": 39715,
+      "sha256": "12645f41c87fc66c9066165be80d9cd50b35a316aceeb2308a6ffa9477c20d19",
+      "job": "de6b0af1249d4d248d3019e58ef6d1b4",
+      "source": "Root-owned exact installed frontend -help observation, one normal positively closed group; no new semantic proof"
+    },
+    "wholeHelp": {
+      "gitBlobSHA": "8a51bcd4d0bd001d2edbdd7fdc878b7dbed3da93",
+      "bytes": 37141,
+      "sha256": "2c6c42af8588c519e10482034565861d2a427e195dc75ed9a3405e438a4f67f0"
+    },
+    "fiveProjectCommands": {
+      "gitBlobSHA": "64008cec064df982f074ab637dd32b6ca772b737",
+      "bytes": 50316,
+      "sha256": "170bca7e5fb10e2a6e43d481f15b2b81f6e51c47c0bf40101252f3711b398e17",
+      "interpretation": "Actual immutable C3 retained commands. They establish target/Swift6/debug convention; they are not an observed SwiftPM-generated command list for this new graph."
+    },
+    "exactCryptoCommands": {
+      "gitBlobSHA": "7f71eb72c25b4a368392b6e6747258376c7242d7",
+      "bytes": 9098,
+      "sha256": "c90dcec4a0a49c72d4f022392516878b841b37395a755b04b0d21685c88eb95e"
+    },
+    "sourceOnlyModeSupport": "Public frontend options are joined to exact installed help. Hidden -swift-version and -enable-testing are joined separately to actual retained C3 commands; their mere help absence is not concealed. No interface-building or body-skipping option is requested."
+  },
+  "support": {
+    "sourceDirectory": "/mnt/development/projects/evidence/pinkha-original-type-runtime-provider25-20261127/prepared3",
+    "bodies": {
+      "qualify_provider_crypto_c3.py": "9ec68e6db7ad722866236ab4494df3108fee60791a40a8d218c93a82d817805b",
+      "qualify_current_c3_crypto.py": "206bbf988fe28657ada7eb98079fad951d9cee66146da6a9204e7279fe845ad0",
+      "owned_swift_commands.py": "f9de18c0fdc879ff916ba34e9afa0da9d6b91444eebfa1e5a8d6a50d3523ca56",
+      "crypto-header-source-manifest.json": "4b5bbf85230625bee67f565b57f4de7338a5a55ca65d46ad5405a19a040d0961"
+    },
+    "owner": {
+      "gitBlobSHA": "e2155f395e5839ba0f8ed41e1057b9a228415f2c",
+      "bytes": 9527,
+      "sha256": "f9de18c0fdc879ff916ba34e9afa0da9d6b91444eebfa1e5a8d6a50d3523ca56",
+      "change": "No function source body is edited. Only the loaded child_signals callback is wrapped to apply CORE0, AS/CPU/FSIZE/NOFILE limits before the direct frontend exec. run/cleanup/unreaped ownership bodies remain exact. The caller now proves waitid WNOWAIT ownership before every current PID/group sample, including f9 failure paths."
+    },
+    "c3Wrapper": {
+      "gitBlobSHA": "50713478b4b93803d747a5afbbd0f814a77bd4d0",
+      "bytes": 7483,
+      "sha256": "9ec68e6db7ad722866236ab4494df3108fee60791a40a8d218c93a82d817805b",
+      "scope": "Unchanged historical receipt label remains Provider25-specific provenance, with no new Type25 acceptance claim. Only its exact imported Crypto/CryptoBoringWrapper modules and headers are used."
+    },
+    "sharedC3": {
+      "gitBlobSHA": "41acae3d8d7765b7997390d5c2c3348e67bc74b7",
+      "bytes": 21349,
+      "sha256": "206bbf988fe28657ada7eb98079fad951d9cee66146da6a9204e7279fe845ad0",
+      "beforeFinal": "Whole original qualification and equality remain mandatory before imports and at finalization. It includes all original current non-application source/tool/link/product requirements and original alias custody. No current application source equality is inferred."
+    },
+    "importedCopies": "Exactly four prior dependency module/doc files plus94 headers/module maps; no dependency compile and no old project module import.",
+    "retainedOldObjects": "The unchanged C3 qualifier still verifies its four old aggregate-object/link closures. The new frontend argv never links or imports these objects.",
+    "originalOwnershipControls": "Exact 040ffa3f receipt is reused under the same C25 source assertions, with zero replay and no historical PID probes."
+  },
+  "inputIdentity": {
+    "explicitPhysicalSources": "All101 named graph paths and four named public beforeimages are read with NOATIME/NOFOLLOW, bounded initial-size+1 reads, byte hashes, mode and full nanosecond path/descriptor witnesses. Every supplied Git body matches its full graph hash and source pin. All131 private copies are checked before phases and after.",
+    "c3": "Shared206 retains its original full qualification contract. This is not relabeled as a new complete nanosecond witness of all1602 entries.",
+    "frontend": "Exact208647456-byte executable and mode required; original atime may change from execution and is excluded only for this frontend's cross-time witness. Per-read full descriptor stability still applies.",
+    "prepared": "Exact two-file membership, full nanosecond identity including atime, private modes, physical mount and allocation are compared before/final.",
+    "implicitSystemImports": "Default installed toolchain standard-library/system resource inputs are not separately inventoried or claimed as a whole SDK closure; implicit Swift module compilation is disabled and unplanned descendant commands fail. New project modules always come from these exact current sources.",
+    "dataExcluded": "No account, fixture payload, archive restoration, old test executable, shared source mutation, current cache mutation, package resolver or network path is requested."
+  },
+  "finalization": {
+    "ownership": "Result state and TERM/INT handlers exist before first output; first mkdir/latch/fsync is signal-masked. All writes require the retained owned root identity. Unowned paths receive only stdout failure.",
+    "closure": "Each exact f9 row must finish normally with positive group absence. Only a current unreaped group is sampled; latched closed IDs are never reprobed. Any cleanup/error/forced outcome prevents PASS and further commands.",
+    "outputAllowlist": "Strict complete final members: declared source/control copies, four dependency import files+94 headers, five fresh project modules, three files per command, and bounded Clang PCM/cache metadata. No unclassified home/temp outputs, interface/doc/object/link/index outputs or symlinks may yield PASS.",
+    "archive": "After exact final source/206 and log closure, write one deterministic gzip of concatenated exact owned file bytes plus offset/hash/mode manifest. Conservative uncompressed gzip bound plus preparation+current allocation+terminal reserve must fit the same cap. Fully stream-decode and verify every byte/hash and gzip trailer before recording success. Raw files remain. This is not a physical-restoration or off-tmpfs durability claim.",
+    "terminal": "Bounded120s finalizer retains primary and completion errors. Exact final JSON is hashed and read back; actual post-write whole allocation is separately returned in stdout. Any persistence or late check failure disqualifies the primary and attempts one owned terminal-persistence-failure.json. No automatic retry, deletion or claimed runtime acceptance.",
+    "successStatus": "PASS_SEMANTIC_131_NO_OBJECT_NO_TEST",
+    "successMeans": "Six complete source typechecks and five module-only emissions under the declared configuration, exact source/dependency and closure audits, archive/inverse and qualified terminal receipt.",
+    "successDoesNotMean": [
+      "Any of the20 methods executed",
+      "Full C20 build/link/test acceptance",
+      "Native97 or Swift23 acceptance",
+      "Apple SwiftUI/ABI/App build",
+      "Current whole App graph equality",
+      "System-wide write prohibition",
+      "Off-tmpfs durable storage",
+      "Later Ordinary14 supplement acceptance"
+    ],
+    "finiteEnumeration": "Both scandir consumers enforce limits while iterating: whole namespace discovery <=4096 and8s; prepared listing refuses a third member and observes8s before collecting."
+  },
+  "preservedRuntimeGates": {
+    "native97": {
+      "rootAdmissionBytes": 2281701376,
+      "developmentAdmissionBytes": 1577058304,
+      "initialMemAvailableBytes": 3221225472,
+      "notRun": true
+    },
+    "C20": "Original full-build resource/selection gate unchanged; semantic success is not its release.",
+    "Swift23": "Requires separately qualified Native97/117 receipt and original exact source/process admission; unchanged and NOT_RUN.",
+    "twentyComponentMethods": "All 20 selected methods remain NOT_RUN; every body in the four source files is typechecked if this separate workload completes."
+  },
+  "pending": [
+    "Root frontend/configuration/resource/source peer",
+    "N focused owner/resource/finalization peer",
+    "Actual bounded Python syntax observation if Root chooses it",
+    "Exact source staging/physical namespace admission",
+    "Explicit Root execution release with fresh independent resource observations"
+  ],
+  "historicalExpandedSpec": {
+    "gitBlobSHA": "c3494bf0cdfd3e5d610b40fa6ec53566cb25ec3e",
+    "bytes": 74020,
+    "sha256": "ea62a97d19bb8f3e0908790e3c5f4307b466f45fcff8bf78adf96e62b26b85ef",
+    "scope": "Historical prior-controller metadata; all11 full argv arrays remain unchanged in the exact current packet. The current controller pin is only the v2 controls row."
+  },
+  "sourceSuccessor": "Only group_sample, namespace and prepared_controls changed. All23 other top-level declarations including the whole main body, all limits and source packet remain byte-identical."
+}
