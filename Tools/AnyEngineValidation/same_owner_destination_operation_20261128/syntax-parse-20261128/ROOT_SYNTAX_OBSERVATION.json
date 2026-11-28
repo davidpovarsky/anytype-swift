@@ -1,0 +1,114 @@
+{
+  "schema": "pinkha-root-five-source-swift-syntax-observation-v1",
+  "status": "ACTUAL_PASS_SYNTAX_PARSE_ONLY",
+  "actualOracleJob": "8265fbf0f3354dbda3ea3c4c9ccc6cde",
+  "toolExitCode": 0,
+  "toolDurationSeconds": 2.79,
+  "startedAtUTC": "2026-11-28T10:33:37.109129+00:00",
+  "endedAtUTC": "2026-11-28T10:33:39.839371+00:00",
+  "controllerSeconds": 2.730226,
+  "sourceCount": 5,
+  "sourceBytes": 75376,
+  "sourceRows": [
+    {
+      "bytes": 29548,
+      "gitBlob": "5a032474b2e2bc7c07d502920042741d22eff1f5",
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+      "sealedInputUnchanged": true,
+      "sha256": "8a610e6869a941d07d2d6a2c7e10a3b917427e89ee6f1f00cbe5cc5adfcde7fe"
+    },
+    {
+      "bytes": 3438,
+      "gitBlob": "07629409adc5a6e762e582f8e81adcb621700bd4",
+      "path": "Modules/PinkhaEngineHost/Sources/PinkhaEngineHost/PinkhaEngineHost.swift",
+      "sealedInputUnchanged": true,
+      "sha256": "0e7e1fe0b692a7c3178fc9176e672e09b2352a0b06e286b9526f6b752cd87175"
+    },
+    {
+      "bytes": 1249,
+      "gitBlob": "3abede4c18c7e608fd630ef30c9bb0e57af2fa9b",
+      "path": "Modules/PinkhaEngineHost/Package.swift",
+      "sealedInputUnchanged": true,
+      "sha256": "c2f33b0401d4f73f1e274ee74ef4b7a4bf806c4b8e1585d403ff5bfb6e09a477"
+    },
+    {
+      "bytes": 17627,
+      "gitBlob": "03f22b12ff63f05be04f1c8430f02a90c4566590",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeCaptureDescriptor.swift",
+      "sealedInputUnchanged": true,
+      "sha256": "87ae4d9282aedc813879947f319d854d0bb55496ab796c497e9a7f58af86bfd9"
+    },
+    {
+      "bytes": 23514,
+      "gitBlob": "7e3242682b32353fce800a573ac0e72e51e72827",
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyHeartNativeCaptureDescriptorTests.swift",
+      "sealedInputUnchanged": true,
+      "sha256": "90d0f70b5f9c08d733c132319c3a0c821c7671f71ff927aba8d3a1f7d45cac6b"
+    }
+  ],
+  "sourceCommits": {
+    "EDestinationSource": "43b7413c2debb2aac23666f5fe51f36c3618bcb8",
+    "EDestinationEvidence": "8000a990e9a20ab7394fd68fa66697d9e9cc0b93",
+    "captureExport": "Two exact uncommitted proposed bodies owned by C; no branch publication claim."
+  },
+  "artifacts": {
+    "rawReturnedStdout": {
+      "name": "raw",
+      "blob": "fce9af59b8c5c2b6bb0be7062bc8677fefa8b4a5",
+      "bytes": 6343,
+      "sha256": "20938bb2856b611e3c5d85c0674b0cf1656814aee4373153916f3669a325797f",
+      "expectedGit": "fce9af59b8c5c2b6bb0be7062bc8677fefa8b4a5"
+    },
+    "toolchainMetadataReturnedStdout": {
+      "name": "toolchain-metadata-raw",
+      "blob": "aa750514e6a6b2bb7600825120666546cd7ad60d",
+      "bytes": 1572,
+      "sha256": "ae6f9b54387086289a5001d71b76f265d92bedf39a8543dbc1b8da04ba178151",
+      "expectedGit": "aa750514e6a6b2bb7600825120666546cd7ad60d"
+    },
+    "executedController": {
+      "blob": "d8940f9a36bf11a1819e1cb4fbf72d301b565f74",
+      "bytes": 118223,
+      "sha256": "4ec5b173b6aac84e169a009277586124f0e47b0ec111f5ca3fc5c0baf4f03e55"
+    },
+    "supersededUnrunController": {
+      "blob": "e849548cfd4c727b235f2b032e1c4e82e810ceba",
+      "bytes": 112272,
+      "sha256": "df18b0627ace17a79d2e159c541705e675471da3051bdeb698cdf3c2305f20bd"
+    },
+    "independentSourcePeer": {
+      "blob": "42c2f3605737986ec348326bd5787d564898e0ce",
+      "bytes": 7043,
+      "sha256": "f716bb92448526dc1f80484cb5c18bf9b0ada719554fb6906e8eb0cd81958ed7"
+    },
+    "exactGroupCensusDonor": {
+      "blob": "e2155f395e5839ba0f8ed41e1057b9a228415f2c",
+      "bytes": 9527,
+      "sha256": "f9de18c0fdc879ff916ba34e9afa0da9d6b91444eebfa1e5a8d6a50d3523ca56",
+      "scope": "Only other_group_members whole function reused. No blanket qualification of new parser lifecycle."
+    }
+  },
+  "observations": {
+    "allFiveExitZero": true,
+    "allFivePositivelyAbsent": true,
+    "signals": 0,
+    "forcedCleanup": 0,
+    "cleanupErrors": 0,
+    "stdoutBytes": 0,
+    "stderrBytes": 0,
+    "sealedInputsUnchanged": true,
+    "frontendUnchanged": true,
+    "frontendParserInvocations": 5,
+    "projectTypecheckBuildOrLinkInvocations": 0,
+    "testInvocations": 0,
+    "nativeInvocations": 0
+  },
+  "materialLimits": [
+    "Each exact complete body was submitted to swift-frontend -parse with Swift 5 language mode. No imports, type checking, ABI, module/object emission, linking, tests or App/native operation is qualified.",
+    "Conditional compilation semantics and execution of every conditional Apple branch are not established. The Linux syntax result does not qualify the Apple-only destination API.",
+    "FSIZE0 bounded child regular-file writes, unavailable temp/module-cache paths and no output paths were requested. No global filesystem write audit is claimed; RLIMIT_FSIZE does not prevent metadata operations.",
+    "The exact frontend executable was freshly byte/mode/inode checked before and after. C3's original observation supplies provenance only; its whole1915 input closure was not freshly admitted by this parse.",
+    "Earlier source-only NOT_PARSED records remain historical snapshots and are not rewritten. Only the five source rows receive this later syntax result.",
+    "All frozen component, Native97, Swift23 and native64 resource/acceptance guards remain unchanged. This parse creates no release for those cohorts."
+  ]
+}
