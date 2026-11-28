@@ -1,0 +1,45 @@
+{
+  "schema": "pinkha-capture-producer-twenty-selection-v1",
+  "status": "SOURCE_ONLY_NOT_RUN",
+  "graph": {
+    "blob": "46476f8b9f48801029d327a84b1c322350aeb5d3",
+    "bytes": 134037,
+    "sha256": "748a0eb40a29a79198bbc396e7fb03061f7be1988a0259b670a76aeeeddb3597"
+  },
+  "target": "CaptureProducerContractTests",
+  "selected": [
+    "NativeDirectCapturePreservationTests/testDirectArchiveRetainsCompleteCapturedDescriptorsWithoutRecovery",
+    "NativeDirectCapturePreservationTests/testDirectCaptureRequiresExplicitCompleteDescriptorCensus",
+    "NativeDirectCapturePreservationTests/testDirectArchiveRejectsOppositeEvidenceHeadersAndCrossVersionBindings",
+    "NativeDirectCapturePreservationTests/testDirectArchiveRejectsPayloadCorruptionExtraBytesAndRecoveryMembers",
+    "NativeDirectCapturePreservationTests/testHistoricalReferenceEncodingRetainsExactlyTheOriginalClosedV1Keys",
+    "NativeDirectCapturePreservationTests/testDirectReferenceRejectsNullEmptyMissingAndOppositeEvidenceFields",
+    "NativeDirectCapturePreservationTests/testActualRetainedV1ArchiveAnd182PlanRemainByteIdentical",
+    "NativeDirectCapturePreservationTests/testSyntheticCompleteCaptureDerivativeAdmitsV2PlanCatalogAndLocatorPair",
+    "NativeCaptureDescriptorTests/testPreservationExportRetainsOnlyDeclaredBytesAndNoAuthority",
+    "NativeCaptureDescriptorTests/testPreservationExportKeepsOriginalBytesAndRefusesSubstitutedMemberDescriptor",
+    "NativeCaptureDescriptorTests/testPreservationExportCountsManifestInAggregateLimitBeforeMemberIO",
+    "NativeCaptureDescriptorTests/testPreservationExportRetainsDescriptorAndPrivateMemberGuards",
+    "NativeMigrationPrivateStorageTests/testFreshArchiveAndExactReuseKeepOnePrivateVerifiedFile",
+    "NativeMigrationPrivateStorageTests/testCaptureAndUnlistedDescendantAreRefusedAsEitherOutputParent",
+    "NativeMigrationPrivateStorageTests/testPartialOrWritableExistingArchiveIsRetainedAndNeverOverwritten",
+    "NativeMigrationPrivateStorageTests/testReplacedOutputOrExistingJournalScopeRefusesBeforeMaterialization",
+    "NativeMigrationProducerLifetimeTests/testBusyRefusalKeepsTheRegisteredOperationAndReleasesItsSlotAtTerminal",
+    "NativeMigrationProducerLifetimeTests/testExternalInvalidationCancelsAndWaitsForTheLateOuterDestinationResult",
+    "NativeMigrationProducerLifetimeTests/testNativeCloseFailureStillJoinsTheOuterResultAndRetriesTheSameOwnedGrant",
+    "NativeMigrationProducerLifetimeTests/testSourceBindingRefusalClosesTheOriginalGrantWithoutJoiningItsAwaitingProducer"
+  ],
+  "excludedCompiled": [
+    "NativeCaptureDescriptorTests/testDescriptorRequiresExactCallerIdentityAndUnambiguousCapturedOnlyContract",
+    "NativeCaptureDescriptorTests/testPrivateBundleReadVerifiesAllBytesWithoutPromotingSourceOrDestinationAuthority",
+    "NativeCaptureDescriptorTests/testChangedManifestSourceBytesCountsAndFlagsAreRefused",
+    "NativeCaptureDescriptorTests/testParentEscapeSymlinksAndNonPrivatePermissionsAreRefused",
+    "NativeCaptureDescriptorTests/testOriginalNativeCapturesReadThroughPrivateDescriptorAndKeepTheirSemanticBlockers"
+  ],
+  "count": 20,
+  "excludedCount": 5,
+  "zeroSkipsRequired": true,
+  "oldMethodReuse": false,
+  "oldProductsReuse": false,
+  "coreDumpLimitBytes": 0
+}

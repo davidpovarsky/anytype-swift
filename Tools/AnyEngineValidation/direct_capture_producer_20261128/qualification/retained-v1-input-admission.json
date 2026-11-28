@@ -1,0 +1,106 @@
+{
+  "protocol": "capture-producer-retained-regression-inputs-v1",
+  "status": "PASS_INPUT_ADMISSION_ONLY_NOT_TEST_EXECUTION",
+  "priorUnavailableDevelopmentLocator": {
+    "blob": "d8cb35d5a4c0ed6678d4635321ac2a888c8e6d5c",
+    "preserved": true
+  },
+  "producerPublicHelper": {
+    "blob": "aead47abe9023a8c7f8e5d377e5c07fe1691ce14",
+    "bytes": 32083,
+    "sha256": "0983b3b4d49bd3f73f7f995b5e234f882166554aff5b95bdcfb31cbfb4eeab70"
+  },
+  "archiveObservation": {
+    "errors": [],
+    "nativeCompilerTestInvocations": 0,
+    "privateAccountReads": 0,
+    "protocol": "capture-producer-retained-v1-exact-input-admission-v1",
+    "rows": [
+      {
+        "acceptedScope": {
+          "result": "PASS",
+          "sourceAdmissionPromoted": false,
+          "wholeSpaceMigration": false
+        },
+        "bytes": 7510,
+        "fullStableRead": true,
+        "metadata": {
+          "st_atime_ns": 1795790352915068200,
+          "st_ctime_ns": 1795678494685046000,
+          "st_dev": 2049,
+          "st_gid": 0,
+          "st_ino": 2891897,
+          "st_mode": 33152,
+          "st_mtime_ns": 1795678494685046000,
+          "st_nlink": 1,
+          "st_size": 7510,
+          "st_uid": 0
+        },
+        "noAtime": true,
+        "path": "/var/lib/pinkha-c-native-preservation-20261126/linux-resume-attempt1/result.json",
+        "sha256": "f7f4a5b34465907c3285229a266a488229a92eb1c3a7c04c5b4cdd162ed1b32b"
+      },
+      {
+        "bytes": 1634696,
+        "fullStableRead": true,
+        "metadata": {
+          "st_atime_ns": 1795678351113202200,
+          "st_ctime_ns": 1795678351099202000,
+          "st_dev": 2049,
+          "st_gid": 0,
+          "st_ino": 2891826,
+          "st_mode": 33152,
+          "st_mtime_ns": 1795674612710203600,
+          "st_nlink": 1,
+          "st_size": 1634696,
+          "st_uid": 0
+        },
+        "noAtime": true,
+        "path": "/var/lib/pinkha-c-native-preservation-20261126/linux-resume-attempt1/private-work/original-source.pinkha-heart-source",
+        "sha256": "5d72e36849884da3da3fe9ddde0a01f49a03cde3b417f49456e3558bea8db463"
+      }
+    ],
+    "status": "PASS_EXACT_RETAINED_INPUT_ADMISSION_ONLY_NOT_REGRESSION_EXECUTION",
+    "targetWrites": 0
+  },
+  "planObservation": {
+    "errors": [],
+    "nativeCompilerTestInvocations": 0,
+    "privateAccountReads": 0,
+    "protocol": "capture-producer-retained-plan-exact-input-admission-v1",
+    "row": {
+      "bytes": 1823803,
+      "fullStableRead": true,
+      "metadata": {
+        "st_atime_ns": 1795781687203882000,
+        "st_ctime_ns": 1795678351099757600,
+        "st_dev": 2049,
+        "st_gid": 0,
+        "st_ino": 2891827,
+        "st_mode": 33152,
+        "st_mtime_ns": 1795674612697203500,
+        "st_nlink": 1,
+        "st_size": 1823803,
+        "st_uid": 0
+      },
+      "noAtime": true,
+      "path": "/var/lib/pinkha-c-native-preservation-20261126/linux-resume-attempt1/private-work/source-preservation-plan.json",
+      "sha256": "4a61914d5dbd3ccb4874f81444e4d0770c9e7e2dfe4259b8b93f15796accb930"
+    },
+    "status": "PASS_EXACT_RETAINED_PLAN_ADMISSION_ONLY_NOT_REGRESSION_EXECUTION",
+    "targetWrites": 0
+  },
+  "archiveSeconds": 0.07,
+  "planSeconds": 0.06,
+  "totalInputBytes": 3458499,
+  "sourceScripts": {
+    "archive": "50a4f712ab68e3f02cf7ed75c0b1de993a9413ba83eff115090f459160b7e546",
+    "plan": "65f4772ec93f46336cdfefb6b2c3877e18e40e959b5178c64dae300a2f81a4b6"
+  },
+  "qualifications": [
+    "All exact input hashes joined before and after stable O_NOATIME/O_NOFOLLOW reads.",
+    "No private account or loose original member was read.",
+    "No compiler, native call, regression or182-operation replay occurred.",
+    "Future test execution must re-admit inputs and use bounded private copies or original read-only access with preserved modes/bytes."
+  ]
+}

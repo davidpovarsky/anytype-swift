@@ -1,0 +1,325 @@
+{
+  "schema": "pinkha.capture-producer-component-source-peer.v1",
+  "status": "CLEAR_FINITE_GRAPH_SELECTION_PROVENANCE_RESOURCE_PROPOSAL_NOT_EXECUTED",
+  "reviewer": "network_files",
+  "repository": "davidpovarsky/anytype-swift",
+  "inputs": {
+    "manifest": {
+      "gitBlobSHA": "46476f8b9f48801029d327a84b1c322350aeb5d3",
+      "bytes": 134037,
+      "sha256": "748a0eb40a29a79198bbc396e7fb03061f7be1988a0259b670a76aeeeddb3597"
+    },
+    "baseline": {
+      "gitBlobSHA": "ad8807ffb05ebdf0595219ccce176f302d9cfca6",
+      "bytes": 109244,
+      "sha256": "97e9b677e2d7862f8b7caa1e5cbe05a62492865ef144b36ee892178735542656"
+    },
+    "fixtureAdmissionProof": {
+      "blob": "a454802f6b3afaf6e9a74b3855f38554c4db859a",
+      "bytes": 3809,
+      "sha256": "8fb7eb0e6ac3e57c81943050f3337c61cdc6d8ec084fb7f11ad1c3fec505cd9f"
+    },
+    "declaredIntakeProof": {
+      "blob": "10e15c0420fecbb096052b4eda3dc6089e4a0f71",
+      "bytes": 8926,
+      "sha256": "8ac0ea200f558acaca43848883a3218c7c5d9598f5cfe220f892497048753f32"
+    }
+  },
+  "independentGraphChecks": {
+    "wholeInheritedJSONRows": 110,
+    "exactBeforeAndAfterReplacementRows": 5,
+    "exactAddedProductionRows": 12,
+    "removedPriorTestFiles": 2,
+    "counts": {
+      "wholeSwiftFiles": 131,
+      "productionFiles": 127,
+      "testFiles": 4,
+      "selectedNewMethods": 20,
+      "excludedIncludedOldMethods": 5,
+      "unchangedPriorProductionRows": 110,
+      "replacedPriorProductionRows": 5,
+      "addedProductionRows": 12,
+      "productionSourceBytes": 1550575,
+      "testSourceBytes": 102346,
+      "sourceBytes": 1652921,
+      "oldMethodEventsReused": 0,
+      "oldCompiledProductsReused": 0,
+      "nativeAccounts": 0,
+      "nativeHTTPRequests": 0
+    },
+    "logicalAndIsolatedPathsUnique": true,
+    "allRowsCompileTrue": true,
+    "wholeNewOrChangedSourceBlobsReadAndSHA256GitVerified": 21,
+    "wholeNewOrChangedSourceBytes": 357401,
+    "wholeNewOrChangedSourcePins": [
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartMigrationPrivateStorage.swift",
+        "bytes": 18809,
+        "sha256": "5822ead21af2235459f73670ad37f92fcfe2f1fe4f619a04f11a2cb90edd7dfe",
+        "gitBlobSHA": "854de837370b8e280ab109da5a99276db75426bf"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeCaptureDescriptor.swift",
+        "bytes": 17627,
+        "sha256": "87ae4d9282aedc813879947f319d854d0bb55496ab796c497e9a7f58af86bfd9",
+        "gitBlobSHA": "03f22b12ff63f05be04f1c8430f02a90c4566590"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+        "bytes": 17059,
+        "sha256": "3d69a030340e8718bd082726e69abebb32cc8428cd9201c1a00afa7803055e01",
+        "gitBlobSHA": "19892c31e9c027395f0e89fcc59edefcabe9f4ab"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourceAccountController.swift",
+        "bytes": 10161,
+        "sha256": "87ae93153c2f425c20e842dac6b60d18fae867978fe6d180a717faee9bf465cd",
+        "gitBlobSHA": "63f2a6083f487acd925e525e4922ccc98c900d67"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourceCaptureCoordinator.swift",
+        "bytes": 13243,
+        "sha256": "3d77b08c4d3c14c9520d116fdd382244cfad796378fa6e4b065ef5e7061c3da7",
+        "gitBlobSHA": "f8bb507c5604ffcc7556693403bb4af10ce7a446"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourcePreservation.swift",
+        "bytes": 19633,
+        "sha256": "c9560ed1180340391944b01b66386b9bc56d7f9b4e559aaf0229293f9bc8e175",
+        "gitBlobSHA": "6f59b8fb49546d9f2cc42971a73863c0756b8e8e"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedCatalog.swift",
+        "bytes": 20932,
+        "sha256": "4adc898366a011542266731568b32014189641d3250a8cf778ee25d1ecfa8291",
+        "gitBlobSHA": "d45211748deacc9fa3d59215c8e15e74a72dd95a"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift",
+        "bytes": 36356,
+        "sha256": "be03fc564171c720a91bd79d060d6edd9798da49cb7a19f88f57ade79e31acec",
+        "gitBlobSHA": "b041309e13291cb41c9cec48d32865bb66af5553"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextReference.swift",
+        "bytes": 12903,
+        "sha256": "5594056fd2e8a5e08a02bd670f0f534187eab0ca7722c9c6cbedcf474bc929cd",
+        "gitBlobSHA": "dc6e21e129a02cf75ff6b1bd0598dedaac1d9267"
+      },
+      {
+        "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionEvidence.swift",
+        "bytes": 2251,
+        "sha256": "9f53864a7bf97627789e7cb2702a76e280bfc05859a2b8ec5c5130d9075881e3",
+        "gitBlobSHA": "e6785a066c68143eca97fc199851aeac7da6be94"
+      },
+      {
+        "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePinkhaSource.swift",
+        "bytes": 19720,
+        "sha256": "235d4eb714cc8d577571336f265faa36dad2afde756265092020e5d717e7e2de",
+        "gitBlobSHA": "1a2058e4953df51acffac68e86de51286d1d7fc7"
+      },
+      {
+        "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePreservationArchive.swift",
+        "bytes": 25677,
+        "sha256": "7ae154b210a0aad7f7f9c06a5cfc9b69adcaeb02f4b87f7952e4bf5a19f062b9",
+        "gitBlobSHA": "9ae2c11b553016cd2559787fa5b796989263b4c2"
+      },
+      {
+        "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahMigration.swift",
+        "bytes": 21673,
+        "sha256": "4b535020276c2ce467ebc86204e3bcc70b1006cdb7160c2533272ee05a26f90d",
+        "gitBlobSHA": "f88ca6c16fb9c5fbcc897e61f08f33716640415a"
+      },
+      {
+        "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahSemanticTargetAccess.swift",
+        "bytes": 400,
+        "sha256": "a7b7db78763d7d47ca7e3482dbd4ba4a5d7bca4b8b2b92f3109983b17426095f",
+        "gitBlobSHA": "d2e346b8231c15ed9105ee9294b46fc76e278f2a"
+      },
+      {
+        "path": "Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaBootstrapProtocols.swift",
+        "bytes": 4878,
+        "sha256": "1d3b20b5f88c2415a10ab21ba696bcfd821cca1b42979ffa51ad24c97818b525",
+        "gitBlobSHA": "c2e0b92df6fe5912c7e0452a1d866fd58942e676"
+      },
+      {
+        "path": "Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSchemaRoles.swift",
+        "bytes": 1555,
+        "sha256": "891033c5597706f043026fbfa21cfe7eb010117bdbb0a6cdd194ba62e26103a3",
+        "gitBlobSHA": "83e42de4bf880d13ce20a841410681c6e6fa0f8d"
+      },
+      {
+        "path": "Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSpaceManifest.swift",
+        "bytes": 12178,
+        "sha256": "d3d55b7b7c2ee1ea060af93ec42921a1634f97fd14254c2dc3ac49582c07f0f1",
+        "gitBlobSHA": "d42050a84d5f232d05493c3f1787390c094db0fc"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCaptureDescriptorTests.swift",
+        "bytes": 23514,
+        "sha256": "90d0f70b5f9c08d733c132319c3a0c821c7671f71ff927aba8d3a1f7d45cac6b",
+        "gitBlobSHA": "7e3242682b32353fce800a573ac0e72e51e72827"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeDirectCapturePreservationTests.swift",
+        "bytes": 31708,
+        "sha256": "7c6f5bc27d287a725a604f653eafc104a3bcd6c61e2452cad7704d3f6d031712",
+        "gitBlobSHA": "a52f10dfc99e00cb3df1a4bb3329862caf7ec99b"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeMigrationPrivateStorageTests.swift",
+        "bytes": 14238,
+        "sha256": "3770f8a8029da34c096495157655fd00ba69c0b209fe769e17b5f31c61c57eb4",
+        "gitBlobSHA": "f3fb604a7a4eef2067e694114dc7203fdc1ee19a"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeMigrationProducerLifetimeTests.swift",
+        "bytes": 32886,
+        "sha256": "1281c6e7fe7718ee0225af0a42bf3f3cb9f30f36adf2f7eaccf02d6004709732",
+        "gitBlobSHA": "30480edf10256c5bd367da92ce49db07a2216cc9"
+      }
+    ],
+    "canonicalPathCorrection": "The inherited prepared Catalog row's repository path is stated explicitly as Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedCatalog.swift. The three PinkhaKit source paths retain their actual Schema/Bootstrap subdirectories while isolated compilation paths are deliberately flat.",
+    "dependencyJoin": "Coordinator -> PinkhaSource -> AnyTorahMigration/PinkhaSchemaRoles/PinkhaSpaceManifest; SemanticTargetAccess and BootstrapProtocols are present as complete files. Prior target/source closure remains inherited, not independently typechecked."
+  },
+  "selection": {
+    "classes": [
+      {
+        "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCaptureDescriptorTests.swift",
+        "gitBlobSHA": "7e3242682b32353fce800a573ac0e72e51e72827",
+        "selected": 4,
+        "excluded": 5
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeDirectCapturePreservationTests.swift",
+        "gitBlobSHA": "a52f10dfc99e00cb3df1a4bb3329862caf7ec99b",
+        "selected": 8,
+        "excluded": 0
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeMigrationPrivateStorageTests.swift",
+        "gitBlobSHA": "f3fb604a7a4eef2067e694114dc7203fdc1ee19a",
+        "selected": 4,
+        "excluded": 0
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeMigrationProducerLifetimeTests.swift",
+        "gitBlobSHA": "30480edf10256c5bd367da92ce49db07a2216cc9",
+        "selected": 4,
+        "excluded": 0
+      }
+    ],
+    "exactSelected": [
+      "NativeDirectCapturePreservationTests/testDirectArchiveRetainsCompleteCapturedDescriptorsWithoutRecovery",
+      "NativeDirectCapturePreservationTests/testDirectCaptureRequiresExplicitCompleteDescriptorCensus",
+      "NativeDirectCapturePreservationTests/testDirectArchiveRejectsOppositeEvidenceHeadersAndCrossVersionBindings",
+      "NativeDirectCapturePreservationTests/testDirectArchiveRejectsPayloadCorruptionExtraBytesAndRecoveryMembers",
+      "NativeDirectCapturePreservationTests/testHistoricalReferenceEncodingRetainsExactlyTheOriginalClosedV1Keys",
+      "NativeDirectCapturePreservationTests/testDirectReferenceRejectsNullEmptyMissingAndOppositeEvidenceFields",
+      "NativeDirectCapturePreservationTests/testActualRetainedV1ArchiveAnd182PlanRemainByteIdentical",
+      "NativeDirectCapturePreservationTests/testSyntheticCompleteCaptureDerivativeAdmitsV2PlanCatalogAndLocatorPair",
+      "NativeCaptureDescriptorTests/testPreservationExportRetainsOnlyDeclaredBytesAndNoAuthority",
+      "NativeCaptureDescriptorTests/testPreservationExportKeepsOriginalBytesAndRefusesSubstitutedMemberDescriptor",
+      "NativeCaptureDescriptorTests/testPreservationExportCountsManifestInAggregateLimitBeforeMemberIO",
+      "NativeCaptureDescriptorTests/testPreservationExportRetainsDescriptorAndPrivateMemberGuards",
+      "NativeMigrationPrivateStorageTests/testFreshArchiveAndExactReuseKeepOnePrivateVerifiedFile",
+      "NativeMigrationPrivateStorageTests/testCaptureAndUnlistedDescendantAreRefusedAsEitherOutputParent",
+      "NativeMigrationPrivateStorageTests/testPartialOrWritableExistingArchiveIsRetainedAndNeverOverwritten",
+      "NativeMigrationPrivateStorageTests/testReplacedOutputOrExistingJournalScopeRefusesBeforeMaterialization",
+      "NativeMigrationProducerLifetimeTests/testBusyRefusalKeepsTheRegisteredOperationAndReleasesItsSlotAtTerminal",
+      "NativeMigrationProducerLifetimeTests/testExternalInvalidationCancelsAndWaitsForTheLateOuterDestinationResult",
+      "NativeMigrationProducerLifetimeTests/testNativeCloseFailureStillJoinsTheOuterResultAndRetriesTheSameOwnedGrant",
+      "NativeMigrationProducerLifetimeTests/testSourceBindingRefusalClosesTheOriginalGrantWithoutJoiningItsAwaitingProducer"
+    ],
+    "exactExcluded": [
+      "NativeCaptureDescriptorTests/testDescriptorRequiresExactCallerIdentityAndUnambiguousCapturedOnlyContract",
+      "NativeCaptureDescriptorTests/testPrivateBundleReadVerifiesAllBytesWithoutPromotingSourceOrDestinationAuthority",
+      "NativeCaptureDescriptorTests/testChangedManifestSourceBytesCountsAndFlagsAreRefused",
+      "NativeCaptureDescriptorTests/testParentEscapeSymlinksAndNonPrivatePermissionsAreRefused",
+      "NativeCaptureDescriptorTests/testOriginalNativeCapturesReadThroughPrivateDescriptorAndKeepTheirSemanticBlockers"
+    ],
+    "uniqueDeclarations": 25,
+    "allSelectionsMatchActualDeclarations": true,
+    "skipsAreFailure": true,
+    "oldEventsReused": 0,
+    "oldProductsReused": 0,
+    "lifetimeOrderingAddendum": {
+      "gitBlobSHA": "0616404dfddc6b6a1bb097f28fda777e5bdc001a",
+      "bytes": 2984,
+      "sha256": "1e808aa2507f3a9e0b8e49d091d398fcfd53f10768309c4357db0da8caf36ba1"
+    }
+  },
+  "fixtureScope": {
+    "originalInputPins": [
+      {
+        "role": "retained-v1-archive",
+        "path": "/var/lib/pinkha-c-native-preservation-20261126/linux-resume-attempt1/private-work/original-source.pinkha-heart-source",
+        "bytes": 1634696,
+        "sha256": "5d72e36849884da3da3fe9ddde0a01f49a03cde3b417f49456e3558bea8db463",
+        "environment": "PINKHA_CAPTURE_PRODUCER_RETAINED_V1_ARCHIVE"
+      },
+      {
+        "role": "retained-accepted-plan",
+        "path": "/var/lib/pinkha-c-native-preservation-20261126/linux-resume-attempt1/private-work/source-preservation-plan.json",
+        "bytes": 1823803,
+        "sha256": "4a61914d5dbd3ccb4874f81444e4d0770c9e7e2dfe4259b8b93f15796accb930",
+        "environment": "PINKHA_CAPTURE_PRODUCER_RETAINED_V1_PLAN"
+      }
+    ],
+    "totalBytes": 3458499,
+    "joins": [
+      {
+        "role": "retained-v1-archive",
+        "exact": true
+      },
+      {
+        "role": "retained-accepted-plan",
+        "exact": true
+      }
+    ],
+    "proofAndOriginalResultPinsAgree": true,
+    "testSourceRead": true,
+    "futureRequirement": "Fresh stable NOATIME/NOFOLLOW original input admission, owned immutable input copies, environment bound only to those copies, final original/copy rechecks; missing input skip fails selection.",
+    "noPrivatePayloadReadByReviewer": true,
+    "noLooseOriginalMemberReadOrCopyByReviewer": true,
+    "noOriginalOperationsOrTestsExecuted": true,
+    "syntheticBoundary": "Original recovered descriptor bytes are declared as captured members only inside a clearly synthetic derivative. It is not an actual App capture, native migration, completed checkpoint or authority proof.",
+    "metadataQualification": "Reviewed immutable public proof bytes and path/size/hash joins. No independent fresh physical-input metadata observation or private-input read is claimed."
+  },
+  "resources": {
+    "status": "UNRELEASED_REQUIRES_CONTROLLER_AND_PEER",
+    "rootAdmissionBytes": 2181038080,
+    "developmentAdmissionBytes": 973078528,
+    "minimumAvailableMemoryBytes": 3221225472,
+    "ownedOutputCapBytes": 402653184,
+    "mainSeconds": 900,
+    "finalSeconds": 120,
+    "outerSeconds": 1080,
+    "policy": "Keep the newer component donor floors/caps unchanged. A different root policy is not justified merely by placing outputs in DEV.",
+    "isolation": "Fresh owned DEV package, output, scratch/cache/config/security/TMP; original C3 Crypto remains read-only. No E97/Swift23 cache mutation, native runtime, account opening or Native159/Nav3 Products.",
+    "workingSetLimitation": "The complete source graph is finite; successful compiler working-set fit within the unchanged cap has not been observed.",
+    "independentExactPolicyArithmetic": {
+      "ROOT": true,
+      "DEV": true,
+      "owned384": true,
+      "mem3": true,
+      "deadlines": [
+        900,
+        120,
+        1080
+      ]
+    },
+    "coreDumpLimitBytes": 0,
+    "cleanupAbort": "Preserve the synthetic fixture, process failure and whole-cohort FAIL. Do not infer task drain, cleanup completion, or absent method passes.",
+    "decision": "UNCHANGED_PROPOSAL_ONLY; no new lower ROOT guard or successful compiler fit is justified or admitted."
+  },
+  "limitations": [
+    "No current-source installation, compiler/typecheck, runtime, native, account, fixture-payload, or cache action by this review.",
+    "The 110 inherited rows were compared as complete JSON declarations. Their historical physical bodies were not re-read in this peer; later physical source admission remains mandatory.",
+    "The declared ff577 intake proof covers seventeen specified whole files, not the complete current-App graph; the known different PropertyStore remains outside this graph's acceptance.",
+    "The two legacy compatibility test successors are outside this isolated selection, and their methods are neither run nor credited.",
+    "App use still needs actual source owner, same-owner destination operation, stable private namespace through full outer drain, actual completion persistence and qualified backend. Existing producer returns two locators; a fourteen-property follow-on is separate.",
+    "Direct-capture/C20 does not qualify unsupported formats/layouts, active Type behavior, full Files/cloud-quota behavior, destination Writer authority, whole native history semantics, or an actual App capture/migration."
+  ],
+  "findings": []
+}

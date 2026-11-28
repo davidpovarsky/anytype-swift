@@ -289,10 +289,11 @@ final class RecoveredCompiledDefinitionTests: XCTestCase, @unchecked Sendable {
         for member in f.recovered.verifiedMembers {
             XCTAssertEqual(try restored.recoveredMemberData(member), f.evidence.members[member.path], member.path)
         }
-        XCTAssertEqual(restored.recoveredDefinitions.originalProducerBytes, f.evidence.producer)
-        XCTAssertEqual(try decode(restored.recoveredDefinitions.originalProducerBytes)["status"], .string("FAIL"))
+        let restoredRecovery = try XCTUnwrap(restored.recoveredDefinitions)
+        XCTAssertEqual(restoredRecovery.originalProducerBytes, f.evidence.producer)
+        XCTAssertEqual(try decode(restoredRecovery.originalProducerBytes)["status"], .string("FAIL"))
         XCTAssertTrue(restored.bundle.bundledDefinitions.isEmpty)
-        XCTAssertEqual(restored.recoveredDefinitions.definitions.count, 7)
+        XCTAssertEqual(restoredRecovery.definitions.count, 7)
         XCTAssertEqual(f.archive.sha256, AnyContentDigest.sha256(f.archive.bytes))
     }
 

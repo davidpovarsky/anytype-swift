@@ -1,0 +1,44 @@
+{
+  "schema": "pinkha-e-producer-lifetime-return-witness-source-successor-v1",
+  "status": "SOURCE_ONLY_NOT_PARSED_NOT_COMPILED_NOT_RUN",
+  "predecessor": {
+    "blob": "451dbcdb6f6071071971b40c734498c027c2992c",
+    "bytes": 32021,
+    "sha256": "d7e2ee2138793c442d37a57fc7e1b4af8d834484f71a7240c468b35971e42781"
+  },
+  "successor": {
+    "bytes": 32886,
+    "sha256": "1281c6e7fe7718ee0225af0a42bf3f3cb9f30f36adf2f7eaccf02d6004709732",
+    "gitBlob": "30480edf10256c5bd367da92ce49db07a2216cc9"
+  },
+  "patch": {
+    "bytes": 2731,
+    "sha256": "9b851044acb0cc5806c748bc22d617d53b0dbd1fafa109ecd9cc2003e626687a",
+    "gitBlob": "7636185ab02233f6518056d98409418e621d429a"
+  },
+  "reason": "A single pre-release finished snapshot could miss an early invalidation return racing that observation. Retain the actual invalidation success/error return event and require its order after the late outer result marker.",
+  "changes": [
+    "Method2 records actual invalidation successful return and checks outer.returning precedes it.",
+    "Method3 records actual invalidation error return, preserves that same error, rejects unexpected success and checks the error return follows outer.returning."
+  ],
+  "unchanged": {
+    "methods": 4,
+    "methods1And4": true,
+    "allFixtureAndTaskGateCleanupHelpers": true,
+    "production": true,
+    "resourceAndCleanupWindows": true
+  },
+  "checks": {
+    "fullForward": true,
+    "fullReverse": true,
+    "exactMethodSet": true
+  },
+  "invocations": {
+    "parser": 0,
+    "compiler": 0,
+    "test": 0,
+    "native": 0,
+    "Oracle": 0
+  },
+  "priorReviews": "C23ab42 and Ndde12 cover preserved451dbc. This four-splice return-witness successor requires only the narrow observation delta review before adoption."
+}

@@ -20,6 +20,7 @@ public struct AnyNativeImportedCatalogEntry: Sendable {
     public let role: String
     public let nativeTypeText: String
     public let sourceUniqueKey: String
+    public let definitionEvidenceKind: AnyHeartNativeDefinitionEvidence.Kind
     public let archiveURI: String
     /// nil means this source head has no captured object snapshot. Its exact
     /// retained row can still be inspected without inventing an empty object.
@@ -64,13 +65,11 @@ public struct AnyNativeImportedCatalogDirectory: Sendable {
                   key == AnyHeartNativeSourcePreservation.datasetKey else { continue }
             let mapping = mappings[index]
             guard let values = raw.object,
-                  Set(values.keys) == AnyNativeImportedCatalogChecks.ordinaryFields,
-                  AnyNativeImportedCatalogChecks.stringFields.allSatisfy({ values[$0]?.string != nil }),
+                  let definitionKind = AnyNativeImportedCatalogChecks.definitionKind(values),
                   mapping.recordIDs.count == 1, mapping.signedChangeIDs.count == 1, mapping.fileID == nil,
                   AnyNativeImportedCatalogChecks.same(mapping.objectID, object),
                   values["sourceHeadID"]?.string.map({ AnyNativeImportedCatalogChecks.same($0, item.sourceObjectID) }) == true,
                   values["sourceCaptureManifestSHA256"] == .string(plan.source.captureManifestSHA256),
-                  values["sourceRecoveryManifestSHA256"]?.string.map(AnyDestinationPlanChecks.digest) == true,
                   let captured = values["snapshotPresent"]?.bool,
                   case .immutableRecord(_, let originalOwner, _, _) = item.operation else {
                 throw AnyNativeImportedCatalogError.invalidOriginalPlan
@@ -90,7 +89,8 @@ public struct AnyNativeImportedCatalogDirectory: Sendable {
             let entry = AnyNativeImportedCatalogEntry(sourceObjectID: item.sourceObjectID, objectID: object,
                 ownerTypeID: owner, dataset: dataset, recordID: mapping.recordIDs[0],
                 role: values["sourceRole"]!.string!, nativeTypeText: values["sourceNativeType"]!.string!,
-                sourceUniqueKey: values["sourceUniqueKey"]!.string!, archiveURI: values["archiveURI"]!.string!,
+                sourceUniqueKey: values["sourceUniqueKey"]!.string!, definitionEvidenceKind: definitionKind,
+                archiveURI: values["archiveURI"]!.string!,
                 evidence: evidence, originalTreeJSON: tree, sourceKey: item.sourceKey, values: values, mapping: mapping)
             guard catalog.updateValue(entry, forKey: Data(item.sourceObjectID.utf8)) == nil else {
                 throw AnyNativeImportedCatalogError.invalidOriginalPlan
@@ -152,7 +152,7 @@ public struct AnyNativeImportedCatalogStore: Sendable {
             authorize: { try await lease.validate() })
         let schema = try await reader.schema(ownerTypeID: entry.ownerTypeID, dataset: entry.dataset,
             authorize: { try await lease.validate() })
-        try AnyNativeImportedCatalogChecks.schema(schema)
+        try AnyNativeImportedCatalogChecks.schema(schema, definitionEvidenceKind: entry.definitionEvidenceKind)
         let intent = try AnyPreparedImmutableRecordIntent(binding: directory.binding, sourceKey: entry.sourceKey,
             objectID: entry.objectID, schema: schema, values: entry.values)
         guard intent.intentID == entry.mapping.intentID else { throw AnyNativeImportedCatalogError.changedSource(sourceObjectID) }
@@ -265,6 +265,26 @@ enum AnyNativeImportedCatalogChecks {
         "sourceTreeJSON", "sourceSnapshotBase64", "sourceViewJSON", "sourceSnapshotSHA256",
         "sourceViewSHA256", "sourceCaptureManifestSHA256", "sourceRecoveryManifestSHA256", "archiveURI"]
     static let ordinaryFields = stringFields.union(["snapshotPresent"])
+    static let capturedStringFields = stringFields.subtracting(["sourceRecoveryManifestSHA256"])
+        .union(["sourceDefinitionEvidence"])
+    static let capturedOrdinaryFields = capturedStringFields.union(["snapshotPresent"])
+
+    /// Closed, disjoint catalog versions. A direct capture has no recovery SHA,
+    /// including no empty/null placeholder or caller-created recovery receipt.
+    static func definitionKind(_ values: [String: AnyJSON]) -> AnyHeartNativeDefinitionEvidence.Kind? {
+        if Set(values.keys) == ordinaryFields,
+           stringFields.allSatisfy({ values[$0]?.string != nil }),
+           values["sourceRecoveryManifestSHA256"]?.string.map(AnyDestinationPlanChecks.digest) == true {
+            return .recoveredOriginal
+        }
+        if Set(values.keys) == capturedOrdinaryFields,
+           capturedStringFields.allSatisfy({ values[$0]?.string != nil }),
+           values["sourceDefinitionEvidence"] == .string(AnyHeartNativeDefinitionEvidence.Kind.capturedComplete.rawValue) {
+            return .capturedComplete
+        }
+        return nil
+    }
+
     static func same(_ a: String, _ b: String) -> Bool { a.utf8.elementsEqual(b.utf8) }
 
     static func evidence(_ values: [String: AnyJSON], source: AnyDestinationSourceBinding,
@@ -300,7 +320,10 @@ enum AnyNativeImportedCatalogChecks {
         }
     }
 
-    static func schema(_ schema: AnyPreparedImmutableRecordSchema) throws {
+    static func schema(_ schema: AnyPreparedImmutableRecordSchema,
+                       definitionEvidenceKind: AnyHeartNativeDefinitionEvidence.Kind = .recoveredOriginal) throws {
+        let stringFields = definitionEvidenceKind == .recoveredOriginal ? Self.stringFields : capturedStringFields
+        let ordinaryFields = definitionEvidenceKind == .recoveredOriginal ? Self.ordinaryFields : capturedOrdinaryFields
         guard let fields = schema.declaration["properties"]?.object,
               Set(fields.keys) == ordinaryFields.union(["importedBy", "importedAt"]),
               let required = schema.declaration["required"]?.array, required.count == ordinaryFields.count,

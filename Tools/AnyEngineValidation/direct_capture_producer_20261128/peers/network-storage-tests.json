@@ -1,0 +1,76 @@
+{
+  "protocol": "pinkha-private-migration-storage-four-control-source-peer-v1",
+  "status": "SOURCE_REVIEW_CLEAR_NOT_PARSED_COMPILED_OR_RUN",
+  "tests": {
+    "gitBlob": "f3fb604a7a4eef2067e694114dc7203fdc1ee19a",
+    "bytes": 14238,
+    "sha256": "3770f8a8029da34c096495157655fd00ba69c0b209fe769e17b5f31c61c57eb4",
+    "wholeReadback": true
+  },
+  "targetStorage": {
+    "gitBlob": "854de837370b8e280ab109da5a99276db75426bf",
+    "bytes": 18809,
+    "sha256": "5822ead21af2235459f73670ad37f92fcfe2f1fe4f619a04f11a2cb90edd7dfe",
+    "wholeReadback": true
+  },
+  "storageImplementationPeer": "b6db9cd4b4c0d0d833e26f6909693f6ff2f3c078",
+  "focusedDependencies": {
+    "bundle": {
+      "gitBlob": "cb510177ce69cc1cc5a50475d5c1eddbb91bf6ec",
+      "bytes": 23124,
+      "sha256": "9f7aa90550b3ab54cd86928a5c254b6f4af13762e14ce80fb62199f444879977",
+      "wholeReadback": true
+    },
+    "directArchive": {
+      "gitBlob": "9ae2c11b553016cd2559787fa5b796989263b4c2",
+      "bytes": 25677,
+      "sha256": "7ae154b210a0aad7f7f9c06a5cfc9b69adcaeb02f4b87f7952e4bf5a19f062b9",
+      "wholeReadback": true
+    },
+    "capturedDefinitionEvidence": {
+      "gitBlob": "e6785a066c68143eca97fc199851aeac7da6be94",
+      "bytes": 2251,
+      "sha256": "9f53864a7bf97627789e7cb2702a76e280bfc05859a2b8ec5c5130d9075881e3",
+      "wholeReadback": true
+    },
+    "definitionCatalog": {
+      "gitBlob": "5977b6d5ed7ad32bb66aea734e7598f172d800ce",
+      "bytes": 23399,
+      "sha256": "437131d2f7095af0a450e7c695aa9c9bed13ea290f576d49870c5224b60a3965",
+      "wholeReadback": true
+    }
+  },
+  "newMethods": [
+    {
+      "name": "testFreshArchiveAndExactReuseKeepOnePrivateVerifiedFile",
+      "sourceControls": "Fresh exact archive and subsequent reuse preserve inode, 0400/private-owner/nlink1 and bytes; one output entry; prospective normal journal root/scope can be admitted without claiming journal execution."
+    },
+    {
+      "name": "testCaptureAndUnlistedDescendantAreRefusedAsEitherOutputParent",
+      "sourceControls": "Capture root and an unlisted private descendant are refused as journal or payload parents; an explicit symlink alias is refused; sentinel bytes and unused output directories remain unchanged."
+    },
+    {
+      "name": "testPartialOrWritableExistingArchiveIsRetainedAndNeverOverwritten",
+      "sourceControls": "A short 0400 file and exact 0600 bytes are refused, with original bytes/inode/mode/name retained."
+    },
+    {
+      "name": "testReplacedOutputOrExistingJournalScopeRefusesBeforeMaterialization",
+      "sourceControls": "Replacing the admitted payload directory or existing exact journal scope causes validate/materialize refusal before archive output; retained old directory stays empty."
+    }
+  ],
+  "fixtureJoin": [
+    "Each fixture uses a new UUID private synthetic root, private capture/journal/payload directories and only newly created test files; cleanup targets that root.",
+    "The empty tree/object/file manifest and original receipt shape match Bundle cb510 validation; source rows remain 8192 opaque bytes with exact declared count and hash.",
+    "The current direct Archive constructor and error cases are real API symbols from 9ae2. The archive includes the manifest and the 8192-byte row member, exceeding the 4096-byte native-file threshold without creating native authority.",
+    "CapturedComplete accepts an explicitly present null BundledDefinitions field with exact empty used/captured arrays; original DefinitionCatalog accepts empty snapshots/compiled definitions and forms empty role dictionaries.",
+    "The fixture computes journal root/scope with the same account/Space/store/plan material and passes planBinding to current storage."
+  ],
+  "limits": [
+    "Four top-level methods; internal loops are not separately claimed XCTest cases.",
+    "No parser/compiler/test execution or filesystem fixture was run for this peer.",
+    "No actual account, original capture, migration executor or existing private journal is opened by these proposed controls.",
+    "No bind-mount creation, injected fsync failure, crash durability, arbitrary blocking-syscall cancellation or native authority is qualified.",
+    "The surrounding producer lifetime and full component source graph/resource admission are separately owned reviews."
+  ],
+  "findings": []
+}

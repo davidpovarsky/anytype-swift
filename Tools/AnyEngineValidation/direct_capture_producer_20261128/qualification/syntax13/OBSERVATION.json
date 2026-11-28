@@ -1,0 +1,175 @@
+{
+  "schema": "pinkha-root-c13-actual-syntax-observation-v1",
+  "status": "PASS_SYNTAX_PARSE_ONLY",
+  "host": {
+    "provider": "Oracle via SentinelX",
+    "hostID": "host_299cf75f6b338ecd",
+    "jobID": "8338ceb88ecd4f8db5868ff8019add77",
+    "returncode": 0,
+    "toolDurationSeconds": 3.97,
+    "startedAtUTC": "2026-11-28T11:02:03.908170+00:00",
+    "endedAtUTC": "2026-11-28T11:02:07.811817+00:00",
+    "controllerSeconds": 3.903633
+  },
+  "controller": {
+    "gitBlob": "39554d2fac6aa6c87f813c3fd65b11f69640f670",
+    "bytes": 424529,
+    "sha256": "b085be159031418a566c412eec2be90bd09ac2c727c183de6e2e8c90220be0d8",
+    "wholeGitReadback": true,
+    "sourceDonor": "d8940f9a36bf11a1819e1cb4fbf72d301b565f74",
+    "delta": "Exactly two lines: whole source input array; count/sum assertion. All other230 lines and lifecycle/limits/toolchain admission unchanged.",
+    "NPeer": {
+      "gitBlob": "c2785c5b771acbbe0711f4c721edaa844e4db849",
+      "bytes": 7717,
+      "sha256": "31ace8e187a768a68345410ede58920c6e2c9621b36b2fd416c41c57396f847e"
+    }
+  },
+  "rawStdout": {
+    "gitBlob": "5f7b3a6950b7acdfc1814e364e39b15823bc2e1b",
+    "bytes": 14252,
+    "sha256": "bea5de061ca5f0537986fe354f9088870715ee288c51b73405d3a54bf6fba618",
+    "verbatimReturnedString": true
+  },
+  "cohort": {
+    "canonicalManifest": "ff17ae05be81a9ccaf92fd17d708a85e60e650d0",
+    "sources": [
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartMigrationPrivateStorage.swift",
+        "bytes": 18809,
+        "sha256": "5822ead21af2235459f73670ad37f92fcfe2f1fe4f619a04f11a2cb90edd7dfe",
+        "gitBlob": "854de837370b8e280ab109da5a99276db75426bf"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+        "bytes": 17059,
+        "sha256": "3d69a030340e8718bd082726e69abebb32cc8428cd9201c1a00afa7803055e01",
+        "gitBlob": "19892c31e9c027395f0e89fcc59edefcabe9f4ab"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourcePreservation.swift",
+        "bytes": 19633,
+        "sha256": "c9560ed1180340391944b01b66386b9bc56d7f9b4e559aaf0229293f9bc8e175",
+        "gitBlob": "6f59b8fb49546d9f2cc42971a73863c0756b8e8e"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedCatalog.swift",
+        "bytes": 20932,
+        "sha256": "4adc898366a011542266731568b32014189641d3250a8cf778ee25d1ecfa8291",
+        "gitBlob": "d45211748deacc9fa3d59215c8e15e74a72dd95a"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextOwner.swift",
+        "bytes": 36356,
+        "sha256": "be03fc564171c720a91bd79d060d6edd9798da49cb7a19f88f57ade79e31acec",
+        "gitBlob": "b041309e13291cb41c9cec48d32865bb66af5553"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedContextReference.swift",
+        "bytes": 12903,
+        "sha256": "5594056fd2e8a5e08a02bd670f0f534187eab0ca7722c9c6cbedcf474bc929cd",
+        "gitBlob": "dc6e21e129a02cf75ff6b1bd0598dedaac1d9267"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeSourcePreservationTests.swift",
+        "bytes": 28485,
+        "sha256": "50905e9048d8a24cbfc70197db527eebf213f82cbadb64a289c97c212bdf7934",
+        "gitBlob": "4c2f66a5dd6bb0026c191c9af658589e9c0997ef"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeDirectCapturePreservationTests.swift",
+        "bytes": 31708,
+        "sha256": "7c6f5bc27d287a725a604f653eafc104a3bcd6c61e2452cad7704d3f6d031712",
+        "gitBlob": "a52f10dfc99e00cb3df1a4bb3329862caf7ec99b"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeMigrationPrivateStorageTests.swift",
+        "bytes": 14238,
+        "sha256": "3770f8a8029da34c096495157655fd00ba69c0b209fe769e17b5f31c61c57eb4",
+        "gitBlob": "f3fb604a7a4eef2067e694114dc7203fdc1ee19a"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeMigrationProducerLifetimeTests.swift",
+        "bytes": 32886,
+        "sha256": "1281c6e7fe7718ee0225af0a42bf3f3cb9f30f36adf2f7eaccf02d6004709732",
+        "gitBlob": "30480edf10256c5bd367da92ce49db07a2216cc9"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/RecoveredCompiledDefinitionTests.swift",
+        "bytes": 36659,
+        "sha256": "a521190e904d3b32993ed1754e2628be7173471a73a6f69a56c818c9a7a0fadc",
+        "gitBlob": "563bed95bdd822165d5a2479ee9eb948579b21e6"
+      },
+      {
+        "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionEvidence.swift",
+        "bytes": 2251,
+        "sha256": "9f53864a7bf97627789e7cb2702a76e280bfc05859a2b8ec5c5130d9075881e3",
+        "gitBlob": "e6785a066c68143eca97fc199851aeac7da6be94"
+      },
+      {
+        "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePreservationArchive.swift",
+        "bytes": 25677,
+        "sha256": "7ae154b210a0aad7f7f9c06a5cfc9b69adcaeb02f4b87f7952e4bf5a19f062b9",
+        "gitBlob": "9ae2c11b553016cd2559787fa5b796989263b4c2"
+      }
+    ],
+    "count": 13,
+    "bytes": 297596,
+    "productionFiles": 8,
+    "testFiles": 5,
+    "largestInputBytes": 36659,
+    "overlapWithPreviouslyParsedFive": 0
+  },
+  "actual": {
+    "normalExitedGroups": 13,
+    "positiveGroupAbsence": 13,
+    "diagnosticBytes": 0,
+    "signals": 0,
+    "forcedCleanup": 0,
+    "cleanupErrors": 0,
+    "allSealedInputsUnchanged": true,
+    "frontendUnchanged": true,
+    "memoryAvailableBefore": 4251131904
+  },
+  "scope": {
+    "argvMode": "swift-frontend -parse -swift-version 5",
+    "phase": "syntax only",
+    "typecheck": false,
+    "importResolution": false,
+    "moduleOrObjectEmission": false,
+    "linking": false,
+    "selectedComponentMethodsExecuted": 0,
+    "nativeCalls": 0,
+    "wholeCurrentAppClaim": false,
+    "AppleConditionalOrABIClaim": false,
+    "fullFilesystemWriteAudit": false,
+    "languageModeLimit": "This syntax observation is Swift5 mode; the isolated C20 package specifies Swift6 semantic compilation and remains unqualified.",
+    "retainedEvidence": "Original five-file fce9/334e result remains independent; exact7e324 filename reporting correction is separately retained in f504/ff17.",
+    "unchangedAcceptance": "C20 ROOT/DEV/memory and Native97/Swift23/native64 resource/release gates remain unchanged. Actual App source/destination coexistence, private namespace ownership, checkpoint persistence, Ordinary14 third locator and native cold reopen remain separate."
+  },
+  "limits": {
+    "SwiftUIOrAppAcceptance": false,
+    "allOtherLifecycleCodeIsNewAndNotQualifiedByThatDonor": true,
+    "childAddressSpaceBytes": 1073741824,
+    "childCPUSeconds": 10,
+    "childRegularFileSizeLimit": 0,
+    "childWallSeconds": 12,
+    "combinedRetainedDiagnosticBytes": 65536,
+    "finalWallSecondsFromStart": 45,
+    "frozenComponentOrNativeControllersRun": 0,
+    "globalFilesystemWriteAudit": false,
+    "groupCensusFunctionOnlyReused": true,
+    "linking": false,
+    "mainWallSeconds": 20,
+    "nativeCalls": 0,
+    "noConditionalBranchSemanticClaim": true,
+    "noProjectOrCacheWritesRequested": true,
+    "objectOrModuleEmission": false,
+    "parentAnonymousInputFileSizeLimit": 131072,
+    "runtimeAcceptance": false,
+    "sourceInputDelivery": "anonymous sealed memfd",
+    "syntaxOnly": true,
+    "tests": 0,
+    "typeChecking": false,
+    "unchangedQualifiedGroupCensusGit": "e2155f395e5839ba0f8ed41e1057b9a228415f2c"
+  }
+}

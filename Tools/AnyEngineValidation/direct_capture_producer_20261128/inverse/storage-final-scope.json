@@ -1,0 +1,70 @@
+{
+  "status": "SOURCE_ONLY_NOT_PARSED_COMPILED_OR_RUN",
+  "superseded": {
+    "blob": "fe5e80725ccedd39d130434a968d9c9996484bb3",
+    "bytes": 16082,
+    "sha256": "db285053abc339faba55b42291cff7300ba939ff9f55e9190636b6501fb2dd65"
+  },
+  "storage": {
+    "blob": "854de837370b8e280ab109da5a99276db75426bf",
+    "bytes": 18809,
+    "sha256": "5822ead21af2235459f73670ad37f92fcfe2f1fe4f619a04f11a2cb90edd7dfe"
+  },
+  "changes": [
+    {
+      "before": "    private let capturedDirectories: Set<String>\n\n    init(captureParent: URL, captureDirectory: String, journalParent: URL, payloadParent: URL) throws {",
+      "after": "    private let capturedDirectories: Set<String>\n    private let journalScope: String\n    private let admittedJournalDirectories: [(URL, Int32)]\n\n    init(captureParent: URL, captureDirectory: String, journalParent: URL, payloadParent: URL,\n         planBinding: AnyPreparedMigrationPlanBinding) throws {"
+    },
+    {
+      "before": "        try Self.excludeCapture(payload, identities: directories)\n        try Self.directoryIdentity(sourceParent, url: captureParent)",
+      "after": "        try Self.excludeCapture(payload, identities: directories)\n        // EXACT unchanged Journal scope derivation. Existing root/scope\n        // directories can themselves be mount aliases even when parent is not.\n        let scope = AnyContentDigest.sha256(AnyPreparedMigrationPlanBinding.material([\n            planBinding.workspace.accountID, planBinding.workspace.spaceID,\n            planBinding.storeID, planBinding.planID\n        ]))\n        let journalChildren = try Self.openJournalDirectories(journal, parent: journalParent,\n            scope: scope, captured: directories)\n        opened.append(contentsOf: journalChildren.map { $0.1 })\n        try Self.directoryIdentity(sourceParent, url: captureParent)"
+    },
+    {
+      "before": "        capturedDirectories = directories\n        opened.removeAll()",
+      "after": "        capturedDirectories = directories\n        journalScope = scope; admittedJournalDirectories = journalChildren\n        opened.removeAll()"
+    },
+    {
+      "before": "    deinit {\n        _ = close(payloadFD);",
+      "after": "    deinit {\n        for (_, fd) in admittedJournalDirectories.reversed() { _ = close(fd) }\n        _ = close(payloadFD);"
+    },
+    {
+      "before": "        try Self.excludeCapture(payloadFD, identities: capturedDirectories)\n    }",
+      "after": "        try Self.excludeCapture(payloadFD, identities: capturedDirectories)\n        for (url, fd) in admittedJournalDirectories {\n            try Self.directoryIdentity(fd, url: url)\n        }\n        // Previously absent children remain prospective only under the stated\n        // stable namespace owner. Reopen/admit them once the Journal creates\n        // them; never infer their identity from the parent alone.\n        let current = try Self.openJournalDirectories(journalFD, parent: journalParent,\n            scope: journalScope, captured: capturedDirectories)\n        defer { for (_, fd) in current.reversed() { _ = close(fd) } }\n    }"
+    },
+    {
+      "before": "            let copied = dup(fd)",
+      "after": "            let copied = fcntl(fd, F_DUPFD_CLOEXEC, 0)"
+    },
+    {
+      "before": "        var fd = dup(start)",
+      "after": "        var fd = fcntl(start, F_DUPFD_CLOEXEC, 0)"
+    },
+    {
+      "before": "    private static func requireNamed(_ fd: Int32, parentFD: Int32, name: String) throws {",
+      "after": "    /// Opens only the two exact directories that the unchanged Journal will\n    /// use. No file is opened or created. An absent descendant is prospective;\n    /// any other failure, non-directory, alias or captured inode is refused.\n    private static func openJournalDirectories(_ parentFD: Int32, parent: URL,\n                                               scope: String, captured: Set<String>) throws -> [(URL, Int32)] {\n        var result: [(URL, Int32)] = [], transfer = false\n        defer { if !transfer { for (_, fd) in result.reversed() { _ = close(fd) } } }\n        var anchor = parentFD, url = parent\n        for name in [\"AnyDestinationMigrationV1\", scope] {\n            url = url.appendingPathComponent(name, isDirectory: true)\n            let fd = openat(anchor, name, O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC)\n            if fd < 0 {\n                guard errno == ENOENT else { throw AnyHeartNativeMigrationProducerError.privateStorage }\n                break\n            }\n            result.append((url, fd))\n            try directoryIdentity(fd, url: url)\n            try excludeCapture(fd, identities: captured)\n            anchor = fd\n        }\n        transfer = true\n        return result\n    }\n\n    private static func requireNamed(_ fd: Int32, parentFD: Int32, name: String) throws {"
+    }
+  ],
+  "producerBefore": {
+    "blob": "4c0820c9f2d3e921f22a4785368415d50ea52a65",
+    "sha256": "81755330a554fa36a170311c2db8be51fdc182563492d4582cdca46d7155a722"
+  },
+  "producerAfter": {
+    "blob": "19892c31e9c027395f0e89fcc59edefcabe9f4ab",
+    "bytes": 17059,
+    "sha256": "3d69a030340e8718bd082726e69abebb32cc8428cd9201c1a00afa7803055e01"
+  },
+  "producerSingleBindingEdit": {
+    "before": "            journalParent: request.journalParent, payloadParent: request.payloadParent)",
+    "after": "            journalParent: request.journalParent, payloadParent: request.payloadParent,\n            planBinding: plan.binding)"
+  },
+  "journalProvenance": {
+    "blob": "d95816cab15a4134c3d073fbca72f11c8bf6fdf1",
+    "sha256": "f0846218cf0ceb933271ff87985eca590e11edaf8fb429a3ed2381cc7b70d6db"
+  },
+  "qualifications": [
+    "Journal source remains unchanged; the exact account/Space/store/plan material and AnyDestinationMigrationV1 scope formula match full f084 bytes.",
+    "Existing root and binding directory are admitted and retained; absent descendants prospective only under stable private App namespace ownership.",
+    "Temporary duplicate FDs use F_DUPFD_CLOEXEC.",
+    "Storage FDs span actual produce storage I/O, while the real App namespace owner must hold names through the entire outer operation drain."
+  ]
+}

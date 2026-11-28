@@ -1,0 +1,52 @@
+{
+  "schema": "pinkha-e-producer-lifetime-four-method-selection-v1",
+  "status": "SOURCE_ONLY_NOT_PARSED_NOT_COMPILED_NOT_RUN",
+  "repository": "davidpovarsky/anytype-swift",
+  "source": {
+    "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeMigrationProducerLifetimeTests.swift",
+    "gitBlob": "30480edf10256c5bd367da92ce49db07a2216cc9",
+    "bytes": 32886,
+    "sha256": "1281c6e7fe7718ee0225af0a42bf3f3cb9f30f36adf2f7eaccf02d6004709732"
+  },
+  "target": "CaptureProducerContractTests",
+  "isolatedPath": "Tests/CaptureProducerContractTests/NativeMigrationProducerLifetimeTests.swift",
+  "className": "NativeMigrationProducerLifetimeTests",
+  "selectedMethods": [
+    "NativeMigrationProducerLifetimeTests/testBusyRefusalKeepsTheRegisteredOperationAndReleasesItsSlotAtTerminal",
+    "NativeMigrationProducerLifetimeTests/testExternalInvalidationCancelsAndWaitsForTheLateOuterDestinationResult",
+    "NativeMigrationProducerLifetimeTests/testNativeCloseFailureStillJoinsTheOuterResultAndRetriesTheSameOwnedGrant",
+    "NativeMigrationProducerLifetimeTests/testSourceBindingRefusalClosesTheOriginalGrantWithoutJoiningItsAwaitingProducer"
+  ],
+  "methodCount": 4,
+  "expectedUniqueStartsIfExecuted": 4,
+  "expectedUniquePassesIfExecuted": 4,
+  "skipIsFailure": true,
+  "actualStarts": 0,
+  "actualPasses": 0,
+  "wholeGraph": {
+    "gitBlob": "46476f8b9f48801029d327a84b1c322350aeb5d3",
+    "bytes": 134037,
+    "sha256": "748a0eb40a29a79198bbc396e7fb03061f7be1988a0259b670a76aeeeddb3597",
+    "wholeFiles": 131,
+    "productionFiles": 127,
+    "testFiles": 4,
+    "allSelectedNewMethods": 20,
+    "eFourAreExactSubset": true
+  },
+  "excluded": [
+    "All five original NativeCaptureDescriptorTests methods.",
+    "The four separate descriptor export methods, eight direct-preservation methods and four storage methods belong to C's other graph source rows and are not credited to this file.",
+    "All original migration/runtime/native methods and actual producer execute/produce."
+  ],
+  "requiredRunnerPolicy": {
+    "skipIsFailure": true,
+    "expectedUniqueStarts": 20,
+    "expectedUniquePasses": 20,
+    "expectedFailures": 0,
+    "coreDumpLimitBytes": 0,
+    "onCleanupAbort": "Preserve the synthetic fixture, process failure and whole-cohort FAIL. Do not infer task drain, cleanup completion, or absent method passes.",
+    "physicalSourceAdmissionRequired": true,
+    "sourceOnlyGraphDoesNotAuthorizeExecution": true
+  },
+  "scope": "Four generic registered-operation/source-owner lifecycle controls, not native migration or App lifecycle acceptance."
+}

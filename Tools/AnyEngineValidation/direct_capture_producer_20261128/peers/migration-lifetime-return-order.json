@@ -1,0 +1,36 @@
+{
+  "schema": "pinkha-c-lifetime-return-observation-successor-peer-v1",
+  "status": "CLEAR_SOURCE_ONLY_NOT_PARSED_NOT_COMPILED_NOT_RUN",
+  "before": {
+    "gitBlobSHA": "451dbcdb6f6071071971b40c734498c027c2992c",
+    "bytes": 32021,
+    "sha256": "d7e2ee2138793c442d37a57fc7e1b4af8d834484f71a7240c468b35971e42781"
+  },
+  "after": {
+    "blob": "30480edf10256c5bd367da92ce49db07a2216cc9",
+    "bytes": 32886,
+    "sha256": "1281c6e7fe7718ee0225af0a42bf3f3cb9f30f36adf2f7eaccf02d6004709732"
+  },
+  "patch": {
+    "blob": "7636185ab02233f6518056d98409418e621d429a",
+    "bytes": 2731,
+    "sha256": "9b851044acb0cc5806c748bc22d617d53b0dbd1fafa109ecd9cc2003e626687a"
+  },
+  "previousAPIAndFixturePeer": {
+    "blob": "23ab42a2fefc930b989f710b6e19ea12c6bfda17",
+    "bytes": 4715,
+    "sha256": "4d0ec8ec5465b4b71360cefa64ac4781b38f220c2a1c8d1176775361967a6d86"
+  },
+  "wholeFourHunkForwardAndInverseExact": true,
+  "findings": [
+    "Method two records the actual successful invalidation return and requires it after the outer returning marker.",
+    "Method three records the actual failure return, preserves that same error, rejects unexpected success and requires failure delivery after the outer returning marker.",
+    "These events close the race left by a single unfinished snapshot before gate release. The current API/fixture source joins remain exact.",
+    "All helper/fixture code and methods one/four remain unchanged; the selected method set remains four."
+  ],
+  "runtimePolicy": {
+    "coreDumpLimit": 0,
+    "abortMeans": "Whole cohort FAIL with retained fixture, never assumed join/cleanup or unobserved method success."
+  },
+  "noExecution": true
+}

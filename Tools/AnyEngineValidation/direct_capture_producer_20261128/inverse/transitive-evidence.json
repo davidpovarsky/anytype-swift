@@ -1,0 +1,144 @@
+{
+  "status": "SOURCE_ONLY_NOT_PARSED_NOT_COMPILED_NOT_RUN",
+  "scope": "Direct captured evidence transitive handling; current60ad owner retained except two typed restore/catalog dispatches",
+  "edits": {
+    "preservation": [
+      {
+        "before": "    public static let contract = \"pinkha-heart-native-source-preservation-v1\"",
+        "after": "    public static let contract = \"pinkha-heart-native-source-preservation-v1\"\n    public static let capturedContract = \"pinkha-heart-native-source-preservation-v2\""
+      },
+      {
+        "before": "    public let recoveredDefinitions: AnyHeartNativeRecoveredDefinitions",
+        "after": "    public let definitionEvidence: AnyHeartNativeDefinitionEvidence\n    public var recoveredDefinitions: AnyHeartNativeRecoveredDefinitions? { definitionEvidence.recoveredDefinitions }\n    public var preservationContract: String {\n        definitionEvidence.kind == .recoveredOriginal ? Self.contract : Self.capturedContract\n    }"
+      },
+      {
+        "before": "    public init(bundle: AnyHeartNativeSpaceBundle, recoveredDefinitions: AnyHeartNativeRecoveredDefinitions,\n                archive: AnyHeartNativePreservationArchive) throws {\n        let catalog = try AnyHeartNativeDefinitionCatalog(bundle: bundle, recoveredDefinitions: recoveredDefinitions)\n        guard archive.binding == (try .init(bundle: bundle, recovered: recoveredDefinitions)),",
+        "after": "    public init(bundle: AnyHeartNativeSpaceBundle, recoveredDefinitions: AnyHeartNativeRecoveredDefinitions,\n                archive: AnyHeartNativePreservationArchive) throws {\n        try self.init(bundle: bundle, definitionEvidence: .recoveredOriginal(recoveredDefinitions), archive: archive)\n    }\n\n    /// Only a complete directly captured descriptor census can use this route.\n    /// It does not construct or relax the historical recovery envelope.\n    public init(capturedBundle bundle: AnyHeartNativeSpaceBundle,\n                archive: AnyHeartNativePreservationArchive) throws {\n        try self.init(bundle: bundle, definitionEvidence: .capturedComplete, archive: archive)\n    }\n\n    public init(bundle: AnyHeartNativeSpaceBundle, definitionEvidence: AnyHeartNativeDefinitionEvidence,\n                archive: AnyHeartNativePreservationArchive) throws {\n        let catalog = try definitionEvidence.catalog(bundle: bundle)\n        let expectedArchive: AnyHeartNativePreservationArchive.Binding\n        switch definitionEvidence {\n        case .recoveredOriginal(let recovered): expectedArchive = try .init(bundle: bundle, recovered: recovered)\n        case .capturedComplete: expectedArchive = try .init(capturedBundle: bundle)\n        }\n        let recovery = definitionEvidence.recoveredDefinitions\n        let contract = definitionEvidence.kind == .recoveredOriginal ? Self.contract : Self.capturedContract\n        guard archive.binding == expectedArchive,"
+      },
+      {
+        "before": "              bundle.issues.allSatisfy({\n                  $0.code == \"compiled-definition-descriptors-not-captured\" && $0.field == \"BundledDefinitionsUsed\"\n              }) else",
+        "after": "              bundle.issues.allSatisfy({\n                  definitionEvidence.kind == .recoveredOriginal &&\n                  $0.code == \"compiled-definition-descriptors-not-captured\" && $0.field == \"BundledDefinitionsUsed\"\n              }) else"
+      },
+      {
+        "before": "        // Reconstruct every member from the actual file, including the original\n        // native witness and the separately qualified recovery evidence.",
+        "after": "        // Reconstruct every member from the actual file. The v1 route includes\n        // independently qualified recovery; the v2 route has capture members only."
+      },
+      {
+        "before": "              decoded.recoveredDefinitions.manifestBytes == recoveredDefinitions.manifestBytes else {",
+        "after": "              decoded.definitionEvidence.kind == definitionEvidence.kind,\n              decoded.recoveredDefinitions?.manifestBytes == recovery?.manifestBytes else {"
+      },
+      {
+        "before": "            Self.contract, bundle.manifestSHA256, recoveredDefinitions.manifestSHA256,",
+        "after": "            contract, bundle.manifestSHA256, recovery?.manifestSHA256 ?? definitionEvidence.kind.rawValue,"
+      },
+      {
+        "before": "        let ordinaryStrings = [\"sourceHeadID\", \"sourceRole\", \"sourceNativeType\", \"sourceUniqueKey\",\n            \"sourceTreeJSON\", \"sourceSnapshotBase64\", \"sourceViewJSON\", \"sourceSnapshotSHA256\",\n            \"sourceViewSHA256\", \"sourceCaptureManifestSHA256\", \"sourceRecoveryManifestSHA256\", \"archiveURI\"]",
+        "after": "        let definitionField = definitionEvidence.kind == .recoveredOriginal\n            ? \"sourceRecoveryManifestSHA256\" : \"sourceDefinitionEvidence\"\n        let definitionValue = recovery?.manifestSHA256 ?? definitionEvidence.kind.rawValue\n        let ordinaryStrings = [\"sourceHeadID\", \"sourceRole\", \"sourceNativeType\", \"sourceUniqueKey\",\n            \"sourceTreeJSON\", \"sourceSnapshotBase64\", \"sourceViewJSON\", \"sourceSnapshotSHA256\",\n            \"sourceViewSHA256\", \"sourceCaptureManifestSHA256\", definitionField, \"archiveURI\"]"
+      },
+      {
+        "before": "                meta: .literal(.object([\"preservationContract\": .string(Self.contract),\n                    \"sourceCaptureManifestSHA256\": .string(bundle.manifestSHA256),\n                    \"sourceRecoveryManifestSHA256\": .string(recoveredDefinitions.manifestSHA256)]))))),",
+        "after": "                meta: .literal(.object([\"preservationContract\": .string(contract),\n                    \"sourceCaptureManifestSHA256\": .string(bundle.manifestSHA256),\n                    definitionField: .string(definitionValue)]))))),"
+      },
+      {
+        "before": "                \"sourceRecoveryManifestSHA256\": .string(recoveredDefinitions.manifestSHA256),",
+        "after": "                definitionField: .string(definitionValue),"
+      },
+      {
+        "before": "            let recoveredManifestSHA256: String\n            let currentContentSHA256",
+        "after": "            let recoveredManifestSHA256: String?\n            let definitionEvidence: String?\n            let currentContentSHA256"
+      },
+      {
+        "before": "        let material = try encoder.encode(Material(contract: Self.contract,\n            sourceManifestSHA256: bundle.manifestSHA256, recoveredManifestSHA256: recoveredDefinitions.manifestSHA256,\n            currentContentSHA256: current.contentSHA256, archiveSHA256: archive.sha256,",
+        "after": "        let material = try encoder.encode(Material(contract: contract,\n            sourceManifestSHA256: bundle.manifestSHA256, recoveredManifestSHA256: recovery?.manifestSHA256,\n            definitionEvidence: definitionEvidence.kind == .capturedComplete ? definitionEvidence.kind.rawValue : nil,\n            currentContentSHA256: current.contentSHA256, archiveSHA256: archive.sha256,"
+      },
+      {
+        "before": "        self.bundle = bundle; self.recoveredDefinitions = recoveredDefinitions; currentContent = current",
+        "after": "        self.bundle = bundle; self.definitionEvidence = definitionEvidence; currentContent = current"
+      }
+    ],
+    "catalog": [
+      {
+        "before": "    public let sourceUniqueKey: String\n    public let archiveURI: String",
+        "after": "    public let sourceUniqueKey: String\n    public let definitionEvidenceKind: AnyHeartNativeDefinitionEvidence.Kind\n    public let archiveURI: String"
+      },
+      {
+        "before": "            guard let values = raw.object,\n                  Set(values.keys) == AnyNativeImportedCatalogChecks.ordinaryFields,\n                  AnyNativeImportedCatalogChecks.stringFields.allSatisfy({ values[$0]?.string != nil }),",
+        "after": "            guard let values = raw.object,\n                  let definitionKind = AnyNativeImportedCatalogChecks.definitionKind(values),"
+      },
+      {
+        "before": "                  values[\"sourceCaptureManifestSHA256\"] == .string(plan.source.captureManifestSHA256),\n                  values[\"sourceRecoveryManifestSHA256\"]?.string.map(AnyDestinationPlanChecks.digest) == true,",
+        "after": "                  values[\"sourceCaptureManifestSHA256\"] == .string(plan.source.captureManifestSHA256),"
+      },
+      {
+        "before": "                sourceUniqueKey: values[\"sourceUniqueKey\"]!.string!, archiveURI: values[\"archiveURI\"]!.string!,",
+        "after": "                sourceUniqueKey: values[\"sourceUniqueKey\"]!.string!, definitionEvidenceKind: definitionKind,\n                archiveURI: values[\"archiveURI\"]!.string!,"
+      },
+      {
+        "before": "        try AnyNativeImportedCatalogChecks.schema(schema)",
+        "after": "        try AnyNativeImportedCatalogChecks.schema(schema, definitionEvidenceKind: entry.definitionEvidenceKind)"
+      },
+      {
+        "before": "    static let ordinaryFields = stringFields.union([\"snapshotPresent\"])\n    static func same",
+        "after": "    static let ordinaryFields = stringFields.union([\"snapshotPresent\"])\n    static let capturedStringFields = stringFields.subtracting([\"sourceRecoveryManifestSHA256\"])\n        .union([\"sourceDefinitionEvidence\"])\n    static let capturedOrdinaryFields = capturedStringFields.union([\"snapshotPresent\"])\n\n    /// Closed, disjoint catalog versions. A direct capture has no recovery SHA,\n    /// including no empty/null placeholder or caller-created recovery receipt.\n    static func definitionKind(_ values: [String: AnyJSON]) -> AnyHeartNativeDefinitionEvidence.Kind? {\n        if Set(values.keys) == ordinaryFields,\n           stringFields.allSatisfy({ values[$0]?.string != nil }),\n           values[\"sourceRecoveryManifestSHA256\"]?.string.map(AnyDestinationPlanChecks.digest) == true {\n            return .recoveredOriginal\n        }\n        if Set(values.keys) == capturedOrdinaryFields,\n           capturedStringFields.allSatisfy({ values[$0]?.string != nil }),\n           values[\"sourceDefinitionEvidence\"] == .string(AnyHeartNativeDefinitionEvidence.Kind.capturedComplete.rawValue) {\n            return .capturedComplete\n        }\n        return nil\n    }\n\n    static func same"
+      },
+      {
+        "before": "    static func schema(_ schema: AnyPreparedImmutableRecordSchema) throws {\n        guard let fields",
+        "after": "    static func schema(_ schema: AnyPreparedImmutableRecordSchema,\n                       definitionEvidenceKind: AnyHeartNativeDefinitionEvidence.Kind = .recoveredOriginal) throws {\n        let stringFields = definitionEvidenceKind == .recoveredOriginal ? Self.stringFields : capturedStringFields\n        let ordinaryFields = definitionEvidenceKind == .recoveredOriginal ? Self.ordinaryFields : capturedOrdinaryFields\n        guard let fields"
+      }
+    ],
+    "reference": [
+      {
+        "before": "    public static let version = \"pinkha-native-imported-context-v1\"",
+        "after": "    public static let version = \"pinkha-native-imported-context-v1\"\n    public static let capturedVersion = \"pinkha-native-imported-context-v2\""
+      },
+      {
+        "before": "    public let recoveredManifestSHA256: String",
+        "after": "    public let recoveredManifestSHA256: String?\n    /// Absent in the unchanged v1 locator; exactly captured-complete in v2.\n    public let definitionEvidence: String?"
+      },
+      {
+        "before": "        contract = Self.version; destinationNetworkID = networkID",
+        "after": "        contract = preservation.definitionEvidence.kind == .recoveredOriginal ? Self.version : Self.capturedVersion\n        definitionEvidence = preservation.definitionEvidence.kind == .capturedComplete\n            ? AnyHeartNativeDefinitionEvidence.Kind.capturedComplete.rawValue : nil\n        destinationNetworkID = networkID"
+      },
+      {
+        "before": "    func expectedArchiveBinding() throws -> AnyHeartNativePreservationArchive.Binding {\n        try .init(expectedAccountID: sourceAccountID, expectedSpaceID: sourceSpaceID,\n            captureManifestSHA256: captureManifestSHA256, sourceWitnessSHA256: sourceWitnessSHA256,\n            recoveredManifestSHA256: recoveredManifestSHA256)\n    }",
+        "after": "    func expectedArchiveBinding() throws -> AnyHeartNativePreservationArchive.Binding {\n        if Data(contract.utf8) == Data(Self.version.utf8) {\n            guard definitionEvidence == nil, let recoveredManifestSHA256 else {\n                throw AnyNativeImportedContextError.invalidReference\n            }\n            return try .init(expectedAccountID: sourceAccountID, expectedSpaceID: sourceSpaceID,\n                captureManifestSHA256: captureManifestSHA256, sourceWitnessSHA256: sourceWitnessSHA256,\n                recoveredManifestSHA256: recoveredManifestSHA256)\n        }\n        guard Data(contract.utf8) == Data(Self.capturedVersion.utf8),\n              definitionEvidence == AnyHeartNativeDefinitionEvidence.Kind.capturedComplete.rawValue,\n              recoveredManifestSHA256 == nil else { throw AnyNativeImportedContextError.invalidReference }\n        return try .init(expectedAccountID: sourceAccountID, expectedSpaceID: sourceSpaceID,\n            capturedManifestSHA256: captureManifestSHA256, sourceWitnessSHA256: sourceWitnessSHA256)\n    }"
+      },
+      {
+        "before": "        guard Data(contract.utf8) == Data(Self.version.utf8),",
+        "after": "        guard [Self.version, Self.capturedVersion].contains(where: { Data($0.utf8) == Data(contract.utf8) }),"
+      },
+      {
+        "before": "        case sourceAccountID, sourceSpaceID, captureManifestSHA256, sourceWitnessSHA256, recoveredManifestSHA256",
+        "after": "        case sourceAccountID, sourceSpaceID, captureManifestSHA256, sourceWitnessSHA256, recoveredManifestSHA256\n        case definitionEvidence"
+      },
+      {
+        "before": "        guard Set(all.allKeys.map(\\.stringValue)) == Set(CodingKeys.allCases.map(\\.rawValue)) else {\n            throw AnyNativeImportedContextError.invalidReference\n        }\n        let c = try decoder.container(keyedBy: CodingKeys.self)\n        contract = try c.decode(String.self, forKey: .contract)",
+        "after": "        let c = try decoder.container(keyedBy: CodingKeys.self)\n        contract = try c.decode(String.self, forKey: .contract)\n        let expectedKeys: Set<String>\n        if Data(contract.utf8) == Data(Self.version.utf8) {\n            expectedKeys = Set(CodingKeys.allCases.map(\\.rawValue)).subtracting([\"definitionEvidence\"])\n        } else if Data(contract.utf8) == Data(Self.capturedVersion.utf8) {\n            expectedKeys = Set(CodingKeys.allCases.map(\\.rawValue)).subtracting([\"recoveredManifestSHA256\"])\n        } else { throw AnyNativeImportedContextError.invalidReference }\n        guard Set(all.allKeys.map(\\.stringValue)) == expectedKeys else {\n            throw AnyNativeImportedContextError.invalidReference\n        }"
+      },
+      {
+        "before": "        recoveredManifestSHA256 = try c.decode(String.self, forKey: .recoveredManifestSHA256)",
+        "after": "        if Data(contract.utf8) == Data(Self.version.utf8) {\n            recoveredManifestSHA256 = try c.decode(String.self, forKey: .recoveredManifestSHA256)\n            definitionEvidence = nil\n        } else {\n            recoveredManifestSHA256 = nil\n            definitionEvidence = try c.decode(String.self, forKey: .definitionEvidence)\n        }"
+      }
+    ],
+    "owner": [
+      {
+        "before": "            let preservation = try AnyHeartNativeSourcePreservation(bundle: restored.bundle,\n                recoveredDefinitions: restored.recoveredDefinitions, archive: reopened)",
+        "after": "            let preservation = try AnyHeartNativeSourcePreservation(bundle: restored.bundle,\n                definitionEvidence: restored.definitionEvidence, archive: reopened)"
+      },
+      {
+        "before": "            let catalog = try AnyHeartNativeDefinitionCatalog(bundle: restored.bundle,\n                recoveredDefinitions: restored.recoveredDefinitions)",
+        "after": "            let catalog = try restored.definitionEvidence.catalog(bundle: restored.bundle)"
+      }
+    ]
+  },
+  "unchanged": [
+    "C14 Executor37a",
+    "C14 Journalf084",
+    "C14 Plan878a",
+    "C14 Directoryf870",
+    "C14 Verifiere258",
+    "current60ad Content20451/5379",
+    "OrdinaryContext16143/9db1",
+    "RecoveredDefinitions13436/de4b"
+  ]
+}
