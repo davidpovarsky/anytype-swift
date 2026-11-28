@@ -1,0 +1,64 @@
+{
+  "schema": "bookmark-missing-two-docs-parent-inverse-plan/v1",
+  "status": "PLANNED_NOT_PUBLISHED",
+  "parent": "e01176b6a15bdb6a8ff7fedbca5c880634a773ef",
+  "parentTree": "fdaab65201112cc86a57d55d633cba9b2ef48335",
+  "retainedParentPrimaryTrees": [
+    {
+      "path": "",
+      "tree": "fdaab65201112cc86a57d55d633cba9b2ef48335",
+      "entries": 41,
+      "immutableTreeURL": "https://api.github.com/repos/davidpovarsky/anytype-swift/git/trees/fdaab65201112cc86a57d55d633cba9b2ef48335",
+      "localPrimaryReceipt": {
+        "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-publication/api/new-tree-0.json",
+        "bytes": 21195,
+        "sha256": "d13407abb229046ece29a211f45a5358e01a75d12af933dff58120e7723b66f5",
+        "gitBlob": "89cfaebf04a2b8b9ab5268229f47c475f4105cae"
+      },
+      "completeEntryMapAndCanonicalTreeBytesVerified": true
+    },
+    {
+      "path": "docs",
+      "tree": "0b0400f000338bafe32df7f79835f4e66a884f9d",
+      "entries": 14,
+      "immutableTreeURL": "https://api.github.com/repos/davidpovarsky/anytype-swift/git/trees/0b0400f000338bafe32df7f79835f4e66a884f9d",
+      "localPrimaryReceipt": {
+        "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-publication/api/new-tree-1.json",
+        "bytes": 8025,
+        "sha256": "c7b1c431ac56acf68ee11fb7fdd32f08725b8f98a2be75a56594cb6eb738b8fa",
+        "gitBlob": "f5a6cde5873df7ee3ac4188ce66163a95b197e1e"
+      },
+      "completeEntryMapAndCanonicalTreeBytesVerified": true
+    },
+    {
+      "path": "docs/validation",
+      "tree": "885cf74447da1a18982f03396a29e9a099b1fe96",
+      "entries": 687,
+      "immutableTreeURL": "https://api.github.com/repos/davidpovarsky/anytype-swift/git/trees/885cf74447da1a18982f03396a29e9a099b1fe96",
+      "localPrimaryReceipt": {
+        "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-publication/api/new-tree-2.json",
+        "bytes": 361085,
+        "sha256": "3786a86a74ce78affb5682bb96f9bb5693da647cdb4e09c29f64fbb81dfc9940",
+        "gitBlob": "91fc17e80df87f004c980e049746a3b1a6ab14e1"
+      },
+      "completeEntryMapAndCanonicalTreeBytesVerified": true
+    }
+  ],
+  "onlyPermittedNewSubtree": "docs/validation/20261127-wave2-bookmark6-missing-two-result",
+  "existingLeafAndModeEditsAllowed": 0,
+  "completeForwardPlan": [
+    "Verify fresh exact parent commit/tree and new owned ref absence; audit source/default workflows before mutation.",
+    "Add only packet manifest leaves under this absent prefix using base_tree_sha.",
+    "Read every affected tree and compare its complete child entry/mode/type/SHA map. Only docs at root, validation at docs and the new named child at validation may change.",
+    "Verify every new leaf mode100644 and full primary bytes/SHA256/Git blob after sole-parent commit and fresh-owned-ref creation."
+  ],
+  "completeInversePlan": [
+    "Remove only the new named evidence subtree from the complete candidate validation map; canonical Git serialization must restore exact original validation885cf74447da1a18982f03396a29e9a099b1fe96.",
+    "Substitute that original validation tree into the complete docs map; require exact original docs0b0400f000338bafe32df7f79835f4e66a884f9d.",
+    "Substitute that original docs tree into the complete root map; require exact original rootfdaab65201112cc86a57d55d633cba9b2ef48335.",
+    "All untouched subtree identities/modes equal parent, preserving their full contents. No source, private or runtime state is rewritten."
+  ],
+  "noGitMutationYet": true,
+  "noFinalRefUpdate": true,
+  "noRuntimeOperations": true
+}

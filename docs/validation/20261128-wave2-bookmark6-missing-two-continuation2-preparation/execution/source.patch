@@ -1,0 +1,103 @@
+--- original0e8/run_missing_two.py
++++ continuation2/run_missing_two.py
+@@ -35,7 +35,47 @@
+ ADMISSION_MARGIN = 32 * 1024**2
+ MEMORY_FLOOR = 512 * 1024**2
+ SECONDS = 300
+-EVIDENCE = ROOT / 'continuation1'
++EVIDENCE = ROOT / 'continuation2'
++PREVIOUS_EVIDENCE = ROOT / 'continuation1'
++PREVIOUS_CONTROLLER_SHA256 = '0e8fa19767222fef6f954bf4bfdb34e58a77986251e69cf461b29f7311f01627'
++PREVIOUS_CONTINUATION_PINS = {
++    "command.json": {
++        "bytes": 1649,
++        "sha256": "b870c5387a23a6d6fd34336513329cf6ea98897653c47727c07843cfa42a61eb"
++    },
++    "immutable-witness-after.json": {
++        "bytes": 162800,
++        "sha256": "ce9a153b4656baf71f3fe316e758a9fd56a9fc2607ae6cd1674f2d05ce3a05b8"
++    },
++    "immutable-witness-before.json": {
++        "bytes": 162800,
++        "sha256": "ce9a153b4656baf71f3fe316e758a9fd56a9fc2607ae6cd1674f2d05ce3a05b8"
++    },
++    "immutable-witness-final.json": {
++        "bytes": 162800,
++        "sha256": "ce9a153b4656baf71f3fe316e758a9fd56a9fc2607ae6cd1674f2d05ce3a05b8"
++    },
++    "process.json": {
++        "bytes": 102,
++        "sha256": "d9551adcd2847702726d0a03c2bee1c000ff2cc1fc8271d942d6b1543f843c99"
++    },
++    "receipt.json": {
++        "bytes": 4021,
++        "sha256": "fe4dcf305e035f38b237b198e9db956aff63aa8bd8e4f34a6ff539f2b9d5bb64"
++    },
++    "resource-samples.json": {
++        "bytes": 1253,
++        "sha256": "3ae486e39c0bf501f71cd819aac41b32b1e15575c5caac8bac1e8fbe3565f3e9"
++    },
++    "stderr.original.log": {
++        "bytes": 0,
++        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++    },
++    "stdout.original.log": {
++        "bytes": 0,
++        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++    }
++}
+ ORIGINAL_ATTEMPT = ROOT / 'attempt1'
+ COMPLETION = ROOT / 'completion1.json'
+ COMPLETION_SHA256 = 'ac38377da08aac68629d2ae04f8d4878a52eb8b28ee3e1009700c810902302d7'
+@@ -49,7 +89,7 @@
+ TEST_LIBRARY_SHA256 = '5eac396345bc469d9712ec7a776e10671652cc1366aa6f08b4269ff49f8f70ab'
+ TEST_LIBRARY_BYTES = 21171736
+ SWIFT_RUNTIME_LIBRARIES = SWIFT.parent.parent / 'lib/swift/linux'
+-TEST_FILTER = '(?:' + '|'.join(re.escape(name) for name in SWIFT_TESTING_METHODS) + r')(?:\(\))?$'
++TEST_FILTER = r'^PinkhaAnyIntegrationTests\.AnyHierarchyTests/(?:creationOverrideRejectsAnotherWorkspaceBeforeDispatch|creationOverrideAndDefaultCreatorShareTheExistingMutationQueue)\(\)/AnyHierarchyTests\.swift:[1-9][0-9]*:[1-9][0-9]*$'
+ owned_process = None
+ 
+ def sha(raw):
+@@ -211,6 +251,21 @@
+     assert len(copies) == 102 and sum(row['bytes'] for row in copies) == 19775715
+     for row in copies:
+         add_pin(pins, row['target'], row['sha256'], row['bytes'])
++    # The failed direct attempt is immutable input, never a reused output.
++    # Its closed process is historical metadata and never reaches a helper.
++    for relative, authority in PREVIOUS_CONTINUATION_PINS.items():
++        add_pin(pins, PREVIOUS_EVIDENCE / relative, authority['sha256'], authority['bytes'])
++    previous_pin = PREVIOUS_CONTINUATION_PINS['receipt.json']
++    previous = json.loads(pinned(PREVIOUS_EVIDENCE / 'receipt.json',
++                                 previous_pin['sha256'], previous_pin['bytes']))
++    assert previous['controllerSHA256'] == PREVIOUS_CONTROLLER_SHA256
++    assert previous['status'] == 'FAIL' and previous['processExit'] == 69
++    assert 'testResult' not in previous and previous['safeToReleaseRuntimeSlot'] is True
++    assert previous['completionSHA256'] == COMPLETION_SHA256
++    assert previous['originalReceiptSHA256'] == ORIGINAL_FAIL_SHA256
++    assert previous['productCommit'] == PRODUCT_COMMIT
++    assert previous['ownedCleanup']['status'] == 'PASS_OWNED_GROUP_ABSENT'
++    assert previous['ownedCleanup']['absenceEvidence']['status'] == 'ABSENT_ESRCH'
+     return value, pins, copies
+ 
+ 
+@@ -309,6 +364,11 @@
+                'startedAtUTC': owned_process.now(), 'productCommit': PRODUCT_COMMIT,
+                'controllerSHA256': sha(Path(__file__).read_bytes()),
+                'completionSHA256': COMPLETION_SHA256, 'originalReceiptSHA256': ORIGINAL_FAIL_SHA256,
++               'continuationNumber': 2,
++               'priorContinuation': {'path': str(PREVIOUS_EVIDENCE), 'status': 'FAIL',
++                   'controllerSHA256': PREVIOUS_CONTROLLER_SHA256,
++                   'receiptSHA256': PREVIOUS_CONTINUATION_PINS['receipt.json']['sha256'],
++                   'immutableOriginalFiles': len(PREVIOUS_CONTINUATION_PINS)},
+                'originalOverallStatus': 'FAIL', 'originalFourXCTestMethodsReplayed': 0,
+                'runtimeSlotGrantedByThisScript': False, 'safeToReleaseRuntimeSlot': False,
+                'sourceBodiesModified': 0, 'compilerInvocations': 0, 'SwiftPMInvocations': 0,
+@@ -324,7 +384,7 @@
+         private_directory(EVIDENCE / 'tmp')
+         write(EVIDENCE / 'immutable-witness-before.json', before)
+         env = continuation_environment()
+-        argv = [str(RUNNER), '--testing-library', 'swift-testing', '--no-parallel', '--filter', TEST_FILTER]
++        argv = [str(RUNNER), '--testing-library', 'swift-testing', '--no-parallel', '--verbosity', '1', '--filter', TEST_FILTER]
+         receipt['command'] = {'argv': argv, 'cwd': str(COMPONENT),
+             'environmentOverrides': {k: env[k] for k in ('TMPDIR','PYTHONDONTWRITEBYTECODE','GIT_TERMINAL_PROMPT','PWD','PATH','NO_COLOR','LD_LIBRARY_PATH')},
+             'runtimeRunner': {'path': str(RUNNER), 'bytes': RUNNER_BYTES, 'sha256': RUNNER_SHA256},

@@ -1,0 +1,123 @@
+{
+  "schema": "bookmark6-continuation2-source-handoff/v1",
+  "status": "REVIEWED_SOURCE_ONLY_RUNTIME_NOT_GRANTED_OR_RUN",
+  "parentResultCommit": "eaa588dccba000f0b8665af135efd83b5c789640",
+  "productSourceCommit": "3d2abbf8b1017204e2b93b53ea83ff6f053e67b3",
+  "controller": {
+    "path": "docs/validation/20261128-wave2-bookmark6-missing-two-continuation2-preparation/execution/run_missing_two.py",
+    "bytes": 37159,
+    "sha256": "d7b0eb74a542290f67d1d6a68c7dc3f0ee87773ca9c7f82cfb109666a4edce54"
+  },
+  "scope": {
+    "newSelectedMethods": 2,
+    "expectedCases": 2,
+    "framework": "Swift Testing",
+    "sourceMethods": [
+      "creationOverrideRejectsAnotherWorkspaceBeforeDispatch",
+      "creationOverrideAndDefaultCreatorShareTheExistingMutationQueue"
+    ],
+    "XCTestReplay": 0,
+    "old27IntegrationReplay": 0,
+    "combinedSixMethodAcceptanceByThisReceipt": false,
+    "actualContinuation2TestEvents": null
+  },
+  "argv": [
+    "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner",
+    "--testing-library",
+    "swift-testing",
+    "--no-parallel",
+    "--verbosity",
+    "1",
+    "--filter",
+    "^PinkhaAnyIntegrationTests\\.AnyHierarchyTests/(?:creationOverrideRejectsAnotherWorkspaceBeforeDispatch|creationOverrideAndDefaultCreatorShareTheExistingMutationQueue)\\(\\)/AnyHierarchyTests\\.swift:[1-9][0-9]*:[1-9][0-9]*$"
+  ],
+  "newEvidenceRoot": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/continuation2",
+  "sourceReviews": [
+    {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-continuation2-publication/packet/docs/validation/20261128-wave2-bookmark6-missing-two-continuation2-preparation/reviews/root-source-review.json",
+      "bytes": 2978,
+      "sha256": "35e7a29ca429d485b2e9c553765765ee803ffd190b44293188779bd95eb4b687",
+      "gitBlob": "447f432740361f0db252275ba1fc49716112bc15"
+    },
+    {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-continuation2-publication/packet/docs/validation/20261128-wave2-bookmark6-missing-two-continuation2-preparation/reviews/interfaces-independent-source-review.json",
+      "bytes": 9379,
+      "sha256": "07778593c70fd6df38f31922f6371e1f57f8fc351b1ab070531421aeb88592fc",
+      "gitBlob": "a0d4a86c91190f99a8789b7b7b360a8c8eb2b04a"
+    }
+  ],
+  "executionEnvelope": {
+    "launcher": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-continuation2-publication/packet/docs/validation/20261128-wave2-bookmark6-missing-two-continuation2-preparation/envelope/launch_exact_missing_two.py",
+      "bytes": 636,
+      "sha256": "ae0c89d9c65a776bc1b60163b63b2eed3559c7151d89d3c3109b7b632b5de1ac",
+      "gitBlob": "45897000faf14481831830836b1259fe2e773b4a"
+    },
+    "collector": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-continuation2-publication/packet/docs/validation/20261128-wave2-bookmark6-missing-two-continuation2-preparation/envelope/collect_continuation_originals.py",
+      "bytes": 9956,
+      "sha256": "48ccbaaff7da050594b6848b85603a984a307115b01a2e2476b72fae8067b4ba",
+      "gitBlob": "597a16fcd7bc462103d98f6dfc98cd3501d399a5"
+    },
+    "derivation": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-continuation2-publication/packet/docs/validation/20261128-wave2-bookmark6-missing-two-continuation2-preparation/envelope/envelope-derivation.json",
+      "bytes": 2676,
+      "sha256": "56eb188aa6dc97e206cd62bec35f4254df3d8c179772ac3d70759e9f253e3b63",
+      "gitBlob": "3160072557a8fb1a1dbbc5053843253f20ef4a96"
+    },
+    "dispatchSpec": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-continuation2-publication/packet/docs/validation/20261128-wave2-bookmark6-missing-two-continuation2-preparation/envelope/dispatch-spec.json",
+      "bytes": 958,
+      "sha256": "77495154c93b9b990b3d7eb0237a313b3cb80ffbacc29a983c778e23295e3e9d",
+      "gitBlob": "8b0a07e2399e261632bcb4d71f64d4b498528b61"
+    },
+    "peerReview": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-continuation2-publication/packet/docs/validation/20261128-wave2-bookmark6-missing-two-continuation2-preparation/reviews/interfaces-independent-envelope-review.json",
+      "bytes": 5483,
+      "sha256": "d563d7a0f53423c408bb570461b6315580578ab5e1757b870f9077d66dd09a7d",
+      "gitBlob": "fd59b4465450be88ba2af10e58698e36cdb69113"
+    },
+    "collectionRequiresActualCompletedJob": true
+  },
+  "sourceDiagnosis": {
+    "finding": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-continuation2-publication/packet/docs/validation/20261128-wave2-bookmark6-missing-two-continuation2-preparation/diagnosis/finding.json",
+      "bytes": 11222,
+      "sha256": "c8e1fe1df6126bbab2d35fc584798ac4dc6fbc4c150cd03299b020a7c25103ce",
+      "gitBlob": "54c0d5b1ddd5c803d0f2fa0a6856fa8629925321"
+    },
+    "rootReview": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-continuation2-publication/packet/docs/validation/20261128-wave2-bookmark6-missing-two-continuation2-preparation/diagnosis/root-source-diagnosis-review.json",
+      "bytes": 3945,
+      "sha256": "1080ed07e9cd2a5f0c79f3072aa45627032f2c7148c82824f843109c074f03eb",
+      "gitBlob": "dcbc1c5ee656ebe60456ba9f7cc7cdf402f0e363"
+    },
+    "primaryManifest": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-continuation2-publication/packet/docs/validation/20261128-wave2-bookmark6-missing-two-continuation2-preparation/diagnosis/primary/source-manifest.json",
+      "bytes": 7147,
+      "sha256": "ca45e3f3a81c1a766cca2bf860b7e551422ec85826a95ac492ce5c2948e3526a",
+      "gitBlob": "ca79bc565fba4dd867841787b547b638b176a031"
+    },
+    "newPhysicalToolchainOrTestEnumerationProof": false
+  },
+  "unchangedResources": {
+    "admissionMarginBytes": 33554432,
+    "commandDeadlineSeconds": 300,
+    "developmentLiveFloorBytes": 536870912,
+    "finalEvidenceReserveWithinCapBytes": 1048576,
+    "memoryFloorBytes": 536870912,
+    "outerDispatchTimeoutSeconds": 360,
+    "ownedNamespaceCapBytes": 268435456,
+    "rootLiveFloorBytes": 2147483648
+  },
+  "retainedOutcomes": {
+    "mixedAttempt": "FAIL4441; original four XCTest positives remain separate",
+    "directContinuation1": "FAILfe4dcf30/child69/emptylogs; all9 original files inherited unchanged",
+    "compilerCompletion": "ac383 custody-only pass; physically rechecked before future test launch",
+    "continuation2": "NOT_RUN"
+  },
+  "requiredNext": "Root complete-packet approval; separate owned publication/fresh primary readback; explicit new W1 runtime coordination and unchanged fresh capacity/source/product admission before a single actual command. No automatic retry.",
+  "runtimeCoordinationStory": null,
+  "runtimeSlotGranted": false,
+  "noHostCalls": true
+}

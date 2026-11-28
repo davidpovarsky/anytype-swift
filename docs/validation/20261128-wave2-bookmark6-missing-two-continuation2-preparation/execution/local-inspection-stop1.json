@@ -1,0 +1,22 @@
+{
+  "schema": "bookmark6-continuation2-local-preparation-inspection-stop/v1",
+  "observedAtUTC": "2026-11-28T00:23:04.987488+00:00",
+  "status": "LOCAL_METADATA_ASSERTION_STOP_NO_CANDIDATE_EXECUTION",
+  "originalOutput": "Traceback (most recent call last):\n  File \"<stdin>\", line 88, in <module>\nAssertionError\n",
+  "cause": "The source-text extractor stripped the result function final newline while comparing to the diagnostic function hash that includes that newline. The complete function text itself was byte-identical.",
+  "sourceBeforeAndAfter": {
+    "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-continuation2-preparation/run_missing_two.py",
+    "bytes": 37159,
+    "sha256": "d7b0eb74a542290f67d1d6a68c7dc3f0ee87773ca9c7f82cfb109666a4edce54"
+  },
+  "functionWithoutFinalNewline": {
+    "bytes": 3007,
+    "sha256": "5d25236c62b2fc61c6e73289f9f03688d9ba9aa1038c4a724d20dce654c98b27"
+  },
+  "functionWithFinalNewline": {
+    "bytes": 3008,
+    "sha256": "6f284780316ece9027b1a14f9e7a69693518f87205009a51e0a336c2acc13d6f"
+  },
+  "correction": "Record both extraction conventions and compare the same source byte span. No controller source change, no function execution.",
+  "runtimeOrParserOrControlRun": false
+}
