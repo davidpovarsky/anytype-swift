@@ -31,6 +31,24 @@ public enum PinkhaAnyEmbeddedBridge {
         return StartResult(code: result.code, address: result.address, message: result.message)
     }
 
+    /// Requires the matching native framework with MobileStartBoundWithResult.
+    /// The original StartResult and start entry point remain ABI-compatible.
+    public struct BoundStartResult: Sendable {
+        public let code: Int32
+        public let address: String
+        public let message: String
+        public let networkID: String
+    }
+
+    public static func startBound(dataDirectory: String, listenAddress: String, nodeConfiguration: String,
+                                  pushPeerID: String, pushAddresses: String, mode: String,
+                                  controlToken: String) -> BoundStartResult? {
+        guard let result = Lib.MobileStartBoundWithResult(dataDirectory, listenAddress, nodeConfiguration,
+            pushPeerID, pushAddresses, mode, controlToken) else { return nil }
+        return BoundStartResult(code: result.code, address: result.address,
+            message: result.message, networkID: result.networkID)
+    }
+
     /// The original mobile bridge calls embedded.Stop(true), waits for the drain,
     /// and returns nil. This has the same contract as the prior void C shim.
     public static func stop() { _ = Lib.MobileStop(nil) }

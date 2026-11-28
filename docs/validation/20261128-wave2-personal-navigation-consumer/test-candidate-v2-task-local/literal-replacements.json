@@ -1,0 +1,93 @@
+{
+  "schema": "pinkha-navigation-test-v2-delta-inverse-v1",
+  "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+  "predecessor": {
+    "bytes": 73043,
+    "sha256": "4975c0c01f754c528f860cb03916b54ec263f5c5785bc861effbb600c5163c04",
+    "gitBlob": "a356d29ee8e74df4683087d4292333d0a69a4c88"
+  },
+  "candidate": {
+    "bytes": 73757,
+    "sha256": "019f231b850c6b838e1d02f474b4e513533a1dc75e21fac74305b64a839ba95b",
+    "gitBlob": "51cbffeb7919b8e760b23af096d750c85c8f16dd"
+  },
+  "rules": [
+    {
+      "label": "Task-local marker belongs only to explicit activation task creation",
+      "count": 1,
+      "before": "/// A finite, deliberately noncooperative pause after a real completed read.\n",
+      "after": "private enum MountedNavigationTaskContext {\n    @TaskLocal static var ownsPersonalOpen = false\n}\n\n/// A finite, deliberately noncooperative pause after a real completed read.\n"
+    },
+    {
+      "label": "Load outside a window; mark only the exact public activation hook",
+      "count": 1,
+      "before": "    func mountAttachedEditor() {\n        container.attachEditor()\n        presentation.mount(surface: controller)\n    }\n\n",
+      "after": "    func mountUnattachedEditor() {\n        container.detachEditor()\n        presentation.mount(surface: controller)\n    }\n\n    func activateOpen() {\n        container.attachEditor()\n        // Only the original actual-open Task created inside this synchronous\n        // public hook inherits the marker; setup/read/cleanup are outside it.\n        MountedNavigationTaskContext.$ownsPersonalOpen.withValue(true) {\n            presentation.didBecomeActive()\n        }\n    }\n\n"
+    },
+    {
+      "label": "Six setup mounts remain inactive until their real read completes",
+      "count": 6,
+      "before": "            context.mountAttachedEditor()\n",
+      "after": "            context.mountUnattachedEditor()\n"
+    },
+    {
+      "label": "First activation is the marked hook, with real foreground assertion",
+      "count": 1,
+      "before": "            context.container.attachEditor()\n            XCTAssertTrue(context.controller.isForegroundMounted)\n            XCTAssertEqual(model.mountedOwnerID, firstOwner)\n            model.didBecomeActive()\n",
+      "after": "            context.activateOpen()\n            XCTAssertTrue(context.controller.isForegroundMounted)\n            XCTAssertEqual(model.mountedOwnerID, firstOwner)\n"
+    },
+    {
+      "label": "Foreground after accepted read for second mount",
+      "count": 1,
+      "before": "            try await self.requireNavigationRead(context, expected: \"XafterY\")\n            try await self.waitForMountedRefresh(fixture) {\n                fixture.navigationWriteCount == 2 && fixture.navigationReadbacks >= 2\n",
+      "after": "            try await self.requireNavigationRead(context, expected: \"XafterY\")\n            context.activateOpen()\n            try await self.waitForMountedRefresh(fixture) {\n                fixture.navigationWriteCount == 2 && fixture.navigationReadbacks >= 2\n"
+    },
+    {
+      "label": "Replacement owner activation before controlled definition pause",
+      "count": 1,
+      "before": "            try await self.requireNavigationRead(context, expected: \"XafterY\")\n            try await self.waitForMountedRefresh(fixture) { fixture.isNavigationDefinitionHeld }\n",
+      "after": "            try await self.requireNavigationRead(context, expected: \"XafterY\")\n            context.activateOpen()\n            try await self.waitForMountedRefresh(fixture) { fixture.isNavigationDefinitionHeld }\n"
+    },
+    {
+      "label": "Uncancelled final owner activation",
+      "count": 1,
+      "before": "            try await self.requireNavigationRead(context, expected: \"XafterY\")\n            try await self.waitForMountedRefresh(fixture) {\n                fixture.navigationWriteCount == 1 && fixture.navigationReadbacks >= 1\n",
+      "after": "            try await self.requireNavigationRead(context, expected: \"XafterY\")\n            context.activateOpen()\n            try await self.waitForMountedRefresh(fixture) {\n                fixture.navigationWriteCount == 1 && fixture.navigationReadbacks >= 1\n"
+    },
+    {
+      "label": "Two late-ACK flow activations after unrelated reads finish",
+      "count": 2,
+      "before": "            try await self.requireNavigationRead(context, expected: \"XbeforeY\")\n            try await self.waitForMountedRefresh(fixture) { fixture.isNavigationDefinitionHeld }\n",
+      "after": "            try await self.requireNavigationRead(context, expected: \"XbeforeY\")\n            context.activateOpen()\n            try await self.waitForMountedRefresh(fixture) { fixture.isNavigationDefinitionHeld }\n"
+    },
+    {
+      "label": "Next owner observation joins its marked predecessor",
+      "count": 1,
+      "before": "            try await self.requireNavigationRead(context, expected: \"XbeforeY\")\n            XCTAssertTrue(context.runGate.isHeld)\n",
+      "after": "            try await self.requireNavigationRead(context, expected: \"XbeforeY\")\n            context.activateOpen()\n            XCTAssertTrue(context.runGate.isHeld)\n"
+    },
+    {
+      "label": "Only the actual-open task can consume the run-verifier pause",
+      "count": 1,
+      "before": "                try await runGate.pass(after: fixture.navigationWriteCount)\n                return started\n",
+      "after": "                if MountedNavigationTaskContext.ownsPersonalOpen {\n                    try await runGate.pass(after: fixture.navigationWriteCount)\n                }\n                return started\n"
+    }
+  ],
+  "verified": {
+    "forwardExact": true,
+    "reverseExact": true,
+    "literalRules": 10,
+    "sites": 16,
+    "methodsStill8": true,
+    "originalMethods5Exact": true,
+    "newMethods3": true,
+    "controlledFlows4": true
+  },
+  "fullOriginalChain": {
+    "predecessorInverse": "../test-candidate-v1/literal-replacements.json",
+    "sha256": "2d36e4c0b5a02d1cfd29478851b7879d4de24d832f35461fafef681e17b19cc8",
+    "originalBytes": 40939,
+    "originalSHA256": "30de75af908469666c19ef37ecc830dee6305e6ca6f7a937cc68862cd15369ca"
+  },
+  "inverseInstructions": "Apply the after-to-before replacements in reverse order, requiring each recorded occurrence count; whole result equals retained4975 predecessor. Then apply its retained verified suffix removal and14 fixture inverses to the full30de original."
+}

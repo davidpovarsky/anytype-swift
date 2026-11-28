@@ -34,6 +34,16 @@ public struct AnyNativeWorkspaceOwner: Sendable {
     public let objects: AnyNativeObjectCreator
     public let blocks: AnyNativeBlockCreator
     public let capabilities: AnyUIFoundationCapabilities
+    public let personalNavigation: AnyNativePersonalNavigationStore?
+
+    init(client: AnyHTTPClient, session: AnyApplicationSession, journal: AnyProtectedCreationJournal,
+         objects: AnyNativeObjectCreator, blocks: AnyNativeBlockCreator,
+         capabilities: AnyUIFoundationCapabilities,
+         personalNavigation: AnyNativePersonalNavigationStore? = nil) {
+        self.client = client; self.session = session; self.journal = journal
+        self.objects = objects; self.blocks = blocks; self.capabilities = capabilities
+        self.personalNavigation = personalNavigation
+    }
 
     public var workspace: AnyTorahWorkspace { session.workspace }
 
@@ -344,6 +354,8 @@ public actor AnyNativeApplication {
 
     private func connectOwnedSpace(id: String) async throws -> AnyNativeWorkspaceOwner {
         let client = try accountClient(requireBackup: true)
+        guard let embedded else { throw AnyNativeApplicationError.closed }
+        let expectedNetworkID = embedded.expectedNetworkID
         if let current = workspaceOwner, current.workspace.spaceID == id { return current }
         if let previous = workspaceOwner {
             workspaceOwner = nil
@@ -361,6 +373,12 @@ public actor AnyNativeApplication {
             guard gateway["mobileManagedTokenGateway"]?.integer == 1 else {
                 throw AnyUIActivationError.missingCapability("mobileManagedTokenGateway")
             }
+            let personalNavigation = try await session.perform { lease in
+                let binding = try await client.nativeAccountRunBinding(expectedNetworkID: expectedNetworkID)
+                try await lease.validate()
+                return try AnyNativePersonalNavigationStore(client: client,
+                    workspace: lease.workspace, binding: binding)
+            }
             let journal = try await AnyProtectedCreationJournal.open(workspace: workspace)
             openedJournal = journal
             let objects = try AnyNativeObjectCreator(client: client, workspace: workspace, journal: journal)
@@ -370,7 +388,8 @@ public actor AnyNativeApplication {
             try Task.checkCancellation()
             guard !closing else { throw AnyNativeApplicationError.closed }
             let owner = AnyNativeWorkspaceOwner(client: client, session: session, journal: journal,
-                objects: objects, blocks: blocks, capabilities: capabilities)
+                objects: objects, blocks: blocks, capabilities: capabilities,
+                personalNavigation: personalNavigation)
             workspaceOwner = owner
             return owner
         } catch {

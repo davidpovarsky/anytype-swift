@@ -1,0 +1,190 @@
+{
+  "schema": "pinkha.wave2.navigation-f372.dependency-preimage-review.v1",
+  "status": "PASS_SOURCE_ANCESTRY_AND_SEVEN_PREIMAGES_ONLY",
+  "repository": "davidpovarsky/anytype-swift",
+  "donor": {
+    "commit": "f372f5e243427822df27bf8bd2ba51bf8206c644",
+    "tree": "02a44909e89d06f63b636b8cce9391c22dd2202d",
+    "soleParent": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+    "parentTree": "9f2a5dae2df4b2d0fb7627b39120566e40a4cd7b",
+    "commitPrimaryURL": "https://api.github.com/repos/davidpovarsky/anytype-swift/commits/f372f5e243427822df27bf8bd2ba51bf8206c644"
+  },
+  "primaryBodies": [
+    {
+      "path": "docs/validation/20261128-native-boot-network-binding/CONSUMER_CONTRACT.md",
+      "bytes": 3718,
+      "sha256": "3d7ced972a581e2ddeb3f0bd219f430abbc6ba0d1d2e96a0b4194967f683217e",
+      "gitBlob": "ca3bad697ff8a8425aeb898fe272bdb5b345f312",
+      "fullPrimaryRead": true
+    },
+    {
+      "path": "Modules/PinkhaAnyRuntime/Sources/PinkhaAnyRuntime/AnyEmbeddedRuntime.swift",
+      "bytes": 15774,
+      "sha256": "f7dfcc406b10e2a5db01b2ce0cc32f4e6bd6b896eb00799b81442de86f6634ea",
+      "gitBlob": "18211723a5d5fe31ad9296671e508a4aeb3ac182",
+      "fullPrimaryRead": true,
+      "matchesReviewedDraft1": true
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/PinkhaAnyEmbeddedBridge.swift",
+      "bytes": 2843,
+      "sha256": "3dacbcc9ae422fb5997e04bf17e7dc394eb1e9d7a8fa68d21d82c8e786083a0b",
+      "gitBlob": "99002cb12d32a9fda0adb056f25e14b256566081",
+      "fullPrimaryRead": true,
+      "matchesReviewedDraft1": true
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+      "bytes": 40939,
+      "sha256": "30de75af908469666c19ef37ecc830dee6305e6ca6f7a937cc68862cd15369ca",
+      "gitBlob": "07a523228f184625e44aa2430b26836fdb00f94c",
+      "fullPrimaryRead": true,
+      "matchesBaeOriginal": true
+    }
+  ],
+  "dependencyContract": {
+    "expectation": "AnyEmbeddedSession.expectedNetworkID is a nonoptional immutable value from successful bound startup using the exact native configuration of that session generation. It is an independent expected network, not account authorization.",
+    "nativePaths": "The unified source calls PinkhaAnyEmbeddedBridge.startBound / Lib.MobileStartBoundWithResult; the standalone source calls the new bound C export. Both require matching compiled native symbols.",
+    "byteIdentity": "Network identity is nonempty UTF-8, at most 4096 bytes, no bytes <=32 or DEL; consumers retain exact byte equality without trimming, case folding or normalization.",
+    "ownerAdmission": "Use the independent session expectation, expected account and actual data client for account/run binding. Current lease/READ membership/cancellation/generation/revocation remain mandatory.",
+    "failure": "Application owner binding errors including404/501, malformed identity, scope/run mismatch and cancellation propagate. No unbound fallback, alternate run, optional omission or expected-network inference from a refused response.",
+    "profileBoundary": "The published bridge still contains the prior8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b profile string. Its presence is not a matching successor binary. W3 owns actual unified manifest/framework and profile qualification; no pin was advanced here.",
+    "deliveryStatus": "The donor contract explicitly says SOURCE_ONLY_NOT_COMPILED_OR_EXECUTED. This review neither qualifies native exports nor Apple compilation/runtime."
+  },
+  "consumerPreimages": [
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeApplication.swift",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlob": "110de501e91665280e4751da7b7b6a8392a47913",
+      "parentAndDonorEqual": true,
+      "proof": "Complete unchanged enclosing PinkhaAnyNative or PinkhaAnyUI module tree at parent and donor; exact donor leaf verified."
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlob": "112250ced570144979043c9c0a5c58c4af33e22c",
+      "parentAndDonorEqual": true,
+      "proof": "Complete unchanged enclosing PinkhaAnyNative or PinkhaAnyUI module tree at parent and donor; exact donor leaf verified."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlob": "24f08c4c7bfece4a2b711762c20783bd7a45f5f3",
+      "parentAndDonorEqual": true,
+      "proof": "Complete unchanged enclosing PinkhaAnyNative or PinkhaAnyUI module tree at parent and donor; exact donor leaf verified."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlob": "138fdcfcd61dfe59700e38751887ee61647b0c03",
+      "parentAndDonorEqual": true,
+      "proof": "Complete unchanged enclosing PinkhaAnyNative or PinkhaAnyUI module tree at parent and donor; exact donor leaf verified."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlob": "475624e12bbb9c97dc96295b107e21611a798639",
+      "parentAndDonorEqual": true,
+      "proof": "Complete unchanged enclosing PinkhaAnyNative or PinkhaAnyUI module tree at parent and donor; exact donor leaf verified."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlob": "44418e9710c16412d3dced2e8ce53ae94eb264cc",
+      "parentAndDonorEqual": true,
+      "proof": "Complete unchanged enclosing PinkhaAnyNative or PinkhaAnyUI module tree at parent and donor; exact donor leaf verified."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlob": "07a523228f184625e44aa2430b26836fdb00f94c",
+      "parentAndDonorEqual": true,
+      "proof": "Complete unchanged enclosing PinkhaAnyNative or PinkhaAnyUI module tree at parent and donor; exact donor leaf verified."
+    }
+  ],
+  "rendererOriginal": {
+    "bytes": 40939,
+    "sha256": "30de75af908469666c19ef37ecc830dee6305e6ca6f7a937cc68862cd15369ca",
+    "gitBlob": "07a523228f184625e44aa2430b26836fdb00f94c",
+    "sourceOfExpectedTuple": "Interfaces supplied the exact bae original; this review independently fetched the entire donor body and recomputed its size, SHA256 and Git blob."
+  },
+  "finiteAncestry": {
+    "equalEntryNames": true,
+    "parentRootEntries": 41,
+    "donorRootEntries": 41,
+    "changedEntries": [
+      "Modules",
+      "Tools",
+      "docs"
+    ],
+    "parentModuleEntries": 29,
+    "donorModuleEntries": 29,
+    "changedModules": [
+      "PinkhaAnyRuntime",
+      "ProtobufMessages"
+    ],
+    "nativeModuleTreeEqualAtParentAndDonor": "5511b40ea8f65db252f4c758e2409f70dcfc0ffd",
+    "uiModuleTreeEqualAtParentAndDonor": "7e87e89e5b8110a3fdbfef6ff15435fe5bce5c4a",
+    "unchangedEnclosingTreeMeaning": "All seven requested leaves are beneath these exact unchanged module subtrees; complete ancestor/leaf tree objects establish their identity at both immutable commits without re-reading every unrelated source.",
+    "allSevenMode": "100644",
+    "completeTreesRecomputed": 12,
+    "completeTreesNonTruncated": true,
+    "originalRootEntries": 41,
+    "originalModuleEntries": 29,
+    "noDeletedOrAddedRootOrModuleEntryNames": true,
+    "donorChangedFileListPrecision": "Donor21 paths include two modified Swift production bodies, one affected existing runtime test body and finite Go/source evidence. This is not represented as a two-file entire commit.",
+    "docsCustody": "Root separately owns exact donor docs59bdb32af346727d20a85556f87f7a19917bdeb0 and validation5e957e366334e59d074d58ff65f844b54e09afdc; this review did not repeat that traversal or the new evidence-subtree absence check."
+  },
+  "completeTreePacket": {
+    "path": "/mnt/development/projects/evidence/pinkha-wave2-personal-navigation-consumer-20261128/source-dependency-f372/primary-trees.jsonl",
+    "bytes": 66370,
+    "sha256": "11d4abb7e01836aba8c65ccdd6326eaaa3ad5c67ccd24e252c834b9f55403cb1",
+    "gitBlob": "e1b8b202c84e97e43a69d05c584626cf86b07be4",
+    "format": "JSONL",
+    "lines": 13,
+    "donorObjects": 10,
+    "parentProofObjects": 2,
+    "totalPrimaryRawJSONBytes": 54651,
+    "exactSafeReadRanges": [
+      {
+        "range": [
+          1,
+          7
+        ],
+        "bytes": 25638,
+        "sha256": "62473d92df229a05a3a7eea2e7da6b32c6616fb51e154b46b776a2f79df008f0"
+      },
+      {
+        "range": [
+          8,
+          13
+        ],
+        "bytes": 40732,
+        "sha256": "5e883ba32cf6dc645a3d6c3270c884d2eae0bb36528db51bfb7bae29061af5d6"
+      }
+    ],
+    "primaryRawBodiesUnchanged": true
+  },
+  "rootBuildUse": "Root can use the ten complete donor tree entry lists directly to replace the seven approved consumer leaves and recompute the owned child root, combining its separately retained docs/validation trees. This report performs no tree mutation or publication.",
+  "limits": {
+    "sourceCompatibility": "Verified exact dependencies and unchanged input identities only.",
+    "productEdits": 0,
+    "branchOrRefWrites": 0,
+    "tests": 0,
+    "compilerInvocations": 0,
+    "nativeAccountOrMacActions": 0,
+    "processQueries": 0,
+    "broadRepositoryCensus": false,
+    "oldCohortReplay": false,
+    "AppleOrNativeAcceptance": false,
+    "W3FinalSourceAdmission": false,
+    "bodyReviewScope": "Exact requested full runtime/bridge/contract and test preimage custody; no new broad behavioral review or test review."
+  }
+}

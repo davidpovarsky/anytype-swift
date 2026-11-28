@@ -1,0 +1,38 @@
+{
+  "schema": "pinkha-personal-navigation-foreground-proof-v1",
+  "status": "SOURCE_ONLY_NOT_COMPILED_NOT_RUN",
+  "base": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+  "baseTree": "9f2a5dae2df4b2d0fb7627b39120566e40a4cd7b",
+  "finding": {
+    "id": "NAV-CONSUMER-FOREGROUND-01",
+    "reason": "load may accept a current document while the actual surface is not foreground; the initial readiness guard correctly declines. The existing didBecomeActive notification had no explicit readiness call, and empty MiniApps results do not reload or mount."
+  },
+  "change": {
+    "document": "One public synchronous lifecycle method delegates to the original private readiness/once guard. No token assignment, mount, retry, reload, dispatch loop, or authority change.",
+    "view": "One call in the existing didBecomeActive notification between unchanged diagnostic and MiniApps calls.",
+    "unchangedOtherProducts": 4
+  },
+  "baselineView": {
+    "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+    "bytes": 36414,
+    "sha256": "31f5200514b239b777679568c215a0ddb89fb0af9c41987d178deb2a06c408db",
+    "gitBlob": "44418e9710c16412d3dced2e8ce53ae94eb264cc",
+    "treeLeaf": {
+      "path": "AnyNativeDocumentView.swift",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "44418e9710c16412d3dced2e8ce53ae94eb264cc",
+      "size": 36414,
+      "url": "https://api.github.com/repos/davidpovarsky/anytype-swift/git/blobs/44418e9710c16412d3dced2e8ce53ae94eb264cc"
+    }
+  },
+  "fullInverse": true,
+  "original26LiteralRulesUnchanged": true,
+  "totalProductFiles": 6,
+  "totalLiteralRules": 28,
+  "remaining": {
+    "runtimeDependency": "W1 authoritative nonoptional AnyEmbeddedSession.expectedNetworkID plus coherent new bound-start native exports; exact qualified published tuple still required.",
+    "tests": "Separate test-source preparation, no test body or execution in this six-product tuple.",
+    "actualScene": "Background/foreground mounted UI and opposite App/OS language cases remain NOT_RUN."
+  }
+}

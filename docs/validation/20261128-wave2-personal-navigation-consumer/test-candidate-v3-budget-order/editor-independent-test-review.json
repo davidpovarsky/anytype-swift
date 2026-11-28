@@ -1,0 +1,234 @@
+{
+  "schema": "pinkha.personal-navigation-consumer.editor-independent-test-review.v1",
+  "reviewDateUTC": "2026-11-28",
+  "reviewer": "W2 editor independent peer",
+  "status": "PASS_SOURCE_REVIEW_ONLY_NOT_COMPILED_NOT_RUN",
+  "scope": "Independent source review of the final test-only v3 successor. Earlier complete v2 semantic reading is retained; final review checks the bounded request allowance and owner-specific awaited drainage observation. No product body, compiler, test, host process or runtime was executed or changed.",
+  "target": {
+    "evidenceRoot": "/mnt/development/projects/evidence/pinkha-wave2-personal-navigation-consumer-20261128/test-candidate-v3-budget-order",
+    "path": "candidate/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+    "bytes": 77600,
+    "sha256": "259e5fe8a96d397aec345ca60af304e2371259aa80ad73e39a71d1164e6428e6",
+    "gitBlob": "96ef43c61390b71bffeb048ecf2182e9398f57e2",
+    "fullReadback": {
+      "ranges": [
+        [
+          1,
+          750
+        ],
+        [
+          751,
+          1458
+        ]
+      ],
+      "rangeBytes": [
+        41913,
+        35687
+      ],
+      "joinedBytes": 77600,
+      "matched": true
+    },
+    "declarationScope": {
+      "newXCTestMethods": 3,
+      "controlledFlows": 4,
+      "originalMethodsRetained": 5,
+      "wholeClassMethods": 8,
+      "compiledEnumeration": "NOT_RUN",
+      "execution": "NOT_RUN"
+    },
+    "newMethods": [
+      "testPersonalOpenWaitsForForegroundAndRecordsOncePerMount",
+      "testPersonalOpenRejectsRetiredReadAndCancellationBeforeDispatch",
+      "testPersonalOpenRetainsLateAcknowledgmentAndDrainsBeforeReopen"
+    ]
+  },
+  "evidence": [
+    {
+      "path": "candidate-manifest.json",
+      "bytes": 4126,
+      "sha256": "5543ac8f914b1a57ad64d3dd30c6bae27d4fa00504563ecec9554c1e67ae4e2c"
+    },
+    {
+      "path": "literal-replacements.json",
+      "bytes": 10245,
+      "sha256": "9e289266c5daa828b8ad5e17161e4aeaca04cddfc15a1b9b4296b9229f952865"
+    },
+    {
+      "path": "source-proof.json",
+      "bytes": 4316,
+      "sha256": "4fb9a862961570a663d42bd3b7dfab6c07ca5eb49d42a540c072a953fb0e3564"
+    },
+    {
+      "path": "acceptance-map.json",
+      "bytes": 5219,
+      "sha256": "52ebf5cd38bced356f8690c68acdc98c1885a76407579781916e920c93f21278"
+    },
+    {
+      "path": "request-budget-derivation.json",
+      "bytes": 4470,
+      "sha256": "d31e2fc8469fe9ab21068f0fdbf38b1f3918a4e85a8bd5f1694c9d5ba131e4bc"
+    },
+    {
+      "path": "review-findings.json",
+      "bytes": 2212,
+      "sha256": "b10f7924804e94042915a087d27fc7957b7a7fdc62965d685021a74ea9d95629"
+    }
+  ],
+  "exactRestoration": {
+    "v3ToV2": {
+      "literalRules": 14,
+      "sites": 16,
+      "wholeReverse": true,
+      "wholeForward": true,
+      "bytes": 73757,
+      "sha256": "019f231b850c6b838e1d02f474b4e513533a1dc75e21fac74305b64a839ba95b"
+    },
+    "v2ToV1": {
+      "literalRules": 10,
+      "sites": 16,
+      "wholeReverse": true,
+      "wholeForward": true,
+      "bytes": 73043,
+      "sha256": "4975c0c01f754c528f860cb03916b54ec263f5c5785bc861effbb600c5163c04"
+    },
+    "v1ToOriginal": {
+      "fixtureLiteralRules": 14,
+      "appendedSuffixBytes": 29487,
+      "appendedSuffixSHA256": "e00eca8ed1880ab57dee3adb386f68174f75b9fa593513b065fbf3648fccd9ec",
+      "wholeReverse": true,
+      "wholeForward": true,
+      "bytes": 40939,
+      "sha256": "30de75af908469666c19ef37ecc830dee6305e6ca6f7a937cc68862cd15369ca",
+      "gitBlob": "07a523228f184625e44aa2430b26836fdb00f94c"
+    },
+    "originalMethodBodies": [
+      {
+        "name": "testEqualNativeTextChangesAttributesWithoutReplacingCharactersOrSelection",
+        "bytes": 1343,
+        "sha256": "f9bcb9bf5d0a4fb855ddb13b10057b2b5397575d2729a00ac935bd1dc8a788c7",
+        "exactOccurrences": 1
+      },
+      {
+        "name": "testChangedNativeTextReplacesCharactersAndKeepsValidSelection",
+        "bytes": 482,
+        "sha256": "d056bb13e40176d0c83698004b1a60a2a5699d764b82fcbb5e2afdba169bb4c5",
+        "exactOccurrences": 1
+      },
+      {
+        "name": "testMarkedTextKeepsCharactersSelectionAndAttributesUntilCommit",
+        "bytes": 897,
+        "sha256": "b81668188f5e3bf34e72af0e3fe52fde59394d9d545015000a0c97d33efcebb1",
+        "exactOccurrences": 1
+      },
+      {
+        "name": "testMountedControllerRefreshesCanonicalEquivalentLatinTextInTheSameCell",
+        "bytes": 194,
+        "sha256": "d4b56c868492e6a95e3b51293162c654d8a6791e79128dbc3289be6717bf7ddc",
+        "exactOccurrences": 1
+      },
+      {
+        "name": "testMountedControllerRefreshesHebrewCombiningOrderInTheSameCell",
+        "bytes": 252,
+        "sha256": "61cb9fe519c429397c6fc1794250c967d19edfa7e8b2e49fef37087ca213362e",
+        "exactOccurrences": 1
+      }
+    ],
+    "originalMountedPrefix": "The original methods and mounted helper extension are byte-exact. Before the original fixture declaration the only change is import PinkhaAnyHost becoming @testable import PinkhaAnyHost.",
+    "defaultFixture": "Navigation is opt-in with default false. Existing five methods and their call sites remain unchanged. Their default request allowance remains 512.",
+    "productionChanges": 0
+  },
+  "semanticReview": {
+    "realModelAndAuthority": "The additions instantiate the real AnyDocumentPresentation, AnyNativeEditorController, AnyApplicationSession and personal-navigation store. Public mount/load/activation paths use the actual bounded loopback HTTP client and the existing Host run-verifier injection. No production setter, extracted implementation or replacement mounted-surface protocol is added. Fixture permissions, binding, account, run and object values are controlled test data, not verified real Native authority.",
+    "foregroundRelationship": "An accepted real HTTP read while the editor is unattached cannot record an actual open. Attaching the real controller to the selected foreground scene and calling the public didBecomeActive hook exercises the accepted production foreground correction. Repeated activation and a further accepted read on the same owner require no second effect; retiring and remounting creates a distinct owner and permits a second effect. This directly calls the public hook and does not prove UIApplication notification delivery or actual background/foreground transitions.",
+    "retiredReadAndCancellation": "The existing read-operation test seam still performs the real document read before holding delivery. A newer mounted owner accepts its own read while the old result is held. Releasing the old result must preserve the newer exact text. Cancellation while a genuine definition response is held must leave zero bound POST effects; the later fresh mount permits one. Explicit owned load tasks and held responses are released and joined during cleanup.",
+    "acknowledgment": "The late-ACK flow performs the genuine bound-shaped local mutation, then pauses the marked actual-open operation at its real post-ACK run check. The expected accepted-but-unverified message distinguishes retained acknowledgment from a no-ACK failure. A subsequent read does not resend the write. This is controlled HTTP behavior, not an actual Native service or persistence claim.",
+    "taskLocal": "The Optional UUID TaskLocal is scoped around synchronous presentation.didBecomeActive after real read acceptance and real view attachment. It identifies the mounted owner of the original actual-open task. Setup, unrelated reads and cleanup remain unmarked. The verifier records marked entry, performs the original real /health validation, and only then applies the existing controlled pause. The marker chooses an observation target; it supplies no capability, lease, account, binding or authorization.",
+    "hostTaskSource": {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+      "ref": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+      "bytes": 5633,
+      "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd",
+      "gitBlob": "1dae52636c3a6eb6dfe2aa88d548d6982a9d8dd0",
+      "observation": "The exact original internal verifier injection and perform implementation were read. perform uses ordinary Task<Value, Error>, not Task.detached, and retains the original pre/post lease validation, cancellation handling and owner checks. No Host source was changed."
+    },
+    "ownerProbe": "One owner-matched AsyncStream continuation is registered before successor activation. A locked set records at most four owner UUIDs; duplicate observer ownership is refused. Registration snapshots prior entry, and recordEntry yields after unlocking. Finishing an observer is owner-specific and idempotent. Persistent entry checks cover entries racing registration or the deadline.",
+    "deadlineAndJoin": "The one-second inverted observation races an AsyncStream reader with a cancellable timer in a task group. Every group exit finishes the observer and cancels the other child; leaving the group joins both children. Parent cancellation is checked before and after. Gate release also finishes a remaining observer and resumes its single saved continuation outside the lock.",
+    "orderingAssertion": "The test keeps the previous gate held throughout the awaited observation, then asserts no successor entry, the gate still held and exactly one local effect. Only after recording and releasing the previous gate does it require a second local write/readback and positive entry for the distinct successor owner. The earlier immediate same-actor assertions had not provided this scheduling opportunity.",
+    "schedulingLimit": "This is a finite controlled scheduling check with a one-second observation and persistent ledger, not an exhaustive proof of all interleavings or an executed no-await mutant test. Compilation and the actual scheduled run remain pending.",
+    "outerCleanup": "The existing cleanup starts fixture drain, revokes the mounted lifetime, cancels explicit loads, releases both controlled gates and any held definition response, joins explicit loads and drains the lifetime/session. It then awaits the owned listener and connections closing, retains the raw trace attachment, and restores the prior key window in the selected scene. The first error is preserved; additional cleanup failures remain failures. No unowned process or global network cleanup is introduced.",
+    "isolation": "Mutable fixture transport remains on its serial queue; gate state is protected by NSLock and resumes/yields/finishes occur after unlocking. MainActor model/window operations retain their isolation. No new concrete Swift actor/Sendable source blocker was found; SDK compilation remains unqualified."
+  },
+  "bounds": {
+    "defaultRequests": 512,
+    "navigationOptInRequests": 1024,
+    "simultaneousConnections": 16,
+    "maximumLocalWrites": 2,
+    "requestBytes": 32768,
+    "responseBytes": 16384,
+    "fixtureLifetimeSeconds": 45,
+    "startupDrainPositiveWaitSeconds": 5,
+    "invertedObservationSeconds": 1,
+    "budgetAssessment": "Read the exact source-bound derivation: two successful actual opens cost 392 requests and three mandatory load lower bounds add 207, exceeding the previous 512 allowance before other positive costs. The implementation changes only the navigation-enabled acceptance/request ceiling to 1024; default renderer cases remain 512.",
+    "budgetLimit": "1024 is a finite opt-in allowance, not a measured peak guarantee. This review did not independently refetch every dependency named by the budget calculation or execute the fixture. Unexpected routes, bodies, headers, identity changes and excess local writes still fail.",
+    "unchanged": "No route/body/header validation, concurrency bound, fixture lifetime, positive wait, original method, production task lifecycle or assertion was relaxed."
+  },
+  "retainedFindings": [
+    {
+      "id": "NAV-TEST-GATE-OWNER-01",
+      "priorSource": "4975c0c01f754c528f860cb03916b54ec263f5c5785bc861effbb600c5163c04",
+      "disposition": "SOURCE_CORRECTED",
+      "correction": "Replace global write-count-only gate selection with the actual-open TaskLocal marker; final v3 uses the exact mounted owner UUID."
+    },
+    {
+      "id": "NAV-TEST-REQUEST-BUDGET-01",
+      "priorSource": "019f231b850c6b838e1d02f474b4e513533a1dc75e21fac74305b64a839ba95b",
+      "disposition": "SOURCE_CORRECTED",
+      "correction": "Navigation-only 1024 acceptance/request allowance; original default512 and all other stated bounds retained."
+    },
+    {
+      "id": "NAV-TEST-DRAIN-SCHEDULING-01",
+      "artifactAlias": "NAV-TEST-ORDER-01",
+      "priorSource": "019f231b850c6b838e1d02f474b4e513533a1dc75e21fac74305b64a839ba95b",
+      "disposition": "SOURCE_CORRECTED",
+      "correction": "Register owner observer before activation, await bounded no-entry observation while predecessor remains held, then require positive successor entry and effect after release."
+    }
+  ],
+  "priorProductReviews": {
+    "v1": {
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-personal-navigation-consumer-20261128/source-candidate-v1/editor-independent-source-review.json",
+      "bytes": 12065,
+      "sha256": "1e4285c1a86e65dd5e3f9a4632c3c00b66c3c429d3fb3907c1c340cec56cc7d7",
+      "finding": "NAV-CONSUMER-FOREGROUND-01"
+    },
+    "v2": {
+      "path": "/mnt/development/projects/evidence/pinkha-wave2-personal-navigation-consumer-20261128/source-candidate-v2-foreground/editor-independent-source-review.json",
+      "bytes": 7231,
+      "sha256": "d730dd5a8f888ef9e10cb7930f068c3a1af6037efd5d3c6d40bab0ef208d318b",
+      "disposition": "PASS_SOURCE_ONLY"
+    },
+    "boundary": "Those six production bodies were not changed or broadly re-audited by this test review."
+  },
+  "inspectionRecord": {
+    "fixedRangeRead": "The first read of final lines751-1458 returned MCP -32603. A same-path/same-range retry succeeded; the complete 77600-byte join matched the final hash and Git blob. The original tool response remains retained in reviewer state.",
+    "manifestTiming": "An initial candidate-manifest read returned not_found while Interfaces was transferring final metadata. The later exact file read succeeded and matched 4126 bytes / 5543ac8f914b1a57ad64d3dd30c6bae27d4fa00504563ecec9554c1e67ae4e2c. This was packaging timing, not a source/test/runtime failure.",
+    "authorMetadataInspection": "The manifest separately retains the author's local pre-transfer metadata assembly stop. It changed no source and made no runtime claim.",
+    "performed": "Fixed-file data reads and in-memory UTF8/SHA/Git-blob/full literal restoration checks only.",
+    "notPerformed": [
+      "Compiler or SDK typecheck",
+      "XCTest or Swift Testing execution",
+      "Fixture or HTTP server launch",
+      "Runner import or control replay",
+      "Native/account/lease/runtime actions",
+      "Mac or historical process queries",
+      "Product/test/source mutations"
+    ]
+  },
+  "acceptanceLimits": [
+    "The three methods and four controlled flows are source declarations only; no new method has executed or received compiled enumeration credit.",
+    "Original five methods are preserved but were not replayed or requalified. No whole-class/Core22 selector or producer gate was repinned.",
+    "This controlled hosted fixture does not establish actual Native account authority, bound-start ABI, production endpoint behavior, real foreground notification delivery, Library Home actions, device/cold-process behavior or the mixed App/OS language matrix.",
+    "The six-file consumer still requires coherent W1 expectedNetworkID/bound-start Runtime and W3 ABI/source admission. The older 8ac framework is not a qualification substitute.",
+    "An actual Apple build must establish UIKit/Network/Host testability and exact compiler input inclusion; an owned run must validate the real listener/gate/drain behavior and emitted result identities."
+  ],
+  "conclusion": "No remaining concrete source blocker was found in the frozen v3 tuple. Accept the source-only test preparation and retain every predecessor/finding. Actual compilation, source admission and execution remain open."
+}

@@ -1,0 +1,73 @@
+{
+  "schema": "pinkha-wave2-personal-navigation-next-validation-v1",
+  "status": "SOURCE_ONLY_ALL_NEW_CONSUMER_ACCEPTANCE_NOT_RUN",
+  "changedTestSources": 0,
+  "newDeclaredTestMethods": 0,
+  "retainedQualification": "W1 Navigation26 Host result is reported separately; no replay or claim that it exercises these new App/UI callers.",
+  "sourceChecks": [
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeApplication.swift",
+      "forwardAndInverseExact": true
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+      "forwardAndInverseExact": true
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+      "forwardAndInverseExact": true
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "forwardAndInverseExact": true
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "forwardAndInverseExact": true
+    }
+  ],
+  "requiredNextValidation": [
+    {
+      "scope": "Runtime/source dependency",
+      "requirement": "Primary-read W1 exact expectedNetworkID Runtime/native exports and coherent current App dependency closure before compile/publication/adoption."
+    },
+    {
+      "scope": "Apple compile",
+      "requirement": "Compile the five original App/UI files with real Host/Runtime modules and strict concurrency; no substituted module or test seam."
+    },
+    {
+      "scope": "Home object route",
+      "requirement": "Actual owned Space: select a current readable document, set Home through original menu, observe exact bound native acknowledgment/readback, then use Home to open the same object."
+    },
+    {
+      "scope": "Typed Home states",
+      "requirement": "Observe absent, explicit empty, unsupported/builtin and stale/trashed object states without fallback routes, object creation or preference overwrite; explicit unset remains distinct from empty."
+    },
+    {
+      "scope": "READ permission",
+      "requirement": "Current Reader can use permitted personal preferences/local observation while shared document mutations stay disabled; revoked/foreign account/Space/run cannot dispatch or publish."
+    },
+    {
+      "scope": "Mounted one-shot observation",
+      "requirement": "Real foreground editor plus current-owner read records one open; duplicate load, renderer refresh and property sheet dismissal do not repeat it. Reopening is a new actual observation."
+    },
+    {
+      "scope": "Cancellation/ACK",
+      "requirement": "Cancel before dispatch, and retire after known native ACK before postflight; retain exact original intent/ACK, suppress stale private data and do not resend. Old completions cannot clear successors."
+    },
+    {
+      "scope": "Ordering/drain",
+      "requirement": "A quickly reopened same document awaits the canceled predecessor; workspace switch/close joins all owned operations before replacing session/runtime."
+    },
+    {
+      "scope": "Compatibility/localization",
+      "requirement": "Existing injected nil dependency does not add a network call. Existing routes/drafts/recovery/IDs remain. Verify actual Hebrew-App/English-OS and inverse; helper reuse alone is not UI acceptance."
+    }
+  ],
+  "realSelectors": [
+    "any-native-open-home",
+    "any-native-unset-home",
+    "any-native-set-home"
+  ],
+  "noNewTestSelectorClaim": true
+}

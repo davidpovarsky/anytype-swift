@@ -1,0 +1,96 @@
+{
+  "schema": "pinkha-navigation-test-request-derivation-v1",
+  "status": "STATIC_SOURCE_COUNT_NOT_EXECUTED",
+  "primitives": {
+    "unadornedRequestJSON": 3,
+    "reason": "One request plus original checkAccount before and after. checkAccount uses raw /auth without recursion.",
+    "leaseValidation": 3,
+    "leaseReason": "The controlled original run verifier requests /health through requestJSON; the TaskLocal pause adds no HTTP.",
+    "leaseAuthorizedGET": 9,
+    "leaseAuthorizedGETFormula": "3 + 2 * 3",
+    "leaseAuthorizedPOST": 6,
+    "leaseAuthorizedPOSTFormula": "3 + 3; original POST has no second authorize callback."
+  },
+  "personalNavigation": {
+    "currentRead": 21,
+    "currentReadFormula": "lease3 + binding3 + authorized member9 + binding3 + lease3",
+    "prepareActualOpenBody": 60,
+    "prepareFormula": "currentRead21 + definitionGET9 + objectGET9 + currentRead21",
+    "prepareWithOriginalSessionPerform": 66,
+    "prepareSessionFormula": "60 + pre/post lease6",
+    "commitBeforeAcknowledgment": 64,
+    "commitFormula": "currentRead21 + definition9 + object9 + dispatch(binding3 + currentRead21 + rawPOST1)",
+    "readLastOpened": 60,
+    "readbackFormula": "currentRead21 + definition9 + object9 + currentRead21",
+    "commitWithOriginalSessionPerform": 130,
+    "commitSessionFormula": "64 + readback60 + pre/post lease6",
+    "completeVerifiedOpen": 196,
+    "twoOpens": 392
+  },
+  "documentReadLowerBound": {
+    "storeBody": 48,
+    "storeFormula": "four lease-authorized object/markdown GETs36 + one authorized queryPOST6 + two explicit validate calls6; both target-access validators excluded",
+    "outerDocumentLoadSession": 12,
+    "outerFormula": "perform pre/post6 + memberGET3 + explicit lease3",
+    "propertiesSessionOnly": 9,
+    "propertiesFormula": "perform pre/post6 + explicit lease3; documentProperties HTTP excluded",
+    "perLoad": 69,
+    "loadsInFirstMethod": 3,
+    "threeLoads": 207,
+    "ignoredPositiveCosts": [
+      "All target-access/readiness calls",
+      "Torah association refresh",
+      "Actual derived-properties HTTP",
+      "Initial capabilities/marker/binding/setup",
+      "Initial/replacement stream subscriptions"
+    ]
+  },
+  "insufficientOriginal": {
+    "twoOpensPlusThreeMinimumLoads": 599,
+    "originalLimit": 512,
+    "minimumExcess": 87,
+    "conclusion": "The intended successful first method cannot fit512, even when every ignored cost is treated as zero."
+  },
+  "successor": {
+    "navigationEnabledLimit": 1024,
+    "oldDefaultLimit": 512,
+    "composition": "512 retained original read/setup allowance +392 added two-open authorization cost +120 explicit replacement-owner/stream headroom.",
+    "qualification": "This is a finite source-grounded allowance, not a measured execution forecast. Actual future consumption must finish within the cap; unknown routes/body/header values still fail immediately.",
+    "simultaneousConnections": 16,
+    "cumulativeAcceptanceUsesSameRequestLimit": true,
+    "maximumLocalWrites": 2,
+    "fixtureLifetimeSeconds": 45,
+    "startupDrainPositiveWaitSeconds": 5,
+    "oneNewInvertedObservationSeconds": 1
+  },
+  "sources": [
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift",
+      "commit": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+      "bytes": 11711,
+      "sha256": "1ea82b556e9f16b7903de03bbe435a249c6c922ade9798a01d648c8394c2604d",
+      "gitBlob": "5963c98988416bec1a1761466a3fb21f1cc3f66b"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyHTTPClient.swift",
+      "commit": "d1b04526825ad10b07c59313727629cec35f9559",
+      "bytes": 30415,
+      "sha256": "256b97b27f0806e7355bd8e8478983bc64e5688f3e69678efdaf04ecaf86505f",
+      "gitBlob": "cff52bce9d04dfa2611ee0a3de6349c660a233b6"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePersonalNavigation.swift",
+      "commit": "d1b04526825ad10b07c59313727629cec35f9559",
+      "bytes": 23420,
+      "sha256": "c3dd3dc0255d2c6265693ced3bd7d7dbd6d4ed7772f2b851f7424c9dfb57b73b",
+      "gitBlob": "93f9f67ef704dd3f888885c3897f6f19c354cbce"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+      "commit": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+      "bytes": 5633,
+      "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd",
+      "gitBlob": "1dae52636c3a6eb6dfe2aa88d548d6982a9d8dd0"
+    }
+  ]
+}

@@ -1,0 +1,161 @@
+{
+  "schema": "pinkha-navigation-consumer-test-proof-v1",
+  "status": "FROZEN_SOURCE_FOR_REVIEW_NOT_COMPILED_NOT_RUN",
+  "source": {
+    "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+    "base": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+    "original": {
+      "bytes": 40939,
+      "sha256": "30de75af908469666c19ef37ecc830dee6305e6ca6f7a937cc68862cd15369ca",
+      "gitBlob": "07a523228f184625e44aa2430b26836fdb00f94c"
+    },
+    "candidate": {
+      "bytes": 73043,
+      "sha256": "4975c0c01f754c528f860cb03916b54ec263f5c5785bc861effbb600c5163c04",
+      "gitBlob": "a356d29ee8e74df4683087d4292333d0a69a4c88"
+    }
+  },
+  "originalPreservation": {
+    "methods": [
+      {
+        "name": "testEqualNativeTextChangesAttributesWithoutReplacingCharactersOrSelection",
+        "bytes": 1343,
+        "sha256": "f9bcb9bf5d0a4fb855ddb13b10057b2b5397575d2729a00ac935bd1dc8a788c7",
+        "gitBlob": "fd62761640cd8df423252a9a9d1fc57c430ca883"
+      },
+      {
+        "name": "testChangedNativeTextReplacesCharactersAndKeepsValidSelection",
+        "bytes": 482,
+        "sha256": "d056bb13e40176d0c83698004b1a60a2a5699d764b82fcbb5e2afdba169bb4c5",
+        "gitBlob": "3632a2137dea2797459fe2652b6606e38769e12d"
+      },
+      {
+        "name": "testMarkedTextKeepsCharactersSelectionAndAttributesUntilCommit",
+        "bytes": 897,
+        "sha256": "b81668188f5e3bf34e72af0e3fe52fde59394d9d545015000a0c97d33efcebb1",
+        "gitBlob": "4a630c80b16fb59f6f9a3fd3807fb604fd7c6ce0"
+      },
+      {
+        "name": "testMountedControllerRefreshesCanonicalEquivalentLatinTextInTheSameCell",
+        "bytes": 194,
+        "sha256": "d4b56c868492e6a95e3b51293162c654d8a6791e79128dbc3289be6717bf7ddc",
+        "gitBlob": "3d8575448aba5d5043b8537679744101ffe2af1b"
+      },
+      {
+        "name": "testMountedControllerRefreshesHebrewCombiningOrderInTheSameCell",
+        "bytes": 252,
+        "sha256": "61cb9fe519c429397c6fc1794250c967d19edfa7e8b2e49fef37087ca213362e",
+        "gitBlob": "0808fcfc9a50d6cf7b20bdc954caf01c04efe658"
+      }
+    ],
+    "originalThreeMethodClass": {
+      "bytes": 3268,
+      "sha256": "e44b752c35f156907abdae266ce38ee9bf30635e8fdcfe6c563a53f993111d7c",
+      "gitBlob": "3f0b78d17205078126f301972f5cc40b517c4c30"
+    },
+    "originalMountedRefreshExtensionIncludingBothMethodsAndAllHelpers": {
+      "bytes": 14813,
+      "sha256": "998637838bd556f5b372c7d4cf64b002bede013227113f4f6bf8f094b68c5b99",
+      "gitBlob": "266b395a504eb77591a464ed7cd4fd7158265b95"
+    },
+    "wholeInverseExact": true
+  },
+  "fixtureDelta": {
+    "literalReplacements": 14,
+    "appendedBytes": 29487,
+    "navigationOptInDefault": false,
+    "oldResponseValuesUnchanged": true,
+    "oldTraceValuesUnchanged": true,
+    "oldRequestConnectionDeadlinesUnchanged": true,
+    "allowedNewRoutes": [
+      "GET /v1/auth/engine-binding",
+      "GET /v1/spaces/<owned-space>/types/any/properties",
+      "POST /v1/pinkha/bound/spaces/<owned-space>/properties/<owned-object>/set/any"
+    ],
+    "originalObjectRoute": "Adds only the controlled local last-opened value after the actual bound fixture response; old non-navigation values remain exact.",
+    "bounds": {
+      "requestsPerFixture": 512,
+      "simultaneousConnections": 16,
+      "cumulativeListenerAllowance": 512,
+      "maximumLocalWritesPerFixture": 2,
+      "requestBytes": 32768,
+      "responseBytes": 16384,
+      "lifetimeSeconds": 45,
+      "listenerAndDrainDeadlineSeconds": 5,
+      "positiveEventWaitSeconds": 5
+    },
+    "ownership": "Network state remains on its original serial queue; only exact retired observation/held-definition connection IDs may close without an unexpected-EOF failure. All are tracked until cancellation.",
+    "pausedReads": "Existing editorReadOperation delays a completed real HTTP read. Existing internal AnyApplicationSession run verifier reads real /health, then may await one explicitly released noncooperative continuation. No new production hook or fake model is added.",
+    "cleanup": "Retire original lifetime, cancel explicit load tasks, release both bounded continuations and any held definition, join explicit loads/presentation/session, then await listener and all owned connection cancellation. Preserve first error and secondary cleanup failures; always attach synthetic trace."
+  },
+  "testScope": {
+    "existingMethods": 5,
+    "newMethods": [
+      "testPersonalOpenWaitsForForegroundAndRecordsOncePerMount",
+      "testPersonalOpenRejectsRetiredReadAndCancellationBeforeDispatch",
+      "testPersonalOpenRetainsLateAcknowledgmentAndDrainsBeforeReopen"
+    ],
+    "newControlledFlows": 4,
+    "wholeClassMethods": 8,
+    "result": "NOT_RUN",
+    "nativeBackend": false,
+    "appleCompilation": false,
+    "actualAppBackgroundForeground": false
+  },
+  "prerequisites": [
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+      "commit": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+      "bytes": 5633,
+      "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd",
+      "gitBlob": "1dae52636c3a6eb6dfe2aa88d548d6982a9d8dd0",
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/bae68131a20fd7ef351c2b4034ebdf520c6d3b39/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePersonalNavigationHTTPTests.swift",
+      "commit": "bae68131a20fd7ef351c2b4034ebdf520c6d3b39",
+      "bytes": 31328,
+      "sha256": "6bf537b5d5720ca42aa2bad3829663b43463ff4746d53d9e510975b03235dc4a",
+      "gitBlob": "c7d9407ec613937016a3e27940bd4b8d46f80936",
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/bae68131a20fd7ef351c2b4034ebdf520c6d3b39/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePersonalNavigationHTTPTests.swift"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePersonalNavigation.swift",
+      "commit": "d1b04526825ad10b07c59313727629cec35f9559",
+      "bytes": 23420,
+      "sha256": "c3dd3dc0255d2c6265693ced3bd7d7dbd6d4ed7772f2b851f7424c9dfb57b73b",
+      "gitBlob": "93f9f67ef704dd3f888885c3897f6f19c354cbce",
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/d1b04526825ad10b07c59313727629cec35f9559/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePersonalNavigation.swift"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeAccountRunBinding.swift",
+      "commit": "d1b04526825ad10b07c59313727629cec35f9559",
+      "bytes": 4716,
+      "sha256": "cdf064530bda6f738545e6025dbb1e53cfad9d2739c10f20b4f1c581fb2fadaa",
+      "gitBlob": "4619be7db274b9157415e87941680d5c7af7eda1",
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/d1b04526825ad10b07c59313727629cec35f9559/Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeAccountRunBinding.swift"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+      "commit": "1ae5f762cd42c3c4500c553a17014e343440ce0f",
+      "bytes": 61405,
+      "sha256": "ec8f72a34e9823c7ba84ab8dbb013d9827c9302fc6143436de3ec8a3bfdf2f37",
+      "gitBlob": "45144274ff51800b21d608d2a2df8f1db8b11477",
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/1ae5f762cd42c3c4500c553a17014e343440ce0f/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift"
+    }
+  ],
+  "productDependency": {
+    "v1Manifest": "bf9d615b4065e0136c0ffc803b048f11ff4ca4c8ea43177e853ac87da860d876",
+    "v2Manifest": "30a6f25774320c4882d0325906270725d1122af23cb37c95cdbe8ed98e69b374",
+    "productFiles": 6,
+    "qualifiedRuntimeABIStillRequired": true
+  },
+  "noActions": [
+    "No Swift/compiler invocation",
+    "No test/control invocation",
+    "No Native/account action",
+    "No Mac or process query",
+    "No controller/gate/PBX/Package change",
+    "No Git/ref publication"
+  ]
+}
