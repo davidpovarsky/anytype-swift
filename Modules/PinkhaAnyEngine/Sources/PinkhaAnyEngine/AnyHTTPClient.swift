@@ -126,6 +126,41 @@ public struct AnyHTTPClient: Sendable, CustomStringConvertible, CustomDebugStrin
         }
     }
 
+    /// Read the server's current account/network/run tuple. Legacy servers
+    /// fail this contract explicitly; there is no unbound write fallback.
+    public func nativeAccountRunBinding(expectedNetworkID: String) async throws -> AnyNativeAccountRunBinding {
+        let value = try await requestJSON(method: "GET",
+            path: ["v1", "auth", "engine-binding"], maximumResponseBytes: 16_384)
+        return try .decode(value, expectedAccountID: expectedAccountID,
+                           expectedNetworkID: expectedNetworkID)
+    }
+
+    public func requireNativeAccountRun(_ binding: AnyNativeAccountRunBinding) async throws {
+        guard binding.accountID.utf8.elementsEqual(expectedAccountID.utf8),
+              try await nativeAccountRunBinding(expectedNetworkID: binding.networkID) == binding else {
+            throw AnyEngineError.accountChanged
+        }
+    }
+
+    /// Dispatch once against the captured native engine. The native gate
+    /// verifies the tuple and the current signed authority before the effect.
+    /// After a valid acknowledgment this method performs no awaited check:
+    /// callers first retain it, then validate their lease/current membership.
+    public func dispatchBoundJSONResponse(
+        method: String, path: [String], body: AnyJSON,
+        binding: AnyNativeAccountRunBinding, maximumResponseBytes: Int = 65_536,
+        authorize: @escaping @Sendable () async throws -> Void
+    ) async throws -> AnyNativeBoundMutationResponse {
+        try AnyNativeAccountRunBinding.requireRoute(method: method, path: path)
+        try await requireNativeAccountRun(binding)
+        try Task.checkCancellation()
+        try await authorize()
+        try Task.checkCancellation()
+        let response = try await rawResponse(method: method, path: path, body: body,
+            maximumResponseBytes: maximumResponseBytes, nativeBinding: binding)
+        return .init(binding: binding, response: response)
+    }
+
     /// Stream a verified private copy to the separate prepared-file route.
     /// Neither the source file nor its complete bytes are retained in memory.
     /// A transport failure can have committed native preparation: callers must
@@ -244,22 +279,34 @@ public struct AnyHTTPClient: Sendable, CustomStringConvertible, CustomDebugStrin
 
     private func rawResponse(method: String, path: [String], body: AnyJSON?,
                              query: [String: String] = [:],
-                             maximumResponseBytes: Int? = nil) async throws -> AnyHTTPJSONResponse {
+                             maximumResponseBytes: Int? = nil,
+                             nativeBinding: AnyNativeAccountRunBinding? = nil) async throws -> AnyHTTPJSONResponse {
         if let bound = maximumResponseBytes {
             guard (1...64 * 1024 * 1024).contains(bound) else { throw AnyEngineError.readLimit }
         }
-        let request = try makeRequest(method: method, path: path, body: body, query: query)
+        var request = try makeRequest(method: method, path: path, body: body, query: query)
+        if let nativeBinding {
+            try AnyNativeAccountRunBinding.requireRoute(method: method, path: path)
+            guard nativeBinding.accountID.utf8.elementsEqual(expectedAccountID.utf8) else {
+                throw AnyEngineError.accountChanged
+            }
+            nativeBinding.apply(to: &request)
+        }
         let data: Data
         let response: URLResponse
         do { (data, response) = try await session.data(for: request) }
         catch { if method == "GET" { throw error }; throw AnyEngineError.writeUncertain }
         guard let http = response as? HTTPURLResponse else {
+            if nativeBinding != nil { throw AnyEngineError.writeUncertain }
             throw AnyEngineError.malformedResponse("HTTP response")
         }
         if let maximumResponseBytes, data.count > maximumResponseBytes {
             throw method == "GET" ? AnyEngineError.readLimit : AnyEngineError.writeUncertain
         }
         do {
+            if let nativeBinding, (200..<300).contains(http.statusCode) {
+                try nativeBinding.requireResponse(http)
+            }
             return AnyHTTPJSONResponse(statusCode: http.statusCode,
                                        body: try Self.decodeResponse(status: http.statusCode, data: data))
         } catch {
