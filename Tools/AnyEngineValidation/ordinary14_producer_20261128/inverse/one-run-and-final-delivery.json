@@ -1,0 +1,52 @@
+{
+  "schema": "pinkha-ordinary14-single-run-and-final-delivery-successor-v1",
+  "status": "SOURCE_ONLY_NOT_PARSED_NOT_RUN",
+  "before": {
+    "blob": "4681ba9377cd555151815793c813da45603d1d46",
+    "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+    "bytes": 32195,
+    "sha256": "aee89b0a250aead61ebb42dd75daa81d8cb9f71a3c389b8d6a81a091270e0238"
+  },
+  "after": {
+    "bytes": 32689,
+    "sha256": "ffbf15632e7b9971781e0dfaf42fcc15423ce68faac9ec8a7273f4aecc260c30"
+  },
+  "edits": [
+    {
+      "oldText": "                         ticket: UUID) async throws -> AnyHeartNativeMigrationCompletion {",
+      "newText": "                         ticket: UUID, requiredDestinationRun: AnyNativeAccountRunBinding? = nil\n    ) async throws -> AnyHeartNativeMigrationCompletion {"
+    },
+    {
+      "oldText": "        let run = try await client.nativeAccountRunBinding(expectedNetworkID: request.networkID)\n        let destination = AnyHeartMigrationDestinationAdmission(client: client, lease: lease, run: run)\n        try await destination.validate()\n        try requireActive(ticket)",
+      "newText": "        let run: AnyNativeAccountRunBinding\n        if let requiredDestinationRun { run = requiredDestinationRun }\n        else { run = try await client.nativeAccountRunBinding(expectedNetworkID: request.networkID) }\n        let destination = AnyHeartMigrationDestinationAdmission(client: client, lease: lease, run: run)\n        try await destination.validate()\n        try requireActive(ticket)"
+    },
+    {
+      "oldText": "                // This source observation and the final synchronous two-journal\n                // comparison follow the destination owner's last awaited fence.",
+      "newText": "                // Only synchronous storage/two-journal checks follow the\n                // destination owner's last awaited validation and delivery fence."
+    },
+    {
+      "oldText": "        let preservation = try await produce(request, client: client, session: session,\n                                             lease: lease, ticket: ticket)\n        let stage = try AnyHeartNativeOrdinaryExecutionStage(bundle: review.bundle,\n            preservationReference: preservation.preservationReference,\n            checkpoint: preservation.checkpoint)\n        let plan = stage.supplement.plan\n        try plan.requireExecutable()\n        try await verifySource(stage.preservation.plan.source, ticket: ticket)\n        guard Self.same(request.workspace, lease.workspace), Self.same(session.workspace, lease.workspace),\n              session.generation == lease.generation,\n              Data(session.engineStartedAt.utf8) == Data(lease.engineStartedAt.utf8) else {\n            throw AnyHostError.wrongWorkspace\n        }\n        try await lease.validate()\n        guard await session.isActive else { throw AnyHostError.sessionClosed }\n        let run = try await client.nativeAccountRunBinding(expectedNetworkID: request.networkID)\n        let destination = AnyHeartMigrationDestinationAdmission(client: client, lease: lease, run: run)\n        try await destination.validate()\n        try requireCurrentTicket(ticket)\n\n",
+      "newText": "        guard Self.same(request.workspace, lease.workspace), Self.same(session.workspace, lease.workspace),\n              Data(client.expectedAccountID.utf8) == Data(lease.workspace.accountID.utf8),\n              session.generation == lease.generation,\n              Data(session.engineStartedAt.utf8) == Data(lease.engineStartedAt.utf8) else {\n            throw AnyHostError.wrongWorkspace\n        }\n        try await lease.validate()\n        guard await session.isActive else { throw AnyHostError.sessionClosed }\n        // Select one destination run before either stage. Both the unchanged\n        // first-stage path and every supplemental admission require this run.\n        let run = try await client.nativeAccountRunBinding(expectedNetworkID: request.networkID)\n        let destination = AnyHeartMigrationDestinationAdmission(client: client, lease: lease, run: run)\n        try await destination.validate()\n        try requireCurrentTicket(ticket)\n        let preservation = try await produce(request, client: client, session: session,\n            lease: lease, ticket: ticket, requiredDestinationRun: run)\n        let stage = try AnyHeartNativeOrdinaryExecutionStage(bundle: review.bundle,\n            preservationReference: preservation.preservationReference,\n            checkpoint: preservation.checkpoint)\n        let plan = stage.supplement.plan\n        try plan.requireExecutable()\n        try await verifySource(stage.preservation.plan.source, ticket: ticket)\n        try await destination.validate()\n        try requireCurrentTicket(ticket)\n\n"
+    },
+    {
+      "oldText": "                                ticket: UUID) async throws -> AnyHeartNativeOrdinaryMigrationCompletion {",
+      "newText": "                                ticket: UUID) throws -> AnyHeartNativeOrdinaryMigrationCompletion {"
+    },
+    {
+      "oldText": "        // The source owner still owns this await. No destination I/O is added\n        // after the presentation operation has returned. This remains a sequence\n        // of observations, not atomic remote source/destination authority.\n        try await verifySource(prepared.stage.preservation.plan.source, ticket: ticket)\n",
+      "newText": "        // The final live-source observation occurred inside the destination\n        // callback. After its owner returns, this function has no suspension or\n        // native I/O. App persistence still uses that owner's current validation;\n        // these observations do not grant atomic remote or lasting authority.\n"
+    }
+  ],
+  "wholeForwardAndInverse": true,
+  "findingsClosed": [
+    "The first stage no longer selects an independent run; the combined callback captures one native run and every stage requires it.",
+    "The final source check stays inside the destination callback; the post-E finalizer is synchronous and performs no native I/O."
+  ],
+  "preserved": [
+    "Old public execute() body, lifetime registration/invalidation and all other original foundation functions are unchanged.",
+    "The private produce function changes only its optional required-run parameter and conditional initial run selection; nil keeps its original behavior.",
+    "Original supplied-subset equality and complete-census revalidation remain.",
+    "Same strict14 builder, original native Writer/namespace checks and two retained journal scopes.",
+    "W3 still validates current owner/selection for persistence; no lasting authority comes from IDs or locators."
+  ]
+}

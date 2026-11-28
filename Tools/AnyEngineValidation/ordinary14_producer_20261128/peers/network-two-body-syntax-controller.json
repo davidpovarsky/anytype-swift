@@ -1,0 +1,78 @@
+{
+  "schema": "pinkha-n-two-ordinary-syntax-controller-delta-peer-v1",
+  "status": "CLEAR_EXACT_SOURCE_DELTA_NOT_EXECUTED",
+  "repository": "davidpovarsky/anytype-swift",
+  "reviewer": "N /root/network_files",
+  "inputs": {
+    "actualDonor": {
+      "gitBlob": "39554d2fac6aa6c87f813c3fd65b11f69640f670",
+      "bytes": 424529,
+      "sha256": "b085be159031418a566c412eec2be90bd09ac2c727c183de6e2e8c90220be0d8"
+    },
+    "preservedUnrunMalformedPredecessor": {
+      "gitBlob": "d823dc1ccb3cea1633d1e3f4db673d97c1a7f8ad",
+      "bytes": 78996,
+      "sha256": "2733d574df86301f5651210829d8471d3b43ceea92085908b86c707d9f370f77"
+    },
+    "correctedController": {
+      "gitBlob": "816b84311b16e527642d55d6fd00af88a8e8dd3d",
+      "bytes": 78995,
+      "sha256": "bbbb30f7bfc80bbffc9c5afec66f5bf0e8721e72f6626af72e77a5c4af5619da"
+    },
+    "correctedDerivationProof": {
+      "gitBlob": "24d7c10372f7ab6d268c88eea702b8c6964b430e",
+      "bytes": 2180,
+      "sha256": "2f1fd7835319b8e5a7a4d6725f4fb78ae9c1525e33ca44a44045ea4583cdff89"
+    }
+  },
+  "findingAndCorrection": {
+    "finding": "The generated predecessor line 3 ended with three closing parentheses for the two json.loads/base64.b64decode calls. This was reported before any dispatch.",
+    "correction": "Exactly one final ')' was removed on line 3; complete source inverse reconstructs the preserved malformed d823 predecessor.",
+    "predecessorExecutionByReviewer": false,
+    "correctedExecutionByReviewer": false
+  },
+  "correspondence": {
+    "sourceLineCount": 232,
+    "changedLinesAgainstActualDonor": [
+      3,
+      196
+    ],
+    "other230LinesByteIdentical": true,
+    "completeDonorInverse": true,
+    "completeOneCharacterPredecessorInverse": true,
+    "payloadUnchangedFromPreservedPredecessor": true,
+    "sourceRows": [
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeMigrationProducer.swift",
+        "gitBlob": "63b61c3adc6b7f8eb9f4c5914bab3c1945ca47d0",
+        "bytes": 34082,
+        "sha256": "8f20637c4f856f00f8e1b05f45195cb6f65d3dff659e72c64e73a0380fb12404"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryMigrationProducerTests.swift",
+        "gitBlob": "b576c085c8dfd5f02a8643073ce3be866fa16e16",
+        "bytes": 13899,
+        "sha256": "7fad6aac645aca2e37c3c1dcfa5a30f7d0357881dc87a2e56132f84922d8ce3b"
+      }
+    ],
+    "totalBytes": 47981,
+    "largestBytes": 34082,
+    "wholeRawSHA256AndGitBlobSHA1Verified": true
+  },
+  "checks": [
+    "The corrected SOURCES line has exactly the original two nested call delimiters and contains only base64 JSON data; no new executable expression is introduced.",
+    "The only other donor change is the strict optimizer/count/sum gate: 13/297596 becomes 2/47981. Both embedded whole bodies independently match their declared Git SHA-1, SHA256 and byte count; the seven-test body and final producer pure stage match the completed scoped constructor peer.",
+    "Every other line is byte-identical to 39554, including original pinned toolchain admission/final hash, sealed anonymous input FDs, Swift language mode 5 and -parse-only argv, process group owner, signal masking/escalation, absolute deadlines, total pipe cap, cleanup/absence and terminal result.",
+    "The two individual inputs (34082 and 13899 bytes) remain below the unchanged 128 KiB parent memfd/file-size cap. No new path, resource policy, timeout, filesystem permission, source installation or runtime qualification is introduced."
+  ],
+  "limits": [
+    "Source-only comparison; no Python or Swift parser, compiler, test, native or Oracle action by this reviewer.",
+    "A future successful dispatch establishes syntax for these two exact bodies only. It does not establish imports, semantic typechecking, test execution, selected seven-method acceptance, current native authority or the unchanged semantic131 graph.",
+    "The separately frozen semantic controller retains its own source graph and resource admission. This two-body parser does not modify or qualify that controller."
+  ],
+  "relatedConstructorPeer": {
+    "gitBlob": "ef9df20aadcff963c6b3ccb532a7f55ba6e26ecc",
+    "bytes": 7271,
+    "sha256": "dda2b3ede98d3b0b5e05cb49d91a66a2548b29b0ce6feeb69b76984c31804b9d"
+  }
+}

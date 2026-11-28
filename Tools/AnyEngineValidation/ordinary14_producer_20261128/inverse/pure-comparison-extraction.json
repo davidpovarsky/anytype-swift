@@ -1,0 +1,29 @@
+{
+  "schema": "pinkha-ordinary14-producer-pure-comparison-extraction-v1",
+  "status": "SOURCE_ONLY_NOT_PARSED_NOT_RUN",
+  "before": {
+    "blob": "407179ac31b83760adffa1f9b535e5e760466f0e",
+    "bytes": 32689,
+    "sha256": "ffbf15632e7b9971781e0dfaf42fcc15423ce68faac9ec8a7273f4aecc260c30"
+  },
+  "after": {
+    "bytes": 33613,
+    "sha256": "0a9899d7abcb4c08b113ce7cadd83841ee9063f43bea5f2d4138549de79b5193"
+  },
+  "edits": [
+    {
+      "oldText": "    func completeCaptureSource(for supplied: AnyDestinationSourceBinding) throws -> AnyDestinationSourceBinding {\n        try Task.checkCancellation()\n        guard try AnyDestinationMigrationJournal.encoded(supplied) ==\n                AnyDestinationMigrationJournal.encoded(supplement.plan.source) else {\n            throw AnyDestinationMigrationError.changedSource\n        }\n        return preservation.plan.source\n    }\n\n    func requirePreservation(_ checkpoint: AnyDestinationSavedCheckpoint) throws {\n        guard checkpoint.plan.canonicalBytes == preservation.plan.canonicalBytes,\n              try AnyDestinationMigrationJournal.encoded(checkpoint.mappings) ==\n                AnyDestinationMigrationJournal.encoded(preservation.mappings),\n              checkpoint.checkpointSHA256 == preservationReference.checkpointSHA256,\n              checkpoint.checkpointSHA256 == (try AnyDestinationSavedCheckpoint.fingerprint(\n                plan: checkpoint.plan, mappings: checkpoint.mappings)),\n              checkpoint.intents.count == preservation.intents.count else {\n            throw AnyHeartNativeMigrationProducerError.changedCheckpoint\n        }\n        for (actual, expected) in zip(checkpoint.intents, preservation.intents) {\n            guard actual.identity.id == expected.identity.id,\n                  actual.identity.spec == expected.identity.spec,\n                  actual.identity.sha == expected.identity.sha else {\n                throw AnyHeartNativeMigrationProducerError.changedCheckpoint\n            }\n        }\n        try Task.checkCancellation()\n    }\n\n",
+      "newText": "    func completeCaptureSource(for supplied: AnyDestinationSourceBinding) throws -> AnyDestinationSourceBinding {\n        try Self.completeCaptureSource(for: supplied, expectedSubset: supplement.plan.source,\n                                       completeSource: preservation.plan.source)\n    }\n\n    func requirePreservation(_ checkpoint: AnyDestinationSavedCheckpoint) throws {\n        try Self.requireSameCheckpoint(checkpoint, expected: preservation,\n                                       referenceSHA256: preservationReference.checkpointSHA256)\n    }\n\n    // Pure internal correspondence seams: tests need no fabricated native\n    // Completion, source token, private journal or current-lease observation.\n    static func completeCaptureSource(\n        for supplied: AnyDestinationSourceBinding, expectedSubset: AnyDestinationSourceBinding,\n        completeSource: AnyDestinationSourceBinding\n    ) throws -> AnyDestinationSourceBinding {\n        try Task.checkCancellation()\n        guard try AnyDestinationMigrationJournal.encoded(supplied) ==\n                AnyDestinationMigrationJournal.encoded(expectedSubset) else {\n            throw AnyDestinationMigrationError.changedSource\n        }\n        return completeSource\n    }\n\n    static func requireSameCheckpoint(_ checkpoint: AnyDestinationSavedCheckpoint,\n                                      expected: AnyDestinationSavedCheckpoint,\n                                      referenceSHA256: String) throws {\n        guard checkpoint.plan.canonicalBytes == expected.plan.canonicalBytes,\n              try AnyDestinationMigrationJournal.encoded(checkpoint.mappings) ==\n                AnyDestinationMigrationJournal.encoded(expected.mappings),\n              checkpoint.checkpointSHA256 == referenceSHA256,\n              checkpoint.checkpointSHA256 == (try AnyDestinationSavedCheckpoint.fingerprint(\n                plan: checkpoint.plan, mappings: checkpoint.mappings)),\n              checkpoint.intents.count == expected.intents.count else {\n            throw AnyHeartNativeMigrationProducerError.changedCheckpoint\n        }\n        for (actual, expected) in zip(checkpoint.intents, expected.intents) {\n            guard actual.identity.id == expected.identity.id,\n                  actual.identity.spec == expected.identity.spec,\n                  actual.identity.sha == expected.identity.sha else {\n                throw AnyHeartNativeMigrationProducerError.changedCheckpoint\n            }\n        }\n        try Task.checkCancellation()\n    }\n\n"
+    }
+  ],
+  "wholeInverse": true,
+  "scope": "Only the two new pure comparisons are exposed internally for focused tests. Instance methods pass their exact existing bound source/checkpoint/reference values. All guards, cancellation checks and equality operations are preserved; no current authority is admitted by these test seams.",
+  "untouched": [
+    "Every destination/native/source lifetime and effect method",
+    "Single run shared across both stages",
+    "Synchronous post-E finalizer and both storage scope ownership",
+    "Original execute API/body and every existing executor/journal/namespace/definition guard",
+    "Frozen C20 graph and actual syntax bodies"
+  ],
+  "testScope": "Seven synthetic DTO/comparison methods; no private original inputs, native Completion, native session, journal execution or existing test replay."
+}

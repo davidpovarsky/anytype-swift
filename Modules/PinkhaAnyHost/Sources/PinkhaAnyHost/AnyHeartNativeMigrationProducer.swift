@@ -49,6 +49,24 @@ public struct AnyHeartNativeMigrationCompletion: Sendable {
     public var qualifiesWholeSourceBehavior: Bool { false }
 }
 
+
+/// A distinct result for the explicitly requested, finite Ordinary14 stage.
+/// Each checkpoint comes from its own completed journal and native verifier.
+/// The third locator and merged directory are routing evidence, not a lease.
+public struct AnyHeartNativeOrdinaryMigrationCompletion: Sendable {
+    public let preservation: AnyHeartNativeMigrationCompletion
+    public let ordinaryCheckpoint: AnyDestinationSavedCheckpoint
+    public let ordinaryVerification: AnyDestinationContentVerification
+    public let ordinaryReference: AnyNativeImportedOrdinaryPropertyReference
+    public let encodedOrdinaryReference: Data
+    public let definitionDirectory: AnyNativeImportedDefinitionDirectory
+    public let outsideSliceIssues: [AnyHeartNativeDefinitionPlan.Issue]
+    public let outsideSliceRelationObjectIDs: [String]
+    public var grantsNativeAuthority: Bool { false }
+    public var sourceHistoryBecameTargetHistory: Bool { false }
+    public var qualifiesWholeSourceBehavior: Bool { false }
+}
+
 /// One concrete migration lifetime around the ORIGINAL source account owner.
 /// Pass the same presentation owner's destination-operation API as the adapter
 /// to execute(..., inDestination:). Its callback supplies the real client/session/lease.
@@ -69,6 +87,20 @@ public actor AnyHeartNativeMigrationProducer {
     private var invalidated = false
     private var cleanup: Task<Void, Error>?
     private var cleanupID: UUID?
+
+    // Retain both exact journal scope admissions until the complete destination
+    // operation has returned. A pending callback cannot be entered a second time.
+    private struct OrdinaryPrepared: Sendable {
+        let completion: AnyHeartNativeOrdinaryMigrationCompletion
+        let stage: AnyHeartNativeOrdinaryExecutionStage
+        let preservationStorage: AnyHeartMigrationPrivateStorage
+        let ordinaryStorage: AnyHeartMigrationPrivateStorage
+    }
+    private struct OrdinaryPending: Sendable {
+        let ticket: UUID
+        let prepared: OrdinaryPrepared?
+    }
+    private var ordinaryPending: OrdinaryPending?
 
     public init(source: AnyHeartNativeSourceAccountController,
                 review: AnyHeartNativeSourceCaptureReview, privateCaptureParent: URL) throws {
@@ -97,6 +129,37 @@ public actor AnyHeartNativeMigrationProducer {
         try await withOwnedOperation { ticket in
             try await inDestination { client, session, lease in
                 try await self.produce(request, client: client, session: session, lease: lease, ticket: ticket)
+            }
+        }
+    }
+
+    public typealias OrdinaryDestinationBody = @Sendable (
+        AnyHTTPClient, AnyApplicationSession, AnyHostLease
+    ) async throws -> AnyHeartNativeOrdinaryMigrationCompletion
+    public typealias OrdinaryDestinationOperation = @Sendable (
+        _ body: @escaping OrdinaryDestinationBody
+    ) async throws -> AnyHeartNativeOrdinaryMigrationCompletion
+
+    /// Explicitly execute the preservation/content stage, then only the strict
+    /// fourteen-property supplement in the same existing destination operation.
+    /// The original execute() remains the two-locator API. A failed second stage
+    /// retains both journals; it is not rolled back or reported as completion.
+    public func executeWithOrdinaryProperties(
+        _ request: AnyHeartNativeMigrationRequest,
+        inDestination: @escaping OrdinaryDestinationOperation
+    ) async throws -> AnyHeartNativeOrdinaryMigrationCompletion {
+        try await withOwnedOperation { ticket in
+            do {
+                let returned = try await inDestination { client, session, lease in
+                    try await self.produceOrdinary(request, client: client, session: session,
+                                                  lease: lease, ticket: ticket)
+                }
+                // Only synchronous storage/two-journal checks follow the
+                // destination owner's last awaited validation and delivery fence.
+                return try await self.finishOrdinary(returned, ticket: ticket)
+            } catch {
+                await self.discardOrdinary(ticket: ticket)
+                throw error
             }
         }
     }
@@ -174,7 +237,8 @@ public actor AnyHeartNativeMigrationProducer {
 
     private func produce(_ request: AnyHeartNativeMigrationRequest, client: AnyHTTPClient,
                          session: AnyApplicationSession, lease: AnyHostLease,
-                         ticket: UUID) async throws -> AnyHeartNativeMigrationCompletion {
+                         ticket: UUID, requiredDestinationRun: AnyNativeAccountRunBinding? = nil
+    ) async throws -> AnyHeartNativeMigrationCompletion {
         try requireActive(ticket)
         guard Self.same(request.workspace, lease.workspace), Self.same(session.workspace, lease.workspace),
               Data(client.expectedAccountID.utf8) == Data(lease.workspace.accountID.utf8),
@@ -184,7 +248,9 @@ public actor AnyHeartNativeMigrationProducer {
         }
         try await lease.validate()
         guard await session.isActive else { throw AnyHostError.sessionClosed }
-        let run = try await client.nativeAccountRunBinding(expectedNetworkID: request.networkID)
+        let run: AnyNativeAccountRunBinding
+        if let requiredDestinationRun { run = requiredDestinationRun }
+        else { run = try await client.nativeAccountRunBinding(expectedNetworkID: request.networkID) }
         let destination = AnyHeartMigrationDestinationAdmission(client: client, lease: lease, run: run)
         try await destination.validate()
         try requireActive(ticket)
@@ -265,6 +331,150 @@ public actor AnyHeartNativeMigrationProducer {
             encodedContentReference: encodedContent, privateArchiveURL: payload, journalParent: request.journalParent)
     }
 
+    private func produceOrdinary(
+        _ request: AnyHeartNativeMigrationRequest, client: AnyHTTPClient,
+        session: AnyApplicationSession, lease: AnyHostLease, ticket: UUID
+    ) async throws -> AnyHeartNativeOrdinaryMigrationCompletion {
+        try requireCurrentTicket(ticket)
+        guard ordinaryPending == nil else { throw AnyHeartNativeMigrationProducerError.busy }
+        ordinaryPending = .init(ticket: ticket, prepared: nil)
+
+        guard Self.same(request.workspace, lease.workspace), Self.same(session.workspace, lease.workspace),
+              Data(client.expectedAccountID.utf8) == Data(lease.workspace.accountID.utf8),
+              session.generation == lease.generation,
+              Data(session.engineStartedAt.utf8) == Data(lease.engineStartedAt.utf8) else {
+            throw AnyHostError.wrongWorkspace
+        }
+        try await lease.validate()
+        guard await session.isActive else { throw AnyHostError.sessionClosed }
+        // Select one destination run before either stage. Both the unchanged
+        // first-stage path and every supplemental admission require this run.
+        let run = try await client.nativeAccountRunBinding(expectedNetworkID: request.networkID)
+        let destination = AnyHeartMigrationDestinationAdmission(client: client, lease: lease, run: run)
+        try await destination.validate()
+        try requireCurrentTicket(ticket)
+        let preservation = try await produce(request, client: client, session: session,
+            lease: lease, ticket: ticket, requiredDestinationRun: run)
+        let stage = try AnyHeartNativeOrdinaryExecutionStage(bundle: review.bundle,
+            preservationReference: preservation.preservationReference,
+            checkpoint: preservation.checkpoint)
+        let plan = stage.supplement.plan
+        try plan.requireExecutable()
+        try await verifySource(stage.preservation.plan.source, ticket: ticket)
+        try await destination.validate()
+        try requireCurrentTicket(ticket)
+
+        // Both original and new binding-specific journal paths are admitted.
+        // The real App namespace owner still prevents relocation through drain.
+        let preservationStorage = try AnyHeartMigrationPrivateStorage(captureParent: captureParent,
+            captureDirectory: review.descriptor.privateBundleDirectory,
+            journalParent: request.journalParent, payloadParent: request.payloadParent,
+            planBinding: preservation.checkpoint.plan.binding)
+        let ordinaryStorage = try AnyHeartMigrationPrivateStorage(captureParent: captureParent,
+            captureDirectory: review.descriptor.privateBundleDirectory,
+            journalParent: request.journalParent, payloadParent: request.payloadParent,
+            planBinding: plan.binding)
+        try stage.requirePreservation(AnyDestinationMigrationExecutor.readCompletedCheckpoint(
+            journalDirectory: request.journalParent, binding: preservation.checkpoint.plan.binding))
+
+        let verify: @Sendable (AnyDestinationSourceBinding) async throws -> Void = { supplied in
+            // Refuse a foreign/changed subset before invoking the live verifier.
+            // Its complete-census requirement is never weakened to fourteen IDs.
+            let complete = try stage.completeCaptureSource(for: supplied)
+            try await self.verifySource(complete, ticket: ticket)
+        }
+        let authorize: @Sendable () async throws -> Void = {
+            try await self.requireCurrentTicket(ticket)
+            try preservationStorage.validate(); try ordinaryStorage.validate()
+            try await destination.validate()
+            try preservationStorage.validate(); try ordinaryStorage.validate()
+            try await self.requireCurrentTicket(ticket)
+        }
+        let executor = AnyDestinationMigrationExecutor(client: client, journalDirectory: request.journalParent)
+        let progress = try await executor.execute(plan: plan, payloads: { key in
+            // This plan is property-definition-only, with no payload operation.
+            throw AnyDestinationMigrationError.payloadMismatch(key)
+        }, verifySource: verify, authorize: authorize)
+        let verification = try await AnyDestinationMigrationVerifier(client: client).verify(
+            plan: plan, progress: progress, verifySource: verify, authorize: authorize)
+        var checkpoint = try AnyDestinationMigrationExecutor.readCompletedCheckpoint(
+            journalDirectory: request.journalParent, binding: plan.binding)
+        try Self.requireCheckpoint(checkpoint, plan: plan, progress: progress)
+        let reference = try stage.reference(checkpoint: checkpoint)
+        let encoded = try reference.encoded()
+        let preservationDirectory = try AnyNativeImportedDefinitionDirectory(
+            plan: preservation.checkpoint.plan, mappings: preservation.checkpoint.mappings,
+            supplementalCanonicalDefinitions: preservation.preservationReference.supplementalCanonicalDefinitions)
+        let ordinaryDirectory = try AnyNativeImportedDefinitionDirectory(plan: plan, mappings: checkpoint.mappings)
+        let directory = try AnyNativeImportedDefinitionDirectory(
+            preservation: preservationDirectory, propertySupplement: ordinaryDirectory)
+        try await verify(plan.source)
+        try await authorize()
+        checkpoint = try AnyDestinationMigrationExecutor.readCompletedCheckpoint(
+            journalDirectory: request.journalParent, binding: plan.binding)
+        try Self.requireCheckpoint(checkpoint, plan: plan, progress: progress)
+        guard checkpoint.checkpointSHA256 == reference.supplementCheckpointSHA256 else {
+            throw AnyHeartNativeMigrationProducerError.changedCheckpoint
+        }
+        try stage.requirePreservation(AnyDestinationMigrationExecutor.readCompletedCheckpoint(
+            journalDirectory: request.journalParent, binding: preservation.checkpoint.plan.binding))
+        try preservationStorage.validate(); try ordinaryStorage.validate()
+        try requireCurrentTicket(ticket)
+        let completion = AnyHeartNativeOrdinaryMigrationCompletion(preservation: preservation,
+            ordinaryCheckpoint: checkpoint, ordinaryVerification: verification,
+            ordinaryReference: reference, encodedOrdinaryReference: encoded,
+            definitionDirectory: directory, outsideSliceIssues: stage.supplement.outsideSliceIssues,
+            outsideSliceRelationObjectIDs: stage.supplement.outsideSliceRelationObjectIDs)
+        ordinaryPending = .init(ticket: ticket, prepared: .init(completion: completion, stage: stage,
+            preservationStorage: preservationStorage, ordinaryStorage: ordinaryStorage))
+        return completion
+    }
+
+    private func finishOrdinary(_ returned: AnyHeartNativeOrdinaryMigrationCompletion,
+                                ticket: UUID) throws -> AnyHeartNativeOrdinaryMigrationCompletion {
+        try requireCurrentTicket(ticket)
+        guard let pending = ordinaryPending, pending.ticket == ticket, let prepared = pending.prepared else {
+            throw AnyHeartNativeMigrationProducerError.changedCheckpoint
+        }
+        let expected = prepared.completion
+        guard returned.encodedOrdinaryReference == expected.encodedOrdinaryReference,
+              returned.preservation.encodedPreservationReference == expected.preservation.encodedPreservationReference,
+              returned.preservation.encodedContentReference == expected.preservation.encodedContentReference,
+              returned.ordinaryCheckpoint.checkpointSHA256 == expected.ordinaryCheckpoint.checkpointSHA256,
+              returned.preservation.checkpoint.checkpointSHA256 == expected.preservation.checkpoint.checkpointSHA256 else {
+            throw AnyHeartNativeMigrationProducerError.changedCheckpoint
+        }
+        // The final live-source observation occurred inside the destination
+        // callback. After its owner returns, this function has no suspension or
+        // native I/O. App persistence still uses that owner's current validation;
+        // these observations do not grant atomic remote or lasting authority.
+        try prepared.preservationStorage.validate(); try prepared.ordinaryStorage.validate()
+        let preservation = try AnyDestinationMigrationExecutor.readCompletedCheckpoint(
+            journalDirectory: expected.preservation.journalParent,
+            binding: prepared.stage.preservation.plan.binding)
+        try prepared.stage.requirePreservation(preservation)
+        let ordinary = try AnyDestinationMigrationExecutor.readCompletedCheckpoint(
+            journalDirectory: expected.preservation.journalParent,
+            binding: prepared.stage.supplement.plan.binding)
+        let reference = try prepared.stage.reference(checkpoint: ordinary)
+        guard ordinary.checkpointSHA256 == expected.ordinaryCheckpoint.checkpointSHA256,
+              try reference.encoded() == expected.encodedOrdinaryReference,
+              reference.preservationReferenceSHA256 ==
+                AnyContentDigest.sha256(expected.preservation.encodedPreservationReference) else {
+            throw AnyHeartNativeMigrationProducerError.changedCheckpoint
+        }
+        try prepared.preservationStorage.validate(); try prepared.ordinaryStorage.validate()
+        try requireCurrentTicket(ticket)
+        ordinaryPending = nil
+        // Return this operation's retained result, never an adapter's substituted
+        // verification/directory values. Locators still grant no native authority.
+        return expected
+    }
+
+    private func discardOrdinary(ticket: UUID) {
+        if ordinaryPending?.ticket == ticket { ordinaryPending = nil }
+    }
+
     private func requireCurrentTicket(_ ticket: UUID) throws {
         try requireActive(ticket); try Task.checkCancellation()
     }
@@ -282,6 +492,79 @@ public actor AnyHeartNativeMigrationProducer {
     }
     private static func same(_ a: AnyTorahWorkspace, _ b: AnyTorahWorkspace) -> Bool {
         Data(a.accountID.utf8) == Data(b.accountID.utf8) && Data(a.spaceID.utf8) == Data(b.spaceID.utf8)
+    }
+}
+
+
+/// Exact source correspondence for this finite stage. The internal boundary is
+/// separately testable without constructing a public native Completion.
+struct AnyHeartNativeOrdinaryExecutionStage: Sendable {
+    let bundle: AnyHeartNativeSpaceBundle
+    let preservationReference: AnyNativeImportedContextReference
+    let preservation: AnyDestinationSavedCheckpoint
+    let supplement: AnyHeartNativeOrdinaryPropertySupplement
+
+    init(bundle: AnyHeartNativeSpaceBundle, preservationReference: AnyNativeImportedContextReference,
+         checkpoint: AnyDestinationSavedCheckpoint) throws {
+        self.bundle = bundle; self.preservationReference = preservationReference
+        preservation = checkpoint
+        supplement = try AnyNativeImportedOrdinaryPropertyReference.supplement(
+            preservationReference: preservationReference, bundle: bundle,
+            plan: checkpoint.plan, mappings: checkpoint.mappings)
+        try requirePreservation(checkpoint)
+    }
+
+    func completeCaptureSource(for supplied: AnyDestinationSourceBinding) throws -> AnyDestinationSourceBinding {
+        try Self.completeCaptureSource(for: supplied, expectedSubset: supplement.plan.source,
+                                       completeSource: preservation.plan.source)
+    }
+
+    func requirePreservation(_ checkpoint: AnyDestinationSavedCheckpoint) throws {
+        try Self.requireSameCheckpoint(checkpoint, expected: preservation,
+                                       referenceSHA256: preservationReference.checkpointSHA256)
+    }
+
+    // Pure internal correspondence seams: tests need no fabricated native
+    // Completion, source token, private journal or current-lease observation.
+    static func completeCaptureSource(
+        for supplied: AnyDestinationSourceBinding, expectedSubset: AnyDestinationSourceBinding,
+        completeSource: AnyDestinationSourceBinding
+    ) throws -> AnyDestinationSourceBinding {
+        try Task.checkCancellation()
+        guard try AnyDestinationMigrationJournal.encoded(supplied) ==
+                AnyDestinationMigrationJournal.encoded(expectedSubset) else {
+            throw AnyDestinationMigrationError.changedSource
+        }
+        return completeSource
+    }
+
+    static func requireSameCheckpoint(_ checkpoint: AnyDestinationSavedCheckpoint,
+                                      expected: AnyDestinationSavedCheckpoint,
+                                      referenceSHA256: String) throws {
+        guard checkpoint.plan.canonicalBytes == expected.plan.canonicalBytes,
+              try AnyDestinationMigrationJournal.encoded(checkpoint.mappings) ==
+                AnyDestinationMigrationJournal.encoded(expected.mappings),
+              checkpoint.checkpointSHA256 == referenceSHA256,
+              checkpoint.checkpointSHA256 == (try AnyDestinationSavedCheckpoint.fingerprint(
+                plan: checkpoint.plan, mappings: checkpoint.mappings)),
+              checkpoint.intents.count == expected.intents.count else {
+            throw AnyHeartNativeMigrationProducerError.changedCheckpoint
+        }
+        for (actual, expected) in zip(checkpoint.intents, expected.intents) {
+            guard actual.identity.id == expected.identity.id,
+                  actual.identity.spec == expected.identity.spec,
+                  actual.identity.sha == expected.identity.sha else {
+                throw AnyHeartNativeMigrationProducerError.changedCheckpoint
+            }
+        }
+        try Task.checkCancellation()
+    }
+
+    func reference(checkpoint: AnyDestinationSavedCheckpoint) throws
+        -> AnyNativeImportedOrdinaryPropertyReference {
+        try AnyNativeImportedOrdinaryPropertyReference(preservationReference: preservationReference,
+            bundle: bundle, completedPreservationPlan: preservation.plan,
+            completedPreservationMappings: preservation.mappings, checkpoint: checkpoint)
     }
 }
 

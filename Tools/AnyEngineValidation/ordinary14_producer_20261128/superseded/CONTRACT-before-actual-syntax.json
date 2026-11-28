@@ -1,0 +1,97 @@
+{
+  "schema": "pinkha-explicit-ordinary14-producer-source-contract-v1",
+  "status": "SOURCE_ONLY_NOT_PARSED_NOT_TYPECHECKED_NOT_COMPILED_NOT_RUN",
+  "foundationSourceCommit": "32a174219cca9b916c4fa5738d0e1891f6dbc349",
+  "foundationEvidenceTip": "c85f8950c3b7b5d2234edaf992b185688ff9fad1",
+  "production": {
+    "blob": "63b61c3adc6b7f8eb9f4c5914bab3c1945ca47d0",
+    "bytes": 34082,
+    "sha256": "8f20637c4f856f00f8e1b05f45195cb6f65d3dff659e72c64e73a0380fb12404"
+  },
+  "tests": {
+    "blob": "b576c085c8dfd5f02a8643073ce3be866fa16e16",
+    "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeOrdinaryMigrationProducerTests.swift",
+    "bytes": 13899,
+    "sha256": "7fad6aac645aca2e37c3c1dcfa5a30f7d0357881dc87a2e56132f84922d8ce3b"
+  },
+  "graph": {
+    "blob": "8eadb6f69ffc283218dba7e090eff7204adfd3dd",
+    "bytes": 105293,
+    "sha256": "642129c377e9881cbeeabb466efe015001ccc5c03305da167bba77d423331197"
+  },
+  "API": {
+    "new": "executeWithOrdinaryProperties(_:inDestination:)",
+    "oldBodyUnchanged": "execute(_:inDestination:)",
+    "result": "AnyHeartNativeOrdinaryMigrationCompletion",
+    "destinationBody": "OrdinaryDestinationBody",
+    "destinationOperation": "OrdinaryDestinationOperation",
+    "actualAppCallsiteAdded": false
+  },
+  "ownership": {
+    "oneRegisteredTask": true,
+    "oneDestinationRunBeforeBothStages": true,
+    "oldPrivateProduceNilRunBehaviorPreserved": true,
+    "completeSourceVerifierUnchanged": true,
+    "exactSubsetBeforeFullSourceVerification": true,
+    "bothStorageScopesRetainedThroughDestinationReturn": true,
+    "postDestinationFinalizer": "Synchronous two-journal/reference/storage/ticket checks; no live source or destination I/O.",
+    "sourceCleanup": "Original independent native cleanup; cancellation/drain logic unchanged.",
+    "pendingCallbackSingleUse": true,
+    "namespaceOwner": "App must prevent relocation through entire registered operation drain.",
+    "persistence": "W3 must validate current intended destination selection and own durable storage/mount; no authority from completion IDs."
+  },
+  "gates": {
+    "ordinaryBuilderUnchanged": "8023022c6740bc88fb9502e1e572bfdf4299e0b8e1b9a24e03217e2c790e72dd",
+    "executorUnchanged": "37a827abab7f8458ff0274bc0cc99a65ba62ea6068e7498d025be7fee1fee8dd",
+    "journalUnchanged": "f0846218cf0ceb933271ff87985eca590e11edaf8fb429a3ed2381cc7b70d6db",
+    "directoryUnchanged": "f8706b054757b2601a1e094558989c2a66d44b7a9ddcaee94a543563db38ff27",
+    "sameCurrentNativeWriterAndNamespaceAdmission": true,
+    "canonicalBindingsFromActualReferencePreserved": true
+  },
+  "result": {
+    "realCompletionRequired": true,
+    "checkpointCount": 2,
+    "locatorCount": 3,
+    "originalPreservationReferenceSHA256MustEqualOrdinaryPair": true,
+    "returnedAdapterValuesNotTrusted": "Return only this registered operation's retained completion after exact identity checks.",
+    "grantsNativeAuthority": false,
+    "qualifiesWholeSourceBehavior": false
+  },
+  "testsScope": {
+    "selected": 7,
+    "executed": 0,
+    "syntheticSourceIDs": 17,
+    "syntheticSubsetIDs": 14,
+    "syntheticPlanItems": 1,
+    "originalPrivateInputs": 0,
+    "executorInvocations": 0,
+    "publicNativeCompletionsFabricated": 0,
+    "currentNativeObservations": 0,
+    "actualCaptureAuthority": false,
+    "scope": "Pure correspondence only; meaningful constructor, byte identity, fingerprint/intent and cancellation checks."
+  },
+  "unresolvedQualification": [
+    "New Swift parsing and semantic compilation.",
+    "Seven selected methods with zero skips/failures.",
+    "Real dual-runtime capture and current-account/run backend.",
+    "Both live migration stages and stable current native namespace/property verification.",
+    "Actual current App storage ownership, selected destination and three-locator persistence.",
+    "Current cold owner after restart with real lease and native observations.",
+    "Unsupported families retain existing blockers; no full functional/whole-Space acceptance."
+  ],
+  "resourceProposal": {
+    "status": "UNRELEASED_REQUIRES_CONTROLLER_AND_PEER",
+    "rootAdmissionBytes": 2181038080,
+    "developmentAdmissionBytes": 973078528,
+    "minimumAvailableMemoryBytes": 3221225472,
+    "ownedOutputCapBytes": 402653184,
+    "mainSeconds": 900,
+    "finalSeconds": 120,
+    "outerSeconds": 1080,
+    "policy": "Keep the newer component donor floors/caps unchanged. A different root policy is not justified merely by placing outputs in DEV.",
+    "isolation": "Fresh owned DEV package, output, scratch/cache/config/security/TMP; original C3 Crypto remains read-only. No E97/Swift23 cache mutation, native runtime, account opening or Native159/Nav3 Products.",
+    "workingSetLimitation": "The complete source graph is finite; successful compiler working-set fit within the unchanged cap has not been observed."
+  },
+  "frozenC20GraphUnchanged": "46476f8b9f48801029d327a84b1c322350aeb5d3",
+  "foundationSyntaxDoesNotQualifyThisSuccessor": true
+}
